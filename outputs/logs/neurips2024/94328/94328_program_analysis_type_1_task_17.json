@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Install necessary dependencies including PyTorch, transformers, datasets, and lm_eval libraries (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Set up the environment by disabling TensorFloat-32 tensor cores to avoid numerical issues (/workspace/fake_quant/utils.py:24-27)",
+    "Step 3: Load the Llama-2 model (7B or 70B variant) from Hugging Face using a valid authentication token (/workspace/fake_quant/model_utils.py:40-48)",
+    "Step 4: For quantization experiments, apply rotation to the model weights using Hadamard transformation (/workspace/fake_quant/main.py:24-27)",
+    "Step 5: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30-47)",
+    "Step 6: Apply weight quantization using either RTN (Round-to-Nearest) or GPTQ method based on command-line arguments (/workspace/fake_quant/main.py:50-75)",
+    "Step 7: Configure input quantization parameters for activations, value projections, and key projections (/workspace/fake_quant/main.py:78-124)",
+    "Step 8: Load the WikiText-2 dataset for perplexity evaluation (/workspace/fake_quant/main.py:127-134)",
+    "Step 9: Evaluate the model's perplexity on the WikiText-2 dataset (/workspace/fake_quant/main.py:137-139)",
+    "Step 10: If lm_eval flag is set, load the lm_eval library and prepare for zero-shot accuracy evaluation (/workspace/fake_quant/main.py:141-147)",
+    "Step 11: Distribute the model across multiple GPUs if the distribute flag is set (required for 70B model) (/workspace/fake_quant/main.py:152-155)",
+    "Step 12: Load the tokenizer for the model (/workspace/fake_quant/main.py:157)",
+    "Step 13: Create an HFLM (Hugging Face Language Model) wrapper for evaluation (/workspace/fake_quant/main.py:158)",
+    "Step 14: Run zero-shot evaluations on specified tasks (piqa, winogrande, hellaswag, arc_easy, arc_challenge, lambada) (/workspace/fake_quant/main.py:160-161)",
+    "Step 15: Calculate and display the average accuracy across all tasks (/workspace/fake_quant/main.py:163-165)",
+    "Final Step: Log results to Weights & Biases if wandb flag is set (/workspace/fake_quant/main.py:167-168)"
+  ],
+  "agent_instructions": "\nYour task is to reproduce an experiment from a research paper that compares QuaRot with RTN weight quantization to the FP16 baseline across WikiText-2 perplexity and zero-shot accuracy tasks.\n\nYou need to:\n1. Understand the purpose of the experiment: comparing different quantization methods (QuaRot-RTN INT8 and INT4) against FP16 baseline on Llama-2 models.\n2. Identify the necessary scripts and their dependencies.\n3. Determine how to run the experiment with the correct parameters.\n4. Execute the experiment for both Llama-2-7B and Llama-2-70B models with different quantization settings.\n5. Understand how to interpret the results (perplexity and zero-shot accuracy metrics).\n\nThe main script is located at /workspace/fake_quant/main.py. You'll need to run it with different parameters to compare the quantization methods.\n",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "questions": [
+    {
+      "question": "How does QuaRot with RTN weight quantization compare to the FP16 baseline across WikiText-2 perplexity and zero-shot accuracy on task such as PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, and LAMBADA? Does RTN perform comparably to GPTQ in 8-bit settings and how does it scale across model sizes (7B vs. 70B)?",
+      "method": "#### Models\n\n- LLAMA2-7B\n- LLAMA2-70B\n\n#### Weight Quantization Methods\n\n- **FP16**: Baseline full precision\n\n- **QuaRot-RTN INT4**: 4-bit weights, activations, and KV caches using **RTN** (Round-to-Nearest) quantization\n\n- **QuaRot-RTN INT8**: Same setup but 8-bit precision\n\n  RTN is calibration-free and does not use any outlier features or per-layer tuning.\n\n#### Evaluation Datasets\n\n- **Perplexity (PPL)**: Measured on WikiText-2 with 2048-token context\n- **Zero-shot tasks (Accuracy %)**:\n  - PIQA (PQ)\n  - WinoGrande (WG)\n  - HellaSwag (HS)\n  - ARC-Easy (A-e)\n  - ARC-Challenge (A-c)\n  - LAMBADA (LA)\n\n#### Quantization Configuration\n\n- **INT4 and INT8** for:\n  - Weights (RTN quantized)\n  - Activations (integer quantized with scale)\n  - KV Caches (INT4 or INT8 storage)\n- **Sequence length**: 2048 tokens\n- **Batch size**: Default from LM Evaluation Harness\n- **Inference Precision**:\n  - FP16 input/output\n  - INT4/INT8 internal compute paths\n\n#### Tools\n\n- **Framework**:\n\n  - [LM Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness) for zero-shot tasks\n  - WikiText-2 evaluation via HuggingFace or `evaluate` module\n\n- **Quantization**:\n\n  - Implement RTN manually:\n\n    ```python\n    def round_to_nearest(x, bitwidth):\n        scale = 2 ** (bitwidth - 1) - 1\n        x_clipped = torch.clamp(x, -1.0, 1.0)\n        return torch.round(x_clipped * scale) / scale\n    ```",
+      "experiment_steps": "1. **Environment Setup**:\n\n   - Use QuaRot or custom INT4/INT8 RTN implementation\n   - Ensure correct data type handling (INT4, INT8) in the kernel or simulated flow\n\n2. **Model Preparation**:\n\n   - Load LLAMA2-7B and LLAMA2-70B in FP16 baseline\n   - Quantize weights using RTN:\n     - Apply RTN on linear layer weights\n     - Replace weights in model with RTN versions\n   - Quantize activations and KV caches to desired bit width\n\n3. **Perplexity Evaluation**:\n\n   - Run model on WikiText-2\n\n   - Log PPL according to the documentation: https://huggingface.co/docs/transformers/perplexity\n\n4. **Zero-Shot Evaluation**:\n\n   - Run LM Evaluation Harness:\n\n     ```bash\n     lm_eval --model <quantized_model> \\\n       --tasks piqa,winogrande,hellaswag,arc_easy,arc_challenge,lambada_openai \\\n       --batch_size 1 \\\n       --max_length 2048 \\\n       --device cuda\n     ```\n   \n5. **Compare Against Baseline**:\n\n   - Record PPL and task-wise accuracy\n   - Compute average score across tasks",
+      "expected_outcome": "Result should look similar to table 3 in the paper.\n\n| Model       | Method     | Precision | PPL \u2193 | PQ \u2191  | WG \u2191  | HS \u2191  | A-e \u2191 | A-c \u2191 | LA \u2191  | Avg. \u2191 |\n| ----------- | ---------- | --------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ------ |\n| Llama-2-7B  | Baseline   | FP16      | 5.47  | 79.11 | 69.06 | 75.99 | 74.58 | 46.25 | 73.90 | 69.82  |\n| Llama-2-7B  | QuaRot-RTN | INT4      | 8.37  | 72.09 | 60.69 | 65.40 | 58.88 | 35.24 | 57.27 | 58.26  |\n| Llama-2-7B  | QuaRot-RTN | INT8      | 5.50  | 78.94 | 68.67 | 75.80 | 74.79 | 45.39 | 74.33 | 69.65  |\n| Llama-2-70B | Baseline   | FP16      | 3.32  | 82.70 | 77.98 | 83.84 | 80.98 | 57.34 | 79.58 | 77.07  |\n| Llama-2-70B | QuaRot-RTN | INT4      | 4.14  | 80.69 | 75.14 | 79.63 | 77.57 | 51.71 | 77.02 | 73.63  |\n| Llama-2-70B | QuaRot-RTN | INT8      | 3.33  | 82.97 | 77.98 | 83.67 | 80.77 | 58.11 | 79.53 | 77.17  |\n\n- RTN INT8 achieves near-parity with FP16 across all metrics\n- RTN INT4 underperforms, but gap shrinks as model size increases\n- GPTQ preferred for small models, while RTN is viable for large models (\u226570B)",
+      "design_complexity": {
+        "constant_variables": {
+          "sequence_length": "2048 tokens",
+          "inference_precision": "FP16 for input/output",
+          "evaluation_datasets": [
+            "WikiText-2 (for perplexity)",
+            "PIQA",
+            "WinoGrande",
+            "HellaSwag",
+            "ARC-Easy",
+            "ARC-Challenge",
+            "LAMBADA (for zero-shot accuracy)"
+          ],
+          "batch_size": "Default from LM Evaluation Harness",
+          "framework": "LM Evaluation Harness and HuggingFace/evaluate module for WikiText-2"
+        },
+        "independent_variables": {
+          "llm_model": [
+            "LLAMA2-7B",
+            "LLAMA2-70B"
+          ],
+          "quantization_method": [
+            "FP16 Baseline",
+            "QuaRot-RTN INT4",
+            "QuaRot-RTN INT8"
+          ]
+        },
+        "dependent_variables": {
+          "perplexity": "Measured on WikiText-2 (PPL)",
+          "zero_shot_accuracy": [
+            "PIQA",
+            "WinoGrande",
+            "HellaSwag",
+            "ARC-Easy",
+            "ARC-Challenge",
+            "LAMBADA",
+            "Average score across tasks"
+          ]
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "gptq_comparison": "The hypothesis questions performance compared to GPTQ in 8-bit settings, but the experiment method does not include an explicit GPTQ implementation.",
+          "quantization_details": "The method describes quantization of weights using RTN and mentions integer quantization for activations and KV caches, but lacks detailed specifications on these procedures.",
+          "batch_size": "The 'default from LM Evaluation Harness' is not a fixed value, leading to ambiguity in reproducibility."
+        },
+        "possible_modifications": {
+          "add_gptq_method": [
+            "Introduce GPTQ as an additional independent variable (e.g., 'QuaRot-GPTQ INT8') to explicitly compare its effect with RTN in 8-bit settings."
+          ],
+          "specify_batch_size": [
+            "Set an exact batch size instead of relying on the default to reduce ambiguity."
+          ],
+          "clarify_quantization_configuration": [
+            "Provide explicit details on how activations and KV caches are quantized, including any scaling factors or clipping mechanisms."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Models: LLAMA2-7B, LLAMA2-70B in both FP16 and quantized (QuaRot-RTN INT4, QuaRot-RTN INT8)",
+          "Evaluation datasets: WikiText-2 (for perplexity) and multiple zero-shot tasks (PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, LAMBADA)",
+          "Quantization configuration: RTN based quantization for weights, integer quantization for activations and KV caches",
+          "Tools: LM Evaluation Harness for zero-shot evaluation and HuggingFace/evaluate module for WikiText-2 perplexity",
+          "Custom implementation: Manual RTN quantization function for weight quantization"
+        ],
+        "setup_steps": [
+          "Environment Setup: Configure and ensure proper data type handling for INT4/INT8 and FP16 flows",
+          "Model Preparation: Load baseline FP16 models and then apply RTN quantization to weights, activations, and KV caches",
+          "Perplexity Evaluation: Run WikiText-2 evaluation using the designated evaluation method and log PPL",
+          "Zero-Shot Evaluation: Execute evaluation via LM Evaluation Harness command-line with specified tasks and parameters",
+          "Results Comparison: Record perplexity and accuracy for each task, and compute average scores"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Quantization Procedures",
+            "description": "The experiment involves complex manipulation of weights, activations, and KV caches using different bit-widths (INT4 and INT8) along with internal compute path modifications that could increase implementation intricacy."
+          },
+          {
+            "source": "Tool Integration",
+            "description": "Integration of multiple evaluation tools (LM Evaluation Harness, HuggingFace evaluate module) and custom code for RTN quantization adds to the overall setup complexity."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "gptq_comparison: The hypothesis mentions a comparison with GPTQ in 8-bit settings, but no explicit GPTQ implementation is provided.",
+          "quantization_details: The instructions for activation and KV caches quantization lack detailed specifications such as scaling factors or clipping mechanisms.",
+          "batch_size specification: Relying on the 'default from LM Evaluation Harness' introduces ambiguity in reproducing the exact experimental conditions."
+        ],
+        "ambiguous_setup_steps": [
+          "Custom Quantization Implementation: The process for replacing model weights with RTN quantized versions is outlined but not fully detailed, leaving room for interpretation on implementation specifics.",
+          "Integration with Evaluation Tools: There is an implicit assumption that tools like LM Evaluation Harness and HuggingFace modules are set up correctly, yet setup instructions for these tools remain high-level."
+        ],
+        "possible_modifications": {
+          "add_gptq_method": [
+            "Introduce GPTQ as an additional independent variable (e.g., 'QuaRot-GPTQ INT8') in the experimental design to explicitly enable comparison with RTN in 8-bit settings."
+          ],
+          "specify_batch_size": [
+            "Set an explicit batch size value instead of relying on the default from LM Evaluation Harness to ensure reproducibility."
+          ],
+          "clarify_quantization_configuration": [
+            "Provide explicit details on how activations and KV caches are quantized, including any scaling, clipping, or rounding procedures to remove ambiguity in the quantization process."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "experimental_design_modifications": {
+            "modifications": [
+              "Introduce GPTQ as an additional independent variable (e.g., add a 'QuaRot-GPTQ INT8' variant) to explicitly compare its performance with RTN in 8-bit settings.",
+              "Specify an exact batch size rather than relying on the 'default' from LM Evaluation Harness to reduce ambiguity in experimental reproducibility.",
+              "Clarify and provide explicit details on the quantization configurations for activations and KV caches (e.g., specifying scaling, clipping, and rounding procedures) to remove any ambiguity.",
+              "Optionally, enforce tighter model constraints (e.g., evaluate on a smaller model variant such as a hypothetical 'LLAMA2-7B-mini') to test performance parity under stricter resource limitations."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "source": "Variations in evaluation settings and stochastic components of model quantization/evaluation",
+        "description": "Even though RTN is calibration-free and deterministic in a single run, random uncertainty may arise from factors such as using the default batch size from the LM Evaluation Harness, potential minor fluctuations in GPU floating-point arithmetic, and variations in sequence sampling for perplexity evaluation. This can lead to slight differences in computed metrics, e.g., WikiText-2 perplexity and zero-shot task accuracies.",
+        "impact": "These random variations may cause run-to-run fluctuations in reported metrics, affecting the reliability of average performance comparisons between FP16 and quantized models (both INT4 and INT8).",
+        "possible_modifications": [
+          "Set fixed random seeds in both model quantization and evaluation to minimize variability.",
+          "Specify a fixed batch size instead of using the default from the LM Evaluation Harness.",
+          "Run multiple independent trials and report error bars (e.g., standard deviation or standard error) through bootstrapping or closed-form calculations."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Methodological choices in the quantization procedure and experimental design",
+        "description": "Systematic uncertainty may be introduced through the inherent biases of the RTN quantization method, such as potential errors from clipping, scaling, and rounding of weights, activations, and KV caches. Additionally, the absence of an explicit GPTQ implementation for 8-bit settings in the experimental design (despite referring to its performance) and ambiguity in full quantization configurations might lead to a consistent bias in the measured performance compared to the FP16 baseline.",
+        "impact": "These systematic factors can make quantized models consistently perform either better or worse relative to the FP16 baseline; for example, INT4 results showing off-par performance may be due to bias introduced by the rounding method rather than inherent model quality.",
+        "possible_modifications": [
+          "Provide detailed and explicit specifications for quantizing activations and KV caches (including scaling, clipping, and rounding procedures) to eliminate ambiguity.",
+          "Introduce a GPTQ arm (e.g., 'QuaRot-GPTQ INT8') to allow a controlled comparison with RTN in 8-bit settings.",
+          "Calibrate the quantization pipeline with a validation subset to assess and correct for any systematic bias in the performance metrics."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "To compare QuaRot with RTN weight quantization to the FP16 baseline across WikiText-2 perplexity and zero-shot accuracy tasks, run the following commands:\n\n1. For FP16 baseline on Llama-2-7B:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n   ```\n\n2. For QuaRot-RTN INT8 on Llama-2-7B:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --w_bits 8 --w_rtn --a_bits 8 --v_bits 8 --k_bits 8 --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n   ```\n\n3. For QuaRot-RTN INT4 on Llama-2-7B:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --w_bits 4 --w_rtn --a_bits 4 --v_bits 4 --k_bits 4 --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n   ```\n\n4. For FP16 baseline on Llama-2-70B:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada --distribute\n   ```\n\n5. For QuaRot-RTN INT8 on Llama-2-70B:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --rotate --w_bits 8 --w_rtn --a_bits 8 --v_bits 8 --k_bits 8 --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada --distribute\n   ```\n\n6. For QuaRot-RTN INT4 on Llama-2-70B:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --rotate --w_bits 4 --w_rtn --a_bits 4 --v_bits 4 --k_bits 4 --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada --distribute\n   ```\n\nNote: The `--distribute` flag is used for the 70B model to distribute it across multiple GPUs. You may need to provide a Hugging Face token using `--hf_token YOUR_TOKEN` to access the Llama-2 models.",
+      "requirements": [
+        "Step 1: Install necessary dependencies including PyTorch, transformers, datasets, and lm_eval libraries (/workspace/fake_quant/main.py:1-10)",
+        "Step 2: Set up the environment by disabling TensorFloat-32 tensor cores to avoid numerical issues (/workspace/fake_quant/utils.py:24-27)",
+        "Step 3: Load the Llama-2 model (7B or 70B variant) from Hugging Face using a valid authentication token (/workspace/fake_quant/model_utils.py:40-48)",
+        "Step 4: For quantization experiments, apply rotation to the model weights using Hadamard transformation (/workspace/fake_quant/main.py:24-27)",
+        "Step 5: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30-47)",
+        "Step 6: Apply weight quantization using either RTN (Round-to-Nearest) or GPTQ method based on command-line arguments (/workspace/fake_quant/main.py:50-75)",
+        "Step 7: Configure input quantization parameters for activations, value projections, and key projections (/workspace/fake_quant/main.py:78-124)",
+        "Step 8: Load the WikiText-2 dataset for perplexity evaluation (/workspace/fake_quant/main.py:127-134)",
+        "Step 9: Evaluate the model's perplexity on the WikiText-2 dataset (/workspace/fake_quant/main.py:137-139)",
+        "Step 10: If lm_eval flag is set, load the lm_eval library and prepare for zero-shot accuracy evaluation (/workspace/fake_quant/main.py:141-147)",
+        "Step 11: Distribute the model across multiple GPUs if the distribute flag is set (required for 70B model) (/workspace/fake_quant/main.py:152-155)",
+        "Step 12: Load the tokenizer for the model (/workspace/fake_quant/main.py:157)",
+        "Step 13: Create an HFLM (Hugging Face Language Model) wrapper for evaluation (/workspace/fake_quant/main.py:158)",
+        "Step 14: Run zero-shot evaluations on specified tasks (piqa, winogrande, hellaswag, arc_easy, arc_challenge, lambada) (/workspace/fake_quant/main.py:160-161)",
+        "Step 15: Calculate and display the average accuracy across all tasks (/workspace/fake_quant/main.py:163-165)",
+        "Final Step: Log results to Weights & Biases if wandb flag is set (/workspace/fake_quant/main.py:167-168)"
+      ],
+      "agent_instructions": "\nYour task is to reproduce an experiment from a research paper that compares QuaRot with RTN weight quantization to the FP16 baseline across WikiText-2 perplexity and zero-shot accuracy tasks.\n\nYou need to:\n1. Understand the purpose of the experiment: comparing different quantization methods (QuaRot-RTN INT8 and INT4) against FP16 baseline on Llama-2 models.\n2. Identify the necessary scripts and their dependencies.\n3. Determine how to run the experiment with the correct parameters.\n4. Execute the experiment for both Llama-2-7B and Llama-2-70B models with different quantization settings.\n5. Understand how to interpret the results (perplexity and zero-shot accuracy metrics).\n\nThe main script is located at /workspace/fake_quant/main.py. You'll need to run it with different parameters to compare the quantization methods.\n",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

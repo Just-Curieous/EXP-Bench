@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/scripts/animate.py",
+        "/workspace/configs/prompts/1_animate/1_1_animate_RealisticVision.yaml",
+        "/workspace/configs/prompts/2_motionlora/2_motionlora_RealisticVision.yaml"
+    ],
+    "usage_instructions": "1. Run the baseline AnimateDiff without MotionLoRA: `python -m scripts.animate --config configs/prompts/1_animate/1_1_animate_RealisticVision.yaml`\n2. Run AnimateDiff with MotionLoRA: `python -m scripts.animate --config configs/prompts/2_motionlora/2_motionlora_RealisticVision.yaml`\n3. Compare the generated animations in the samples folder to evaluate motion smoothness improvement"
+}

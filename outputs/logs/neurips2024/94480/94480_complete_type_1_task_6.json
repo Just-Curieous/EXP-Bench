@@ -1,0 +1,168 @@
+{
+  "questions": [
+    {
+      "question": "Can InfLLM, without requiring training or retrieval components, outperform RAG systems on context retrieval tasks, thereby demonstrating broader generalization and flexibility?",
+      "method": "#### Experiment Components\n\n- **Models Compared**:\n  - **RAG-E5**:\n    - Retrieval-Augmented Generation system\n    - Uses **E5-Mistral-7B-Instruct** as retriever (Wang et al., 2024b)\n    - Performs dense vector search over the input context split into retrievable chunks\n    - Retrieved results are appended to the prompt for downstream reasoning\n  - **InfLLM**:\n    - Uses a local attention window and dynamic context memory without any training or additional components\n- **Tasks Evaluated**:\n  - **Retrieve.PassKey (R.PK)**: Find a specific 5-digit key from a long context\n  - **Retrieve.Num (R.Num)**: Retrieve numerical values associated with a query\n  - **Retrieve.KV (R.KV)**: Retrieve key-value pairs accurately from long documents\n- **Dataset**:\n  - \u221e-Bench subset focusing on context retrieval\n  - Input lengths extended to long sequences (e.g., 128K\u20131024K tokens)\n- **Retriever Details (RAG-E5)**:\n  - Contexts chunked into 512-token segments\n  - Retrieved top-K segments using E5-Mistral dense embeddings\n  - Reconstructed input fed into the base LLM for final answer generation\n- **InfLLM Configuration**:\n  - Same as Table 1 setup for Mistral-based InfLLM\n  - Local window: 4K\n  - Encoding chunk: 512\n  - Memory unit size: 128\n  - \\#Representative tokens per unit: 4\n  - Selected memory: 96 memory units\n- **Compute and Tooling**:\n  - Half-precision inference on A100/A800\n  - `InfLLM` via [official repo](https://github.com/thunlp/InfLLM)\n  - Retrieval system: Hugging Face `E5-Mistral-7B-Instruct` via `sentence-transformers` or custom FAISS-based search\n\n#### Reproduction Steps\n\n1. **Prepare Dataset**:\n   - Use \u221e-Bench retrieval tasks: R.PK, R.Num, and R.KV\n   - Create documents with embedded targets at various positions (lengths: 128K to 1024K)\n2. **RAG Pipeline**:\n   - Chunk documents into 512-token segments\n   - Use E5-Mistral to compute embeddings\n   - Perform dense retrieval using cosine similarity (e.g., FAISS)\n   - Append top-K chunks to prompt (e.g., K=4) and query base LLM\n3. **InfLLM Pipeline**:\n   - Use default context memory config (e.g., 96 units, 512 chunk, LRU update)\n   - No additional training or retrieval step\n4. **Evaluation**:\n   - Accuracy = % of correct answers across 100+ instances per task\n   - Identical test set and instance locations used across RAG and InfLLM",
+      "expected_outcome": "InfLLM should outperform RAG in retrieval accuracy across all three tasks, demonstrating superior generalization and simplicity \u2014 without dependency on a trained retriever or prompt augmentation. According to table 3:\n\n| Task   | R.PK  | R.Num | R.KV |\n| ------ | ----- | ----- | ---- |\n| RAG-E5 | 89.2  | 65.4  | 13.2 |\n| InfLLM | 100.0 | 96.1  | 96.8 |",
+      "design_complexity": {
+        "constant_variables": {
+          "dataset": "\u221e-Bench subset focused on context retrieval with documents of 128K to 1024K tokens",
+          "evaluation_metric": "Accuracy (% correct answers across tasks)",
+          "test_instance_settings": "Identical test set and instance locations used across RAG and InfLLM"
+        },
+        "independent_variables": {
+          "model": [
+            "RAG-E5",
+            "InfLLM"
+          ],
+          "retrieval_pipeline": [
+            "RAG-E5 uses E5-Mistral-7B-Instruct for dense vector search and retrieval",
+            "InfLLM uses a training-free dynamic context memory approach with local attention"
+          ],
+          "context_chunking": [
+            "RAG-E5: document chunked into 512-token segments",
+            "InfLLM: uses encoding chunks of 512 tokens"
+          ],
+          "memory_configuration": [
+            "InfLLM: Local window of 4K tokens",
+            "InfLLM: Memory unit size set to 128",
+            "InfLLM: 4 representative tokens per memory unit",
+            "InfLLM: 96 selected memory units"
+          ]
+        },
+        "dependent_variables": {
+          "retrieval_accuracy": [
+            "Retrieve.PassKey (R.PK)",
+            "Retrieve.Num (R.Num)",
+            "Retrieve.KeyValue (R.KV)"
+          ],
+          "performance_metric": "Measured as the percentage of correct answers according to Table 3"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "memory_configuration": "While key parameters (memory unit size, number of representative tokens, selected memory units) are provided, the rationale for their specific values and sensitivity analysis are not fully detailed in the main text.",
+          "retrieval_pipeline_settings": "Details such as the exact number of top-K segments for RAG-E5 retrieval (e.g., value of K) and the scoring function specifics (beyond 'cosine similarity') are not exhaustively specified.",
+          "LLM_generation_details": "The paper does not clearly state if the base LLM used for final answer generation in RAG-E5 is identical to that used in InfLLM, which could lead to ambiguities in interpreting performance differences."
+        },
+        "possible_modifications": {
+          "modification_X": [
+            "Introduce additional variants by varying the number of memory units or representative tokens to observe the impact on InfLLM performance.",
+            "Mask certain memory configuration parameters in controlled experiments to test robustness against incomplete configuration knowledge.",
+            "Include alternative values for top-K retrieval settings in RAG-E5 to assess sensitivity.",
+            "Imply the need for including or comparing additional LLM generation setups to remove ambiguity around the base LLM consistency."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "RAG-E5 retrieval system (using E5-Mistral-7B-Instruct for dense vector search)",
+          "InfLLM system (training-free dynamic context memory with local attention)",
+          "Dataset (\u221e-Bench subset with documents of 128K\u20131024K tokens)",
+          "Document chunking module (512-token segmentation)",
+          "Dense retrieval engine (e.g., cosine similarity with FAISS)",
+          "LLM generation component (for final answer generation in RAG-E5)",
+          "Memory configuration module for InfLLM (local window of 4K tokens, memory unit size, representative tokens, and selected memory units)",
+          "Compute infrastructure (half-precision inference on A100/A800 GPUs)",
+          "Reproduction scripts and tooling (data preparation scripts and integration with the InfLLM GitHub repository)"
+        ],
+        "setup_steps": [
+          "Prepare the \u221e-Bench dataset by creating documents with embedded targets at specific positions",
+          "For the RAG-E5 pipeline: chunk documents into 512-token segments, compute dense embeddings using E5-Mistral-7B-Instruct, perform dense retrieval (cosine similarity via FAISS), append top-K retrieved segments to the prompt, and execute final answer generation using the base LLM",
+          "For the InfLLM pipeline: apply the default context memory configuration (96 memory units with 4K local window and specified unit parameters) without any additional retrieval or training step",
+          "Run evaluation by computing the accuracy percentage across 100+ instances per retrieval task (R.PK, R.Num, and R.KV) using identical test set settings"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Memory configuration parameters in InfLLM",
+            "description": "The setting involves multiple interrelated parameters (local window, encoding chunk, memory unit size, representative tokens per unit, and selected memory units), which collectively increase complexity."
+          },
+          {
+            "source": "Long sequence processing",
+            "description": "Documents range from 128K to 1024K tokens, increasing the computational and engineering complexity for both document processing and model attention handling."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Memory configuration parameters: While key numeric values are provided (memory unit size, number of representative tokens, selected memory units), the rationale behind their specific choices and any sensitivity analysis are not clearly detailed.",
+          "LLM generation component: It is unclear whether the base LLM used for the final answer generation in the RAG-E5 pipeline is identical to that in InfLLM, potentially leading to ambiguity in comparing performance."
+        ],
+        "ambiguous_setup_steps": [
+          "Retrieval pipeline details for RAG-E5: The exact number of top-K segments retrieved (the value of K) and specifics of the cosine similarity scoring function are not exhaustively specified.",
+          "Dataset preparation: Although document lengths and target embedding positions are mentioned, there is limited detail on how the documents are constructed or any pre-processing steps required."
+        ],
+        "possible_modifications": {
+          "modification_X": [
+            "Introduce explicit sensitivity experiments by varying the number of memory units or representative tokens to assess their impact on InfLLM performance.",
+            "Mask certain memory configuration parameters (e.g., the number of selected memory units) in a controlled experiment to evaluate robustness against incomplete configuration information.",
+            "Provide alternative explicit values for the top-K retrieval settings in RAG-E5 to understand their effect on performance and remove ambiguity.",
+            "Clarify or standardize the base LLM used for answer generation in both pipelines to ensure a fair comparison."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "constraint_type": {
+            "modifications": [
+              "Introduce additional variants by varying the number of memory units or representative tokens to observe the impact on InfLLM performance.",
+              "Mask certain memory configuration parameters in controlled experiments to test robustness against incomplete configuration knowledge.",
+              "Include alternative explicit values for the top-K retrieval settings in RAG-E5 to assess sensitivity and remove ambiguity.",
+              "Standardize or clarify the base LLM used for final answer generation in both pipelines to ensure a fair performance comparison."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "source": "Dynamic memory updates and LLM generation non-determinism",
+        "description": "Even though InfLLM does not involve further training or retrieval steps, there is potential randomness stemming from its dynamic context memory updates (e.g., LRU policy decisions when multiple candidates are similar) and any non-deterministic aspects of the base LLM generation process (if sampling or temperature parameters are not fully fixed). This uncertainty can affect consistency in retrieval accuracy across trials, especially in marginal cases as reflected in Table 3.",
+        "impact": "Slight run-to-run variations in performance metrics, which may obscure subtle differences between InfLLM and RAG-E5 when comparing accuracy percentages.",
+        "possible_modifications": [
+          "Introduce controlled random token dropping in InfLLM\u2019s memory update process to simulate and study the effect of random variability.",
+          "Randomly vary the top-K retrieval parameter in the RAG-E5 pipeline to assess its sensitivity to stochastic changes.",
+          "Run multiple trials with different random seeds to statistically quantify and report variability in performance."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Dataset construction and fixed retrieval pipeline settings",
+        "description": "Systematic uncertainty may arise from the way the \u221e-Bench dataset is prepared, such as embedding targets being consistently positioned or documents having specific length distributions (128K to 1024K tokens). Additionally, fixed settings like the 512-token chunking or the specific memory configuration for InfLLM could introduce a bias, systematically favoring one method over the other.",
+        "impact": "This could lead to a consistent performance gap where one system appears superior due to the evaluation setup rather than intrinsic model robustness. For instance, if the document structure aligns better with InfLLM's dynamic memory design, its performance might be overestimated, while RAG-E5's performance might be undervalued.",
+        "possible_modifications": [
+          "Vary the document construction process to include a more diverse representation of target embedding positions and lengths.",
+          "Standardize or explicitly clarify the base LLM used in both RAG-E5 and InfLLM to remove biases in the generation component.",
+          "Experiment with different values for top-K retrieval settings and memory configuration parameters to assess the impact of these choices on overall performance."
+        ]
+      },
+      "source": [
+        "/workspace/scripts/infinitebench.sh",
+        "/workspace/benchmark/pred.py",
+        "/workspace/benchmark/eval.py"
+      ],
+      "usage_instructions": "1. First run 'bash scripts/download.sh' to download the necessary datasets including kv_retrieval.jsonl (R.KV), passkey.jsonl (R.PK), and number_string.jsonl (R.Num). 2. Then execute 'bash scripts/infinitebench.sh' which will run the InfLLM model on these retrieval tasks using the configuration in config/mistral-inf-llm.yaml. This script will generate predictions and evaluate them automatically.",
+      "requirements": [
+        "Step 1: Download the necessary datasets by running the download script, which creates required directories, downloads LongBench datasets using the datasets library, and downloads specific InfiniteBench datasets (kv_retrieval.jsonl, passkey.jsonl, number_string.jsonl, code_debug.jsonl, math_find.jsonl, longbook_choice_eng.jsonl) from Hugging Face (/workspace/scripts/download.sh:1-12)",
+        "Step 2: Create a directory to store the benchmark results (/workspace/scripts/infinitebench.sh:3)",
+        "Step 3: Load the configuration file (mistral-inf-llm.yaml) that specifies the model (Mistral-7B-Instruct-v0.2) and InfLLM parameters such as block_size, n_init, n_local, topk, etc. (/workspace/scripts/infinitebench.sh:1, /workspace/benchmark/pred.py:22-24)",
+        "Step 4: Load the Mistral-7B-Instruct-v0.2 model and tokenizer with bfloat16 precision (/workspace/benchmark/pred.py:43-57)",
+        "Step 5: Apply the InfLLM patching to the model to enable efficient processing of long contexts (/workspace/benchmark/pred.py:56)",
+        "Step 6: Load the dataset prompt templates and maximum generation lengths for each task from configuration files (/workspace/benchmark/pred.py:296-297)",
+        "Step 7: For each dataset (kv_retrieval, passkey, number_string, code_debug, math_find, longbook_choice_eng), load the data from the downloaded jsonl files (/workspace/benchmark/pred.py:305-311)",
+        "Step 8: Format prompts for each example in the datasets according to their specific templates (/workspace/benchmark/pred.py:214)",
+        "Step 9: Generate predictions using the InfLLM-enhanced model with greedy search, handling long contexts efficiently (/workspace/benchmark/pred.py:260-265)",
+        "Step 10: Save the predictions to jsonl files in the output directory (/workspace/benchmark/pred.py:338-340)",
+        "Step 11: Evaluate the predictions using task-specific metrics for each dataset (/workspace/benchmark/eval.py:123-154)",
+        "Step 12: Calculate scores for each task using specialized evaluation functions (e.g., get_score_one_kv_retrieval, get_score_one_passkey, etc.) (/workspace/benchmark/eval.py:105-120)",
+        "Final Step: Save the evaluation results to a JSON file containing scores for each task (/workspace/benchmark/eval.py:157-160)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment that evaluates the InfLLM approach on various retrieval tasks from InfiniteBench. You need to download specific datasets, run the model on these datasets, and evaluate the results. First, download the necessary datasets including kv_retrieval.jsonl, passkey.jsonl, and number_string.jsonl. Then, run the InfLLM model (based on Mistral-7B-Instruct-v0.2) on these retrieval tasks using the provided configuration. The experiment involves loading the model, applying InfLLM patching for efficient long context processing, generating predictions for each dataset, and evaluating the results using task-specific metrics. Follow the scripts provided in the repository to complete this workflow.",
+      "masked_source": [
+        "/workspace/scripts/infinitebench.sh",
+        "/workspace/benchmark/pred.py",
+        "/workspace/benchmark/eval.py"
+      ]
+    }
+  ]
+}

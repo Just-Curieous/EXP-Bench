@@ -1,0 +1,111 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Does increasing the capacity and complexity of the backbone (from ResNet-50 to VOV to Swin-B) lead to improved detection and topology performance on the OpenLane-V2 dataset, as measured by the metrics DET_l, DET_t, TOP_ll, TOP_lt, and OLS?",
+      "method": "Using the OpenLane-V2 dataset, conduct experiments on either subset A or B where the TopoMLP model is trained under identical protocols to isolate the effect of the backbone. The setup includes the following detailed steps: (1) Preprocess the images by resizing them to 1550\u00d72048 and downsampling with a ratio of 0.5; (2) Ensure the feature extractor produces an output channel of C=256; (3) Set up three experimental branches using different backbones: ResNet-50, VOV, and Swin-B; (4) Train the TopoMLP model with each backbone for 24 epochs (noting that additional experiments with Swin-B for 48 epochs may be used to further test performance improvements) while keeping all training hyperparameters identical; (5) Evaluate the trained models on the designated test set using the metrics DET_l, DET_t, TOP_ll, TOP_lt, and OLS; (6) Record the performance numbers for each configuration, referring to the detailed numbers from Tables 1 and 2 (for example, observation of DET_l increasing from ~28.3 with ResNet-50 to ~29.7 or ~30.7 with VOV and Swin-B, respectively, and similar movements in topology metrics); (7) Optionally, include experiments using extra YOLOv8 proposals as indicated by the TopoMLP* results to analyze the effects of additional traffic element proposals; (8) Analyze and compare the numerical improvements, especially noting that improvements in topology reasoning (e.g., TOP_ll and TOP_lt) are emphasized alongside detection metrics.",
+      "expected_outcome": "Based on reported results, it is expected that enhancing the backbone from ResNet-50 to VOV will yield improvements in all metrics, and further improvements are anticipated with Swin-B. Specifically, improvements should be evident in detection metrics (such as DET_l and DET_t) as well as in the topology metrics (TOP_ll and TOP_lt), ultimately leading to a higher OLS score. The results are expected to mirror those reported in Tables 1 and 2, confirming that more powerful backbones significantly contribute to superior feature extraction and overall performance in both lane detection and topology reasoning tasks.",
+      "subsection_source": "4.1 DATASET AND METRIC",
+      "source": [
+        "/workspace/tools/dist_train.sh",
+        "/workspace/tools/dist_test.sh",
+        "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+        "/workspace/projects/configs/topomlp_setA_vov_wo_yolov8.py",
+        "/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py"
+      ],
+      "usage_instructions": "To run the experiment comparing different backbones (ResNet-50, VOV, and Swin-B) on the OpenLane-V2 dataset, follow these steps:\n\n1. Train the TopoMLP model with ResNet-50 backbone for 24 epochs:\n   ./tools/dist_train.sh projects/configs/topomlp_setA_r50_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_r50_wo_yolov8\n\n2. Train the TopoMLP model with VOV backbone for 24 epochs:\n   ./tools/dist_train.sh projects/configs/topomlp_setA_vov_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_vov_wo_yolov8\n\n3. Train the TopoMLP model with Swin-B backbone for 24 epochs:\n   ./tools/dist_train.sh projects/configs/topomlp_setA_swinb_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_swinb_wo_yolov8\n\n4. Evaluate each model using the test script:\n   ./tools/dist_test.sh projects/configs/topomlp_setA_r50_wo_yolov8.py /path/to/checkpoint_r50.pth 8 --eval=bbox\n   ./tools/dist_test.sh projects/configs/topomlp_setA_vov_wo_yolov8.py /path/to/checkpoint_vov.pth 8 --eval=bbox\n   ./tools/dist_test.sh projects/configs/topomlp_setA_swinb_wo_yolov8.py /path/to/checkpoint_swinb.pth 8 --eval=bbox\n\nThe evaluation will output the metrics DET_l, DET_t, TOP_ll, TOP_lt, and OLS, which can be compared across the different backbone configurations to determine the impact of backbone capacity and complexity on detection and topology performance.",
+      "requirements": [
+        "Step 1: Set up the environment with PyTorch, MMCV, MMDetection, MMDetection3D, and other required dependencies.",
+        "Step 2: Prepare the OpenLane-V2 dataset in the './data' directory with the required structure for subset A.",
+        "Step 3: Create a TopoMLP model architecture that consists of four main components: a backbone network (which will be varied in the experiment), a lane detection head, a traffic element detection head, and two topology heads for lane-lane and lane-traffic element relationships.",
+        "Step 4: Configure the model with a ResNet-50 backbone by setting up the image backbone with ResNet-50 architecture, initializing it with pretrained weights from torchvision, and configuring the Feature Pyramid Network (FPN) to process features from different backbone levels.",
+        "Step 5: Configure the model with a VOV backbone by replacing the ResNet-50 backbone with a VoVNetCP architecture (V-99-eSE variant), initializing it with pretrained weights, and adjusting the FPN input channels accordingly.",
+        "Step 6: Configure the model with a Swin-B backbone by replacing the ResNet-50 backbone with a SwinTransformer_BEVDet architecture, initializing it with pretrained weights, and adjusting the FPN input channels accordingly.",
+        "Step 7: Set up the lane detection head with a transformer-based architecture that uses PETR (Position Embedding Transformation) for 3D lane detection, with focal loss for classification and L1 loss for regression.",
+        "Step 8: Set up the traffic element detection head with a transformer-based architecture that uses deformable DETR for detecting traffic elements, with focal loss for classification, L1 loss for regression, and GIoU loss for bounding box refinement.",
+        "Step 9: Set up the lane-lane topology head to predict relationships between detected lanes, using focal loss for relationship classification and L1 loss for refinement.",
+        "Step 10: Set up the lane-traffic element topology head to predict relationships between lanes and traffic elements, using focal loss for relationship classification.",
+        "Step 11: Configure the data pipeline for training with operations like loading multi-view images, applying photometric distortion, normalizing images, resizing, padding, and parameterizing lanes using Bezier curves with 4 control points.",
+        "Step 12: Configure the data pipeline for testing with similar operations but without data augmentation steps.",
+        "Step 13: Set up the optimizer as AdamW with a learning rate of 2e-4, with a lower learning rate multiplier (0.2 for ResNet-50 and VOV, 0.1 for Swin-B) for the backbone to stabilize training.",
+        "Step 14: Configure the learning rate schedule with cosine annealing policy, linear warmup for 500 iterations, and a minimum learning rate ratio of 1e-3.",
+        "Step 15: Set up the training configuration to run for 24 epochs with evaluation at the end of training, saving checkpoints every epoch and keeping the 3 most recent ones.",
+        "Step 16: Implement distributed training using PyTorch's distributed data parallel with the specified number of GPUs (8 in the usage instructions).",
+        "Step 17: Implement distributed testing that loads a trained checkpoint and evaluates the model on the validation set.",
+        "Step 18: Train the TopoMLP model with ResNet-50 backbone for 24 epochs using 8 GPUs in distributed mode, saving results to the specified work directory.",
+        "Step 19: Train the TopoMLP model with VOV backbone for 24 epochs using 8 GPUs in distributed mode, saving results to the specified work directory.",
+        "Step 20: Train the TopoMLP model with Swin-B backbone for 24 epochs using 8 GPUs in distributed mode, saving results to the specified work directory.",
+        "Step 21: Evaluate each trained model using the test script with the appropriate configuration file and checkpoint path, using 8 GPUs and the 'bbox' evaluation metric.",
+        "Step 22: Compare the evaluation metrics (DET_l, DET_t, TOP_ll, TOP_lt, and OLS) across the different backbone configurations to determine the impact of backbone capacity and complexity on detection and topology performance."
+      ],
+      "masked_source": [
+        "/workspace/tools/dist_train.sh",
+        "/workspace/tools/dist_test.sh",
+        "/workspace/tools/train.py",
+        "/workspace/tools/test.py",
+        "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+        "/workspace/projects/configs/topomlp_setA_vov_wo_yolov8.py",
+        "/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py",
+        "/workspace/projects/topomlp/models/detectors/topomlp.py",
+        "/workspace/projects/topomlp/models/heads/lane_head.py",
+        "/workspace/projects/topomlp/models/heads/traffic_head.py",
+        "/workspace/projects/topomlp/models/heads/topo_ll_head.py",
+        "/workspace/projects/topomlp/models/heads/topo_lt_head.py"
+      ]
+    },
+    {
+      "hypothesis": "Does incorporating extra YOLOv8 proposals (TopoMLP* variant) improve performance compared to the baseline TopoMLP model?",
+      "method": "Utilize the OpenLane-V2 dataset (subset A) and train two variants of the TopoMLP model under identical experimental conditions. Both variants should use the ResNet-50 backbone and be trained for 24 epochs with the same data preprocessing (resize images to 1550x2048 and downsample by a ratio of 0.5). One variant is the baseline TopoMLP without extra YOLOv8 proposals, and the other is the TopoMLP* model that integrates extra YOLOv8 proposals. The experimental setup should follow the detailed implementation as described in Section 4.2, including the use of the AdamW optimizer with a weight decay of 0.01 and an initial learning rate of 2 \u00d7 10\u207b\u2074. The loss functions for detection and topology reasoning (Ldetl, Ldett, Ltopll, and Ltoplt) should be implemented as specified. Evaluate both variants using the metrics DET_l, DET_t, TOP_ll, TOP_lt, and OLS. In particular, compare the performance improvements in detection (DET_t) and topology (TOP_lt) scores, with reference to Table 1 where the TopoMLP* variant displays improvements (e.g., an increase from DET_t 50.0 and TOP_lt 22.8 in the baseline to DET_t 53.3 and TOP_lt 30.1 with extra proposals). The steps include: (1) Setting up two pipelines with the only difference being the integration of extra YOLOv8 proposals; (2) Training both models for 24 epochs under identical conditions; (3) Computing and recording the evaluation metrics; (4) Analyzing and comparing the performance outcomes.",
+      "expected_outcome": "It is expected that incorporating extra YOLOv8 proposals in the TopoMLP* variant will boost performance relative to the baseline TopoMLP model. This improvement should be evident through increased DET_t and TOP_lt scores as well as a higher overall OLS score, consistent with the performance gains reported in Table 1 (for example, improvements from OLS 38.2 to 41.2, DET_t from 50.0 to 53.3, and TOP_lt from 22.8 to 30.1).",
+      "subsection_source": "4.1 D ATASET AND METRIC"
+    }
+  ],
+  "follow_up_work_ideas": [
+    {
+      "idea": "Examine the robustness and generalization of TopoMLP on different autonomous driving datasets and under various environmental conditions.",
+      "experiment_design": "Apply the TopoMLP model, with the best-performing configurations (e.g., using Swin-B and YOLOv8 proposals), to datasets other than OpenLane-V2 (such as KITTI or BDD100K). Evaluate the model on scene-specific metrics and analyze its performance variations under diverse weather and lighting conditions. This work could also include cross-dataset training to further test generalization capabilities.",
+      "subsection_source": "4.1 D ATASET AND METRIC"
+    },
+    {
+      "idea": "Investigate the integration of advanced post-processing techniques with the TopoMLP framework to potentially enhance topology reasoning further.",
+      "experiment_design": "Implement additional graph optimization or refinement modules that work after the initial topology reasoning stage. Train two variants of the model (one with the additional module and one without) under identical settings on the OpenLane-V2 dataset. Compare their topology metrics (TOP_ll and TOP_lt) and overall OLS to determine if the post-processing step leads to meaningful performance improvements.",
+      "subsection_source": "4.1 D ATASET AND METRIC"
+    },
+    {
+      "idea": "Evaluate the generalization capability of TopoMLP on additional datasets with different urban scene characteristics.",
+      "experiment_design": "Select one or more urban lane detection datasets (e.g., nuScenes or Argoverse) to replicate the experiments. Train TopoMLP using a standardized configuration (e.g., backbone choice, training epochs) and evaluate performance metrics both in detection and topology reasoning. Contrast these results with those obtained on OpenLane-V2 to assess the model's robustness and adaptability across domains.",
+      "subsection_source": "4.3 S TATE -OF-THE-ART COMPARISON"
+    },
+    {
+      "idea": "Investigate the impact of further increasing the model\u2019s capacity by experimenting with other advanced backbone architectures and varied training schedules.",
+      "experiment_design": "Design a set of experiments where TopoMLP is trained using other state-of-the-art backbones (e.g., ConvNeXt or a larger variant of Swin) while systematically varying training epochs. Track performance on all key metrics (OLS, TOP_ll, TOP_lt, DET_l, DET_t) to identify if there is a saturation point or further room for improvement. This will help in understanding the trade-offs between model complexity, training time, and performance gains.",
+      "subsection_source": "4.3 S TATE -OF-THE-ART COMPARISON"
+    },
+    {
+      "idea": "Investigate the robustness of YOLOv8 proposals across different environmental conditions and backbones.",
+      "experiment_design": "Expand on the current ablation by systematically evaluating the TopoMLP model\u2019s traffic detection performance using YOLOv8 proposals under varied lighting, weather, and occlusion conditions. Test on both ResNet-50 and Swin-B backbones and compare performance against a no-proposal baseline across multiple road scenarios. Analyze the consistency of the improvements in DET_t and other relevant metrics to establish the robustness of using YOLOv8 proposals.",
+      "subsection_source": "4.4 A BLATION STUDY"
+    },
+    {
+      "idea": "Explore alternative lane representation strategies by dynamically adapting the number of control points based on the complexity of lane shapes.",
+      "experiment_design": "Design a method where the number of control points in the B\u00b4ezier curve is adaptively chosen based on a preliminary analysis of lane curvature or complexity. Train the TopoMLP model on the OpenLane-V2 dataset with this dynamic configuration and compare the lane detection and topology performance with the fixed 4 control point setup. Metrics to analyze would include DET_l, TOP_ll, and OLS, thus examining if dynamic adaptation can further improve performance over the predefined configuration.",
+      "subsection_source": "4.4 A BLATION STUDY"
+    },
+    {
+      "idea": "Investigate the robustness of the adjusted TOP metric by applying it to more diverse driving scenarios and datasets.",
+      "experiment_design": "Extend the evaluation to include other subsets of OpenLane-V2 or similar datasets with varied scene complexities (e.g., different weather, urban vs. rural, varying traffic densities). Use either the current models or retrain TopoMLP and TopoNet as needed. Compare how the adjusted TOP metric performs relative to the original TOP in these new conditions, and analyze whether the adjustment consistently provides a more realistic measure of performance across different driving scenarios.",
+      "subsection_source": "4.6 M ORE DISCUSSION"
+    },
+    {
+      "idea": "Explore alternative formulations or additional factors in the TOP metric that may further penalize erroneous predictions while still rewarding correct topology predictions.",
+      "experiment_design": "Design a set of experiments where additional penalty factors or weighting schemes (e.g., introducing a weight for edge connectivity errors or varying the threshold for edge confidence) are integrated into the topology metric. Evaluate these alternative metrics on OpenLane-V2 subset A using TopoMLP, and compare the results to both the original and adjusted TOP metrics. This study could help refine the metric to better reflect the operational requirements in lane and traffic topology tasks.",
+      "subsection_source": "4.6 M ORE DISCUSSION"
+    }
+  ],
+  "main_takeaways": [
+    "TopoMLP is a unified, query-based framework that simultaneously handles lane detection, traffic element detection, lane-lane topology reasoning, and lane-traffic topology prediction in driving scenes.",
+    "The method leverages simple modeling strategies (e.g., MLP-based topology classification with embedded queries) that yield high-performance results compared to state-of-the-art approaches such as TopoNet, MapTR, and VectorMapNet.",
+    "Incorporating additional cues like lane coordinate embedding significantly improves topology reasoning, as removing such components (or supervision signals like the L1 loss for interaction points) degrades performance.",
+    "Using full traffic element features rather than just bounding boxes (which lack category information) is critical, as evidenced by a drop in the TOPlt metric (from 22.8 to 22.0) when using boxes only.",
+    "Experiments comparing different numbers of lane queries and control points indicate that configuration choices heavily impact performance metrics across detection and topology reasoning tasks."
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including MogaNet models module, PIL, and timm (/workspace/demo.ipynb:131-133)",
+    "Step 2: Load a pre-trained MogaNet-Tiny model with pretrained=True (/workspace/demo.ipynb:135)",
+    "Step 3: Set the model to evaluation mode (/workspace/demo.ipynb:136)",
+    "Step 4: Create an image transformation pipeline using timm.data.create_transform with the model's default crop percentage (/workspace/demo.ipynb:137)",
+    "Step 5: Load an image of a cat using PIL.Image.open() (/workspace/demo.ipynb:138)",
+    "Step 6: Apply the transformation to the image and add a batch dimension with unsqueeze(0) (/workspace/demo.ipynb:139)",
+    "Step 7: Run inference on the image using the model (/workspace/demo.ipynb:1206)",
+    "Step 8: Apply softmax to convert the logits to probabilities (implied in usage instructions)",
+    "Step 9: Extract the top 5 predictions and their corresponding class indices (implied in usage instructions)",
+    "Step 10: Map the class indices to human-readable class names using the ImageNet class mapping (/workspace/demo.ipynb:161-984)",
+    "Final Step: Display the results showing the top predictions and their confidence scores (implied in usage instructions)"
+  ],
+  "agent_instructions": "Your task is to create a script that uses the MogaNet image classification model to analyze how accurately it can classify images of cats compared to other animals.\n\nYou should:\n\n1. Set up the environment by importing the necessary libraries (PyTorch, PIL, timm, etc.)\n2. Load a pre-trained MogaNet-Tiny model\n3. Prepare the model for inference by setting it to evaluation mode\n4. Create an appropriate image transformation pipeline using timm's create_transform function with the model's default crop percentage\n5. Load an image of a cat (you can download one from a public URL)\n6. Preprocess the image by applying the transformation and adding a batch dimension\n7. Run inference on the image using the model\n8. Convert the model's output logits to probabilities using softmax\n9. Extract the top 5 predictions and their confidence scores\n10. Map the prediction indices to human-readable class names using the ImageNet class mapping\n11. Display the results showing the top predictions and their confidence scores\n\nThe goal is to determine how well the model distinguishes between different cat breeds and how confidently it classifies the image as a cat versus other animals. A successful outcome would show the model correctly identifying the image as a cat, with top predictions being different cat breeds (like tabby cat, tiger cat) with high confidence scores (greater than 10%)."
+}

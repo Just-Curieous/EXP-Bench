@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/train.py",
+        "/workspace/test.py",
+        "/workspace/prompt_ensemble.py"
+    ],
+    "usage_instructions": "To compare object-agnostic prompt learning with object-aware prompt learning in AnomalyCLIP, you need to modify the prompt templates in prompt_ensemble.py and then run the training and testing scripts. First, modify the prompt_ensemble.py file to switch between object-agnostic and object-aware prompts by editing the self.state_normal_list and self.state_anomaly_list variables (around lines 103-109). For object-agnostic prompts, use the default implementation with generic templates like '{}' and 'damaged {}'. For object-aware prompts, modify these to include object-specific templates. Then run train.sh to train both variants with identical configurations, and test.sh to evaluate them on industrial datasets (MVTec AD, VisA, MPDD, BTAD) and medical datasets. The scripts will output image-level metrics (AUROC, AP) and pixel-level metrics (AUROC, PRO/AUPRO) for both variants, allowing direct comparison of their performance."
+}

@@ -1,0 +1,27 @@
+{
+  "requirements": [
+    "Step 1: Download and extract the sample dataset if it doesn't exist locally (/workspace/examples/pretrain_zero_bubble.sh:17-20)",
+    "Step 2: Set up environment variables for distributed training (WORLD_SIZE, RANK, MASTER_ADDR, MASTER_PORT) if not already set (/workspace/examples/pretrain_zero_bubble.sh:22-28)",
+    "Step 3: Determine the number of GPUs per node if not specified (/workspace/examples/pretrain_zero_bubble.sh:30-33)",
+    "Step 4: Set default values for EXIT_INTERVAL and LOG_INTERVAL if not specified (/workspace/examples/pretrain_zero_bubble.sh:35-41)",
+    "Step 5: Calculate total world size in GPUs by multiplying WORLD_SIZE by GPUS_PER_NODE (/workspace/examples/pretrain_zero_bubble.sh:43)",
+    "Step 6: Set default model configuration parameters (PIPELINE_SIZE, LAYERS, MICRO_BATCH_SIZE, etc.) if not specified (/workspace/examples/pretrain_zero_bubble.sh:45-53)",
+    "Step 7: Create a list of ranks to profile (/workspace/examples/pretrain_zero_bubble.sh:55-58)",
+    "Step 8: Set default values for ZERO_BUBBLE_TIMER_START and ZERO_BUBBLE_TIMER_END if not specified (/workspace/examples/pretrain_zero_bubble.sh:59-62)",
+    "Step 9: Set default values for EVAL_INTERVAL and TP_SIZE if not specified (/workspace/examples/pretrain_zero_bubble.sh:64-70)",
+    "Step 10: Build the command-line options string with model configuration parameters (/workspace/examples/pretrain_zero_bubble.sh:72-114)",
+    "Step 11: Add FP16 option if FP32 is not specified (/workspace/examples/pretrain_zero_bubble.sh:116-118)",
+    "Step 12: Add profiling option if PROFILED is specified (/workspace/examples/pretrain_zero_bubble.sh:120-122)",
+    "Step 13: Enable Zero Bubble V-Schedule if ZERO_BUBBLE_V_SCHEDULE is specified (/workspace/examples/pretrain_zero_bubble.sh:124-127)",
+    "Step 14: Add Zero Bubble options if ENABLE_ZERO_BUBBLE is specified, including memory limit (/workspace/examples/pretrain_zero_bubble.sh:129-139)",
+    "Step 15: Add options for exact numeric matching if ENABLE_EXACTLY_NUMERIC_MATCH is specified (/workspace/examples/pretrain_zero_bubble.sh:141-145)",
+    "Step 16: Add interleaved 1F1B option if INTERLEAVED_1F1B is specified (/workspace/examples/pretrain_zero_bubble.sh:147-149)",
+    "Step 17: Build the torchrun command with the appropriate parameters (/workspace/examples/pretrain_zero_bubble.sh:151-155)",
+    "Step 18: Add profiling wrapper if PROFILED is specified (/workspace/examples/pretrain_zero_bubble.sh:157-164)",
+    "Step 19: Execute the command to run the training (/workspace/examples/pretrain_zero_bubble.sh:166-169)"
+  ],
+  "agent_instructions": "Create a bash script that runs experiments comparing different pipeline parallelism scheduling methods for large language model training. The script should support four scheduling methods: 1F1B (baseline), 1F1B-I (interleaved), ZB-1p (Zero Bubble with memory limit = 1x pipeline size), and ZB-2p (Zero Bubble with memory limit = 2x pipeline size).\n\nThe script should:\n\n1. Download and extract a sample dataset if it doesn't exist locally\n2. Set up distributed training environment variables\n3. Configure model parameters for a 28.3B model (hidden size 7168, attention heads 56, 94 layers)\n4. Support running on 32 GPUs with varying microbatch counts (96, 128, 256)\n5. Configure different scheduling methods through environment variables:\n   - For 1F1B: No special variables needed (baseline)\n   - For 1F1B-I: Set INTERLEAVED_1F1B=1\n   - For ZB-1p: Set ENABLE_ZERO_BUBBLE=1 and ZERO_BUBBLE_MEM_LIMIT=32 (1x pipeline size)\n   - For ZB-2p: Set ENABLE_ZERO_BUBBLE=1 and ZERO_BUBBLE_MEM_LIMIT=64 (2x pipeline size)\n6. Build and execute a torchrun command that launches the training process with the appropriate configuration\n\nThe script should be flexible enough to handle different configurations through environment variables and should include appropriate default values when variables are not set.",
+  "masked_source": [
+    "/workspace/examples/pretrain_zero_bubble.sh"
+  ]
+}

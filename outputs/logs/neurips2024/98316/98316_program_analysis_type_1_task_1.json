@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including numpy, scipy.stats, and causallearn modules (/workspace/tests/test_custom_ci.py:1-6)",
+    "Step 2: Create a custom conditional independence test class that extends CIT_Base (/workspace/tests/test_custom_ci.py:16-61)",
+    "Step 3: Initialize the custom test with data and implement caching mechanism (/workspace/tests/test_custom_ci.py:17-23)",
+    "Step 4: Implement the core test logic that calculates correlation matrix, computes partial correlation, and returns p-values (/workspace/tests/test_custom_ci.py:25-61)",
+    "Step 5: Register the custom CI test with the causallearn framework (/workspace/tests/test_custom_ci.py:63)",
+    "Step 6: Create a function to compare the custom test with the built-in Fisher-Z test using random data (/workspace/tests/test_custom_ci.py:64-108)",
+    "Step 7: Create a function to generate synthetic data with a known causal structure (/workspace/tests/test_custom_ci.py:112-144)",
+    "Step 8: Implement utility functions to print and compare graph edges (/workspace/tests/test_custom_ci.py:146-185)",
+    "Step 9: Create a function to run the PC algorithm with both the built-in and custom CI tests (/workspace/tests/test_custom_ci.py:187-226)",
+    "Step 10: Compare the performance of both tests by measuring execution time and match percentage between recovered causal graphs (/workspace/tests/test_custom_ci.py:199-226)",
+    "Final Step: Execute both test functions to demonstrate the custom CI test and compare it with the built-in test (/workspace/tests/test_custom_ci.py:229-231)"
+  ],
+  "agent_instructions": "Create a Python script that demonstrates how to implement and test a custom conditional independence (CI) test for causal discovery using the causallearn library. The script should:\n\n1. Implement a custom Fisher-Z conditional independence test by extending the CIT_Base class from causallearn. The custom test should mirror the functionality of the built-in Fisher-Z test, including:\n   - Calculating correlation matrices\n   - Computing partial correlations\n   - Implementing a caching mechanism for efficiency\n   - Calculating p-values for independence tests\n\n2. Register the custom CI test with the causallearn framework so it can be used with algorithms like PC\n\n3. Create a function that compares the custom test with the built-in Fisher-Z test by:\n   - Generating random data\n   - Running both tests on the same data with various conditioning sets\n   - Comparing the p-values to verify they match\n   - Demonstrating the caching mechanism works\n\n4. Implement a function that generates synthetic data with a known causal structure (e.g., a simple directed acyclic graph with 6 variables)\n\n5. Create a function that runs the PC algorithm using both the built-in Fisher-Z test and the custom test on the synthetic data, then:\n   - Measures and compares execution time\n   - Prints the edges discovered by each method\n   - Calculates the match percentage between the graphs recovered by both methods\n   - Reports edges present in one result but not the other\n\n6. Execute both test functions when the script is run directly\n\nThe goal is to demonstrate that a custom CI test can be implemented and integrated with causallearn's algorithms, producing results equivalent to the built-in tests.",
+  "masked_source": [
+    "/workspace/tests/test_custom_ci.py"
+  ]
+}

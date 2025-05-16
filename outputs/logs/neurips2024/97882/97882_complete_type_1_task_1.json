@@ -1,0 +1,41 @@
+{
+  "questions": [
+    {
+      "question": "Is the loss in the turbulent_radiative_layer_2D simulation predominantly concentrated in the pressure (P) field compared to other physical fields?",
+      "method": "Conduct a detailed per-field analysis on the turbulent_radiative_layer_2D dataset by computing field-specific errors (using VRMSE or similar metrics) for each physical field included in the simulation. Configure the evaluation to log the error values for fields such as pressure, density, and temperature individually over the course of the prediction task. Ensure that the same experimental settings (e.g., model configuration, temporal downsampling settings if applicable) are used across all evaluations to ascertain that variations in loss are due to intrinsic field differences rather than experimental conditions.",
+      "expected_outcome": "The experimental results should show that the loss is significantly higher for the pressure field compared to other fields, indicating that errors are predominantly concentrated in the pressure (P) field as observed in the metric analysis.",
+      "subsection_source": "4.1 Evaluation Metrics",
+      "source": [
+        "/workspace/the_well/benchmark/train.py"
+      ],
+      "usage_instructions": "To analyze whether the loss in the turbulent_radiative_layer_2D simulation is predominantly concentrated in the pressure field, run the following command:\n\ncd /workspace/the_well/benchmark\npython train.py experiment=fno server=local data=turbulent_radiative_layer_2D validation_mode=True\n\nThis will run the model in validation mode on the turbulent_radiative_layer_2D dataset. The script will automatically compute field-specific errors (including VRMSE) for each physical field (pressure, density, velocity) and log them separately. The results will show the error metrics broken down by field, allowing you to compare the loss values between the pressure field and other fields. The validation_mode=True flag ensures that the script only evaluates the model without training it.\n\nThe output will include per-field metrics that show whether the pressure field has significantly higher error compared to other fields. Look for metrics like 'turbulent_radiative_layer_2D/P_VRMSE_T=all' (for pressure) vs 'turbulent_radiative_layer_2D/rho_VRMSE_T=all' (for density) in the logs to compare the error values across different physical fields.",
+      "requirements": [
+        "Step 1: Set up the environment with necessary imports (torch, hydra, wandb, etc.) (/workspace/the_well/benchmark/train.py:1-17)",
+        "Step 2: Define a function to instantiate the data module for the turbulent_radiative_layer_2D dataset (/workspace/the_well/benchmark/train.py:29-46)",
+        "Step 3: Instantiate the FNO model with appropriate parameters for the dataset's dimensions (/workspace/the_well/benchmark/train.py:55-65)",
+        "Step 4: Set up the device (CPU/GPU) and move the model to the device (/workspace/the_well/benchmark/train.py:67-76)",
+        "Step 5: Skip optimizer initialization when in validation mode (/workspace/the_well/benchmark/train.py:78-84)",
+        "Step 6: Instantiate the trainer with the model, datamodule, and validation settings (/workspace/the_well/benchmark/train.py:101-113)",
+        "Step 7: Call the validate method when validation_mode is True (/workspace/the_well/benchmark/train.py:114-115)",
+        "Step 8: Implement the validate method to run validation on both regular and rollout validation datasets (/workspace/the_well/benchmark/trainer/training.py:504-547)",
+        "Step 9: Implement the validation_loop method to compute metrics for each batch (/workspace/the_well/benchmark/trainer/training.py:302-371)",
+        "Step 10: Implement the rollout_model method to generate predictions for multiple timesteps (/workspace/the_well/benchmark/trainer/training.py:212-257)",
+        "Step 11: Implement the split_up_losses method to break down losses by field and time interval (/workspace/the_well/benchmark/trainer/training.py:277-299)",
+        "Step 12: Implement the VRMSE metric to compute field-specific errors (/workspace/the_well/benchmark/metrics/spatial.py:193-211)",
+        "Step 13: Log the field-specific metrics to wandb for analysis (/workspace/the_well/benchmark/trainer/training.py:518-519, 529-530, 546-547)",
+        "Step 14: Configure the experiment using hydra with the appropriate settings for validation mode (/workspace/the_well/benchmark/train.py:123-179)",
+        "Final Step: Run the main function to execute the validation process and analyze the field-specific errors (/workspace/the_well/benchmark/train.py:183-184)"
+      ],
+      "agent_instructions": "Create a script that analyzes whether the loss in a fluid dynamics simulation is predominantly concentrated in the pressure field. You'll need to implement a validation system that can:\n\n1. Load a pre-trained model (FNO - Fourier Neural Operator) and evaluate it on the turbulent_radiative_layer_2D dataset\n2. Run the model in validation mode (no training)\n3. Compute field-specific error metrics for each physical field in the simulation (pressure, density, velocity)\n4. Use a variance-scaled root mean squared error (VRMSE) metric to properly compare errors across fields with different scales\n5. Log the error metrics separately for each field to enable comparison\n6. Support both single-step and multi-step (rollout) prediction validation\n7. Organize the validation process to handle both regular validation data and longer rollout validation data\n8. Implement a configuration system that allows specifying the dataset, model type, and validation mode via command-line arguments\n\nThe script should be runnable with a command like:\n`python train.py experiment=fno server=local data=turbulent_radiative_layer_2D validation_mode=True`\n\nThe output should include metrics that show whether the pressure field has significantly higher error compared to other fields (density, velocity_x, velocity_y). Look for metrics with names like 'turbulent_radiative_layer_2D/pressure_VRMSE_T=all' vs 'turbulent_radiative_layer_2D/density_VRMSE_T=all' in the logs.",
+      "masked_source": [
+        "/workspace/the_well/benchmark/train.py",
+        "/workspace/the_well/benchmark/trainer/training.py",
+        "/workspace/the_well/benchmark/metrics/spatial.py",
+        "/workspace/the_well/benchmark/trainer/__init__.py",
+        "/workspace/the_well/benchmark/metrics/__init__.py",
+        "/workspace/the_well/benchmark/utils/experiment_utils.py",
+        "/workspace/the_well/benchmark/trainer/utils.py"
+      ]
+    }
+  ]
+}

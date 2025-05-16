@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by configuring paths to training data and validation data (/workspace/train.sh:15-16)",
+    "Step 2: Parse command line arguments for configuration file and output directory (/workspace/train.sh:1-2)",
+    "Step 3: Configure distributed training parameters including GPU count, nodes, and port (/workspace/train.sh:3-11)",
+    "Step 4: Launch distributed training using torchrun with the specified configuration (/workspace/train.sh:21-27)",
+    "Step 5: Implement zero-shot evaluation function that builds a classifier using ImageNet class names and templates (/workspace/opencls/training/zero_shot.py:44-62)",
+    "Step 6: Create a zero-shot classifier by computing text features for all ImageNet classes (/workspace/opencls/training/zero_shot.py:63-71)",
+    "Step 7: Implement evaluation logic to compute top-1 and top-5 accuracy metrics (/workspace/opencls/training/zero_shot.py:11-14)",
+    "Step 8: Run the zero-shot evaluation by passing images through the model and computing logits against the classifier (/workspace/opencls/training/zero_shot.py:17-41)",
+    "Step 9: Return evaluation results for ImageNet validation set (/workspace/opencls/training/zero_shot.py:74-78)",
+    "Final Step: Log the zero-shot evaluation metrics for analysis (/workspace/opencls/training/zero_shot.py:84-86)"
+  ],
+  "agent_instructions": "Create a system for evaluating how scaling model size impacts zero-shot classification performance on ImageNet. The system should include:\n\n1. A training script that:\n   - Takes a configuration file path and output directory as input\n   - Sets up distributed training across multiple GPUs\n   - Configures paths for training data (WebDataset format) and ImageNet validation data\n   - Launches the training process using torchrun\n\n2. A zero-shot evaluation module that:\n   - Evaluates the model's zero-shot classification performance on ImageNet-1K\n   - Builds a zero-shot classifier using ImageNet class names and templates\n   - Computes top-1 and top-5 accuracy metrics\n   - Returns and logs the evaluation results\n\nThe system should support evaluating different model sizes (like ViT-B/16 and ViT-L/16) to compare their zero-shot classification performance. The evaluation should happen during the training process and results should be logged to tensorboard.",
+  "masked_source": [
+    "/workspace/train.sh",
+    "/workspace/opencls/training/zero_shot.py"
+  ]
+}

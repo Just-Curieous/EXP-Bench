@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Does employing a more powerful backbone (e.g., Swin-B) and extending training epochs improve performance metrics compared to the baseline ResNet-50 setup?",
+      "method": "Run parallel experiments on OpenLane-V2 subset A using two different configurations. In the first configuration, use ResNet-50 as the backbone with the standard training setup (24 epochs). In the second configuration, use a more powerful backbone (Swin-B) and train for 48 epochs. All other components (e.g., data preprocessing, augmentation, loss settings, query numbers) should remain constant. Evaluate and compare the Overall Lane Score (OLS) along with any available topology metrics. Document the differences; for instance, the paper notes an improvement from an OLS score of 38.2 to 43.7 when using Swin-B.",
+      "expected_outcome": "The experiment is expected to show that using a more powerful backbone with extended training leads to a significant improvement in performance metrics, providing evidence that architecture and training duration contribute to enhanced model performance.",
+      "subsection_source": "4.3 S TATE -OF-THE-ART COMPARISON",
+      "source": [
+        "/workspace/tools/dist_train.sh",
+        "/workspace/tools/dist_test.sh",
+        "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+        "/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py"
+      ],
+      "usage_instructions": "To run the experiment comparing ResNet-50 and Swin-B backbones on OpenLane-V2 subset A, follow these steps:\n\n1. First, train the baseline ResNet-50 model for 24 epochs (default setting):\n   ```\n   ./tools/dist_train.sh projects/configs/topomlp_setA_r50_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_r50_wo_yolov8\n   ```\n\n2. For the Swin-B model with extended training, modify the config file by changing line 311 in projects/configs/topomlp_setA_swinb_wo_yolov8.py from `runner = dict(type='EpochBasedRunner', max_epochs=24)` to `runner = dict(type='EpochBasedRunner', max_epochs=48)`, then run:\n   ```\n   ./tools/dist_train.sh projects/configs/topomlp_setA_swinb_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_swinb_wo_yolov8_e48\n   ```\n\n3. After training, evaluate both models to compare their performance:\n   ```\n   ./tools/dist_test.sh projects/configs/topomlp_setA_r50_wo_yolov8.py work_dirs/topomlp_setA_r50_wo_yolov8/latest.pth 8 --eval=bbox\n   ./tools/dist_test.sh projects/configs/topomlp_setA_swinb_wo_yolov8.py work_dirs/topomlp_setA_swinb_wo_yolov8_e48/latest.pth 8 --eval=bbox\n   ```\n\nThe evaluation will output the Overall Lane Score (OLS) and other topology metrics, allowing you to compare the performance between the ResNet-50 baseline and the Swin-B model with extended training. According to the paper, this should show an improvement from an OLS score of 38.2 to 43.7 when using Swin-B with extended training.",
+      "requirements": [
+        "Step 1: Set up distributed training environment with PyTorch distributed module, configuring parameters like number of nodes, GPUs per node, master address and port (/workspace/tools/dist_train.sh:3-9)",
+        "Step 2: Launch distributed training process using torch.distributed.run with the specified configuration file and number of GPUs (/workspace/tools/dist_train.sh:10-20)",
+        "Step 3: Train the ResNet-50 backbone model on OpenLane-V2 subset A for 24 epochs using the specified configuration (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:10-192, 298)",
+        "Step 4: Modify the Swin-B configuration to extend training from 24 to 48 epochs (/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py:311)",
+        "Step 5: Train the Swin-B backbone model on OpenLane-V2 subset A for 48 epochs using the modified configuration (/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py:10-205, 311)",
+        "Step 6: Set up distributed testing environment with PyTorch distributed launch, configuring parameters like number of nodes, GPUs per node, master address and port (/workspace/tools/dist_test.sh:3-9)",
+        "Step 7: Launch distributed evaluation process for both trained models using torch.distributed.launch with the respective configuration files and checkpoint paths (/workspace/tools/dist_test.sh:10-22)",
+        "Step 8: Compare the evaluation results, specifically the Overall Lane Score (OLS) and topology metrics, between the ResNet-50 and Swin-B models"
+      ],
+      "agent_instructions": "Your task is to implement scripts for training and evaluating lane detection models with different backbones on the OpenLane-V2 dataset (subset A). You need to create:\n\n1. A distributed training script that:\n   - Takes a configuration file path and number of GPUs as input\n   - Sets up PyTorch distributed training environment\n   - Launches the training process with proper distributed settings\n\n2. A distributed testing/evaluation script that:\n   - Takes a configuration file path, checkpoint path, and number of GPUs as input\n   - Sets up PyTorch distributed testing environment\n   - Launches the evaluation process with proper distributed settings\n\n3. Two configuration files:\n   - One for a ResNet-50 backbone model\n   - One for a Swin-B backbone model\n   \nBoth configuration files should:\n   - Define a TopoMLP model architecture for lane detection and topology prediction\n   - Use the OpenLane-V2 subset A dataset\n   - Include data processing pipelines for training and testing\n   - Configure optimization settings (AdamW optimizer, CosineAnnealing learning rate)\n   - Set up evaluation metrics\n\nThe experiment requires:\n1. Training the ResNet-50 model for 24 epochs\n2. Training the Swin-B model for 48 epochs\n3. Evaluating both models using the bbox metric\n4. Comparing their performance, particularly the Overall Lane Score (OLS)\n\nThe Swin-B model with extended training should show improved performance over the ResNet-50 baseline (OLS score improvement from 38.2 to 43.7).",
+      "masked_source": [
+        "/workspace/tools/dist_train.sh",
+        "/workspace/tools/dist_test.sh",
+        "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+        "/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "mode": "B",
+    "question": "How can we use autocorrelation analysis to identify the optimal cycle length for CycleNet in time series forecasting?",
+    "method": "Create a program that analyzes a time series dataset using autocorrelation function (ACF) to identify periodic patterns, then visualize the results to determine the optimal cycle length parameter for CycleNet.",
+    "expected_outcome": "A plot showing the autocorrelation function of the time series data with clear peaks at lag values corresponding to periodic patterns, and a recommendation for the optimal cycle length to use in CycleNet.",
+    "source": ["/workspace/acf_plot.ipynb"],
+    "usage_instructions": "1. Load a time series dataset (the program should use the ETTh1 dataset as shown in the example)\n2. Preprocess the data using StandardScaler to normalize the values\n3. Calculate the autocorrelation function (ACF) using statsmodels.tsa.stattools.acf\n4. Plot the ACF values against different lag values\n5. Identify peaks in the ACF plot that indicate periodic patterns\n6. Determine the optimal cycle length parameter for CycleNet based on the lag value with the highest autocorrelation\n7. Visualize the results with appropriate labels and annotations"
+  },
+  {
+    "mode": "B",
+    "question": "How can we implement and train a CycleNet model to forecast time series data with periodic patterns?",
+    "method": "Create a program that implements the CycleNet model with its Residual Cycle Forecasting technique, trains it on synthetic time series data with known periodicity, and evaluates its forecasting performance.",
+    "expected_outcome": "A trained CycleNet model that can accurately forecast future values of a time series, along with visualizations showing the historical data, ground truth, predictions, and the learned cyclic patterns.",
+    "source": ["/workspace/models/CycleNet.py", "/workspace/visualization.ipynb"],
+    "usage_instructions": "1. Create a configuration class with parameters for the CycleNet model (sequence length, prediction length, cycle length, etc.)\n2. Generate synthetic time series data with known periodic patterns for training and testing\n3. Implement the CycleNet model using the RecurrentCycle class for modeling periodic patterns\n4. Train the model using an appropriate optimizer and loss function\n5. Plot the training loss to verify the model is learning\n6. Make predictions on test data and compare with ground truth\n7. Visualize the learned recurrent cycle patterns to verify the model has captured the periodicity\n8. Compare the learned cycle with the true underlying cycle pattern"
+  },
+  {
+    "mode": "A",
+    "question": "How can we use CycleNet to forecast electricity consumption with weekly patterns?",
+    "method": "Use the CycleNet framework to forecast electricity consumption data that exhibits weekly periodicity (168 hours), leveraging the model's ability to explicitly model periodic patterns.",
+    "expected_outcome": "A forecast of future electricity consumption values that accurately captures the weekly patterns, along with visualizations of the learned cyclic components.",
+    "source": ["/workspace/scripts/CycleNet/Linear-Input-96/electricity.sh", "/workspace/run.py"],
+    "usage_instructions": "1. Set up the CycleNet model with appropriate parameters for electricity consumption forecasting\n2. Configure the model with a cycle length of 168 (weekly pattern for hourly data)\n3. Load the electricity consumption dataset\n4. Train the CycleNet model using the linear variant as specified in the script\n5. Generate forecasts for future time steps\n6. Evaluate the model performance using metrics like MSE, MAE\n7. Visualize the forecasting results, comparing predictions with actual values\n8. Extract and visualize the learned cyclic components to show how the model captures weekly patterns"
+  }
+]

@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/upsampling_inference.py",
+        "/workspace/scripts/analyze_upsampling.py"
+    ],
+    "usage_instructions": "1. First, run the upsampling inference script to generate upsampled trajectories from subsampled data:\n   ```\n   python upsampling_inference.py --ckpt upsampling.ckpt --data_dir data/4AA_data_implicit --split splits/4AA_implicit_test.csv --batch_size 10 --xtc --out_dir [OUTPUT_DIRECTORY]\n   ```\n   This will generate upsampled trajectories at 100 fs resolution from 10 ps subsampled data.\n\n2. Then, run the analysis script to compute and visualize the autocorrelation functions and dynamic content:\n   ```\n   python -m scripts.analyze_upsampling --mddir data/4AA_sims_implicit --pdbdir [OUTPUT_DIRECTORY] --plot --save\n   ```\n   This script compares three trajectory types: ground truth MD trajectories (100 fs), subsampled trajectories (10 ps), and MDGEN-upsampled trajectories. It calculates autocorrelation functions for torsion angles and visualizes them on a log-timescale from 0.1 ps to 100 ps, allowing direct comparison of oscillatory behavior at sub-ps timescales."
+}

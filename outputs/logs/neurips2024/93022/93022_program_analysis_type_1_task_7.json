@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Load a pre-trained MDGEN model from checkpoint (tps_inference.py:155-156)",
+    "Step 2: Read peptide data from specified directories and split files (tps_inference.py:157-161)",
+    "Step 3: For each peptide, extract features and build a Markov State Model (MSM) from reference MD trajectories (tps_inference.py:92-100)",
+    "Step 4: Identify start and end states by finding the minimum flux between metastable states in the MSM (tps_inference.py:110-118)",
+    "Step 5: Sample starting and ending conformations from the identified states (tps_inference.py:43-80)",
+    "Step 6: Generate transition paths between start and end states using the MDGEN model (tps_inference.py:132)",
+    "Step 7: Save generated transition paths as PDB and XTC files with metadata (tps_inference.py:134-150)",
+    "Step 8: Load the generated transition paths and reference MSM data for analysis (analyze_peptide_tps.py:35-46)",
+    "Step 9: Discretize the generated trajectories using the reference MSM's state definitions (analyze_peptide_tps.py:72-75)",
+    "Step 10: Calculate path likelihood under the reference MSM (analyze_peptide_tps.py:77-81)",
+    "Step 11: Calculate fraction of valid paths (analyze_peptide_tps.py:82)",
+    "Step 12: Calculate Jensen-Shannon Divergence between state distributions of generated paths and reference paths (analyze_peptide_tps.py:83)",
+    "Step 13: Perform the same analysis for replicate MD simulations of various durations for comparison (analyze_peptide_tps.py:86-131)",
+    "Step 14: Save analysis results and optionally generate plots (analyze_peptide_tps.py:165-170)",
+    "Final Step: Aggregate results across all peptides and save the combined output (analyze_peptide_tps.py:186-192)"
+  ],
+  "agent_instructions": "Your task is to implement a system for generating and analyzing transition paths in molecular dynamics simulations. The system consists of two main components:\n\n1. A transition path generator that uses a pre-trained MDGEN model to create paths between conformational states of peptides.\n2. An analysis tool that evaluates the quality of these generated paths compared to reference molecular dynamics simulations.\n\nFor the transition path generator:\n- Load a pre-trained MDGEN model from a checkpoint\n- Process peptide data from specified directories\n- For each peptide, build a Markov State Model (MSM) from reference MD trajectories\n- Identify meaningful start and end states by analyzing the flux between metastable states\n- Generate transition paths between these states using the MDGEN model\n- Save the generated paths in appropriate molecular formats (PDB, XTC) with metadata\n\nFor the analysis tool:\n- Load the generated transition paths and reference MSM data\n- Calculate three key metrics to evaluate path quality:\n  a) Path Likelihood under the reference MSM\n  b) Fraction of Valid Paths\n  c) Jensen-Shannon Divergence (JSD) between visited state distributions\n- Compare the generated paths against MSMs built from replicate MD simulations of various durations (50ns, 30ns, 20ns, 10ns, 5ns, 2ns)\n- Visualize results with plots showing state distributions and transition paths\n- Save analysis results for further processing\n\nThe implementation should use PyEMMA for Markov modeling, MDTraj for trajectory manipulation, and appropriate visualization libraries for plotting results.",
+  "masked_source": [
+    "/workspace/tps_inference.py",
+    "/workspace/scripts/analyze_peptide_tps.py"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with necessary imports for training neural surface reconstruction models (/workspace/scripts/train.py:32-53)",
+    "Step 2: Configure the training process with parameters for the neural surface reconstruction model (/workspace/scripts/train.py:220-234)",
+    "Step 3: Launch the training process with the specified configuration (/workspace/scripts/train.py:236-243)",
+    "Step 4: Train a model with bias correction enabled by setting 'use_unbias_for_laplace=True' in the SDF field configuration (/workspace/nerfstudio/fields/neurodin_field.py:1018-1030)",
+    "Step 5: Train a second model with bias correction disabled by setting 'use_unbias_for_laplace=False' in the SDF field configuration (/workspace/nerfstudio/fields/neurodin_field.py:1018-1030)",
+    "Step 6: Load the trained model checkpoint for mesh extraction (/workspace/zoo/extract_surface.py:18-60)",
+    "Step 7: Set up the SDF function for marching cubes by using the model's field network (/workspace/zoo/extract_surface.py:110)",
+    "Step 8: Extract the mesh using marching cubes algorithm with the specified resolution (/workspace/zoo/extract_surface.py:165-178)",
+    "Step 9: Post-process the mesh by removing degenerate faces (/workspace/zoo/extract_surface.py:182-183)",
+    "Step 10: Save the extracted mesh to the specified output path (/workspace/zoo/extract_surface.py:184)",
+    "Final Step: Repeat the process for different renderers (NeuS, VolSDF, TUVR) to compare the effect of bias correction across various methods (/workspace/zoo/extract_surface.py:63-184)"
+  ],
+  "agent_instructions": "Your task is to implement an experiment to compare the effect of explicit bias correction in SDF-to-density conversion across various neural surface reconstruction renderers. \n\nFirst, you need to implement a training script that can train neural surface reconstruction models with configurable parameters. The script should support training with and without bias correction in the SDF-to-density conversion process. The bias correction involves dividing the SDF value by the dot product of the gradient and the ray direction before applying the density function.\n\nNext, implement a mesh extraction script that can extract surface meshes from trained models using the marching cubes algorithm. The script should load a trained model checkpoint, define an SDF function using the model's neural network, run the marching cubes algorithm at a specified resolution, and save the resulting mesh.\n\nYou should be able to:\n1. Train a model with bias correction enabled\n2. Train a model with bias correction disabled\n3. Extract meshes from both models for comparison\n4. Support different renderers (NeuS, VolSDF, TUVR) with the same bias correction approach\n\nThe key parameter that controls the bias correction should be configurable through the command line when training the models.",
+  "masked_source": [
+    "/workspace/scripts/train.py",
+    "/workspace/zoo/extract_surface.py",
+    "/workspace/zoo/mesh_utils.py",
+    "/workspace/nerfstudio/fields/neurodin_field.py"
+  ]
+}

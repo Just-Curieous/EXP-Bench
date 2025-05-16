@@ -1,0 +1,17 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries for causal discovery, including numpy, SHD calculation, graph utilities, and the GES algorithm (/workspace/tests/TestGES.py:1-9)",
+    "Step 2: Load data from specified paths (linear or discrete datasets) (/workspace/tests/TestGES.py:50-52, 110-112)",
+    "Step 3: Load the ground truth graph from file and convert it to CPDAG format (/workspace/tests/TestGES.py:53-54, 111-112)",
+    "Step 4: Run GES algorithm with standard score function (either 'local_score_BIC' for continuous data or 'local_score_BDeu' for discrete data) (/workspace/tests/TestGES.py:58, 116)",
+    "Step 5: Run GES algorithm with generalized score function (either 'local_score_cv_general' or 'local_score_marginal_general') on the same dataset with appropriate parameters (/workspace/usage_instructions:example)",
+    "Step 6: Calculate the Structural Hamming Distance (SHD) between each recovered graph and the ground truth CPDAG (/workspace/tests/TestGES.py:63, 120, /workspace/causallearn/graph/SHD.py:9-31)",
+    "Step 7: Compare the SHD values from both methods to determine which score function performs better in recovering the causal structure (/workspace/usage_instructions:example)",
+    "Step 8: Print the results of the comparison, including the SHD values and which method performed better (/workspace/usage_instructions:example)"
+  ],
+  "agent_instructions": "Create a test function that compares standard and generalized score functions for causal discovery using the Greedy Equivalence Search (GES) algorithm. The test should:\n\n1. Load a dataset (either continuous or discrete data)\n2. Load the corresponding ground truth graph\n3. Convert the ground truth directed acyclic graph (DAG) to a completed partially directed acyclic graph (CPDAG)\n4. Run GES with a standard score function:\n   - For continuous data: use BIC score\n   - For discrete data: use BDeu score\n5. Run GES with a generalized score function on the same dataset:\n   - For continuous data: use CV general score with appropriate parameters (e.g., k-fold=10, lambda=0.01)\n   - For discrete data: use marginal general score with appropriate parameters\n6. Calculate the Structural Hamming Distance (SHD) between each recovered graph and the ground truth CPDAG\n7. Compare the SHD values to determine which score function performs better in recovering the causal structure\n8. Print the results, including the SHD values and which method performed better\n\nThe Structural Hamming Distance (SHD) measures the number of edge insertions, deletions, or flips needed to transform one graph into another, with lower values indicating better performance.",
+  "masked_source": [
+    "/workspace/tests/TestGES.py",
+    "/workspace/causallearn/graph/SHD.py"
+  ]
+}

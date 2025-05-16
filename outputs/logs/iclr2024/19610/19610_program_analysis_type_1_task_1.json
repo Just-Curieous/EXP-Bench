@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments for configuration file, number of GPUs, and additional parameters (/workspace/tools/dist_train.sh:3-8)",
+    "Step 2: Set up environment variables for distributed training including node count, rank, port, and master address (/workspace/tools/dist_train.sh:5-8)",
+    "Step 3: Launch distributed training using PyTorch's distributed module with the specified number of GPUs and configuration (/workspace/tools/dist_train.sh:10-20)",
+    "Step 4: Parse command line arguments for configuration file, checkpoint path, number of GPUs, and additional parameters (/workspace/tools/dist_test.sh:3-9)",
+    "Step 5: Set up environment variables for distributed testing including node count, rank, port, and master address (/workspace/tools/dist_test.sh:6-9)",
+    "Step 6: Launch distributed testing using PyTorch's distributed module with the specified number of GPUs, configuration, and checkpoint (/workspace/tools/dist_test.sh:11-22)",
+    "Step 7: Define model configuration with ResNet-50 backbone, including feature pyramid network, lane detection head, traffic element head, and topology heads (/workspace/projects/configs/topomlp_setB_r50_wo_yolov8.py:10-192)",
+    "Step 8: Configure data preprocessing pipelines for training and testing (/workspace/projects/configs/topomlp_setB_r50_wo_yolov8.py:194-245)",
+    "Step 9: Set up dataset configuration for OpenLane-V2 subset B with options for YOLOv8 integration (/workspace/projects/configs/topomlp_setB_r50_wo_yolov8.py:247-279)",
+    "Step 10: Configure optimizer, learning rate schedule, and training parameters (/workspace/projects/configs/topomlp_setB_r50_wo_yolov8.py:281-316)",
+    "Final Step: Set up logging, checkpointing, and evaluation metrics for the model (/workspace/projects/configs/topomlp_setB_r50_wo_yolov8.py:298-316)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for training and evaluating the TopoMLP model on the OpenLane-V2 dataset subset B. You need to create:\n\n1. A distributed training script that:\n   - Takes a configuration file path, number of GPUs, and optional parameters as input\n   - Sets up distributed training environment variables (nodes, rank, port, master address)\n   - Launches training using PyTorch's distributed module\n\n2. A distributed testing script that:\n   - Takes a configuration file path, checkpoint path, number of GPUs, and optional parameters as input\n   - Sets up distributed testing environment variables\n   - Launches evaluation using PyTorch's distributed module\n\n3. A configuration file for TopoMLP with ResNet-50 backbone that:\n   - Defines the model architecture with:\n     - ResNet-50 backbone\n     - Feature Pyramid Network (FPN) neck\n     - Lane detection head with transformer architecture\n     - Traffic element detection head with transformer architecture\n     - Topology heads for lane-lane and lane-traffic element relationships\n   - Sets up data preprocessing pipelines for training and testing\n   - Configures the OpenLane-V2 subset B dataset\n   - Specifies optimizer (AdamW), learning rate schedule (CosineAnnealing with warmup)\n   - Defines training parameters (24 epochs)\n   - Includes evaluation metrics (DETl, DETt, TOPll, TOPlt, OLS)\n   - Supports optional YOLOv8 proposals integration\n\nThe configuration should be adaptable to different backbones (like Swin-B or VOV) by modifying the img_backbone section. It should also support enabling YOLOv8 proposals by setting the yolov8_file parameter.",
+  "masked_source": [
+    "/workspace/tools/dist_train.sh",
+    "/workspace/tools/dist_test.sh",
+    "/workspace/projects/configs/topomlp_setB_r50_wo_yolov8.py"
+  ]
+}

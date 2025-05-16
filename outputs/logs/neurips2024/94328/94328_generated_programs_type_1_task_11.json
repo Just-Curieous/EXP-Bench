@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/benchmarks/qlinear_benchmark.py"], 
+    "usage_instructions": "Execute the script with the following command: `python /workspace/benchmarks/qlinear_benchmark.py --layer_type down_proj --bsz 1 --seq_len 2048`. This will benchmark the down-projection linear layers (W_down) in FFN blocks across Llama-2 7B, 13B, and 70B models, comparing FP16, INT4, and INT4+Hadamard performance. The script already includes the required model sizes and will output timing results in milliseconds. Note that by default the script uses 5 warmup steps and 100 benchmark steps - to match the experiment requirements exactly, you may want to modify lines 20-21 to increase to 50-100 warmup steps and 1000 benchmark steps."
+}

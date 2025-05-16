@@ -1,0 +1,9 @@
+{
+    "source": [
+        "/workspace/train.sh",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l14_s1.28B_bs16k.yaml"
+    ],
+    "usage_instructions": "To evaluate how scaling the number of seen samples impacts zero-shot classification and linear probing performance in SuperClass, you need to train models with different numbers of seen samples and then evaluate them. The repository already has configuration files for different sample sizes (512M and 1.28B), but you'll need to create a configuration file for 128M samples by modifying the existing cls_vit_l16_s512m_bs16k.yaml file.\n\n1. Create a new configuration file for 128M samples:\n   - Copy /workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml to /workspace/opencls/configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml\n   - Modify the 'train_num_samples' parameter from 512_000_000 to 128_000_000\n   - Modify the 'train_data' path to include fewer tar files (approximately 1/4 of the original range)\n\n2. Run the training script for each configuration:\n   ```bash\n   # Train with 128M samples\n   bash train.sh configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml opencls\n   \n   # Train with 512M samples\n   bash train.sh configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml opencls\n   \n   # Train with 1.28B samples\n   bash train.sh configs/cls_schedule/cls_vit_l14_s1.28B_bs16k.yaml opencls\n   ```\n\n3. The evaluation is automatically performed during training. The script will report both zero-shot classification accuracy and linear probing accuracy on ImageNet-1K for each model.\n\nNote: Make sure to update the DATA_PATH and VAL_DATA_PATH in train.sh to point to your local paths for Datacomp-1B and ImageNet-1K datasets before running the commands."
+}

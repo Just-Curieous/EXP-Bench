@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Set up the experiment configuration for CycleNet with Linear backbone on ETTh1 dataset, including model name, dataset paths, model type, sequence length, prediction lengths, and random seeds (/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh:1-13)",
+    "Step 2: Run CycleNet with Linear backbone on ETTh1 dataset with appropriate parameters including cycle length of 24 and learning rate of 0.01 (/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh:14-31)",
+    "Step 3: Set up the experiment configuration for CycleNet with Linear backbone on ETTh2 dataset, including model name, dataset paths, model type, sequence length, prediction lengths, and random seeds (/workspace/scripts/CycleNet/Linear-Input-96/etth2.sh:1-12)",
+    "Step 4: Run CycleNet with Linear backbone on ETTh2 dataset with appropriate parameters including cycle length of 24 and learning rate of 0.01 (/workspace/scripts/CycleNet/Linear-Input-96/etth2.sh:13-30)",
+    "Step 5: Set up the experiment configuration for CycleNet with MLP backbone on ETTh1 dataset, including model name, dataset paths, model type, sequence length, prediction lengths, and random seeds (/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh:1-13)",
+    "Step 6: Run CycleNet with MLP backbone on ETTh1 dataset with appropriate parameters including cycle length of 24 and learning rate of 0.005 (/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh:14-31)",
+    "Step 7: Set up the experiment configuration for CycleNet with MLP backbone on ETTh2 dataset, including model name, dataset paths, model type, sequence length, prediction lengths, and random seeds (/workspace/scripts/CycleNet/MLP-Input-96/etth2.sh:1-12)",
+    "Step 8: Run CycleNet with MLP backbone on ETTh2 dataset with appropriate parameters including cycle length of 24 and learning rate of 0.005 (/workspace/scripts/CycleNet/MLP-Input-96/etth2.sh:13-30)",
+    "Step 9: Load the appropriate model based on the model name specified in the configuration (/workspace/exp/exp_main.py:28-49)",
+    "Step 10: Prepare data loaders for training, validation, and testing (/workspace/exp/exp_main.py:51-53)",
+    "Step 11: Train the model with early stopping based on validation loss (/workspace/exp/exp_main.py:115-244)",
+    "Step 12: Test the model and calculate performance metrics (MSE, MAE) (/workspace/exp/exp_main.py:246-348)",
+    "Final Step: Record and save the evaluation results for comparison (/workspace/exp/exp_main.py:335-342)"
+  ],
+  "agent_instructions": "Your task is to create scripts to run time series forecasting experiments comparing CycleNet (with both Linear and MLP backbones) against iTransformer on ETTh1 and ETTh2 datasets. You need to:\n\n1. Create shell scripts to run experiments for:\n   - CycleNet with Linear backbone on ETTh1 and ETTh2\n   - CycleNet with MLP backbone on ETTh1 and ETTh2\n   - iTransformer on ETTh1 and ETTh2\n\n2. Each script should:\n   - Set appropriate model configurations (model name, dataset paths, etc.)\n   - Run experiments with multiple forecast horizons (96, 192, 336, 720)\n   - Use multiple random seeds (2024-2028) for statistical significance\n   - Configure appropriate hyperparameters for each model\n\n3. For CycleNet:\n   - Use a cycle length of 24 (representing daily patterns)\n   - For Linear backbone: use learning rate of 0.01\n   - For MLP backbone: use learning rate of 0.005\n   - Enable RevIN normalization\n\n4. For iTransformer:\n   - Use appropriate transformer configurations (d_model=512, d_ff=512, etc.)\n   - Set e_layers=3 and learning rate of 0.0001\n\n5. All experiments should:\n   - Use a sequence length (input length) of 96\n   - Train for up to 30 epochs with early stopping (patience=5)\n   - Use MSE as the loss function\n   - Evaluate using MSE and MAE metrics\n\nThe goal is to compare the forecasting performance of these models across different prediction horizons on the ETT datasets.",
+  "masked_source": [
+    "/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh",
+    "/workspace/scripts/CycleNet/Linear-Input-96/etth2.sh",
+    "/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh",
+    "/workspace/scripts/CycleNet/MLP-Input-96/etth2.sh",
+    "/workspace/run.py"
+  ]
+}

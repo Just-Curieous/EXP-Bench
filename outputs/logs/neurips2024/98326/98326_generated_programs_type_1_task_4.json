@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/examples/visualize.py"],
+    "usage_instructions": "Execute the script with 'python /workspace/examples/visualize.py'. This will generate two visualization files: 'torchviz_graph.svg' showing the gradient graph from TorchViz and 'torchopt_graph.svg' showing the gradient graph from TorchOpt with fused Adam operations. The script creates a simple neural network, applies the Adam optimizer, and visualizes the computational graph for both TorchViz and TorchOpt, allowing direct comparison of their complexity and interpretability as described in the experiment question."
+}

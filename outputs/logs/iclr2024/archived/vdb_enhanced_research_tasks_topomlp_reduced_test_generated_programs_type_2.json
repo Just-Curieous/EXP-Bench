@@ -1,0 +1,41 @@
+[
+  {
+    "mode": "A",
+    "question": "How does the TopoMLP model perform topology reasoning between lanes and traffic elements using its MLP-based architecture?",
+    "method": "Use the TopoMLP framework to perform lane-traffic topology reasoning on a sample image from the OpenLane-V2 dataset. Analyze how the model uses MLPs to predict relationships between detected lanes and traffic elements.",
+    "expected_outcome": "A visualization or numerical output showing the predicted topology relationships between lanes and traffic elements, along with an explanation of how the MLP-based reasoning works.",
+    "source": [
+      "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+      "/workspace/tools/test.py",
+      "/workspace/tools/dist_test.sh"
+    ],
+    "usage_instructions": "1. Load the TopoMLP model using the provided configuration file.\n2. Run inference on a sample image from the OpenLane-V2 dataset.\n3. Extract the lane detection results (lc_head) and traffic element detection results (te_head).\n4. Analyze how the lane-traffic topology head (lcte_head) processes these detections.\n5. Examine the MLP architecture in the TopoLTHead class that performs the topology reasoning.\n6. Visualize or quantify the predicted relationships between lanes and traffic elements.\n7. Explain how the position embedding and feature concatenation in the MLP contribute to the topology reasoning process."
+  },
+  {
+    "mode": "A",
+    "question": "How does changing the number of control points in the Bezier curve representation affect lane detection performance in TopoMLP?",
+    "method": "Modify the TopoMLP configuration to experiment with different numbers of control points for the Bezier curve representation of lanes, then evaluate the impact on lane detection performance.",
+    "expected_outcome": "Quantitative comparison of lane detection metrics (DET_l) with different numbers of control points, showing the trade-off between representation complexity and detection accuracy.",
+    "source": [
+      "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+      "/workspace/tools/train.py",
+      "/workspace/tools/dist_train.sh",
+      "/workspace/tools/test.py",
+      "/workspace/tools/dist_test.sh"
+    ],
+    "usage_instructions": "1. Examine the default configuration in topomlp_setA_r50_wo_yolov8.py, noting the current n_control parameter value.\n2. Create modified versions of the configuration with different n_control values (e.g., 3, 4, 5).\n3. For each configuration, train the model using the dist_train.sh script with a small number of epochs.\n4. Evaluate each trained model using the dist_test.sh script.\n5. Compare the lane detection performance metrics (DET_l) across the different configurations.\n6. Analyze how the number of control points affects the model's ability to represent complex lane shapes.\n7. Determine the optimal number of control points that balances representation power with computational efficiency."
+  },
+  {
+    "mode": "A",
+    "question": "How does the lane-lane topology reasoning in TopoMLP work, and how can we evaluate its performance?",
+    "method": "Analyze the lane-lane topology reasoning component of TopoMLP and evaluate its performance on predicting connections between lanes.",
+    "expected_outcome": "A detailed analysis of the lane-lane topology prediction mechanism and quantitative evaluation of its performance using the TOP_ll metric.",
+    "source": [
+      "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+      "/workspace/projects/topomlp/models/heads/topo_ll_head.py",
+      "/workspace/tools/test.py",
+      "/workspace/tools/dist_test.sh"
+    ],
+    "usage_instructions": "1. Load a pre-trained TopoMLP model using the provided configuration.\n2. Examine the TopoLLHead implementation to understand how it processes lane features.\n3. Analyze the MLP architecture used for lane-lane topology reasoning.\n4. Run inference on sample images from the OpenLane-V2 dataset.\n5. Extract the lane detection results and the predicted lane-lane topology matrix.\n6. Visualize the predicted connections between lanes.\n7. Calculate the TOP_ll metric to evaluate the performance of the lane-lane topology reasoning.\n8. Analyze how the add_lane_pred parameter affects the topology prediction by comparing results with and without lane position information."
+  }
+]

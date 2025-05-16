@@ -1,0 +1,163 @@
+{
+  "questions": [
+    {
+      "question": "- **Does the proposed HEST pipeline outperform existing single-modality solutions in predicting biomarker expression under comparable configurations?**",
+      "method": "Design an experiment that compares the HEST pipeline to a baseline single\u2010modality solution. The experiment involves training regression models to predict biomarker expression from histology patch embeddings. Two types of regression models (XGBoost and Ridge regression) are used for both pipelines. The HEST pipeline integrates multimodal data (H&E imagery with corresponding spatial transcriptomics) into unified HEST objects, while the baseline uses only the histological image features. Both pipelines are run under comparable configurations using the HEST-1k dataset, which aggregates spatial gene expression and histology data from public repositories.\n Detailed experiment setup: \n\u2022 Dataset: Use the publicly available HEST-1k dataset, which collects spatial transcriptomics data and matching H&E images standardized into HEST objects. \n\u2022 Data Preparation: Extract patch embeddings from the H&E images using foundation models (e.g., DINOv2 ViT variants). For the HEST pipeline, these embeddings are linked with the log1p-normalized expression levels of the top 50 most variable genes. \n\u2022 Models: Train two regression models \u2013 (1) XGBoost with 100 estimators, a learning rate of 0.1, maximum depth 3, 0.8 subsampling, and default gamma, alpha, and lambda settings, and (2) a Ridge regression model with an L2 regularization coefficient set to 100/(M\u00b7C) (with M being the embedding dimension and C = 50 targets). \n\u2022 Experimental Procedure: \n   - For both the HEST pipeline (integrated modality) and the baseline single-modality solution (using only H&E features), train the regression models on the same training folds. \n   - Evaluate using cross-validation (e.g., patient or fold splits) and use the Pearson correlation coefficient between predicted and measured biomarker expression (such as TPD52) as the evaluation metric. \n\u2022 Benchmarking: Refer to HEST-Benchmark experiments where similar setups have been used and compare performance across tasks. Additional details on model configurations and comparisons (e.g., Table A12 and Appendix C.3) provide complementary evidence. Figures such as Figure 38 (which shows a significant correlation between morphological metrics and gene expression, R = 0.47, p < 10e-4) further demonstrate the link between tissue morphology and gene expression.",
+      "expected_outcome": "- The paper\u2019s dedicated sections on HEST for biomarker exploration and multimodal fine-tuning suggest that the proposed solution is expected to outperform traditional, single-modality pipelines.",
+      "experiment_design_complexity": {
+        "constant_variables": {
+          "dataset": "HEST-1k dataset (publicly available and used for both pipelines)",
+          "data_preparation": "Extraction of patch embeddings from H&E images via foundation models (e.g., DINOv2 ViT variants)",
+          "evaluation_metric": "Pearson correlation coefficient between predicted and measured biomarker (e.g., TPD52) expression"
+        },
+        "independent_variables": {
+          "pipeline": [
+            "HEST pipeline (multimodal integration of H&E imagery with spatial transcriptomics data)",
+            "Baseline pipeline (single-modality using only H&E features)"
+          ],
+          "regression_model": [
+            "XGBoost (100 estimators, learning rate 0.1, max depth 3, subsampling 0.8, default gamma/alpha/lambda)",
+            "Ridge Regression (L2 regularization coefficient set as 100/(M*C))"
+          ]
+        },
+        "dependent_variables": {
+          "prediction_performance": "Measured as the Pearson correlation between predicted and observed gene expression"
+        }
+      },
+      "experiment_design_ambiguity": {
+        "ambiguous_variables": {
+          "multimodal_integration_details": "The precise method of combining H&E image features with spatial transcriptomics into unified HEST objects is not fully detailed.",
+          "hyperparameter_tuning_process": "Although default hyperparameters are provided for XGBoost and Ridge regression, the process for parameter selection and potential tuning is not explicitly described.",
+          "foundation_model_variants": "The specific DINOv2 ViT variant(s) to be used for patch embedding extraction (e.g., ViT-Large, ViT-giant, etc.) remain ambiguous."
+        },
+        "possible_modifications": {
+          "modification_1": [
+            "Introduce additional regression models (e.g., neural network-based regressors) as alternative independent variable values."
+          ],
+          "modification_2": [
+            "Provide a detailed hyperparameter tuning protocol to clarify selection criteria and reduce ambiguity in model configuration."
+          ],
+          "modification_3": [
+            "Add more evaluation metrics, such as RMSE or MAE, to complement the Pearson correlation and provide a more comprehensive performance analysis."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "HEST-1k dataset (spatial transcriptomics data paired with H&E images)",
+          "Patch embedding extraction using foundation models (e.g., DINOv2 ViT variants)",
+          "Multimodal integration mechanism (combining H&E image features with spatial transcriptomics data into unified HEST objects)",
+          "Regression models (XGBoost and Ridge Regression) for prediction",
+          "Evaluation framework using cross-validation and Pearson correlation coefficient",
+          "Benchmarking references (HEST-Benchmark experiments, Table A12, Appendix C.3, Figure 38)"
+        ],
+        "setup_steps": [
+          "Obtain the publicly available HEST-1k dataset and prepare data",
+          "Extract patch embeddings from H&E images using a chosen DINOv2 ViT variant",
+          "For the HEST pipeline, integrate the extracted embeddings with the log1p-normalized expression levels for the top 50 highly variable genes",
+          "For the baseline, use only the H&E image features (patch embeddings)",
+          "Train both XGBoost (with 100 estimators, learning rate 0.1, max depth 3, 0.8 subsampling, default gamma/alpha/lambda) and Ridge Regression (with L2 regularization coefficient set as 100/(M\u00b7C)) models on the same training folds",
+          "Perform cross-validation (e.g., using patient or fold splits) to evaluate performance",
+          "Compute the Pearson correlation coefficient between the predicted and measured biomarker expression (e.g., TPD52) for model assessment",
+          "Compare the performance of the multimodal HEST pipeline with the single-modality baseline"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Data Integration",
+            "description": "Integrating two modalities (H&E imagery and spatial transcriptomics) requires careful alignment and preprocessing, which can add complexity."
+          },
+          {
+            "source": "Hyperparameter Settings",
+            "description": "Even though default hyperparameters for XGBoost and Ridge Regression are provided, establishing a robust tuning and validation process could be complex."
+          },
+          {
+            "source": "Cross-Validation Scheme",
+            "description": "Implementing fair patient-level or fold splits with varying sample counts across tissues adds an additional layer of complexity."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Multimodal Integration Details: The exact methodology for combining H&E image features with spatial transcriptomics data into unified HEST objects is not fully detailed.",
+          "Foundation Model Variant Selection: The specific DINOv2 ViT variant to be used (e.g., ViT-Large, ViT-giant, etc.) remains ambiguous."
+        ],
+        "ambiguous_setup_steps": [
+          "Hyperparameter Tuning Process: The protocol and criteria for tuning and validating model hyperparameters are not explicitly described.",
+          "Data Linking Process: The procedure for aligning patch embeddings with the corresponding gene expression data is not detailed."
+        ],
+        "possible_modifications": {
+          "modification_1": [
+            "Introduce additional regression models (e.g., neural network-based regressors) as alternative independent variables to compare."
+          ],
+          "modification_2": [
+            "Provide a detailed hyperparameter tuning protocol to clarify selection criteria and reduce ambiguity in model configuration."
+          ],
+          "modification_3": [
+            "Add more evaluation metrics, such as RMSE or MAE, to complement the Pearson correlation and offer a broader performance assessment."
+          ]
+        }
+      },
+      "experiment_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochasticity in Model Training and Data Splitting",
+          "description": "Variations introduced by the randomness in cross-validation splits, random seed initialization in regression models (including stochastic processes within XGBoost and Ridge Regression), and any non-deterministic operations in the foundation models cause fluctuations in the Pearson correlation scores across experiments. The reported standard deviations (e.g., \u00b10.0174, \u00b10.0516) in the HEST-Benchmark results exemplify these random effects.",
+          "impact": "These stochastic factors lead to unpredictable variations in biomarker prediction performance, making it harder to consistently assess the true advantage of the HEST pipeline over the single\u2010modality baseline.",
+          "possible_modifications": [
+            "Perform experiments using multiple random seeds to better quantify the variance and average out random fluctuations.",
+            "Introduce controlled random noise (e.g., similar to randomly dropping tokens or adding dropout layers) to assess robustness and potentially reduce sensitivity to stochastic training behaviors.",
+            "Increase the number of cross-validation folds to obtain more stable performance estimates."
+          ]
+        },
+        "systematic_uncertainty": {
+          "source": "Data Integration and Preprocessing Bias",
+          "description": "Systematic uncertainty may arise from the inherent biases in integrating multimodal data from the HEST-1k dataset. Ambiguities in the exact method of linking H&E image patch embeddings with spatial transcriptomics data (such as the alignment process and the choice of foundation model variant) can introduce a persistent bias. Additionally, any pre-conditioning of the dataset (e.g., variations in tissue processing across samples) could skew the results consistently in one direction.",
+          "impact": "This bias may lead to consistent over- or under-estimation of biomarker expression predictions, affecting the comparability between the HEST pipeline and the single-modality approach and potentially misrepresenting the efficacy of multimodal integration.",
+          "possible_modifications": [
+            "Retrieve and validate a new, clean copy of the dataset where alignment between modalities is carefully controlled.",
+            "Establish a detailed and standardized hyperparameter tuning protocol and data linking process to reduce integration-related biases.",
+            "Augment the study with additional evaluation metrics (e.g., RMSE, MAE) to complement the Pearson correlation, which may help in diagnosing systematic deviations."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Enforce a constraint wherein the foundation model is restricted to a smaller variant (e.g., a smaller DINOv2 ViT variant) to assess if similar biomarker prediction performance can be maintained under reduced compute resources."
+          ],
+          "time_constraints": [
+            "Reduce the number of cross-validation folds (for example, from 5-fold to 3-fold) to limit training time and expedite iterative experiments."
+          ],
+          "money_constraints": [
+            "Limit compute expenditure by running the experiments solely on in\u2010house GPU resources rather than on higher-cost cloud infrastructures, thereby simulating a budget-constrained scenario."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/src/hest/bench/benchmark.py",
+        "/workspace/src/hest/bench/trainer.py"
+      ],
+      "usage_instructions": "To compare the HEST pipeline (multimodal) with single-modality solutions using XGBoost and Ridge regression:\n\n1. First, modify the bench_config.yaml file to specify:\n   - Set 'method' to either 'ridge' or 'xgboost' to select the regression model\n   - Uncomment the datasets you want to evaluate (e.g., 'IDC', 'PRAD', etc.)\n   - Uncomment the encoders you want to use for feature extraction\n\n2. Run the benchmark script with the modified config:\n   ```\n   python /workspace/src/hest/bench/benchmark.py --config /workspace/bench_config/bench_config.yaml\n   ```\n\n3. To compare multimodal vs. single-modality approaches, run the benchmark twice:\n   - First with the standard HEST pipeline (which integrates H&E imagery with spatial transcriptomics)\n   - Then with only the H&E features (by using only image embeddings without the spatial transcriptomics data)\n\n4. The results will be saved in the directory specified by 'results_dir' in the config file, with Pearson correlation coefficients between predicted and measured biomarker expression as the evaluation metric.",
+      "requirements": [
+        "Step 1: Parse command line arguments and configuration from YAML file, with a priority system where CLI args override kwargs, which override config file values, which override defaults (/workspace/src/hest/bench/benchmark.py:392-427)",
+        "Step 2: Set up the environment by downloading necessary benchmark data and model weights from HuggingFace (/workspace/src/hest/bench/benchmark.py:431-435)",
+        "Step 3: Determine which datasets to use for benchmarking, either from configuration or by listing all available datasets (/workspace/src/hest/bench/benchmark.py:438-446)",
+        "Step 4: Create a directory structure for saving results (/workspace/src/hest/bench/benchmark.py:448-455)",
+        "Step 5: For each dataset and encoder combination, extract embeddings from H&E image tiles using the specified encoder (/workspace/src/hest/bench/benchmark.py:120-147, 245-273)",
+        "Step 6: Load gene expression data from spatial transcriptomics files, matching barcodes with the image embeddings (/workspace/src/hest/bench/benchmark.py:280-304)",
+        "Step 7: Optionally perform dimensionality reduction (PCA) on the embeddings (/workspace/src/hest/bench/benchmark.py:310-315)",
+        "Step 8: Train a regression model (Ridge, XGBoost, or RandomForest) to predict gene expression from image embeddings (/workspace/src/hest/bench/trainer.py:7-57)",
+        "Step 9: Evaluate the model using Pearson correlation between predicted and actual gene expression values (/workspace/src/hest/bench/trainer.py:61-84)",
+        "Step 10: Calculate and aggregate performance metrics across genes and splits (/workspace/src/hest/bench/trainer.py:87-102, /workspace/src/hest/bench/benchmark.py:331-352)",
+        "Step 11: Save results to JSON and CSV files for analysis (/workspace/src/hest/bench/benchmark.py:139-172, 323-327)"
+      ],
+      "agent_instructions": "Create a benchmarking system to compare different regression models (Ridge, XGBoost, RandomForest) for predicting gene expression from histology images. The system should:\n\n1. Accept configuration via command line arguments or a YAML file, with parameters for datasets, encoders, regression method, and other settings.\n\n2. Download necessary benchmark data and model weights automatically.\n\n3. For each dataset and encoder combination:\n   - Extract embeddings from H&E image tiles using the specified encoder\n   - Load gene expression data from spatial transcriptomics files\n   - Match the spatial transcriptomics data with the image embeddings using barcodes\n   - Optionally perform dimensionality reduction (PCA) on the embeddings\n   - Train a regression model to predict gene expression from image embeddings\n   - Evaluate using Pearson correlation between predicted and actual gene expression\n\n4. Support k-fold cross-validation by running predictions on multiple train/test splits.\n\n5. Aggregate results across genes and splits, calculating mean and standard deviation of Pearson correlations.\n\n6. Save comprehensive results to JSON and CSV files for analysis.\n\nThe system should support comparing multimodal approaches (using both H&E imagery and spatial transcriptomics) with single-modality approaches (using only H&E features).",
+      "masked_source": [
+        "/workspace/src/hest/bench/benchmark.py",
+        "/workspace/src/hest/bench/trainer.py"
+      ]
+    }
+  ]
+}

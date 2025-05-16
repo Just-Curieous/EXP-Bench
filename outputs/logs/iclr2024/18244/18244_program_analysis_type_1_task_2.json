@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Create necessary log directories if they don't exist (/workspace/scripts/PDF/336/etth2.sh:1-7, /workspace/scripts/PDF/720/etth2.sh:1-7)",
+    "Step 2: Define model configuration variables including model name, dataset paths, and sequence length (/workspace/scripts/PDF/336/etth2.sh:9-15, /workspace/scripts/PDF/720/etth2.sh:9-15)",
+    "Step 3: Set up a loop to iterate through different prediction lengths (96, 192, 336, 720) (/workspace/scripts/PDF/336/etth2.sh:17, /workspace/scripts/PDF/720/etth2.sh:17)",
+    "Step 4: For each prediction length, run the PDF model training with appropriate parameters (/workspace/scripts/PDF/336/etth2.sh:19-44, /workspace/scripts/PDF/720/etth2.sh:19-44)",
+    "Step 5: Configure model architecture parameters (encoder layers, attention heads, model dimension) (/workspace/scripts/PDF/336/etth2.sh:30-33, /workspace/scripts/PDF/720/etth2.sh:30-33)",
+    "Step 6: Set appropriate hyperparameters for each look-back window configuration (/workspace/scripts/PDF/336/etth2.sh:34-40, /workspace/scripts/PDF/720/etth2.sh:34-40)",
+    "Step 7: Configure training parameters (epochs, patience, batch size, learning rate) (/workspace/scripts/PDF/336/etth2.sh:41-44, /workspace/scripts/PDF/720/etth2.sh:41-44)",
+    "Step 8: Save training logs to appropriate log files (/workspace/scripts/PDF/336/etth2.sh:44, /workspace/scripts/PDF/720/etth2.sh:44)",
+    "Final Step: Compare the MSE and MAE metrics from both runs to evaluate if the longer look-back window (720) performs better than the shorter one (336) across all prediction horizons (/workspace/exp/exp_main.py:307-314)"
+  ],
+  "agent_instructions": "Create two shell scripts to compare the performance of PDF (Periodic-Decomposition-based Forecasting) models with different look-back windows (336 vs 720) on the ETTh2 dataset.\n\nThe scripts should:\n\n1. Create necessary log directories if they don't exist\n2. Train the PDF model on the ETTh2 dataset using the run_longExp.py script\n3. Test the model on four different prediction horizons: 96, 192, 336, and 720 time steps\n4. Configure the model with the following parameters:\n   - For the 336 look-back window script:\n     * Use sequence length (look-back window) of 336\n     * Set appropriate hyperparameters for this window size\n   - For the 720 look-back window script:\n     * Use sequence length (look-back window) of 720\n     * Set appropriate hyperparameters for this window size\n5. Both scripts should use the same core model architecture:\n   - 3 encoder layers\n   - 4 attention heads\n   - Model dimension of 16\n   - Multivariate forecasting (features=M)\n   - Input channels (enc_in) of 7\n6. Save the training logs to appropriate files\n\nAfter running both scripts, the results will be available in:\n- Trained models: ./checkpoints/\n- Visualization outputs: ./test_results/\n- Numerical results: ./results/\n- Summary metrics: ./result.txt\n\nThe goal is to compare if the PDF model with a longer look-back window (720) consistently achieves lower error rates compared to the shorter look-back window (336) across all prediction horizons.",
+  "masked_source": [
+    "/workspace/scripts/PDF/336/etth2.sh",
+    "/workspace/scripts/PDF/720/etth2.sh"
+  ]
+}

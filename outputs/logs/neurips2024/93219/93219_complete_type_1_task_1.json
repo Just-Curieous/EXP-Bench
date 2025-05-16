@@ -1,0 +1,29 @@
+{
+  "questions": [
+    {
+      "question": "In the context of the Hawk project for understanding open-world video anomalies, does enforcing video-motion consistency constraints lead to better alignment between motion cues and generated textual descriptions of anomalies?",
+      "method": "Using the anomaly video data provided in the Hawk dataset (available via Huggingface), set up an experiment where the proposed model is evaluated with and without the video-motion consistency module. Train two versions: one with the video-motion consistency module enabled and one with it removed, ensuring that both models use the same training and testing splits from the Hawk dataset. Evaluate both models on video description generation and question-answering tasks, and assess the outputs using Text-Level metrics (BLEU-1 to BLEU-4) along with GPT-Guided metrics (Reasonability, Detail, Consistency).",
+      "expected_outcome": "The model without video-motion consistency constraints is expected to show a drop in performance (lower BLEU and GPT-guided scores) compared to the baseline full model. This would demonstrate that aligning motion information with language significantly contributes to the precision and coherence of the generated anomaly-related text.",
+      "subsection_source": "5 Experiments",
+      "source": [
+        "/workspace/train.py",
+        "/workspace/configs/train_configs/stage2_finetune.yaml"
+      ],
+      "usage_instructions": "To run the experiment comparing models with and without video-motion consistency constraints:\n\n1. First, create a modified version of the stage2_finetune.yaml config file that disables the video-motion consistency module by adding the following parameter:\n   ```yaml\n   model:\n     # Add this line to disable motion consistency\n     disable_motion_branch: True\n   ```\n\n2. Train the baseline model (with video-motion consistency) using:\n   ```\n   NCCL_P2P_DISABLE=1 CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node=4 --master_port='12001' train.py --cfg-path ./configs/train_configs/stage2_finetune.yaml\n   ```\n\n3. Train the ablated model (without video-motion consistency) using the modified config:\n   ```\n   NCCL_P2P_DISABLE=1 CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node=4 --master_port='12001' train.py --cfg-path ./configs/train_configs/stage2_finetune_no_motion.yaml\n   ```\n\n4. Evaluate both models on the Hawk dataset using the standard metrics (BLEU-1 to BLEU-4 and GPT-guided metrics) to compare their performance on video description generation and question-answering tasks.\n\nNote: The Hawk model architecture includes parallel processing paths for both regular video frames and motion frames. The video-motion consistency module is implemented through the motion branch that processes motion frames separately and combines them with regular frame features. Disabling this branch would allow measuring its impact on the model's ability to generate accurate textual descriptions of anomalies.",
+      "requirements": [
+        "Step 1: Add a 'disable_motion_branch' parameter to the model configuration in the from_config method (/workspace/hawk/models/video_llama.py:780-842)",
+        "Step 2: Modify the forward method to check for the disable_motion_branch parameter and skip motion processing when it's enabled (/workspace/hawk/models/video_llama.py:608-777)",
+        "Step 3: Modify the loss calculation in base_task.py to skip the motion consistency loss when motion branch is disabled (/workspace/hawk/tasks/base_task.py:244-250)",
+        "Step 4: Create a modified config file that disables the motion branch by setting disable_motion_branch to True (/workspace/configs/train_configs/stage2_finetune.yaml:1-84)",
+        "Step 5: Train the model with the original config to get the baseline model with video-motion consistency (/workspace/train.py:87-115)",
+        "Step 6: Train the model with the modified config to get the ablated model without video-motion consistency (/workspace/train.py:87-115)",
+        "Step 7: Evaluate both models on the Hawk dataset using standard metrics (BLEU-1 to BLEU-4 and GPT-guided metrics) (/workspace/train.py:87-115)"
+      ],
+      "agent_instructions": "Your task is to implement a feature that allows disabling the video-motion consistency module in the Hawk model architecture. The Hawk model processes both regular video frames and motion frames in parallel branches, and combines them with a consistency constraint. You need to:\n\n1. Examine the model architecture to understand how the motion branch works\n2. Add a configuration parameter called 'disable_motion_branch' to the model\n3. Modify the model's forward method to skip motion processing when this parameter is enabled\n4. Modify the loss calculation to exclude the motion consistency loss when the motion branch is disabled\n5. Create a modified configuration file that disables the motion branch\n6. Set up training commands for both the baseline model (with motion consistency) and the ablated model (without motion consistency)\n7. Prepare for evaluation of both models on the Hawk dataset using standard metrics (BLEU-1 to BLEU-4 and GPT-guided metrics)\n\nThis will allow comparing the performance of the model with and without the video-motion consistency constraint to measure its impact on the model's ability to generate accurate textual descriptions of anomalies.",
+      "masked_source": [
+        "/workspace/train.py",
+        "/workspace/configs/train_configs/stage2_finetune.yaml"
+      ]
+    }
+  ]
+}

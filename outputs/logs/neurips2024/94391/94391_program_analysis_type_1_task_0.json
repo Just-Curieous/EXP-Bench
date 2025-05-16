@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment and prepare the ETTh1.csv and ETTh2.csv datasets in the ./dataset/ directory (/workspace/run_comparison.sh:1-2)",
+    "Step 2: Define the RecurrentCycle module that captures and models cyclic patterns in time series data (/workspace/models/CycleNet.py:4-18)",
+    "Step 3: Implement the CycleNet model with both Linear and MLP backbones that uses the RecurrentCycle module to remove and add back cyclic patterns (/workspace/models/CycleNet.py:21-67)",
+    "Step 4: Implement the CycleiTransformer model that integrates the RecurrentCycle module with an inverted Transformer architecture (/workspace/models/CycleiTransformer.py:10-97)",
+    "Step 5: Load and preprocess the ETTh1 and ETTh2 datasets with appropriate train/validation/test splits (/workspace/data_provider/data_loader.py:14-99)",
+    "Step 6: Train the CycleNet model with Linear backbone on ETTh1 and ETTh2 datasets with forecast horizons of 96, 192, 336, and 720 (/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh:1-32, /workspace/scripts/CycleNet/Linear-Input-96/etth2.sh:1-31)",
+    "Step 7: Train the CycleNet model with MLP backbone on ETTh1 and ETTh2 datasets with the same forecast horizons (/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh:1-32, /workspace/scripts/CycleNet/MLP-Input-96/etth2.sh:1-31)",
+    "Step 8: Train the iTransformer model on ETTh1 and ETTh2 datasets with the same forecast horizons (/workspace/scripts/iTransformer/etth1.sh:1-34, /workspace/scripts/iTransformer/etth2.sh:1-34)",
+    "Step 9: Evaluate all models using MSE and MAE metrics and compare their performance (/workspace/exp/exp_main.py:335-342)",
+    "Final Step: Run the comparison script to execute all model training and evaluation in sequence (/workspace/run_comparison.sh:3-16)"
+  ],
+  "agent_instructions": "Your task is to implement a time series forecasting experiment that compares CycleNet (with both Linear and MLP backbones) against iTransformer on the ETTh1 and ETTh2 datasets. The experiment focuses on evaluating the effectiveness of the Recurrent Cyclic Features (RCF) technique.\n\n1. First, ensure you have the ETTh1.csv and ETTh2.csv datasets in a ./dataset/ directory.\n\n2. Implement the RecurrentCycle module that captures cyclic patterns in time series data:\n   - Create a module that stores learnable parameters representing cyclic patterns\n   - Implement a forward method that can extract the appropriate cycle data for any given time index\n\n3. Implement the CycleNet model with two backbone options:\n   - Linear backbone: a simple linear layer that maps from input sequence to prediction sequence\n   - MLP backbone: a multi-layer perceptron with one hidden layer and ReLU activation\n   - Both should incorporate the RecurrentCycle module to:\n     a) Remove cyclic patterns from input data\n     b) Process the residual signal with the backbone\n     c) Add back the appropriate cyclic patterns to the output\n\n4. Implement the CycleiTransformer model:\n   - Based on an inverted Transformer architecture where features are treated as tokens\n   - Integrate the RecurrentCycle module to handle cyclic patterns similar to CycleNet\n\n5. Create a training and evaluation pipeline that:\n   - Loads and preprocesses the ETTh1 and ETTh2 datasets\n   - Splits data into training, validation, and test sets\n   - Trains each model (CycleNet-Linear, CycleNet-MLP, CycleiTransformer)\n   - Tests on multiple forecast horizons (96, 192, 336, 720)\n   - Evaluates using MSE and MAE metrics\n\n6. Create a script that runs all experiments sequentially and reports the results.\n\nThe goal is to demonstrate whether the Recurrent Cyclic Features technique in CycleNet improves forecasting performance compared to the iTransformer baseline across different prediction horizons.",
+  "masked_source": [
+    "/workspace/run_comparison.sh",
+    "/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh",
+    "/workspace/scripts/CycleNet/Linear-Input-96/etth2.sh",
+    "/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh",
+    "/workspace/scripts/CycleNet/MLP-Input-96/etth2.sh",
+    "/workspace/scripts/iTransformer/etth1.sh",
+    "/workspace/scripts/iTransformer/etth2.sh"
+  ]
+}

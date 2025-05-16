@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/scripts/train_regionclip_coco_eva_vitb16.sh",
+        "/workspace/scripts/train_clipself_coco_region_proposals_eva_vitb16.sh",
+        "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh"
+    ],
+    "usage_instructions": "1. First, train the RegionCLIP model (region-text supervision) using: bash scripts/train_regionclip_coco_eva_vitb16.sh\n2. Then, train the CLIPSelf model (self-distillation method) using: bash scripts/train_clipself_coco_region_proposals_eva_vitb16.sh\n3. Evaluate both models using the test script with their respective checkpoints: bash scripts/test_eva_vitb16_macc_boxes_masks.sh regionclip_test checkpoints/eva_vitb16_coco_regionclip.pt and bash scripts/test_eva_vitb16_macc_boxes_masks.sh clipself_test checkpoints/eva_vitb16_coco_clipself_proposals.pt\n4. Compare the Top1/Top5 accuracy metrics for Boxes, Thing Masks, and Stuff Masks between the two models"
+}

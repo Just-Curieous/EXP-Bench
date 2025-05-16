@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Set up the necessary imports (libraries for data processing, model loading, and evaluation metrics) (/workspace/run_repobench_r.py:1-15)",
+    "Step 2: Define functions to load and preprocess the RepoBench-R dataset for retrieval tasks (/workspace/run_repobench_r.py:16-50)",
+    "Step 3: Implement lexical similarity methods (Jaccard and edit distance) for code retrieval (/workspace/run_repobench_r.py:51-90)",
+    "Step 4: Implement semantic similarity method using transformer models to generate embeddings for code snippets (/workspace/run_repobench_r.py:91-130)",
+    "Step 5: Create a function to compute similarity scores between query code and candidate code snippets (/workspace/run_repobench_r.py:131-160)",
+    "Step 6: Implement the main retrieval function that ranks candidate code snippets based on similarity to the query (/workspace/run_repobench_r.py:161-200)",
+    "Step 7: Process command line arguments and set up experiment configuration (/workspace/run_repobench_r.py:201-230)",
+    "Step 8: Run the retrieval experiment and save results to output directory (/workspace/run_repobench_r.py:231-270)",
+    "Step 9: Define evaluation metrics for retrieval tasks (acc@1, acc@3, acc@5) (/workspace/evaluate_retrieval.py:1-30)",
+    "Step 10: Load retrieval results from the specified directory (/workspace/evaluate_retrieval.py:31-50)",
+    "Step 11: Calculate and report retrieval accuracy metrics for both Python and Java across Easy and Hard subsets (/workspace/evaluate_retrieval.py:51-80)",
+    "Step 12: Process command line arguments and execute the evaluation (/workspace/evaluate_retrieval.py:81-100)"
+  ],
+  "agent_instructions": "Create two Python scripts for a code retrieval experiment using the RepoBench-R dataset:\n\n1. First script should implement a code retrieval system that:\n   - Takes command line arguments for language (python/java), similarity method (jaccard/edit/cosine), number of lines to keep, and model name (for semantic methods)\n   - Supports both lexical similarity methods (Jaccard and edit distance) and semantic similarity using transformer models\n   - Processes the RepoBench-R dataset for both Python and Java code\n   - Ranks candidate code snippets based on similarity to query code\n   - Saves retrieval results to an output directory\n\n2. Second script should evaluate retrieval results by:\n   - Loading results from a specified directory\n   - Calculating retrieval accuracy metrics (acc@1, acc@3, acc@5)\n   - Reporting results for both Python and Java across Easy and Hard subsets\n\nThe scripts should work together to enable comparing retrieval accuracies between Python and Java code using various retrieval methods.",
+  "masked_source": [
+    "/workspace/run_repobench_r.py",
+    "/workspace/evaluate_retrieval.py"
+  ]
+}

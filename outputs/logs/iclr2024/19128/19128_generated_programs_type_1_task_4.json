@@ -1,0 +1,3 @@
+{
+    "no_answer": "After thoroughly examining the repository, I could not find any scripts or code that specifically evaluate ODISE or ODISE+CLIPSelf on the ADE20K dataset with the metrics mentioned in the question (PQ, mAP, and mIoU). The repository appears to be focused on the CLIPSelf method and its evaluation on COCO and LVIS datasets, but not on ADE20K. The test scripts in the repository are designed to evaluate on COCO panoptic segmentation, and there's no evidence of ADE20K evaluation or comparison between ODISE and ODISE+CLIPSelf as requested in the experiment question."
+}

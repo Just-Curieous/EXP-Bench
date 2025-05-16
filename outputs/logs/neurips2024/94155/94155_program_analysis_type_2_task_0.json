@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries for point cloud processing, visualization, and deep learning (tools/demo.py:1-20)",
+    "Step 2: Create a dataset class that can load point cloud data from .bin or .npy files (tools/demo.py:23-60)",
+    "Step 3: Parse command line arguments including config file path, data path, checkpoint path, and file extension (tools/demo.py:63-76)",
+    "Step 4: Initialize the dataset with the provided point cloud files (tools/demo.py:83-86)",
+    "Step 5: Build the 3D object detection network based on the configuration (tools/demo.py:89)",
+    "Step 6: Load pre-trained model parameters from the checkpoint file (tools/demo.py:90)",
+    "Step 7: Move the model to GPU and set it to evaluation mode (tools/demo.py:91-92)",
+    "Step 8: Process each point cloud sample through the model to get detection predictions (tools/demo.py:93-98)",
+    "Step 9: Visualize the detection results with 3D bounding boxes showing predicted objects, their confidence scores, and class labels (tools/demo.py:100-106)",
+    "Final Step: Display completion message when all samples are processed (tools/demo.py:108)"
+  ],
+  "agent_instructions": "Create a script that demonstrates 3D object detection using a pre-trained Voxel Mamba model on point cloud data. The script should:\n\n1. Accept command line arguments for:\n   - Configuration file path (--cfg_file)\n   - Path to point cloud data file or directory (--data_path)\n   - Pre-trained model checkpoint path (--ckpt)\n   - Point cloud file extension (--ext, either .bin or .npy)\n\n2. Load and process point cloud data:\n   - Support both .bin and .npy file formats\n   - Handle either a single file or a directory of files\n\n3. Set up the model:\n   - Load the configuration from the specified YAML file\n   - Build the network according to the configuration\n   - Load the pre-trained weights from the checkpoint\n   - Prepare the model for inference (move to GPU, set to evaluation mode)\n\n4. Run inference:\n   - Process each point cloud sample through the model\n   - Extract predicted bounding boxes, confidence scores, and class labels\n\n5. Visualize results:\n   - Display the point cloud data\n   - Draw 3D bounding boxes around detected objects\n   - Show confidence scores and class labels for each detection\n   - Support visualization using either Open3D or Mayavi\n\nThe script should be designed to work with the existing project structure and follow the same pattern as other tools in the repository. It should provide informative logging about the process and handle potential errors gracefully."
+}

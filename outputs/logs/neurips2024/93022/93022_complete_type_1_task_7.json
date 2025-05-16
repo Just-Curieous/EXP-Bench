@@ -1,0 +1,153 @@
+{
+  "questions": [
+    {
+      "question": "Does the MDGEN model generate transition paths that are statistically more consistent with the reference MSM than transition paths sampled from replicate MD-derived MSMs of shorter durations?",
+      "method": "#### Problem Setup\n\nEvaluate MDGEN\u2019s ability to zero-shot sample accurate transition trajectories between metastable states in tetrapeptides, comparing against MSMs built from shorter MD simulations.\n\n#### Independent Variables\n\n- **Trajectory Source**:\n  - MDGEN model (1 ns trajectory conditioned on first and last frame)\n  - MSMs built from replicate MD simulations of various durations: 50 ns, 30 ns, 20 ns, 10 ns\n\n#### Dependent Variables (Evaluation Metrics)\n\n1. **Path Likelihood** under the reference MSM (average transition probability between start/end states)\n2. **Fraction of Valid Paths** (non-zero probability under the reference MSM)\n3. **Jensen-Shannon Divergence (JSD)** between visited state distributions and the reference MSM\n\n#### Experiment Components and Setup\n\n- **Reference MSM**: Constructed from a 100 ns MD trajectory and defines 10 metastable states. This is used for state discretization, computing flux and path likelihood\n\n- **Trajectory Generation**:\n\n  1. For each of 100 test peptides, identify the two most well-separated metastable states (lowest flux pair).\n  2. Using MDGEN, generate 1 ns transition trajectories (100 frames), conditioned on the initial and final frames.\n  3. Generate an ensemble of 1000 paths per peptide.\n\n- **Trajectory Discretization**:\n\n  - Discretize each generated path into the 10 reference MSM states\n\n- **Evaluation Metrics**:\n\n  - **Path Likelihood** under the reference MSM\n  - **Fraction of Valid Paths** (paths with non-zero start/end visitation probability)\n  - **JSD** between categorical state visitation histograms of MDGEN vs. reference\n\n- **Baseline Comparison**:\n\n  - Repeat full pipeline using MSMs trained on replicate MD trajectories with varying durations (10\u201350 ns)\n\n  - Metrics averaged over all 100 test peptides and 1000 transition paths per peptide\n  - Reference Figure 3 for visual analysis, Tables 2 and 4 for runtime comparisons",
+      "expected_outcome": "MDGEN-generated paths are expected to achieve higher average likelihoods, exhibit a greater fraction of valid paths and show lower JSD values compared to MSMs from shorter simulations. These results confirm MDGEN\u2019s ability to accurately model rare, long-timescale transitions with only endpoint conditioning\u2014demonstrating zero-shot generalization in peptide dynamics.",
+      "design_complexity": {
+        "constant_variables": {
+          "Reference MSM": "Constructed from a 100 ns MD trajectory defining 10 metastable states",
+          "Trajectory Generation Setup": "Fixed settings include 100 test peptides, generation of 1 ns trajectories with 100 frames, and an ensemble of 1000 paths per peptide"
+        },
+        "independent_variables": {
+          "Trajectory Source": [
+            "MDGEN model (1 ns trajectory conditioned on first and last frame)",
+            "MSMs built from replicate MD simulations: 10 ns, 20 ns, 30 ns, and 50 ns durations"
+          ]
+        },
+        "dependent_variables": {
+          "Evaluation Metrics": [
+            "Path Likelihood under the reference MSM (average transition probability between start/end states)",
+            "Fraction of Valid Paths (paths with non-zero start/end visitation probability)",
+            "Jensen-Shannon Divergence (JSD) between the state visitation distributions"
+          ]
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "Trajectory Source": "It is not fully explicit how the replicate MD-derived MSMs are constructed (e.g., details on sampling methods, random seeds, or variance between replicates) beyond just the simulation duration",
+          "Evaluation Metrics": "The computation details for metrics like Path Likelihood and JSD (handling of zero probabilities, normalization, etc.) are not completely specified",
+          "Metastable State Selection": "The criteria for identifying the 'two most well-separated metastable states (lowest flux pair)' is mentioned but not fully elaborated"
+        },
+        "possible_modifications": {
+          "New Independent Variable": [
+            "Include variations in additional simulation parameters (e.g., random seed, temperature settings, or different discretization methods)"
+          ],
+          "Mask Existing Variable": [
+            "Omit explicit durations for replicate MD simulations to test if the method generalizes across a broader range of conditions"
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Reference MSM (constructed from a 100 ns MD trajectory defining 10 metastable states)",
+          "Trajectory Generation using MDGEN (generating 1 ns, 100-frame trajectories conditioned on endpoints)",
+          "Trajectory Discretization (mapping generated trajectories into 10 metastable states)",
+          "Evaluation Metrics (Path Likelihood, Fraction of Valid Paths, Jensen-Shannon Divergence)",
+          "Baseline Comparison (MSMs built from replicate MD simulations of 10 ns, 20 ns, 30 ns, and 50 ns durations)"
+        ],
+        "setup_steps": [
+          "Identify two most well-separated metastable states (lowest flux pair) for each of the 100 test peptides using the reference MSM",
+          "Generate an ensemble of 1000 transition paths per peptide using MDGEN conditioned on the chosen start and end states",
+          "Discretize each generated trajectory into the 10 reference MSM states",
+          "Compute the evaluation metrics on the discretized trajectories: calculate average transition probability (Path Likelihood), determine the Fraction of Valid Paths, and evaluate the Jensen-Shannon Divergence (JSD) between the state visitation distributions",
+          "Repeat the full pipeline using MSMs built from replicate MD simulations of varying durations for baseline comparison"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Baseline MSM Construction",
+            "description": "Constructing MSMs from replicate MD simulations with different durations introduces additional layers of complexity in ensuring consistency and accounting for sampling variations."
+          },
+          {
+            "source": "Evaluation Metrics Computation",
+            "description": "Multiple interdependent metrics (Path Likelihood, Valid Path Fraction, JSD) require coordinated discretization and probability computations that add complexity to the experimental setup."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Trajectory Source: The method for constructing replicate MD-derived MSMs lacks detail regarding sampling methods, random seed usage, and expected variability between replicates.",
+          "Evaluation Metrics: The specific computation details for metrics like Path Likelihood and JSD (e.g., handling of zero probabilities, normalization procedures) are not fully specified.",
+          "Metastable State Selection: The criteria for identifying the 'two most well-separated metastable states (lowest flux pair)' is mentioned but not elaborated upon in depth."
+        ],
+        "ambiguous_setup_steps": [
+          "The procedure for training or constructing MSMs from replicate MD simulations is unclear, particularly in how the sampling and replication are managed.",
+          "Steps involved in the precise computation and normalization for evaluation metrics (especially for JSD) lack explicit instructions."
+        ],
+        "possible_modifications": {
+          "mask_existing_instructions": [
+            "Omit the explicit durations for replicate MD simulations in the baseline comparison to see if the method generalizes across a broader range of conditions.",
+            "Mask detailed instructions on the metastable state selection criteria, requiring users to infer or design their own selection method."
+          ],
+          "imply_need_for_new_setup_steps": [
+            "Introduce explicit guidelines for handling and normalizing zero probabilities in metric computations.",
+            "Add a step to standardize the construction of replicate MD-derived MSMs, for example by specifying the use of a fixed random seed or outlining a uniform sampling strategy."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Constrain the simulation resources by, for example, running the MD simulations and MDGEN trajectory generation on a lower-tier GPU (e.g., using an NVIDIA T4 instead of the A6000/A100) to assess robustness under limited hardware availability."
+          ],
+          "time_constraints": [
+            "Tighten the simulation durations for the baseline MSMs by, for instance, capping the replicate MD runs at shorter durations than originally specified, or reducing the number of generated transition paths per peptide to simulate a fixed compute time budget."
+          ],
+          "money_constraints": [
+            "Impose a cost constraint by restricting the experiments to cheaper compute environments, which may involve using cloud instances with lower operating costs or reducing the overall number of MD replicates to balance the budget."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Stochastic trajectory generation and replicate MD simulations",
+        "description": "The process of generating 1 ns trajectories using MDGEN and building MSMs from replicate MD simulations introduces inherent randomness. Uncertainties arise from unspecific random seed usage, stochastic subsampling (e.g., selecting 100 frames from a 1 ns trajectory), and variability in the construction of replicate MSMs. These contribute to random fluctuations in evaluation metrics such as path likelihood, fraction of valid paths, and JSD.",
+        "impact": "This random uncertainty may lead to variations in the computed performance metrics, potentially masking the true performance differences between MDGEN-generated paths and MSM-derived paths. Inconsistent outcomes across runs could result in misleading conclusions about the model\u2019s effectiveness.",
+        "possible_modifications": [
+          "Control and fix random seeds in both the MDGEN trajectory generation and replicate MSM construction to reduce random variability.",
+          "Increase the sample size (number of transition paths per peptide) to average out stochastic noise.",
+          "Introduce controlled variations (e.g., injecting noise in a systematic way) to quantify the impact of random uncertainty on the evaluation metrics."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Bias in metastable state selection and trajectory discretization",
+        "description": "The criteria for selecting the 'two most well-separated metastable states (lowest flux pair)' and the subsequent discretization of trajectories into 10 reference MSM states can introduce systematic uncertainty. Ambiguities in how replicate MD-derived MSMs are constructed, as well as unspecified details in the computation of evaluation metrics (e.g., handling of zero probabilities and normalization for JSD), may result in inherent biases.",
+        "impact": "This systematic uncertainty can consistently skew the evaluation outcomes, leading to biased comparisons between MDGEN and baseline MSM trajectories. Such biases may over- or underestimate the statistical consistency of the generated paths relative to the reference MSM.",
+        "possible_modifications": [
+          "Standardize the metastable state selection process, for example by defining explicit criteria or thresholds, to reduce bias.",
+          "Clarify and standardize the discretization and normalization procedures (including how zero probabilities are handled) to ensure unbiased metric computation.",
+          "Consider testing alternative or additional discretization methods and comparison datasets to assess the robustness of the conclusions."
+        ]
+      },
+      "source": [
+        "/workspace/tps_inference.py",
+        "/workspace/scripts/analyze_peptide_tps.py"
+      ],
+      "usage_instructions": "1. First, generate transition paths using MDGEN by running: `python tps_inference.py --sim_ckpt interpolation.ckpt --data_dir data/4AA_sims --split splits/4AA_test.csv --num_frames 100 --suffix _i100 --mddir data/4AA_sims --out_dir /path/to/output/directory`\n\n2. Then, analyze the generated paths and compare with MSMs from shorter MD simulations by running: `python -m scripts.analyze_peptide_tps --mddir data/4AA_sims --repdir data/4AA_sims_replica --pdbdir /path/to/output/directory --outdir /path/to/analysis/results --plot --save --num_workers 1`\n\nThe analysis script will compute the three key metrics mentioned in the question: Path Likelihood under the reference MSM, Fraction of Valid Paths, and Jensen-Shannon Divergence (JSD) between visited state distributions. It compares MDGEN's performance against MSMs built from replicate MD simulations of various durations (50ns, 30ns, 20ns, 10ns, 5ns, 2ns).",
+      "requirements": [
+        "Step 1: Load a pre-trained MDGEN model from checkpoint (tps_inference.py:155-156)",
+        "Step 2: Read peptide data from specified directories and split files (tps_inference.py:157-161)",
+        "Step 3: For each peptide, extract features and build a Markov State Model (MSM) from reference MD trajectories (tps_inference.py:92-100)",
+        "Step 4: Identify start and end states by finding the minimum flux between metastable states in the MSM (tps_inference.py:110-118)",
+        "Step 5: Sample starting and ending conformations from the identified states (tps_inference.py:43-80)",
+        "Step 6: Generate transition paths between start and end states using the MDGEN model (tps_inference.py:132)",
+        "Step 7: Save generated transition paths as PDB and XTC files with metadata (tps_inference.py:134-150)",
+        "Step 8: Load the generated transition paths and reference MSM data for analysis (analyze_peptide_tps.py:35-46)",
+        "Step 9: Discretize the generated trajectories using the reference MSM's state definitions (analyze_peptide_tps.py:72-75)",
+        "Step 10: Calculate path likelihood under the reference MSM (analyze_peptide_tps.py:77-81)",
+        "Step 11: Calculate fraction of valid paths (analyze_peptide_tps.py:82)",
+        "Step 12: Calculate Jensen-Shannon Divergence between state distributions of generated paths and reference paths (analyze_peptide_tps.py:83)",
+        "Step 13: Perform the same analysis for replicate MD simulations of various durations for comparison (analyze_peptide_tps.py:86-131)",
+        "Step 14: Save analysis results and optionally generate plots (analyze_peptide_tps.py:165-170)",
+        "Final Step: Aggregate results across all peptides and save the combined output (analyze_peptide_tps.py:186-192)"
+      ],
+      "agent_instructions": "Your task is to implement a system for generating and analyzing transition paths in molecular dynamics simulations. The system consists of two main components:\n\n1. A transition path generator that uses a pre-trained MDGEN model to create paths between conformational states of peptides.\n2. An analysis tool that evaluates the quality of these generated paths compared to reference molecular dynamics simulations.\n\nFor the transition path generator:\n- Load a pre-trained MDGEN model from a checkpoint\n- Process peptide data from specified directories\n- For each peptide, build a Markov State Model (MSM) from reference MD trajectories\n- Identify meaningful start and end states by analyzing the flux between metastable states\n- Generate transition paths between these states using the MDGEN model\n- Save the generated paths in appropriate molecular formats (PDB, XTC) with metadata\n\nFor the analysis tool:\n- Load the generated transition paths and reference MSM data\n- Calculate three key metrics to evaluate path quality:\n  a) Path Likelihood under the reference MSM\n  b) Fraction of Valid Paths\n  c) Jensen-Shannon Divergence (JSD) between visited state distributions\n- Compare the generated paths against MSMs built from replicate MD simulations of various durations (50ns, 30ns, 20ns, 10ns, 5ns, 2ns)\n- Visualize results with plots showing state distributions and transition paths\n- Save analysis results for further processing\n\nThe implementation should use PyEMMA for Markov modeling, MDTraj for trajectory manipulation, and appropriate visualization libraries for plotting results.",
+      "masked_source": [
+        "/workspace/tps_inference.py",
+        "/workspace/scripts/analyze_peptide_tps.py"
+      ]
+    }
+  ]
+}

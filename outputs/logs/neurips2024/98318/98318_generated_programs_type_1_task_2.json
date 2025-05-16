@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/benchmarl/run.py",
+        "/workspace/examples/sweep/wandb/sweepconfig.yaml"
+    ],
+    "usage_instructions": "1. First, modify the sweepconfig.yaml file to include the hyperparameters you want to tune for Q-learning algorithms (IQL, VDN, QMIX). Key hyperparameters to tune include:\n   - experiment.lr (learning rate)\n   - experiment.gamma (discount factor)\n   - experiment.exploration_eps_init and experiment.exploration_eps_end (exploration strategy)\n   - experiment.off_policy_train_batch_size (batch size)\n   - algorithm.loss_function (loss function type)\n   - algorithm.mixing_embed_dim (for QMIX only)\n\n2. Run the hyperparameter sweep using Weights & Biases:\n   ```bash\n   wandb sweep /workspace/examples/sweep/wandb/sweepconfig.yaml\n   wandb agent <sweep_id>\n   ```\n\n3. Compare the performance of tuned Q-learning algorithms with actor-critic methods by running:\n   ```bash\n   python benchmarl/run.py -m algorithm=iql,vdn,qmix,mappo,masac task=vmas/navigation,vmas/sampling,vmas/balance seed=0,1,2\n   ```\n\nThis will run the specified algorithms on the continuous multi-robot control tasks from BenchMARL with multiple seeds, allowing you to compare the performance of Q-learning algorithms with tuned hyperparameters against actor-critic methods."
+}

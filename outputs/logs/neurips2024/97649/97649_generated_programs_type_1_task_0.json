@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/baselines/MAPPO/mappo_rnn_smax.py",
+        "/workspace/baselines/QLearning/qmix_rnn.py"
+    ],
+    "usage_instructions": "To compare PPO to Q-Learning in SMAX environments in terms of training time and normalized score, run the following scripts:\n\n1. First, run the MAPPO (PPO) implementation on SMAX environments:\n   ```\n   python baselines/MAPPO/mappo_rnn_smax.py\n   ```\n\n2. Then, run the QMIX (Q-Learning) implementation on the same SMAX environments:\n   ```\n   python baselines/QLearning/qmix_rnn.py +alg=ql_rnn_smax\n   ```\n\n3. To ensure a fair comparison across the 9 SMAX maps (excluding the two with more than 10 units), modify the MAP_NAME parameter in each run. For MAPPO, you can modify it directly in the command line:\n   ```\n   python baselines/MAPPO/mappo_rnn_smax.py MAP_NAME=<map_name>\n   ```\n   For QMIX, use:\n   ```\n   python baselines/QLearning/qmix_rnn.py +alg=ql_rnn_smax alg.MAP_NAME=<map_name>\n   ```\n\n   The 9 SMAX maps to use (excluding maps with >10 units) are: '2s3z', '3s5z', '5m_vs_6m', '3s5z_vs_3s6z', '3s_vs_5z', '6h_vs_8z', 'smacv2_5_units', 'smacv2_10_units', and one other map.\n\n4. Both scripts will output training time metrics and normalized scores that can be compared. The MAPPO implementation is expected to train approximately 6x faster than QMIX while achieving better normalized scores across most SMAX scenarios."
+}

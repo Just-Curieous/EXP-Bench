@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/tps_inference.py",
+        "/workspace/scripts/analyze_peptide_tps.py"
+    ],
+    "usage_instructions": "1. First, run the transition path sampling inference script to generate MDGEN transition paths: `python tps_inference.py --sim_ckpt interpolation.ckpt --data_dir data/4AA_data --split splits/4AA_test.csv --num_frames 100 --suffix _i100 --mddir data/4AA_sims --out_dir [OUTPUT_DIRECTORY]`\n\n2. Then, analyze the generated paths against the reference MSM and shorter duration MSMs: `python -m scripts.analyze_peptide_tps --mddir data/4AA_sims --repdir data/4AA_sims_replica --pdbdir [OUTPUT_DIRECTORY] --outdir [ANALYSIS_DIRECTORY] --plot --save`\n\nThe analysis script computes all the required metrics: path likelihood under the reference MSM, fraction of valid paths (non-zero transition probability), and Jensen-Shannon Divergence (JSD) between visited state distributions. It compares MDGEN paths against MSMs built from shorter MD simulations (50ns, 30ns, 20ns, 10ns, 5ns, 2ns) as specified in the experiment question."
+}

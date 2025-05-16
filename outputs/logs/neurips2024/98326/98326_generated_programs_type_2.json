@@ -1,0 +1,34 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you implement a functional optimizer using TorchOpt to minimize a simple quadratic function?",
+    "method": "Create a program that uses TorchOpt's functional optimizer API to minimize a simple quadratic function f(x) = (x-1)^2 through gradient descent.",
+    "expected_outcome": "The program should show the parameter value converging to 1.0 (the minimum of the function) over several iterations, with the loss decreasing to near zero.",
+    "source": ["/workspace/tutorials/1_Functional_Optimizer.ipynb"],
+    "usage_instructions": "1. Import the necessary libraries (torch, torchopt)\n2. Define a simple quadratic function f(x) = (x-1)^2 that we want to minimize\n3. Initialize a parameter tensor with an initial value (e.g., 5.0)\n4. Create a TorchOpt functional optimizer (e.g., torchopt.adam with learning_rate=0.1)\n5. Initialize the optimizer state with the parameter\n6. Run a loop for several iterations (e.g., 20) where in each iteration:\n   a. Compute the function value (loss) using the current parameter\n   b. Compute the gradient of the loss with respect to the parameter\n   c. Update the parameter using the optimizer's update function\n   d. Print the current parameter value and loss\n7. Verify that the parameter converges to 1.0 and the loss approaches 0"
+  },
+  {
+    "mode": "A",
+    "question": "How can you implement Model-Agnostic Meta-Learning (MAML) for few-shot image classification using TorchOpt?",
+    "method": "Create a program that implements MAML for few-shot classification on a simple dataset using TorchOpt's differentiable optimization capabilities.",
+    "expected_outcome": "The program should demonstrate meta-learning where the model learns to adapt quickly to new tasks with few examples. The query accuracy should improve over meta-training iterations.",
+    "source": ["/workspace/examples/few-shot/maml_omniglot.py"],
+    "usage_instructions": "1. Import necessary libraries (torch, torchopt, etc.)\n2. Define a simple neural network architecture for the base model\n3. Create a meta-learning dataset with support and query sets\n4. Implement the MAML algorithm using TorchOpt's MetaSGD optimizer:\n   a. Initialize the meta-model and meta-optimizer\n   b. For each meta-training iteration:\n      i. Sample a batch of tasks (each with support and query sets)\n      ii. For each task:\n          - Compute loss on the support set\n          - Use TorchOpt's differentiable optimizer to update the model parameters\n          - Evaluate the updated model on the query set\n      iii. Compute meta-loss as the average query loss across tasks\n      iv. Update the meta-parameters using the meta-optimizer\n5. Evaluate the meta-learned model on new tasks\n6. Plot the learning curves showing improvement in query accuracy over meta-training"
+  },
+  {
+    "mode": "A",
+    "question": "How can you visualize the computation graph of a differentiable optimization process using TorchOpt?",
+    "method": "Create a program that demonstrates how to visualize the computation graph of a differentiable optimization process using TorchOpt's visualization tools.",
+    "expected_outcome": "A visualization of the computation graph showing the flow of gradients through the optimization process, including parameter updates and loss calculations.",
+    "source": ["/workspace/tutorials/2_Visualization.ipynb"],
+    "usage_instructions": "1. Import necessary libraries (torch, torchopt, graphviz)\n2. Define a simple model with parameters to optimize\n3. Create a differentiable optimizer using TorchOpt (e.g., torchopt.MetaSGD)\n4. Extract the initial state of the model using torchopt.extract_state_dict with enable_visual=True\n5. Perform an optimization step:\n   a. Compute a loss function\n   b. Update the model parameters using the differentiable optimizer\n6. Extract the updated state of the model\n7. Compute an outer loss function\n8. Generate and display the computation graph using torchopt.visual.make_dot\n9. Explain the key components of the visualization, including:\n   a. Parameter nodes\n   b. Gradient flow\n   c. Optimizer operations"
+  },
+  {
+    "mode": "A",
+    "question": "How can you implement implicit differentiation for meta-learning using TorchOpt?",
+    "method": "Create a program that demonstrates how to use TorchOpt's implicit differentiation capabilities for meta-learning.",
+    "expected_outcome": "A working implementation of implicit differentiation for meta-learning that shows how to compute gradients through the optimization process without explicitly unrolling all optimization steps.",
+    "source": ["/workspace/tutorials/5_Implicit_Differentiation.ipynb"],
+    "usage_instructions": "1. Import necessary libraries (torch, torchopt)\n2. Define a simple inner optimization problem (e.g., minimizing a function parameterized by meta-parameters)\n3. Define the stationary condition for the inner optimization problem\n4. Use the @torchopt.diff.implicit.custom_root decorator to create a function that solves the inner optimization problem\n5. Define meta-parameters that affect the inner optimization problem\n6. Solve the inner optimization problem using the decorated function\n7. Compute an outer loss based on the solution to the inner problem\n8. Compute gradients of the outer loss with respect to the meta-parameters\n9. Update the meta-parameters using the computed gradients\n10. Demonstrate that the implicit differentiation approach correctly computes gradients through the optimization process"
+  }
+]

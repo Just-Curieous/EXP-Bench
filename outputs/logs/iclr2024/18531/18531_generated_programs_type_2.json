@@ -1,0 +1,46 @@
+[
+  {
+    "mode": "B",
+    "question": "How can you create a simple rule-based agent that prioritizes city building in the CivRealm environment?",
+    "method": "Create a RandomAgent class that inherits from BaseAgent and implements the act method to prioritize building cities when possible, otherwise moving units randomly.",
+    "expected_outcome": "A working agent that builds cities with 80% probability when possible, otherwise moves units randomly. The agent should be able to play through multiple turns in the CivRealm environment.",
+    "source": [
+      "/workspace/docs/getting_started/first_agent.md",
+      "/workspace/src/civrealm/agents/base_agent.py",
+      "/workspace/src/civrealm/random_game.py"
+    ],
+    "usage_instructions": "1. Create a RandomAgent class that inherits from BaseAgent.\n2. Implement the random_action_by_name method to find actions by name in the valid_action_dict.\n3. Implement the act method to get the next valid actor and its actions.\n4. If a unit can build a city, make it do so with 80% probability.\n5. Otherwise, make the unit move randomly.\n6. Create a main function that initializes the FreecivBase-v0 environment.\n7. Create an instance of your RandomAgent.\n8. Implement a game loop that gets observations, calls the agent's act method, and steps the environment.\n9. Print information about each step, including step number, turn, reward, termination status, and action taken.\n10. Close the environment and plot the game scores when done."
+  },
+  {
+    "mode": "B",
+    "question": "How can you create a random LLM agent that interacts with the CivRealm LLM environment?",
+    "method": "Create a RandomLLMAgent class that inherits from BaseAgent and implements the act method to randomly select actions from the available actions provided by the LLM environment.",
+    "expected_outcome": "A working LLM agent that randomly selects actions from the available actions for each actor. The agent should be able to play through multiple turns in the CivRealm LLM environment.",
+    "source": [
+      "/workspace/docs/getting_started/first_agent.md",
+      "/workspace/src/civrealm/agents/base_agent.py",
+      "/workspace/src/civrealm/random_game.py"
+    ],
+    "usage_instructions": "1. Create a RandomLLMAgent class that inherits from BaseAgent.\n2. Initialize the agent with proper seed handling.\n3. Implement the act method to track the current turn and planned actor IDs.\n4. For each control type and actor in the LLM info, check if the actor has already been planned for.\n5. If not, get the available actions for the actor.\n6. If there are available actions, randomly select one and add the actor to the planned list.\n7. Return the selected action as a tuple of (control_type, actor_id, action_name).\n8. Create a main function that initializes the FreecivBase-v0 environment and wraps it with LLMWrapper.\n9. Create an instance of your RandomLLMAgent.\n10. Implement a game loop that gets observations, calls the agent's act method, and steps the environment.\n11. Print information about each step, including step number, turn, reward, termination status, and action taken.\n12. Close the environment and plot the game scores when done."
+  },
+  {
+    "mode": "A",
+    "question": "How can you run a basic game in CivRealm with a random agent and visualize the results?",
+    "method": "Use the provided random_game.py script to initialize the CivRealm environment, create a random agent, run the game loop, and visualize the results.",
+    "expected_outcome": "A complete game run with a random agent, printing step information and generating game score plots.",
+    "source": [
+      "/workspace/src/civrealm/random_game.py"
+    ],
+    "usage_instructions": "1. Import the necessary modules from civrealm.\n2. Create a FreecivBase-v0 environment using gymnasium.make().\n3. Create a RandomAgent instance.\n4. Reset the environment to get initial observations and info.\n5. Implement a game loop that continues until the game is done (terminated or truncated).\n6. In each iteration, get an action from the agent using the current observations and info.\n7. Step the environment with the action to get new observations, reward, termination status, and info.\n8. Print information about the current step, including step number, turn, reward, termination status, and action taken.\n9. Increment the step counter and check if the game is done.\n10. Close the environment when the game is done.\n11. Plot the game scores using env.plot_game_scores().\n12. Get and print the game results using env.get_game_results()."
+  },
+  {
+    "mode": "A",
+    "question": "How can you run a mini-game in CivRealm with a controller agent and track minitask information?",
+    "method": "Use the provided random_game_minitask.py script to initialize the CivRealm minitask environment, create a controller agent, run the game loop, and track minitask information.",
+    "expected_outcome": "A complete mini-game run with a controller agent, printing step information including minitask details and generating game score plots.",
+    "source": [
+      "/workspace/src/civrealm/random_game_minitask.py"
+    ],
+    "usage_instructions": "1. Import the necessary modules from civrealm.\n2. Create a FreecivMinitask-v0 environment using gymnasium.make().\n3. Create a ControllerAgent instance.\n4. Reset the environment to get initial observations and info.\n5. Implement a game loop that continues until the game is done (terminated or truncated).\n6. In each iteration, get an action from the agent using the current observations and info.\n7. Step the environment with the action to get new observations, reward, termination status, and info.\n8. Print information about the current step, including step number, turn, reward, termination status, and action taken.\n9. Also print the minitask information from info['minitask'].\n10. Increment the step counter and check if the game is done.\n11. Close the environment when the game is done.\n12. Plot the game scores using env.plot_game_scores().\n13. Get and print the game results using env.get_game_results()."
+  }
+]

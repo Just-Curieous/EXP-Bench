@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Set up the training script to handle command-line arguments for model configuration and dataset paths (/workspace/scripts/train.py:246-255)",
+    "Step 2: Implement the main training function that initializes the trainer with the specified configuration (/workspace/scripts/train.py:220-243)",
+    "Step 3: Create a training loop function that sets up the environment, initializes the model, and runs the training process (/workspace/scripts/train.py:78-90)",
+    "Step 4: Implement distributed training capabilities to support multi-GPU training (/workspace/scripts/train.py:93-146)",
+    "Step 5: Create a launch function to handle single or multi-process training based on available GPUs (/workspace/scripts/train.py:149-217)",
+    "Step 6: Implement a mesh extraction function that loads a trained model from a checkpoint (/workspace/zoo/extract_surface.py:18-60)",
+    "Step 7: Create a function to extract the SDF (Signed Distance Function) from the model for mesh generation (/workspace/zoo/extract_surface.py:110)",
+    "Step 8: Implement special handling for the Tanks and Temples dataset to ensure fair comparison between models (/workspace/zoo/extract_surface.py:116-168)",
+    "Step 9: Create a mesh extraction utility that uses marching cubes to generate a mesh from the SDF (/workspace/zoo/mesh_utils.py:24-41)",
+    "Step 10: Implement a lattice grid system to handle large scenes by processing them in blocks (/workspace/zoo/mesh_utils.py:60-92)",
+    "Step 11: Create a function to filter the mesh to keep only points inside the bounding sphere (/workspace/zoo/mesh_utils.py:128-140)",
+    "Step 12: Implement an option to keep only the largest connected component of the mesh (/workspace/zoo/mesh_utils.py:143-150)",
+    "Final Step: Save the extracted mesh to a file for evaluation (/workspace/zoo/extract_surface.py:183-184)"
+  ],
+  "agent_instructions": "Your task is to implement a system for comparing neural surface reconstruction models on the Tanks and Temples dataset. Specifically, you need to create:\n\n1. A training script that can train different neural surface reconstruction models on 3D scenes. The script should:\n   - Accept command-line arguments for model configuration and dataset paths\n   - Support different model architectures (particularly a two-stage model and a baseline model)\n   - Handle distributed training across multiple GPUs\n   - Save checkpoints during training\n\n2. A mesh extraction script that can generate 3D meshes from trained models. The script should:\n   - Load a trained model from a checkpoint\n   - Extract a signed distance function (SDF) from the model\n   - Use marching cubes algorithm to generate a mesh from the SDF\n   - Process large scenes by dividing them into blocks\n   - Include options for mesh post-processing (like keeping only the largest connected component)\n   - Handle special cases for the Tanks and Temples dataset to ensure fair comparison\n   - Save the extracted mesh to a file\n\nThe system should be able to train a two-stage model and a baseline model on the Barn scene from the Tanks and Temples dataset, then extract meshes from both at the same resolution (2048) for fair comparison. The two-stage model should use approximately 1/8 fewer parameters than the baseline model.",
+  "masked_source": [
+    "/workspace/scripts/train.py",
+    "/workspace/zoo/extract_surface.py",
+    "/workspace/zoo/mesh_utils.py"
+  ]
+}

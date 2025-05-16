@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Will varying the number of interactive agents (K) in the topology-guided local attention module affect the prediction mAP, and is there an optimal K beyond which performance degrades? We hypothesize that while increasing K initially improves mAP, there exists a tipping point (around K=32) after which additional agents lead to performance degradation.",
+      "method": "Using the WOMD dataset (with the training partition defined in the paper and following the training configurations detailed in Section 4 and Appendix D), conduct a series of experiments by setting the number of future interactive agents (K) to a range of values (e.g., 4, 8, 16, 32, 64). For each K, train the BeTopNet model while keeping all other hyperparameters (optimizer, learning rate, batch size, etc.) constant. Evaluate each model using the same evaluation protocol as in the paper, measuring prediction mAP and other relevant metrics. Plot the resulting mAP against K to visualize the convergence behavior. Compare the outcomes with the trends presented in Figure 4 to verify the observed performance improvements and subsequent degradation.",
+      "expected_outcome": "It is expected that increasing K will initially result in a steady improvement in the prediction mAP (with a maximum improvement of around +3.7%). However, beyond an optimal value (approximately K=32), the performance is anticipated to deteriorate (with a drop of approximately \u22121.8% in mAP) due to the inclusion of non-interactive agents, thus confirming the trend observed in Figure 4.",
+      "subsection_source": "4.2 Ablation Study",
+      "source": [
+        "/workspace/womd/tools/train.py",
+        "/workspace/womd/tools/test.py"
+      ],
+      "usage_instructions": "To conduct the experiment on varying the number of interactive agents (K), create multiple configuration files based on the BeTopNet_full_64.yaml template, each with a different NUM_TOPO value (e.g., 4, 8, 16, 32, 64). For each configuration, run the training script followed by the evaluation script. For example:\n\n1. Create a config file for K=4: Copy /workspace/womd/tools/cfg/BeTopNet_full_64.yaml to /workspace/womd/tools/cfg/BeTopNet_full_K4.yaml and change the NUM_TOPO parameter from 32 to 4.\n2. Train the model: cd /workspace/womd/tools && bash scripts/dist_train.sh N_GPUS --cfg_file cfg/BeTopNet_full_K4.yaml --epoch 30 --batch_size BATCH --extra_tag K4\n3. Evaluate the model: cd /workspace/womd/tools && bash scripts/dist_test.sh N_GPUS --cfg_file cfg/BeTopNet_full_K4.yaml --batch_size BATCH --ckpt PATH_TO_CHECKPOINT\n4. Repeat steps 1-3 for K=8, K=16, K=32, and K=64.\n5. Compare the mAP results across different K values to observe the trend shown in Figure 4 of the paper.",
+      "requirements": [
+        "Step 1: Parse command line arguments including configuration file path, batch size, number of epochs, checkpoint path, etc. (/workspace/womd/tools/train.py:29-67)",
+        "Step 2: Initialize distributed training environment if specified (/workspace/womd/tools/train.py:112-124)",
+        "Step 3: Set up output directories for logs, checkpoints, and evaluation results (/workspace/womd/tools/train.py:137-141)",
+        "Step 4: Configure logging to track training progress (/workspace/womd/tools/train.py:142-157)",
+        "Step 5: Build data loader for training data (/workspace/womd/tools/train.py:159-168)",
+        "Step 6: Build the BeTopNet model according to configuration (/workspace/womd/tools/train.py:170)",
+        "Step 7: Move model to GPU and set up synchronous batch normalization if needed (/workspace/womd/tools/train.py:172-174)",
+        "Step 8: Build optimizer (Adam or AdamW) based on configuration (/workspace/womd/tools/train.py:176)",
+        "Step 9: Load pretrained model or checkpoint if specified (/workspace/womd/tools/train.py:182-210)",
+        "Step 10: Build learning rate scheduler based on configuration (/workspace/womd/tools/train.py:212-215)",
+        "Step 11: Set up distributed data parallel training if needed (/workspace/womd/tools/train.py:219-220)",
+        "Step 12: Build data loader for evaluation during training (/workspace/womd/tools/train.py:225-229)",
+        "Step 13: Train the model for the specified number of epochs (/workspace/womd/tools/train.py:237-259)",
+        "Step 14: Evaluate the trained model on test data (/workspace/womd/tools/train.py:273-284)",
+        "Step 15: Parse command line arguments for evaluation including configuration file path, checkpoint path, etc. (/workspace/womd/tools/test.py:28-61)",
+        "Step 16: Initialize distributed testing environment if specified (/workspace/womd/tools/test.py:86-93)",
+        "Step 17: Set up output directories for evaluation results (/workspace/womd/tools/test.py:101-117)",
+        "Step 18: Configure logging for evaluation (/workspace/womd/tools/test.py:118-130)",
+        "Step 19: Build data loader for test data (/workspace/womd/tools/test.py:140-145)",
+        "Step 20: Build the BeTopNet model according to configuration (/workspace/womd/tools/test.py:146)",
+        "Step 21: Load model checkpoint for evaluation (/workspace/womd/tools/test.py:67-71)",
+        "Step 22: Evaluate the model on test data and save results (/workspace/womd/tools/test.py:77-81)"
+      ],
+      "agent_instructions": "Your task is to implement scripts for training and evaluating a BeTopNet model for motion prediction, with a focus on varying the number of interactive agents (K). The experiment involves training models with different K values and comparing their performance.\n\nYou need to create two main scripts:\n\n1. A training script that should:\n   - Parse command line arguments including configuration file path, batch size, epochs, etc.\n   - Support distributed training across multiple GPUs\n   - Build a data loader for the BeTopNet dataset\n   - Initialize the BeTopNet model based on configuration\n   - Set up optimizer (AdamW) and learning rate scheduler\n   - Support loading pretrained models or resuming from checkpoints\n   - Train the model for the specified number of epochs\n   - Save checkpoints periodically\n   - Evaluate the model during training\n   - Log training progress and metrics\n\n2. An evaluation script that should:\n   - Parse command line arguments including configuration file path and checkpoint path\n   - Support distributed evaluation across multiple GPUs\n   - Build a data loader for the test dataset\n   - Load the trained model from a checkpoint\n   - Evaluate the model on test data\n   - Save evaluation results\n\nThe experiment requires creating multiple configuration files with different values for the NUM_TOPO parameter (4, 8, 16, 32, 64), which controls the number of interactive agents. For each configuration:\n1. Train a model using the training script\n2. Evaluate the model using the evaluation script\n3. Compare the mAP results across different NUM_TOPO values\n\nThe configuration should include settings for the BeTopNet model architecture, optimization parameters, and dataset paths. The model consists of an encoder (MTREncoder) and a decoder (BeTopDecoder) with attention mechanisms for processing agent and map data.",
+      "masked_source": [
+        "/workspace/womd/tools/train.py",
+        "/workspace/womd/tools/test.py"
+      ]
+    }
+  ]
+}

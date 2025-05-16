@@ -1,0 +1,47 @@
+{
+  "questions": [
+    {
+      "hypothesis": "PDF(720) outperforms Transformer-based models on long-term forecasting tasks in terms of both MSE and MAE. Specifically, it achieves an overall 14.59% reduction in MSE and 10.77% reduction in MAE compared to transformer-based models, such as FEDformer with a 96 look-back window.",
+      "method": "Collect the forecasting performance metrics (MSE and MAE) from evaluation Table 1 for both PDF(720) and transformer-based models (e.g., FEDformer with a 96 look-back window). For each dataset and prediction length T \u2208 {96, 192, 336, 720}, extract and compare the MSE and MAE values. Quantitatively assess the percentage improvement of PDF(720) over the transformer-based models, noting the reported overall improvements of 14.59% in MSE and 10.77% in MAE. Additionally, if raw predictions are available, perform statistical tests to confirm the significance of the improvements. Consider cross-referencing with additional semantic details from Table 2 to further validate the robustness of the results.",
+      "expected_outcome": "The experimental results should confirm that PDF(720) consistently achieves lower MSE and MAE across various datasets and prediction lengths than the transformer-based methods, thereby validating the hypothesis. The findings should align with the overall reported improvements and any statistical tests conducted should indicate that these improvements are significant.",
+      "subsection_source": "4.1 MAIN RESULTS",
+      "source": [
+        "/workspace/scripts/PDF/720/etth1.sh",
+        "/workspace/scripts/PDF/720/etth2.sh",
+        "/workspace/scripts/PDF/720/ettm1.sh",
+        "/workspace/scripts/PDF/720/ettm2.sh",
+        "/workspace/scripts/PDF/720/electricity.sh",
+        "/workspace/scripts/PDF/720/traffic.sh",
+        "/workspace/scripts/PDF/720/weather.sh",
+        "/workspace/Formers/FEDformer/scripts/LongForecasting.sh"
+      ],
+      "usage_instructions": "First, download the datasets as described in the README.md and place them in the './dataset' directory. Then, run the PDF(720) model scripts for each dataset by executing the shell scripts in '/workspace/scripts/PDF/720/' (e.g., 'sh /workspace/scripts/PDF/720/etth1.sh'). These scripts will train and evaluate the PDF model with a 720 look-back window on all datasets for prediction lengths of 96, 192, 336, and 720. Next, run the FEDformer model by executing 'cd /workspace/Formers/FEDformer && sh scripts/LongForecasting.sh', which will train and evaluate the FEDformer model with a 96 look-back window on the same datasets and prediction lengths. After running both sets of scripts, the evaluation metrics (MSE and MAE) will be saved in the './results/' directory and summarized in 'result.txt'. You can then compare these metrics to verify the hypothesis that PDF(720) achieves an overall 14.59% reduction in MSE and 10.77% reduction in MAE compared to transformer-based models like FEDformer.",
+      "requirements": [
+        "Step 1: Create log directories for storing experiment results if they don't exist (/workspace/scripts/PDF/720/*.sh:1-7)",
+        "Step 2: Set up model configuration parameters including model name (PDF), dataset path, and sequence length (720) (/workspace/scripts/PDF/720/*.sh:8-15)",
+        "Step 3: For each prediction length (96, 192, 336, 720), run the time series forecasting experiment (/workspace/scripts/PDF/720/*.sh:16-48)",
+        "Step 4: Configure model architecture parameters (encoder layers, attention heads, model dimension, feed-forward dimension) (/workspace/scripts/PDF/720/*.sh:30-36)",
+        "Step 5: Set up regularization parameters (dropout rates) appropriate for each dataset and prediction length (/workspace/scripts/PDF/720/*.sh:37-39)",
+        "Step 6: Configure periodicity-related parameters (kernel list, period, patch length, stride) specific to each dataset (/workspace/scripts/PDF/720/*.sh:38-42)",
+        "Step 7: Set training parameters (epochs, patience, learning rate, batch size) (/workspace/scripts/PDF/720/*.sh:43-47)",
+        "Step 8: Log experiment results to output files for later analysis (/workspace/scripts/PDF/720/*.sh:47)",
+        "Step 9: For the FEDformer model, create log directories if they don't exist (/workspace/Formers/FEDformer/scripts/LongForecasting.sh:1-8)",
+        "Step 10: For each prediction length (96, 192, 336, 720), run the FEDformer model on each dataset with a sequence length of 96 (/workspace/Formers/FEDformer/scripts/LongForecasting.sh:10-175)",
+        "Step 11: Configure FEDformer model parameters (encoder/decoder layers, attention heads, model dimension) (/workspace/Formers/FEDformer/scripts/LongForecasting.sh:23-31)",
+        "Step 12: Set dataset-specific input/output dimensions for each dataset (/workspace/Formers/FEDformer/scripts/LongForecasting.sh:26-28)",
+        "Step 13: Log FEDformer experiment results to output files for comparison with PDF model (/workspace/Formers/FEDformer/scripts/LongForecasting.sh:31)"
+      ],
+      "agent_instructions": "Your task is to implement scripts for comparing two time series forecasting models: PDF (Periodicity Decoupling Framework) with a 720 look-back window and FEDformer with a 96 look-back window. The experiment should be conducted on multiple datasets (ETTh1, ETTh2, ETTm1, ETTm2, electricity, traffic, weather) with different prediction lengths (96, 192, 336, 720).\n\nFirst, create scripts for the PDF model that:\n1. Create necessary log directories for storing results\n2. Configure the PDF model with a sequence length of 720\n3. For each dataset and prediction length combination:\n   - Set appropriate model architecture parameters (encoder layers, attention heads, dimensions)\n   - Configure dataset-specific regularization parameters (dropout rates)\n   - Set periodicity-related parameters (kernel sizes, periods, patch lengths, strides)\n   - Configure training parameters (epochs, patience, learning rate)\n   - Run the training and evaluation process\n   - Save results to log files\n\nThen, create a script for the FEDformer model that:\n1. Creates necessary log directories\n2. For each dataset and prediction length combination:\n   - Configure the FEDformer model with a sequence length of 96\n   - Set appropriate model parameters for each dataset\n   - Run the training and evaluation process\n   - Save results to log files\n\nThe goal is to compare the performance of PDF(720) against FEDformer(96) across all datasets and prediction lengths, measuring the reduction in MSE and MAE metrics.",
+      "masked_source": [
+        "/workspace/scripts/PDF/720/etth1.sh",
+        "/workspace/scripts/PDF/720/etth2.sh",
+        "/workspace/scripts/PDF/720/ettm1.sh",
+        "/workspace/scripts/PDF/720/ettm2.sh",
+        "/workspace/scripts/PDF/720/electricity.sh",
+        "/workspace/scripts/PDF/720/traffic.sh",
+        "/workspace/scripts/PDF/720/weather.sh",
+        "/workspace/Formers/FEDformer/scripts/LongForecasting.sh"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Modify the iTransformer script to focus only on the H=720 forecast horizon by editing the script to keep only the pred_len=720 case (/workspace/scripts/iTransformer/electricity.sh:10-34)",
+    "Step 2: Run the iTransformer script with the modified settings to train the model on the Electricity dataset with pred_len=720 (/workspace/scripts/iTransformer/electricity.sh:14-32)",
+    "Step 3: Record the epoch training times printed in the output during iTransformer training (/workspace/exp/exp_main.py:222)",
+    "Step 4: Run the CycleNet with Linear backbone script to train the model on the Electricity dataset with pred_len=720 (/workspace/scripts/CycleNet/Linear-Input-96/electricity.sh:11-31)",
+    "Step 5: Record the epoch training times for the CycleNet Linear model with pred_len=720 (/workspace/exp/exp_main.py:222)",
+    "Step 6: Run the CycleNet with MLP backbone script to train the model on the Electricity dataset with pred_len=720 (/workspace/scripts/CycleNet/MLP-Input-96/electricity.sh:11-31)",
+    "Step 7: Record the epoch training times for the CycleNet MLP model with pred_len=720 (/workspace/exp/exp_main.py:222)",
+    "Final Step: Compare the average epoch training times between the three models (iTransformer, CycleNet-Linear, CycleNet-MLP) to determine if CycleNet achieves higher efficiency (faster training time) than iTransformer on the Electricity dataset"
+  ],
+  "agent_instructions": "You need to conduct an experiment to compare the training efficiency of iTransformer and CycleNet models on the Electricity dataset. Follow these steps:\n\n1. First, modify the iTransformer script to focus only on the forecast horizon of 720 time steps. You'll need to edit the script to keep only the pred_len=720 case.\n\n2. Run the modified iTransformer script and carefully note the epoch training times that are printed in the output. These times indicate how long each epoch takes to train.\n\n3. Run the CycleNet with Linear backbone script and note the epoch training times for the pred_len=720 case.\n\n4. Run the CycleNet with MLP backbone script and note the epoch training times for the pred_len=720 case.\n\n5. Calculate the average epoch training time for each model and compare them to determine if CycleNet (either Linear or MLP version) achieves higher efficiency (faster training time) than iTransformer on the Electricity dataset.\n\nThe experiment is designed to evaluate the computational efficiency of these models when making long-term forecasts (720 time steps ahead) on the Electricity dataset.",
+  "masked_source": [
+    "/workspace/scripts/iTransformer/electricity.sh",
+    "/workspace/scripts/CycleNet/Linear-Input-96/electricity.sh",
+    "/workspace/scripts/CycleNet/MLP-Input-96/electricity.sh"
+  ]
+}

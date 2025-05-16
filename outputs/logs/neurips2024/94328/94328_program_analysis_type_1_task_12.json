@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with PyTorch and required libraries including transformers, datasets, and accelerate (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Obtain access to the Hugging Face API token for downloading LLaMA-2 models (/workspace/fake_quant/utils.py:80)",
+    "Step 3: Load the specified LLaMA-2 model (7B, 13B, or 70B) from Hugging Face using the transformers library (/workspace/fake_quant/main.py:20)",
+    "Step 4: Apply layer normalization fusion to the model by fusing the linear operations in LayerNorm into adjacent linear blocks (/workspace/fake_quant/main.py:26)",
+    "Step 5: Apply Hadamard rotation to the model weights using the rotate_model function, which rotates embeddings, attention inputs/outputs, and MLP layers (/workspace/fake_quant/main.py:27)",
+    "Step 6: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30)",
+    "Step 7: Apply Hadamard transformation to the down_proj and o_proj layers of the model (/workspace/fake_quant/main.py:33-45)",
+    "Step 8: Quantize the model weights to 4-bit precision using either GPTQ or RTN method based on the w_rtn parameter (/workspace/fake_quant/main.py:50-75)",
+    "Step 9: Configure activation quantization for the model's linear layers with 4-bit precision (/workspace/fake_quant/main.py:79-109)",
+    "Step 10: Configure KV-cache quantization for the model with 4-bit precision (/workspace/fake_quant/main.py:111-124)",
+    "Step 11: Load the WikiText-2 dataset for evaluation (/workspace/fake_quant/main.py:127-134)",
+    "Step 12: Evaluate the quantized model on the WikiText-2 dataset to measure perplexity (/workspace/fake_quant/main.py:137)",
+    "Step 13: Report the perplexity results for the quantized model (/workspace/fake_quant/main.py:138-139)"
+  ],
+  "agent_instructions": "Your task is to reproduce the QuaRot quantization experiment from the paper using the provided code. You need to run the quantization process on LLaMA-2 models (7B, 13B, and 70B) and evaluate their perplexity on the WikiText-2 dataset. The quantization involves applying Hadamard rotation to model weights and quantizing weights, activations, and KV cache to 4-bit precision. The script takes parameters for model selection, rotation enabling, bit precision settings, and evaluation dataset. You should analyze the code to understand how the quantization process works and then execute the provided commands to reproduce the results from Table 1 in the paper.",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

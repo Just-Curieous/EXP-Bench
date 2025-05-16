@@ -1,0 +1,36 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you use InfLLM to enable a language model to process a document that exceeds its normal context window?",
+    "method": "Create a script that uses InfLLM to process a very long document with a language model and answer questions about it.",
+    "expected_outcome": "A working script that loads a language model with InfLLM, processes a long document, and correctly answers questions about content from different parts of the document.",
+    "source": [
+      "/workspace/inf_llm/chat.py",
+      "/workspace/config/mistral-inf-llm.yaml"
+    ],
+    "usage_instructions": "1. Import the necessary modules from inf_llm and transformers.\n2. Load a language model and tokenizer using the Hugging Face transformers library.\n3. Apply the InfLLM patch to the model using the patch_hf function with appropriate configuration parameters (n_init, n_local, topk, etc.).\n4. Create a function to process a long document by breaking it into chunks and feeding it to the model.\n5. Implement a question-answering function that takes a question about the document and generates an answer using the patched model.\n6. Test the implementation with a sample long document and questions that reference information from different parts of the document."
+  },
+  {
+    "mode": "A",
+    "question": "How can you evaluate InfLLM on the key-value retrieval task from InfiniteBench?",
+    "method": "Create a script that runs the key-value retrieval benchmark from InfiniteBench using InfLLM and analyzes the results.",
+    "expected_outcome": "A script that successfully runs the key-value retrieval benchmark and outputs evaluation metrics showing InfLLM's ability to retrieve information from long contexts.",
+    "source": [
+      "/workspace/benchmark/pred.py",
+      "/workspace/benchmark/eval.py",
+      "/workspace/scripts/infinitebench.sh"
+    ],
+    "usage_instructions": "1. Set up the benchmark environment by creating a directory for results.\n2. Load the InfLLM configuration from a YAML file.\n3. Use the pred.py script to run predictions on the kv_retrieval dataset from InfiniteBench.\n4. Configure the model to use InfLLM's memory-based attention mechanism.\n5. Process the benchmark data and generate predictions.\n6. Use the eval.py script to evaluate the model's performance on the key-value retrieval task.\n7. Analyze the results to understand how well InfLLM performs at retrieving specific key-value pairs from a long context."
+  },
+  {
+    "mode": "B",
+    "question": "How does InfLLM's memory-based attention mechanism work to process extremely long sequences?",
+    "method": "Create a simplified implementation of InfLLM's core memory-based attention mechanism to understand how it enables processing of long sequences.",
+    "expected_outcome": "A working implementation that demonstrates how InfLLM stores distant contexts in memory units and retrieves relevant units for attention computation.",
+    "source": [
+      "/workspace/inf_llm/attention/inf_llm.py",
+      "/workspace/inf_llm/attention/context_manager.py"
+    ],
+    "usage_instructions": "1. Implement a simplified version of the ContextManager class that manages memory units.\n2. Create a memory unit class that can store key-value pairs and efficiently load/offload them between CPU and GPU.\n3. Implement the core attention mechanism that retrieves relevant memory units based on query similarity.\n4. Add support for local attention window and initial tokens as attention sinks.\n5. Implement the topk retrieval mechanism that selects the most relevant memory units for each query.\n6. Create a simple forward function that demonstrates how the attention mechanism processes a sequence longer than the model's original context window.\n7. Test the implementation with a toy example to show how it maintains the ability to capture long-distance dependencies."
+  }
+]

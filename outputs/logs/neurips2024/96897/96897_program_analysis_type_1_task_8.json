@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Create an entry point script that imports and calls the run_exp function from the llmtuner module (/workspace/llama-alpaca/src/train_bash.py:1-14)",
+    "Step 2: Implement a function to load model and tokenizer with support for different finetuning types (/workspace/llama-alpaca/src/llmtuner/tuner/core/loader.py:43-101)",
+    "Step 3: Define the block-wise parameter groups for LLaMA model architecture (/workspace/llama-alpaca/src/llmtuner/tuner/core/utils.py:7-13)",
+    "Step 4: Implement the BlockOptimizer class that wraps a base optimizer and updates parameters block by block (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:60-338)",
+    "Step 5: Implement the block switching logic with support for different ordering schemes (random, ascending, descending) (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:251-337)",
+    "Step 6: Create a Seq2SeqPeftTrainer class that uses the BlockOptimizer for fine-tuning (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:162-188)",
+    "Step 7: Implement the create_optimizer method to initialize the BlockOptimizer with the appropriate parameters (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:192-249)",
+    "Step 8: Define the finetuning arguments including block-specific parameters like switch_mode and switch_block_every (/workspace/llama-alpaca/src/llmtuner/hparams/finetuning_args.py:6-38)",
+    "Step 9: Implement the run_sft function to orchestrate the fine-tuning process (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:22-94)",
+    "Final Step: Ensure the run_exp function can handle different stages of training and route to the appropriate function (/workspace/llama-alpaca/src/llmtuner/tuner/tune.py:19-34)"
+  ],
+  "agent_instructions": "Your task is to implement a script for fine-tuning a LLaMA model using a novel block-wise optimization approach called BAdam (Block-wise Adam). This approach updates different blocks (layers) of the model in various orders to study their impact on convergence behavior.\n\nYou need to create:\n\n1. A main script that serves as an entry point for the fine-tuning process\n2. A block-wise optimizer that can update different parts of the model in different orders:\n   - Random reshuffling: Randomly selects which block to update next\n   - Ascending order: Updates blocks from input layer to output layer\n   - Descending order: Updates blocks from output layer to input layer\n\n3. A trainer class that uses this block-wise optimizer\n\nThe implementation should support command-line arguments to control:\n- The model to fine-tune (e.g., Llama-2-7b)\n- The dataset to use (e.g., alpaca_gpt4_en)\n- The ordering scheme (random, ascending, or descending)\n- How frequently to switch between blocks (e.g., every 100 steps)\n- Other standard training parameters (learning rate, batch size, etc.)\n\nThe goal is to compare the training convergence behavior across different block ordering schemes. The implementation should track and plot the training loss for analysis.",
+  "masked_source": [
+    "/workspace/llama-alpaca/src/train_bash.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/tune.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py",
+    "/workspace/llama-alpaca/src/llmtuner/hparams/finetuning_args.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/core/utils.py"
+  ]
+}

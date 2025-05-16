@@ -1,0 +1,83 @@
+[
+  {
+    "mode": "A",
+    "question": "How does the performance of a small language model (e.g., GPT-2) compare to a larger code-specialized model (e.g., CodeLlama-7b) on the RepoBench Python dataset for the 'cross_file_first' setting?",
+    "method": "Use the provided run.py script to run both models on the RepoBench Python dataset with the 'cross_file_first' setting, and then use the eval.py script to compare their performance using the provided metrics.",
+    "expected_outcome": "A comparison of performance metrics (Exact Match, Edit Similarity, and CodeBLEU scores) between the two models, showing how model size and specialization affect performance on repository-level code completion tasks.",
+    "source": [
+      "/workspace/run.py",
+      "/workspace/eval.py",
+      "/workspace/data/utils.py"
+    ],
+    "usage_instructions": "1. Run the first model (GPT-2) on the RepoBench Python dataset using run.py with the 'cross_file_first' setting:\n   - Load the dataset from HuggingFace using the dataset_name parameter\n   - Filter the dataset by date range and level\n   - Load the model and tokenizer\n   - For each data point, construct a prompt using the construct_prompt function\n   - Generate completions using the model\n   - Save the results to a file\n\n2. Run the second model (CodeLlama-7b) using the same procedure but with a different model_name parameter\n\n3. Evaluate both models using eval.py:\n   - Load the generated completions\n   - Calculate Exact Match (EM), Edit Similarity (ES), and CodeBLEU (CB) scores\n   - Compare the performance of both models\n\n4. Analyze the results to determine how model size and specialization affect performance on repository-level code completion tasks",
+    "requirements": [
+      "Step 1: Load the RepoBench Python dataset from HuggingFace (/workspace/run.py:147-147)",
+      "Step 2: Filter the dataset by date range and specified levels (/workspace/run.py:150-153)",
+      "Step 3: Load the first model (GPT-2) and its tokenizer (/workspace/run.py:156-162)",
+      "Step 4: Create a directory to save the model's results (/workspace/run.py:164-165)",
+      "Step 5: For each data point in the dataset, construct a prompt that includes repository context and code snippets (/workspace/data/utils.py:3-59, /workspace/run.py:170-170)",
+      "Step 6: Generate code completions using the model with specified parameters (temperature, top_p, max_new_tokens) (/workspace/run.py:172-173)",
+      "Step 7: Process the generated completions to extract the first non-comment line (/workspace/run.py:175-177)",
+      "Step 8: Save the results (predictions and ground truth) to a file (/workspace/run.py:179-180)",
+      "Step 9: Repeat steps 3-8 with the second model (CodeLlama-7b) (/workspace/run.py:131-180)",
+      "Step 10: Load the generated completions for both models (/workspace/eval.py:23-33)",
+      "Step 11: Calculate Exact Match (EM) scores for both models (/workspace/eval.py:43-43, /workspace/evaluation/metrics.py:4-27)",
+      "Step 12: Calculate Edit Similarity (ES) scores for both models (/workspace/eval.py:44-44, /workspace/evaluation/metrics.py:31-53)",
+      "Step 13: Calculate CodeBLEU (CB) scores for both models (/workspace/eval.py:45-45, /workspace/evaluation/metrics.py:96-129)",
+      "Step 14: Calculate weighted averages of the metrics across all data points (/workspace/eval.py:58-64)",
+      "Final Step: Compare the performance metrics between the two models to determine how model size and specialization affect performance on repository-level code completion tasks (/workspace/eval.py:53-64)"
+    ],
+    "agent_instructions": "Your task is to compare the performance of a small language model (GPT-2) to a larger code-specialized model (CodeLlama-7b) on the RepoBench Python dataset for the 'cross_file_first' setting. Follow these steps:\n\n1. Create a script to run language models on the RepoBench Python dataset:\n   - Load the RepoBench Python dataset from HuggingFace\n   - Filter the dataset by date range and levels (focus on the 'cross_file_first' setting)\n   - For each model (GPT-2 and CodeLlama-7b):\n     - Load the model and its tokenizer\n     - For each data point, construct a prompt that includes repository context and code snippets\n     - Generate code completions using the model with appropriate parameters (temperature, top_p, max tokens)\n     - Process the generated completions to extract meaningful code\n     - Save the results (predictions and ground truth) to files\n\n2. Create an evaluation script to compare the models:\n   - Load the generated completions for both models\n   - Implement and calculate the following metrics:\n     - Exact Match (EM): percentage of predictions that exactly match ground truth\n     - Edit Similarity (ES): measure of string similarity between predictions and ground truth\n     - CodeBLEU (CB): specialized metric for code quality evaluation\n   - Calculate weighted averages of the metrics across all data points\n   - Output a comparison of the performance metrics between the two models\n\n3. Analyze the results to determine how model size and specialization affect performance on repository-level code completion tasks.\n\nThe key components you'll need to implement include:\n- A prompt construction function that handles repository context and code snippets\n- Model inference with appropriate parameters\n- Evaluation metrics implementation (Exact Match, Edit Similarity, and CodeBLEU)\n- Results processing and comparison logic\n\nYou'll need to use libraries like transformers, datasets, and potentially specialized code evaluation libraries."
+  },
+  {
+    "mode": "A",
+    "question": "How does the performance of a code completion model vary across different prompt lengths (2k, 4k, 8k tokens) in the RepoBench dataset?",
+    "method": "Use the run.py script to evaluate a model on different levels of the RepoBench dataset, corresponding to different prompt lengths, and compare the performance across these levels.",
+    "expected_outcome": "A comparison of performance metrics (Exact Match, Edit Similarity, and CodeBLEU scores) across different prompt lengths, showing how the model's ability to leverage context changes with increasing context length.",
+    "source": [
+      "/workspace/run.py",
+      "/workspace/eval.py",
+      "/workspace/data/utils.py"
+    ],
+    "usage_instructions": "1. Run the model on the RepoBench dataset with the '2k' level:\n   - Use run.py with the levels parameter set to ['2k']\n   - Specify a model using the model_name parameter\n   - Set the max_token_nums parameter appropriately for the model\n   - Generate completions and save the results\n\n2. Repeat the process for the '4k' and '8k' levels, keeping all other parameters the same\n\n3. Evaluate the performance for each level using eval.py:\n   - Calculate Exact Match (EM), Edit Similarity (ES), and CodeBLEU (CB) scores for each level\n\n4. Compare the performance across different levels to analyze how the model's ability to leverage context changes with increasing context length",
+    "requirements": [
+      "Step 1: Load the RepoBench dataset from Hugging Face (/workspace/run.py:147-147)",
+      "Step 2: Filter the dataset by specified levels (2k, 4k, 8k) (/workspace/run.py:153-153)",
+      "Step 3: Load the model and tokenizer from Hugging Face (/workspace/run.py:156-162)",
+      "Step 4: For each data point in the dataset, construct a prompt by combining cross-file and in-file context, respecting token length constraints (/workspace/data/utils.py:3-59)",
+      "Step 5: Generate completions using the model with specified parameters (temperature, top_p, max_new_tokens) (/workspace/run.py:173-173)",
+      "Step 6: Process the model outputs to extract the first non-comment line of code (/workspace/run.py:176-177)",
+      "Step 7: Save the results (predictions and ground truth) to a file for each dataset level (/workspace/run.py:179-180)",
+      "Step 8: Calculate evaluation metrics (Exact Match, Edit Similarity, and CodeBLEU) for the generated completions (/workspace/eval.py:43-45)",
+      "Step 9: Report performance metrics for each level and calculate weighted averages across all levels (/workspace/eval.py:53-64)",
+      "Final Step: Compare the performance metrics across different prompt lengths (2k, 4k, 8k) to analyze how the model's ability to leverage context changes with increasing context length (/workspace/eval.py:53-64)"
+    ],
+    "agent_instructions": "Your task is to create a system that evaluates how a code completion model's performance varies across different prompt lengths (2k, 4k, 8k tokens) in the RepoBench dataset. This will help understand how effectively the model leverages increasing context lengths.\n\nYou need to:\n\n1. Create a script to run a code completion model on the RepoBench dataset:\n   - Load the RepoBench Python dataset from Hugging Face\n   - Filter the dataset to include only specific levels (2k, 4k, 8k) that represent different prompt lengths\n   - Load a pretrained code completion model and its tokenizer\n   - For each data point, construct a prompt that combines repository context and file context\n   - Ensure prompts respect the token length constraints of the model\n   - Generate completions using the model\n   - Extract the first non-comment line from each completion\n   - Save the results (predictions and ground truth) for each level\n\n2. Create an evaluation script that:\n   - Calculates three key metrics for each level:\n     * Exact Match (EM): percentage of predictions that exactly match the ground truth\n     * Edit Similarity (ES): measure of how similar the predictions are to the ground truth\n     * CodeBLEU (CB): code-specific metric that evaluates the quality of generated code\n   - Reports the metrics for each level\n   - Calculates weighted averages across all levels\n\n3. Create a utility module that handles prompt construction:\n   - Combine cross-file context (information from other files in the repository) and in-file context\n   - Handle token length constraints by truncating if necessary\n\nThe system should allow you to run the model separately on each level (2k, 4k, 8k) and then compare the performance metrics to analyze how the model's ability to leverage context changes with increasing context length."
+  },
+  {
+    "mode": "A",
+    "question": "How does the performance of a code completion model differ across the three settings in RepoBench: 'cross_file_first', 'cross_file_random', and 'in_file'?",
+    "method": "Use the run.py script to evaluate a model on all three settings of the RepoBench dataset, and compare the performance across these settings using the eval.py script.",
+    "expected_outcome": "A comparison of performance metrics (Exact Match, Edit Similarity, and CodeBLEU scores) across the three settings, showing how the model performs on different types of code completion tasks with varying cross-file dependencies.",
+    "source": [
+      "/workspace/run.py",
+      "/workspace/eval.py",
+      "/workspace/data/utils.py"
+    ],
+    "usage_instructions": "1. Run the model on all three settings of the RepoBench dataset:\n   - Use run.py with a specific model_name\n   - Set appropriate parameters for max_token_nums, temperature, top_p, and max_new_tokens\n   - The script will automatically run on all three settings: 'cross_file_first', 'cross_file_random', and 'in_file'\n   - Generate completions and save the results\n\n2. Evaluate the performance for each setting using eval.py:\n   - Specify the path to the results directory\n   - The script will calculate Exact Match (EM), Edit Similarity (ES), and CodeBLEU (CB) scores for each setting\n   - It will also calculate weighted averages across all settings\n\n3. Compare the performance across the three settings to analyze how the model handles different types of code completion tasks with varying cross-file dependencies",
+    "requirements": [
+      "Step 1: Load the RepoBench dataset with specified parameters (dataset name, date range, and levels) (/workspace/run.py:146-153)",
+      "Step 2: Load a pre-trained code completion model and its tokenizer from Hugging Face (/workspace/run.py:155-161)",
+      "Step 3: Create a directory to save the results (/workspace/run.py:163-165)",
+      "Step 4: For each subset in the dataset (cross_file_first, cross_file_random, in_file), construct prompts that include both cross-file context and in-file context (/workspace/run.py:167-170, /workspace/data/utils.py:3-59)",
+      "Step 5: Generate code completions using the model with specified parameters (temperature, top_p, max_new_tokens) (/workspace/run.py:172-173)",
+      "Step 6: Extract the first non-comment line from each generated completion (/workspace/run.py:175-177)",
+      "Step 7: Save the results (prediction and ground truth) to JSONL files, one for each subset (/workspace/run.py:179-180)",
+      "Step 8: Load the generated results for each subset (cross_file_first, cross_file_random, in_file) (/workspace/eval.py:14-33)",
+      "Step 9: Calculate performance metrics for each subset: Exact Match (EM), Edit Similarity (ES), and CodeBLEU (CB) (/workspace/eval.py:40-45)",
+      "Step 10: Print the performance metrics for each subset (/workspace/eval.py:53-55)",
+      "Step 11: Calculate and print weighted averages of the metrics across all subsets (/workspace/eval.py:58-64)"
+    ],
+    "agent_instructions": "Your task is to implement a system that evaluates a code completion model's performance across different settings in the RepoBench dataset. The system consists of two main components:\n\n1. A script to run a code completion model on the RepoBench dataset:\n   - The script should load a pre-trained code completion model from Hugging Face\n   - It should load the RepoBench dataset, which contains three settings: 'cross_file_first', 'cross_file_random', and 'in_file'\n   - For each setting, the script should:\n     - Construct prompts that include both cross-file context and in-file context\n     - Generate code completions using the model\n     - Extract the first non-comment line from each completion\n     - Save the results (predictions and ground truth) to separate files\n\n2. An evaluation script that:\n   - Loads the generated results for each setting\n   - Calculates three performance metrics for each setting:\n     - Exact Match (EM): Percentage of predictions that exactly match the ground truth\n     - Edit Similarity (ES): Similarity score based on edit distance\n     - CodeBLEU (CB): A specialized metric for code similarity\n   - Prints the metrics for each setting\n   - Calculates and prints weighted averages across all settings\n\nThe system should allow comparing how the model performs on different types of code completion tasks with varying cross-file dependencies. The implementation should handle proper prompt construction, token limits, and accurate metric calculation."
+  }
+]

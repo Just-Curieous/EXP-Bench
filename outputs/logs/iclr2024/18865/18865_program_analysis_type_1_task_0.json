@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by initializing a command-line interface that loads configuration from YAML files, handles model and data module instantiation, and sets up the output directory (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:19-34)",
+    "Step 2: Initialize the PDEModel with the specified model architecture (sinenet8-dual, FFNO-24-32-96-noShare, DilResNet-128-norm, Unetmod-64, or sinenet1-dual-128) and configuration parameters (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:36-39, /workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:52-97)",
+    "Step 3: Initialize the PDEDataModule with the appropriate dataset (INS, CNS, or SWE) and configuration parameters (/workspace/OpenPDE/SineNet/pdearena/pdearena/data/datamodule.py:44-87)",
+    "Step 4: Load the pre-trained model checkpoint specified by the user (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:36-39)",
+    "Step 5: Set up data normalization based on the dataset type (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:99-117)",
+    "Step 6: Prepare test data loaders for both one-step prediction and multi-step rollout evaluation (/workspace/OpenPDE/SineNet/pdearena/pdearena/data/datamodule.py:166-183)",
+    "Step 7: Perform one-step prediction evaluation by running the model on test inputs and computing error metrics (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:245-264)",
+    "Step 8: Perform multi-step rollout evaluation by iteratively applying the model to its own predictions and computing error metrics (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:203-243, /workspace/OpenPDE/SineNet/pdearena/pdearena/rollout.py:12-51)",
+    "Step 9: Log and report both one-step prediction errors and autoregressive multi-step rollout errors for the specified model and dataset (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:282-301)"
+  ],
+  "agent_instructions": "Create scripts for training and testing neural network models on fluid dynamics datasets. The system should compare different model architectures (SineNet-8, F-FNO, DIL-RESNET, U-NET-128, U-NET-MOD) across three fluid dynamics datasets (Incompressible Navier-Stokes, Compressible Navier-Stokes, and Shallow Water Equations).\n\nThe test script should:\n1. Accept command-line arguments for configuration file path, data directory, model name, and checkpoint path\n2. Load the appropriate dataset based on the configuration\n3. Initialize the specified model architecture\n4. Load pre-trained model weights from the checkpoint\n5. Evaluate the model on test data using two metrics:\n   - One-step prediction error: How well the model predicts the next state given the current state\n   - Multi-step rollout error: How well the model performs when its predictions are fed back as inputs for future predictions\n6. Report performance metrics for both evaluation methods\n\nThe training script should:\n1. Accept similar command-line arguments as the test script\n2. Set up the training environment and output directories\n3. Initialize the model and data module\n4. Train the model using the specified configuration\n5. Save checkpoints during training\n6. Evaluate the model on validation data during training\n\nBoth scripts should support different model architectures and datasets through configuration files, and handle data normalization appropriately for each dataset type.",
+  "masked_source": [
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/train.py",
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/test.py"
+  ]
+}

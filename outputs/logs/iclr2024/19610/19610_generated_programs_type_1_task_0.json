@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/tools/dist_train.sh",
+        "/workspace/tools/dist_test.sh",
+        "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py"
+    ],
+    "usage_instructions": "1. First, ensure the OpenLane-V2 dataset is properly set up according to the instructions in /workspace/docs/setup.md. 2. Train the TopoMLP model with ResNet-50 backbone on OpenLane-V2 subset A for 24 epochs using the command: './tools/dist_train.sh projects/configs/topomlp_setA_r50_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_r50_wo_yolov8'. This will train the model with the specified configuration (ResNet-50 backbone, images resized to 1550×2048 and down-sampled by a factor of 0.5 as specified in the config). 3. After training is complete, evaluate the model using: './tools/dist_test.sh projects/configs/topomlp_setA_r50_wo_yolov8.py ./work_dirs/topomlp_setA_r50_wo_yolov8/latest.pth 8 --eval=bbox'. This will output the performance metrics including DETl, DETt, TOPll, TOPlt, and the overall OLS score, which can be compared with the baseline methods (STSU, VectorMapNet, MapTR, TopoNet) as shown in the training_inference.md documentation."
+}

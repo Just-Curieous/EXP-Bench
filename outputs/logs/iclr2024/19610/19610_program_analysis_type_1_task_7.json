@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including config file path, checkpoint path, evaluation metrics, and other test parameters (/workspace/tools/test.py:38-129)",
+    "Step 2: Load the configuration file and apply any command line overrides (/workspace/tools/test.py:147-151)",
+    "Step 3: Set up multi-processing and CUDA settings for efficient testing (/workspace/tools/test.py:154-158)",
+    "Step 4: Configure GPU usage and distributed testing environment (/workspace/tools/test.py:162-176)",
+    "Step 5: Set up the test dataloader configuration with appropriate batch size and worker settings (/workspace/tools/test.py:178-198)",
+    "Step 6: Set random seeds for reproducibility if specified (/workspace/tools/test.py:200-202)",
+    "Step 7: Build the dataset and dataloader for testing (/workspace/tools/test.py:205-206)",
+    "Step 8: Build the model according to the configuration (/workspace/tools/test.py:209-210)",
+    "Step 9: Load the checkpoint into the model (/workspace/tools/test.py:214)",
+    "Step 10: Apply model optimizations like FP16 or conv-bn fusion if specified (/workspace/tools/test.py:211-216)",
+    "Step 11: Run inference on the test dataset using either single or multi-GPU testing (/workspace/tools/test.py:230-245)",
+    "Step 12: Save results to output file if specified (/workspace/tools/test.py:249-251)",
+    "Step 13: Evaluate model performance using the dataset's evaluate method with the specified metrics (/workspace/tools/test.py:252-264)"
+  ],
+  "agent_instructions": "Create a script to evaluate the impact of lane coordinate embedding and L1 loss for intersection point supervision on topology reasoning in autonomous driving perception. The script should:\n\n1. Accept command line arguments for configuration file path, model checkpoint path, evaluation metrics, and other test parameters.\n\n2. Load a model configuration that includes:\n   - A lane detection head with a configurable position embedding feature\n   - A traffic element detection head\n   - A topology reasoning component with configurable L1 loss for intersection point supervision\n\n3. Create three configuration variants to compare:\n   - Full model with both position embedding and L1 loss for intersection points\n   - Model without position embedding (disable the position embedding feature)\n   - Model without L1 loss (set the L1 loss weight to zero)\n\n4. For each configuration variant:\n   - Load the appropriate pre-trained model checkpoint\n   - Build the dataset and dataloader for testing\n   - Run inference on the test dataset\n   - Evaluate performance using metrics for detection (DET) and topology (TOP) reasoning\n\n5. The script should support both single-GPU and multi-GPU distributed testing for efficiency.\n\n6. Output the evaluation results including detection metrics (DETl, DETt) and topology metrics (TOPll, TOPlt, OLS) for each configuration variant to compare their performance.\n\nThe goal is to quantitatively assess how lane coordinate embedding and L1 loss for intersection point supervision contribute to the model's topology reasoning capabilities.",
+  "masked_source": [
+    "/workspace/tools/test.py"
+  ]
+}

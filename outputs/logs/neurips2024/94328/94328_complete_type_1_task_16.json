@@ -1,0 +1,159 @@
+{
+  "questions": [
+    {
+      "question": "How much peak memory saving does QuaRot achieve during the decoding stage of a single transformer block compared to the FP16 baseline, across different prefill sequence lengths? Do the savings scale with sequence length and model architecture?",
+      "method": "#### Hardware\n\n- **GPU**: NVIDIA RTX 3090\n- **CUDA**: Version 12.1\n- **Frameworks**: PyTorch + CUTLASS backend\n- **Memory Measurement Tool**: Use `torch.cuda.max_memory_allocated()`\n\n#### Models\n\n- LLAMA2-7B\n- LLAMA2-70B (uses grouped-query attention \u2192 smaller KV cache)\n\n**Important**: The experiment is done on a **single transformer block**, not the full model.\n\n#### Metric\n\n- **Peak memory usage during decoding**\n  - Fixed: **Decode 50 tokens**\n  - **Prefill sequence lengths**: 256, 512, 1024, 2048, 4096\n- Measure for both:\n  - **FP16 baseline**\n  - **QuaRot A4W4KV4** (4-bit weight, activation, and KV cache)\n\nCompute: `memory_saving_factor = fp16_peak_mem / quaroT_peak_mem`\n\n#### Experiment Steps\n\n1. Environment Setup: Install PyTorch with CUDA 12.1 support\n\n   ```bash\n   pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu121\n   ```\n\n   - Install [CUTLASS](https://github.com/NVIDIA/cutlass) or build QuaRot with CUTLASS backends.\n\n   - Clone and build QuaRot repo:\n\n     ```bash\n     git clone https://github.com/spcl/QuaRot\n     cd QuaRot\n     # Follow setup instructions for building CUDA kernels\n     ```\n\n2. Model Preparation\n\n   - Extract **a single transformer block** from LLAMA2-7B and LLAMA2-70B\n   - Implement two variants:\n     - **FP16 baseline**: default PyTorch implementation\n     - **QuaRot**:\n       - Quantized weights (INT4)\n       - Quantized KV cache (4-bit) with grouped-query attention enabled for 70B\n       - Memory-efficient Hadamard-transformed `W_down`\n\n3. KV Cache Setup\n\n   - Simulate a 2048-token **prefill** followed by **50-token decoding**\n   - For each sequence length (256, 512, 1024, 2048, 4096), allocate KV cache for that context length\n\n4. Memory Measurement\n\n   ```python\n   torch.cuda.reset_peak_memory_stats()\n   with torch.no_grad():\n       model.decode(input_tokens)  # 50-token decoding\n   mem_used = torch.cuda.max_memory_allocated()\n   ```\n\n5. Batch Size\n\n   - Fixed at **16** for all tests\n\n6. Repeat for Both Models\n\n   - LLAMA2-7B\n   - LLAMA2-70B",
+      "expected_outcome": "Result should look similar to figure 4 right in the paper.\n\n| Sequence Length | 7B Memory Saving | 70B Memory Saving |\n| --------------- | ---------------- | ----------------- |\n| 256             | 3.63\u00d7            | 3.89\u00d7             |\n| 512             | 3.66\u00d7            | 3.89\u00d7             |\n| 1024            | 3.70\u00d7            | 3.89\u00d7             |\n| 2048            | 3.72\u00d7            | 3.89\u00d7             |\n| 4096            | 3.75\u00d7            | 3.89\u00d7             |\n\n- LLAMA2-70B uses grouped-query attention, so its KV cache is more compact \u2192 higher and more consistent savings\n- LLAMA2-7B's memory savings scale with sequence length (larger KV cache = more benefit from quantization)\n- Measured at the single-layer level, but effect expected to amplify with full models",
+      "design_complexity": {
+        "constant_variables": {
+          "hardware": "NVIDIA RTX 3090, CUDA 12.1, PyTorch with CUTLASS backend",
+          "measurement_tool": "torch.cuda.max_memory_allocated()",
+          "batch_size": "16",
+          "decode_tokens": "50-token decoding"
+        },
+        "independent_variables": {
+          "model_architecture": [
+            "LLAMA2-7B",
+            "LLAMA2-70B (with grouped-query attention)"
+          ],
+          "implementation_variant": [
+            "FP16 baseline",
+            "QuaRot A4W4KV4 (4-bit weight, activation and KV cache)"
+          ],
+          "prefill_sequence_length": [
+            "256",
+            "512",
+            "1024",
+            "2048",
+            "4096"
+          ]
+        },
+        "dependent_variables": {
+          "peak_memory_usage": "Peak memory usage during decoding (used to compute memory saving factor fp16_peak_mem / QuaRot_peak_mem)"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "KV_cache_configuration": "While the KV cache is quantified with a group size of 128 and described as being more compact for LLAMA2-70B due to grouped-query attention, the exact impact of KV cache configuration on memory is not fully detailed.",
+          "Measurement_scope": "The experiment is performed on a single transformer block; it is not explicitly clear how these measurements would translate to full-model performance.",
+          "Prefill_setup": "There is a mention of simulating a 2048-token prefill before decoding in one step, yet the independent variable varies the prefill sequence length, which could be seen as ambiguous."
+        },
+        "possible_modifications": {
+          "modification_batch_size": [
+            "Consider introducing batch size as a variable (e.g., different batch sizes beyond fixed 16) to see additional scaling effects."
+          ],
+          "modification_quantization_precision": [
+            "Explore different bit-widths or quantization schemes as additional variables."
+          ],
+          "modification_full_model": [
+            "Extend experiments to the entire model rather than a single transformer block to capture system-level impacts."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "GPU: NVIDIA RTX 3090",
+          "CUDA 12.1",
+          "PyTorch with CUTLASS backend",
+          "Memory measurement tool: torch.cuda.max_memory_allocated()",
+          "Models: LLAMA2-7B and LLAMA2-70B (with grouped-query attention)",
+          "Implementation variants: FP16 baseline and QuaRot A4W4KV4 (quantized model)"
+        ],
+        "setup_steps": [
+          "Install PyTorch with CUDA 12.1 support and set up CUTLASS (clone and build the QuaRot repository, build CUDA kernels)",
+          "Prepare models by extracting a single transformer block from LLAMA2-7B and LLAMA2-70B",
+          "Implement two variants: FP16 baseline (default PyTorch implementation) and QuaRot variant (with 4-bit quantization for weights, activations, and KV cache)",
+          "Set up the KV cache simulation by pre-allocating KV cache for different prefill sequence lengths (256, 512, 1024, 2048, 4096) and performing a fixed 50-token decoding",
+          "Measure peak memory usage during decoding using torch.cuda.reset_peak_memory_stats() followed by torch.cuda.max_memory_allocated()",
+          "Run experiments with a fixed batch size of 16 for both models"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Software Dependencies Integration",
+            "description": "Integrating PyTorch, CUTLASS, and custom QuaRot CUDA kernels introduces additional complexity due to differing build and runtime requirements."
+          },
+          {
+            "source": "Model Variant Implementation",
+            "description": "Extracting a single transformer block from large models and ensuring consistency between the FP16 and quantized variants require careful handling to maintain experimental validity."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "KV cache configuration: The impact of the grouping (e.g., group size of 128) on memory usage is mentioned but not fully detailed.",
+          "Measurement Scope: It is unclear how the measurements from a single transformer block translate to full-model performance."
+        ],
+        "ambiguous_setup_steps": [
+          "Prefill simulation: There is ambiguity in the setup since the experiment mentions simulating a 2048-token prefill while also varying the prefill sequence length.",
+          "Translation of per-block memory savings to full-model impact is not explicitly clarified."
+        ],
+        "possible_modifications": {
+          "modification_batch_size": [
+            "Consider introducing batch size as a variable (e.g., evaluating different batch sizes beyond the fixed 16) to observe additional scaling effects."
+          ],
+          "modification_quantization_precision": [
+            "Explore different bit-widths or quantization schemes as additional variables to assess their impact on memory savings."
+          ],
+          "modification_full_model": [
+            "Extend experiments to the entire model rather than a single transformer block to capture system-level impacts more accurately."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Consider extending the evaluation from a single transformer block to the full model to capture system-level memory savings, even though this would require more computational resources.",
+            "If hardware access becomes limited, one could enforce experiments on models with reduced size or use only a subset of the reported prefill sequence lengths."
+          ],
+          "time_constraints": [
+            "Introduce varying batch sizes (instead of a fixed batch size of 16) to evaluate the impact on speedup and memory saving, even though the current setup fixes batch size for consistency."
+          ],
+          "money_constraints": [
+            "In scenarios with budget limitations on GPU access, restrict experiments to fewer prefill sequence lengths or to a single model variant, acknowledging that this may affect the comprehensiveness of the reported memory savings."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Non-deterministic GPU operations and runtime measurement variability",
+        "description": "Peak memory usage measured with torch.cuda.max_memory_allocated() may vary slightly between runs due to background GPU processes, scheduling, and inherent variability in CUDA kernel execution and memory allocation routines. These random factors can introduce variations in the observed memory saving factors even when the hardware and software configurations remain constant.",
+        "impact": "Small run-to-run variations in the recorded peak memory usage may affect the exact computed memory saving factors (e.g., 3.63\u00d7 to 3.75\u00d7 for LLAMA2-7B), leading to uncertainty in comparisons between FP16 baseline and QuaRot implementations.",
+        "possible_modifications": [
+          "Repeat each measurement multiple times and report average values with error bars or confidence intervals to capture the random variability.",
+          "Control or isolate extraneous GPU activities during experiments to mitigate background interference.",
+          "Aggregate results over several runs to provide statistically robust estimates of the memory saving factor."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Experimental design choices and model configuration assumptions",
+        "description": "Systematic uncertainties stem from aspects of the experimental setup such as measuring a single transformer block instead of the full model, ambiguities in the prefill simulation (e.g., simulating a 2048-token prefill yet varying prefill sequence lengths), and the fixed KV cache configuration (such as group size 128 and grouped-query attention). These systematic factors can bias the measured memory savings and limit the generalizability of the results to full-model performance.",
+        "impact": "The design choices might lead to consistent over- or under-estimation of memory savings when extrapolating single-block measurements to entire model architectures, and may not fully reflect performance variations across different batch sizes or quantization schemes.",
+        "possible_modifications": [
+          "Extend the evaluation to the entire model rather than a single transformer block to better capture system-level impacts.",
+          "Experiment with different KV cache configurations and prefill simulation setups to assess the sensitivity of memory savings to these systematic factors.",
+          "Introduce additional variables, such as varying the batch size or quantization precision, to identify and mitigate bias in the experimental measurements."
+        ]
+      },
+      "source": [
+        "/workspace/e2e/benchmark_layer.py"
+      ],
+      "usage_instructions": "To run the experiment, execute the benchmark_layer.py script with different prefill sequence lengths and for both models. First, uncomment the LLAMA2-70B model in the model_configs list (line 17). Then run the following commands:\n\n```bash\npython /workspace/e2e/benchmark_layer.py --batch_size 16 --prefill_seq_len 256 --decode_steps 50\npython /workspace/e2e/benchmark_layer.py --batch_size 16 --prefill_seq_len 512 --decode_steps 50\npython /workspace/e2e/benchmark_layer.py --batch_size 16 --prefill_seq_len 1024 --decode_steps 50\npython /workspace/e2e/benchmark_layer.py --batch_size 16 --prefill_seq_len 2048 --decode_steps 50\npython /workspace/e2e/benchmark_layer.py --batch_size 16 --prefill_seq_len 4096 --decode_steps 50\n```\n\nThe script will output the memory saving factor (fp16_peak_mem / quaroT_peak_mem) for each sequence length and model. The output will include lines like 'Memory saving: X.XXXx' which directly answers the question.",
+      "requirements": [
+        "Step 1: Install the QuaRot package by running 'pip install -e .' in the repository root directory (/workspace/setup.py:46-74)",
+        "Step 2: Uncomment the LLAMA2-70B model in the model_configs list by removing the comment symbol from line 17 in benchmark_layer.py (/workspace/e2e/benchmark_layer.py:14-18)",
+        "Step 3: Run the benchmark script with batch size 16, prefill sequence length 256, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+        "Step 4: Run the benchmark script with batch size 16, prefill sequence length 512, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+        "Step 5: Run the benchmark script with batch size 16, prefill sequence length 1024, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+        "Step 6: Run the benchmark script with batch size 16, prefill sequence length 2048, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+        "Step 7: Run the benchmark script with batch size 16, prefill sequence length 4096, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+        "Step 8: Record the memory saving factor (fp16_peak_mem / quaroT_peak_mem) reported for each sequence length (/workspace/e2e/benchmark_layer.py:217-221)"
+      ],
+      "agent_instructions": "You need to run an experiment to measure the memory saving factor of the QuaRot 4-bit quantization scheme compared to FP16 for LLM inference. First, install the QuaRot package from the repository. Then, modify the benchmark_layer.py script to uncomment the LLAMA2-70B model in the model_configs list. Finally, run the benchmark script with different prefill sequence lengths (256, 512, 1024, 2048, 4096) using a batch size of 16 and 50 decode steps. The script will output the memory saving factor for each configuration.",
+      "masked_source": [
+        "/workspace/e2e/benchmark_layer.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with PyTorch and required libraries including transformers, datasets, and accelerate (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Obtain access to Hugging Face token for downloading Llama-2 models, which are gated models requiring authentication (/workspace/fake_quant/model_utils.py:40-49)",
+    "Step 3: Download the WikiText-2 dataset which will be used for both calibration and evaluation (/workspace/fake_quant/data_utils.py:5-28)",
+    "Step 4: Load the specified Llama-2 model (7B, 13B, or 70B) from Hugging Face using the provided token (/workspace/fake_quant/main.py:20)",
+    "Step 5: Apply layer normalization fusion to the model by fusing linear operations in LayerNorm into adjacent linear blocks (/workspace/fake_quant/main.py:26)",
+    "Step 6: Apply Hadamard rotation to the model weights using the rotation_utils module (/workspace/fake_quant/main.py:27)",
+    "Step 7: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30)",
+    "Step 8: Configure Hadamard transformation for down_proj and o_proj layers (/workspace/fake_quant/main.py:31-45)",
+    "Step 9: Prepare the calibration dataset (WikiText-2) for weight quantization (/workspace/fake_quant/main.py:62-65)",
+    "Step 10: Apply 4-bit weight quantization using GPTQ with group size 128 and weight clipping (/workspace/fake_quant/main.py:67-68)",
+    "Step 11: Configure 4-bit activation quantization for model inputs with group size 128 (/workspace/fake_quant/main.py:79-109)",
+    "Step 12: Configure 4-bit quantization for key and value projections in attention layers (/workspace/fake_quant/main.py:91-95, 111-124)",
+    "Step 13: Load the WikiText-2 evaluation dataset (/workspace/fake_quant/main.py:127-134)",
+    "Step 14: Evaluate the quantized model on WikiText-2 to measure perplexity (/workspace/fake_quant/main.py:137-139)",
+    "Step 15: Compare the perplexity results with baseline models to verify that QuaRot-128G achieves comparable or better perplexity than Atom-128G (/workspace/fake_quant/eval_utils.py:147-150)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment from a research paper that compares QuaRot-128G with Atom-128G on WikiText-2 perplexity using Llama-2 models. You need to understand and run a quantization framework that applies Hadamard rotation and 4-bit quantization to large language models.\n\nYou should:\n1. Understand the main script and its dependencies\n2. Set up the necessary environment and obtain access to Hugging Face models\n3. Run the experiment with the provided command for at least one of the Llama-2 models (7B, 13B, or 70B)\n4. Interpret the perplexity results to determine if QuaRot-128G achieves comparable or better performance than Atom-128G\n\nThe command to run the experiment is:\n/bin/python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip --w_groupsize 128 --a_groupsize 128 --eval_dataset wikitext2",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

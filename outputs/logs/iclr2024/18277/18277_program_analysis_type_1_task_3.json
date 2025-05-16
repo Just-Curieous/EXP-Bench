@@ -1,0 +1,29 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with PyTorch and required dependencies including sentencepiece (/workspace/alpaca_finetuning_v1/llama/tokenizer.py:8-8)",
+    "Step 2: Download and prepare the LLaMA model files, ensuring they are organized in the expected directory structure with consolidated.00.pth and params.json files (/workspace/alpaca_finetuning_v1/models_llama_adapter.py:13-17)",
+    "Step 3: Prepare the tokenizer model file that should be placed in the LLaMA model directory (/workspace/alpaca_finetuning_v1/models_llama_adapter.py:26-26)",
+    "Step 4: Prepare the Alpaca instruction dataset in JSON format with instruction, input, and output fields (/workspace/alpaca_finetuning_v1/finetuning.py:36-39)",
+    "Step 5: Create an output directory to store checkpoints and logs (/workspace/alpaca_finetuning_v1/finetuning.py:292-293)",
+    "Step 6: Initialize the distributed training environment for multi-GPU training (/workspace/alpaca_finetuning_v1/finetuning.py:151-151)",
+    "Step 7: Load the instruction dataset and create data loaders for training and validation (/workspace/alpaca_finetuning_v1/finetuning.py:165-212)",
+    "Step 8: Initialize the LLaMA model with adapter components (/workspace/alpaca_finetuning_v1/finetuning.py:215-215)",
+    "Step 9: Set up the adapter configuration with specified layer number and adapter length (/workspace/alpaca_finetuning_v1/models_llama_adapter.py:19-24)",
+    "Step 10: Configure the optimizer with appropriate learning rate and weight decay (/workspace/alpaca_finetuning_v1/finetuning.py:238-241)",
+    "Step 11: Train the model for the specified number of epochs with a cosine learning rate schedule (/workspace/alpaca_finetuning_v1/finetuning.py:245-285)",
+    "Step 12: Save model checkpoints periodically during training (/workspace/alpaca_finetuning_v1/finetuning.py:261-269)",
+    "Step 13: Repeat the training process with different adapter layer configurations (L=10, 20, 30, 32) (/workspace/alpaca_finetuning_v1/finetuning.py:98-98)",
+    "Step 14: Evaluate the trained models on the ScienceQA validation set to measure answering accuracy (/workspace/alpaca_finetuning_v1/finetuning.py:257-259)",
+    "Final Step: Compare the performance of different adapter layer configurations to determine the optimal setting (/workspace/alpaca_finetuning_v1/finetuning.py:98-100)"
+  ],
+  "usage_instructions": "# LLaMA Adapter Fine-tuning Experiment\n\n## Prerequisites\n1. Install required dependencies: PyTorch, sentencepiece, and other necessary packages\n2. Download the LLaMA-7B model files and place them in a directory structure as follows:\n   - $TARGET_FOLDER/7B/consolidated.00.pth\n   - $TARGET_FOLDER/7B/params.json\n   - $TARGET_FOLDER/tokenizer.model\n3. Prepare the Alpaca instruction dataset (alpaca_data.json) with instruction-input-output format\n\n## Running the Experiment\nTo run the experiment with different numbers of layers (L) for inserting adaptation prompts, use the following command for each configuration:\n\n```bash\ntorchrun --nproc_per_node 8 /workspace/alpaca_finetuning_v1/finetuning.py \\\n    --model Llama7B_adapter \\\n    --llama_model_path $TARGET_FOLDER/ \\\n    --data_path $DATA_PATH/alpaca_data.json \\\n    --adapter_layer 10 \\\n    --adapter_len 10 \\\n    --max_seq_len 512 \\\n    --batch_size 4 \\\n    --epochs 5 \\\n    --warmup_epochs 2 \\\n    --blr 9e-3 \\\n    --weight_decay 0.02 \\\n    --output_dir ./checkpoint_L10/\n```\n\n## Experiment Variations\nRepeat the command for different adapter layer configurations by changing the following parameters:\n\n1. For L=10: `--adapter_layer 10 --output_dir ./checkpoint_L10/`\n2. For L=20: `--adapter_layer 20 --output_dir ./checkpoint_L20/`\n3. For L=30: `--adapter_layer 30 --output_dir ./checkpoint_L30/`\n4. For L=32: `--adapter_layer 32 --output_dir ./checkpoint_L32/`\n\n## Evaluation\nAfter training each model configuration, evaluate them on the ScienceQA validation set to measure answering accuracy. The paper's ablation study (Table 4) confirms that increasing the layer numbers from 10 to 30 leads to significant improvement in accuracy, with L = 30 being optimal.\n\n## Notes\n- The experiment uses distributed training across 8 GPUs\n- Each model is trained for 5 epochs with 2 warmup epochs\n- Only the adapter parameters are fine-tuned while the base LLaMA model parameters remain frozen\n- The adapter length is set to 10 for all configurations",
+  "masked_source": [
+    "/workspace/alpaca_finetuning_v1/finetuning.py",
+    "/workspace/alpaca_finetuning_v1/models_llama_adapter.py",
+    "/workspace/alpaca_finetuning_v1/engine_finetuning.py",
+    "/workspace/alpaca_finetuning_v1/util/misc.py",
+    "/workspace/alpaca_finetuning_v1/util/lr_sched.py",
+    "/workspace/alpaca_finetuning_v1/llama/model.py",
+    "/workspace/alpaca_finetuning_v1/llama/tokenizer.py"
+  ]
+}

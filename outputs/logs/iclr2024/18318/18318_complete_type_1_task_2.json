@@ -1,0 +1,45 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Object-agnostic prompt learning leads to better generalization of abnormality and normality detection than object-aware prompt learning.",
+      "method": "Set up a controlled experiment by implementing two variants of the AnomalyCLIP model: one with the standard object-agnostic prompt templates and one with object-aware prompt templates. Use identical training configurations and evaluate both versions on a common set of industrial datasets (e.g., MVTec AD, VisA, MPDD, BTAD) and, if possible, additional datasets (such as medical images from Brain HeadCT and BrainMRI as shown in Table 14). The evaluation should include image-level metrics (AUROC, AP) and pixel-level metrics (AUROC, PRO/AUPRO). In addition to overall performance, perform ablation studies to analyze the impact of individual components: (1) assess object ablation by blocking out object semantics (referencing Fig. 9) to determine the contribution of object-agnostic prompts; (2) analyze the effect of excluding modules such as DPAM, textual prompt tuning (T3), and multi-layer local visual semantics (T4) by comparing the corresponding performance drops (e.g., pixel-level AUROC falling from 91.1% to 84.3% and image-level AUROC from 91.5% to 65.6% in certain cases). Document and compare the similarity between text prompt embeddings and image features as indicated in related figures to reinforce the evaluation.",
+      "expected_outcome": "The object-agnostic prompt learning variant is expected to exhibit consistent and significant performance gains over the object-aware version in both image-level and pixel-level anomaly detection. Specifically, an improvement in AUROC and AP metrics across datasets (e.g., from approximately 84.3% to 91.1% AUROC at the pixel level and from 65.6% to 91.5% AUROC at the image level) would validate that removing object-specific biases enables the model to capture more generic abnormality cues essential for ZSAD. Moreover, ablation studies should confirm that the inclusion of components such as DPAM, learnable textual prompt tuning, and multi-layer local visual semantics contributes to the overall performance boost.",
+      "subsection_source": "4.2 MAIN RESULTS",
+      "source": [
+        "/workspace/train.py",
+        "/workspace/test.py",
+        "/workspace/prompt_ensemble.py"
+      ],
+      "usage_instructions": "To compare object-agnostic prompt learning with object-aware prompt learning in AnomalyCLIP, you need to modify the prompt templates in prompt_ensemble.py and then run the training and testing scripts. First, modify the prompt_ensemble.py file to switch between object-agnostic and object-aware prompts by editing the self.state_normal_list and self.state_anomaly_list variables (around lines 103-109). For object-agnostic prompts, use the default implementation with generic templates like '{}' and 'damaged {}'. For object-aware prompts, modify these to include object-specific templates. Then run train.sh to train both variants with identical configurations, and test.sh to evaluate them on industrial datasets (MVTec AD, VisA, MPDD, BTAD) and medical datasets. The scripts will output image-level metrics (AUROC, AP) and pixel-level metrics (AUROC, PRO/AUPRO) for both variants, allowing direct comparison of their performance.",
+      "requirements": [
+        "Step 1: Define a prompt learner class that manages text prompts for normal and anomalous states of objects (/workspace/prompt_ensemble.py:85-264)",
+        "Step 2: Initialize the prompt learner with configurable parameters for prompt length and embedding depth (/workspace/prompt_ensemble.py:86-102)",
+        "Step 3: Define templates for normal and anomalous states that can be either object-agnostic or object-aware (/workspace/prompt_ensemble.py:103-109)",
+        "Step 4: Process the templates to create tokenized prompts and embeddings (/workspace/prompt_ensemble.py:110-214)",
+        "Step 5: Implement a forward method that combines prefix, context, and suffix to create complete prompts (/workspace/prompt_ensemble.py:218-264)",
+        "Step 6: Load a pre-trained vision-language model (AnomalyCLIP) for anomaly detection (/workspace/train.py:32-33)",
+        "Step 7: Create a dataset loader for training data (/workspace/train.py:35-36)",
+        "Step 8: Initialize the prompt learner with the model (/workspace/train.py:39-42)",
+        "Step 9: Set up optimization with appropriate loss functions (focal loss and dice loss) (/workspace/train.py:44-48)",
+        "Step 10: Implement the training loop that processes batches of images (/workspace/train.py:54-106)",
+        "Step 11: Extract image features using the vision encoder (/workspace/train.py:73-74)",
+        "Step 12: Generate text features using the prompt learner (/workspace/train.py:77-80)",
+        "Step 13: Compute similarity between image and text features (/workspace/train.py:82-84)",
+        "Step 14: Calculate pixel-level similarity maps for anomaly detection (/workspace/train.py:87-94)",
+        "Step 15: Compute combined losses (image-level and pixel-level) (/workspace/train.py:96-102)",
+        "Step 16: Update model parameters and save checkpoints periodically (/workspace/train.py:103-114)",
+        "Step 17: Load the trained model and prompt learner for testing (/workspace/test.py:66-71)",
+        "Step 18: Generate text features from the prompt learner (/workspace/test.py:73-76)",
+        "Step 19: Process test images and extract features (/workspace/test.py:80-91)",
+        "Step 20: Compute anomaly scores and maps using similarity between image and text features (/workspace/test.py:93-112)",
+        "Step 21: Calculate evaluation metrics (image-level AUROC/AP and pixel-level AUROC/AUPRO) (/workspace/test.py:115-173)"
+      ],
+      "agent_instructions": "Your task is to implement a system for comparing object-agnostic and object-aware prompt learning in AnomalyCLIP for industrial anomaly detection. You need to create three Python scripts:\n\n1. A prompt ensemble module that:\n   - Defines a class for managing text prompts for normal and anomalous states\n   - Allows configuring prompt templates that can be either object-agnostic (generic templates like '{}' and 'damaged {}') or object-aware (templates specific to object types)\n   - Processes these templates to create tokenized prompts and embeddings\n   - Combines prefix, context, and suffix to create complete prompts\n\n2. A training script that:\n   - Loads a pre-trained vision-language model (AnomalyCLIP)\n   - Creates a dataset loader for training data\n   - Initializes the prompt learner with the model\n   - Sets up optimization with appropriate loss functions (focal loss and dice loss)\n   - Implements a training loop that processes batches of images\n   - Extracts image features and generates text features\n   - Computes similarity between image and text features\n   - Calculates pixel-level similarity maps for anomaly detection\n   - Computes combined losses (image-level and pixel-level)\n   - Updates model parameters and saves checkpoints periodically\n\n3. A testing script that:\n   - Loads the trained model and prompt learner\n   - Generates text features from the prompt learner\n   - Processes test images and extracts features\n   - Computes anomaly scores and maps using similarity between image and text features\n   - Calculates evaluation metrics (image-level AUROC/AP and pixel-level AUROC/AUPRO)\n\nThe system should be able to switch between object-agnostic prompts (using generic templates) and object-aware prompts (using object-specific templates) by modifying the prompt templates in the prompt ensemble module. This will allow for direct comparison of their performance on industrial datasets (MVTec AD, VisA, MPDD, BTAD) and medical datasets.",
+      "masked_source": [
+        "/workspace/train.py",
+        "/workspace/test.py",
+        "/workspace/prompt_ensemble.py"
+      ]
+    }
+  ]
+}

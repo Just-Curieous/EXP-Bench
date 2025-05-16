@@ -1,0 +1,3 @@
+{
+    "no_answer": "While the repository contains scripts to run Buffer of Thoughts (BoT) with different models on the three tasks mentioned (Game of 24, Word List Sorting, and Checkmate-in-One), it doesn't provide a straightforward way to run the experiment comparing LLaMA3-8B and LLaMA3-70B with and without BoT. The run_benchmarks.py script only implements the BoT framework and doesn't have an option to run baseline models without BoT. To properly answer the experiment question, one would need to modify the code to implement baseline runs without BoT or create additional scripts to run the models in standard prompt-only mode."
+}

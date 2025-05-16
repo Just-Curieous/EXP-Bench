@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Load a list of celebrities from a predefined source (find_non_reversals_parents.py:64)",
+    "Step 2: For each celebrity, query a language model (GPT-4) to identify their parents (find_non_reversals_parents.py:67-67)",
+    "Step 3: For each identified parent-child pair, test if the relationship can be reversed by querying if the model can identify the child when given the parent (find_non_reversals_parents.py:69-70)",
+    "Step 4: Calculate statistics on how many relationships can be reversed and save the parent-child pairs dataset to a CSV file (find_non_reversals_parents.py:72-83)",
+    "Step 5: Load the parent-child pairs dataset for testing with different models (test_parent_child_pairs.py:224)",
+    "Step 6: For chat-based models (GPT-3.5, GPT-4), test their ability to identify parents given children and children given parents by generating multiple responses and calculating the percentage of correct answers (test_parent_child_pairs.py:108-117)",
+    "Step 7: For completion-based models (LLaMA models, davinci), calculate log probabilities for both parent-to-child and child-to-parent queries (test_parent_child_pairs.py:149-184)",
+    "Step 8: Save the test results for each model to separate CSV files (test_parent_child_pairs.py:228)",
+    "Step 9: Load the test results for all models and combine them into a single dataframe (plot_parent_child_reversals.ipynb:19-293)",
+    "Step 10: Calculate the mean probability/accuracy for each model's ability to identify parents and children (plot_parent_child_reversals.ipynb:326-333)",
+    "Step 11: Create bar plots comparing parent-to-child vs child-to-parent retrieval accuracy across different models (plot_parent_child_reversals.ipynb:335-362)",
+    "Final Step: Save the visualization and analyze the directional bias in relationship retrieval across models (plot_parent_child_reversals.ipynb:359-362)"
+  ],
+  "agent_instructions": "Your task is to implement a system that evaluates directional bias in how language models retrieve relationships between parents and children. The experiment consists of three main components:\n\n1. First, create a script to build a dataset of parent-child relationships:\n   - Take a list of celebrities as input\n   - For each celebrity, query a language model to identify their parents (both mother and father)\n   - For each identified parent, check if the model can correctly identify the child when given the parent\n   - Save the resulting dataset of parent-child pairs with information about whether the relationship can be reversed\n\n2. Next, create a script to evaluate different language models on this dataset:\n   - Load the parent-child pairs dataset\n   - Implement two types of evaluation:\n     a) For chat-based models (like GPT-3.5): Generate multiple responses and calculate the percentage of correct answers\n     b) For completion-based models (like LLaMA): Calculate log probabilities for completions\n   - Test each model in both directions: identifying parents given children and identifying children given parents\n   - Save the results for each model to separate files\n\n3. Finally, create a visualization notebook to analyze the results:\n   - Load and combine the test results from all models\n   - Calculate the mean accuracy/probability for each model in both directions\n   - Create bar plots comparing parent-to-child vs child-to-parent retrieval accuracy across models\n   - The visualization should clearly show any directional bias in how models retrieve relationships\n\nThe goal is to determine whether language models exhibit asymmetry in relationship retrieval - are they better at identifying parents given children, or children given parents?",
+  "masked_source": [
+    "/workspace/scripts/celebrity_relations/find_non_reversals_parents.py",
+    "/workspace/scripts/celebrity_relations/test_parent_child_pairs.py",
+    "/workspace/scripts/celebrity_relations/plot_parent_child_reversals.ipynb"
+  ]
+}

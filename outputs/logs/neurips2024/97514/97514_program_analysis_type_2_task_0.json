@@ -1,0 +1,12 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including pandas and batch effect visualization functions from HEST library (/workspace/tutorials/5-Batch-effect-visualization.ipynb:205-206)",
+    "Step 2: Load the metadata from the HEST dataset CSV file (/workspace/tutorials/5-Batch-effect-visualization.ipynb:208)",
+    "Step 3: Filter the metadata to select specific samples with Visium technology, Cancer disease state, IDC oncotree code, and Homo sapiens species (/workspace/tutorials/5-Batch-effect-visualization.ipynb:210-215)",
+    "Step 4: Use the filter_hest_stromal_housekeeping function to filter spots, keeping only the most stable housekeeping genes and spots under the stroma (/workspace/tutorials/5-Batch-effect-visualization.ipynb:217-220)",
+    "Step 5: Extract sample IDs from the metadata to use as labels (/workspace/tutorials/5-Batch-effect-visualization.ipynb:222)",
+    "Step 6: Calculate the silhouette score using get_silhouette_score to quantify the batch effect between samples (/workspace/tutorials/5-Batch-effect-visualization.ipynb:223-225)",
+    "Step 7: Generate a UMAP visualization using plot_umap to show the distribution of spots from different samples (/workspace/tutorials/5-Batch-effect-visualization.ipynb:228)"
+  ],
+  "agent_instructions": "Your task is to create a script that visualizes batch effects in spatial transcriptomics data from the HEST-1k dataset. Follow these steps:\n\n1. Import the necessary libraries, including pandas and the batch effect visualization functions from the HEST library.\n\n2. Load the metadata from the HEST dataset.\n\n3. Filter the metadata to select only samples that meet specific criteria: Visium technology, Cancer disease state, IDC oncotree code, and Homo sapiens species.\n\n4. Filter the spots to keep only the most stable housekeeping genes and spots under the stroma using the appropriate HEST library function.\n\n5. Extract sample IDs from the metadata to use as labels for visualization.\n\n6. Calculate the silhouette score to quantify the batch effect between samples. The silhouette score ranges from -1 to 1, where values closer to -1 indicate less batch effect (stronger overlap between clusters) and values closer to 1 indicate stronger batch effect (poor overlap between clusters).\n\n7. Generate a UMAP visualization to show the distribution of spots from different samples, which helps visualize the batch effect.\n\nThe final output should include both the silhouette score printed to the console and a UMAP visualization saved as an image file."
+}

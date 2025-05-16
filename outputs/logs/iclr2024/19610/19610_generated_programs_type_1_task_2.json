@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/tools/dist_train.sh",
+        "/workspace/tools/dist_test.sh",
+        "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py"
+    ],
+    "usage_instructions": "1. First, download the YOLOv8 detection results from Google Drive (https://drive.google.com/drive/folders/1sYmRAtcPvMU_yQCJZ4-vqCibM3WP8ygI) as mentioned in the setup documentation.\n2. Create a copy of the configuration file: `cp /workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py /workspace/projects/configs/topomlp_setA_r50_with_yolov8.py`\n3. Modify the copied configuration file to use YOLOv8 proposals by changing the `yolov8_file` parameter from `None` to the path of the downloaded YOLOv8 detection file (e.g., `./data/yolov8_detections_setA.pkl`).\n4. Train the baseline TopoMLP model (without YOLOv8 proposals): `./tools/dist_train.sh projects/configs/topomlp_setA_r50_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_r50_wo_yolov8`\n5. Train the enhanced TopoMLP* model (with YOLOv8 proposals): `./tools/dist_train.sh projects/configs/topomlp_setA_r50_with_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_r50_with_yolov8`\n6. Evaluate the baseline TopoMLP model: `./tools/dist_test.sh projects/configs/topomlp_setA_r50_wo_yolov8.py work_dirs/topomlp_setA_r50_wo_yolov8/latest.pth 8 --eval=bbox`\n7. Evaluate the enhanced TopoMLP* model: `./tools/dist_test.sh projects/configs/topomlp_setA_r50_with_yolov8.py work_dirs/topomlp_setA_r50_with_yolov8/latest.pth 8 --eval=bbox`\n8. Compare the performance metrics (DETl, DETt, TOPll, TOPlt, and OLS) between the two models to verify the hypothesis."
+}

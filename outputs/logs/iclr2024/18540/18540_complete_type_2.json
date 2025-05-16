@@ -1,0 +1,74 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you use the Safe RLHF framework to compare the safety alignment of two language models in an interactive arena?",
+    "method": "Use the Safe RLHF framework's arena module to compare two language models side by side, asking them potentially harmful questions to observe how they respond differently based on their safety alignment training.",
+    "expected_outcome": "The model trained with Safe RLHF should refuse to provide harmful information, while a standard model might provide detailed instructions for harmful activities. The arena interface will display both responses side by side for direct comparison.",
+    "source": [
+      "/workspace/safe_rlhf/serve/arena.py",
+      "/workspace/safe_rlhf/serve/cli.py",
+      "/workspace/safe_rlhf/serve/chatbot.py"
+    ],
+    "usage_instructions": "1. Import the necessary modules from safe_rlhf.serve.arena\n2. Set up the arena with two different models - one trained with Safe RLHF and one without (e.g., PKU-Alignment/beaver-7b-v1.0 vs PKU-Alignment/alpaca-7b-reproduced)\n3. Configure generation parameters like max_length, temperature, and top_p\n4. Run the arena in interactive mode where you can input potentially harmful prompts\n5. Compare the responses from both models to see how they handle harmful requests differently\n6. Observe how the Safe RLHF model refuses to provide harmful information while maintaining helpfulness for legitimate requests",
+    "requirements": [
+      "Step 1: Import necessary modules from the Safe RLHF framework including CLI, Chatbot, ModelArgs, and other required components (/workspace/safe_rlhf/serve/arena.py:16-22, /workspace/safe_rlhf/serve/cli.py:16-37)",
+      "Step 2: Set up command-line argument parsing to accept two model paths (red_corner and blue_corner models), along with generation parameters like temperature, max_length, top_p, and precision settings (/workspace/safe_rlhf/serve/arena.py:25-102)",
+      "Step 3: Load the specified language models using the Safe RLHF model loading utilities, with one model trained with Safe RLHF and one without (/workspace/safe_rlhf/serve/chatbot.py:197-204)",
+      "Step 4: Configure generation parameters for both models including temperature, max_length, top_p, and repetition_penalty (/workspace/safe_rlhf/serve/chatbot.py:205-214)",
+      "Step 5: Initialize the dialogue context with appropriate prompts for both models (/workspace/safe_rlhf/serve/chatbot.py:215-220)",
+      "Step 6: Create a CLI interface that displays both models side by side with distinct styling (/workspace/safe_rlhf/serve/cli.py:40-57)",
+      "Step 7: Implement the interactive loop that accepts user input and displays responses from both models (/workspace/safe_rlhf/serve/cli.py:83-124)",
+      "Step 8: Process user input and generate responses from both models using the configured generation parameters (/workspace/safe_rlhf/serve/chatbot.py:253-300)",
+      "Step 9: Format and display the responses from both models side by side for direct comparison (/workspace/safe_rlhf/serve/cli.py:130-165)",
+      "Final Step: Run the arena with the two models and allow for interactive testing with potentially harmful prompts to compare safety alignment (/workspace/safe_rlhf/serve/arena.py:105-111)"
+    ],
+    "agent_instructions": "Create an interactive arena for comparing two language models side by side, with a focus on evaluating their safety alignment. The arena should allow users to input potentially harmful prompts and observe how differently the models respond.\n\nYour implementation should:\n\n1. Create a command-line interface that loads two language models - one trained with Safe RLHF (e.g., PKU-Alignment/beaver-7b-v1.0) and one without safety alignment (e.g., PKU-Alignment/alpaca-7b-reproduced).\n\n2. Allow configuration of generation parameters such as temperature, max_length, top_p, and repetition_penalty.\n\n3. Display both models' responses side by side with different colors for easy comparison.\n\n4. Implement an interactive loop where users can input prompts, including potentially harmful ones, to test how the models respond differently.\n\n5. Include special commands for clearing dialogue history, resetting the conversation, and exiting the arena.\n\n6. Format the output to clearly distinguish between the two models and highlight their different approaches to handling harmful requests.\n\nThe goal is to demonstrate how a model trained with Safe RLHF will refuse to provide harmful information while maintaining helpfulness for legitimate requests, in contrast to a standard model that might comply with harmful requests."
+  },
+  {
+    "mode": "A",
+    "question": "How can you evaluate the safety and helpfulness of language models using the Safe RLHF framework's automated evaluation tools?",
+    "method": "Use the Safe RLHF framework's evaluation module to automatically compare two models using a test dataset, measuring both reward (helpfulness) and cost (harmfulness) scores.",
+    "expected_outcome": "A detailed evaluation report showing the comparative performance of two models across multiple prompts, with metrics for reward scores (higher is better) and cost scores (lower is better), along with statistical analysis of the results.",
+    "source": [
+      "/workspace/safe_rlhf/evaluate/arena.py",
+      "/workspace/scripts/arena-evaluation.sh"
+    ],
+    "usage_instructions": "1. Set up the evaluation environment with the necessary models: two language models to compare, a reward model, and a cost model\n2. Prepare a test dataset containing various prompts for evaluation\n3. Configure the evaluation parameters in the arena-evaluation.sh script or directly through the Python module\n4. Run the evaluation process which will generate responses from both models for each prompt\n5. The framework will automatically score each response using the reward and cost models\n6. Analyze the resulting metrics including average reward scores, average cost scores, and the distribution of responses across different safety categories\n7. Use the generated CSV files and statistical analysis to draw conclusions about which model performs better in terms of helpfulness while maintaining safety constraints",
+    "requirements": [
+      "Step 1: Parse command-line arguments to configure the evaluation process, including model paths, dataset selection, and output directory (/workspace/safe_rlhf/evaluate/arena.py:57-190)",
+      "Step 2: Initialize distributed training environment using DeepSpeed (/workspace/safe_rlhf/evaluate/arena.py:300-306)",
+      "Step 3: Load the required models - two language models to compare, a reward model for helpfulness evaluation, and a cost model for safety evaluation (/workspace/safe_rlhf/evaluate/arena.py:319-346)",
+      "Step 4: Load the test dataset containing prompts for evaluation (/workspace/safe_rlhf/evaluate/arena.py:367-374)",
+      "Step 5: For each prompt in the dataset, generate responses from both language models (/workspace/safe_rlhf/evaluate/arena.py:389-417)",
+      "Step 6: Score each generated response using the reward model (for helpfulness) and cost model (for harmfulness) (/workspace/safe_rlhf/evaluate/arena.py:248-256)",
+      "Step 7: Display and save the evaluation results in a table format, showing prompts, responses, and their corresponding scores (/workspace/safe_rlhf/evaluate/arena.py:418-467)",
+      "Step 8: Calculate and display aggregate statistics including average reward and cost scores for each model (/workspace/safe_rlhf/evaluate/arena.py:474-482)",
+      "Step 9: Categorize responses based on safety (cost <= 0 is safe) and quality (higher reward is better) (/workspace/safe_rlhf/evaluate/arena.py:484-499)",
+      "Step 10: Generate a comparative analysis showing win rates and distribution of responses across safety categories (/workspace/safe_rlhf/evaluate/arena.py:518-556)"
+    ],
+    "agent_instructions": "Your task is to implement a system that evaluates and compares two language models based on both helpfulness and safety metrics using the Safe RLHF framework. The system should:\n\n1. Create an evaluation script that can load and compare two language models (a baseline model and a model to be evaluated).\n\n2. Incorporate two evaluation models:\n   - A reward model that scores responses based on helpfulness (higher scores are better)\n   - A cost model that scores responses based on harmfulness (lower scores are better)\n\n3. Process a test dataset containing various prompts, generating responses from both language models for each prompt.\n\n4. For each generated response:\n   - Calculate a reward score using the reward model\n   - Calculate a cost score using the cost model\n\n5. Implement a comprehensive analysis that:\n   - Computes average reward and cost scores for each model\n   - Classifies responses as safe (cost <= 0) or unsafe (cost > 0)\n   - Determines which model produces better responses (based on reward scores)\n   - Analyzes the distribution of responses across different categories (safe and helpful, safe but unhelpful, unsafe but helpful, unsafe and unhelpful)\n\n6. Generate output in both human-readable format (tables showing prompts, responses, and scores) and machine-readable format (CSV) for further analysis.\n\n7. Include statistical analysis showing win rates (percentage of prompts where one model outperforms the other) across different safety categories.\n\nThe implementation should use distributed computing capabilities to efficiently process multiple prompts in parallel and should support command-line arguments for configuring model paths, dataset selection, and output directories."
+  },
+  {
+    "mode": "A",
+    "question": "How can you train a language model using the Safe RLHF pipeline to optimize for both helpfulness and safety?",
+    "method": "Use the Safe RLHF training pipeline to fine-tune a language model with both reward maximization (helpfulness) and cost constraint (safety) objectives using the PPO-Lagrangian algorithm.",
+    "expected_outcome": "A fine-tuned language model that maintains high helpfulness while adhering to safety constraints, demonstrating improved performance on both metrics compared to models trained with standard RLHF.",
+    "source": [
+      "/workspace/scripts/sft.sh",
+      "/workspace/scripts/reward-model.sh",
+      "/workspace/scripts/cost-model.sh",
+      "/workspace/scripts/ppo-lag.sh"
+    ],
+    "usage_instructions": "1. Start with a pre-trained language model (e.g., LLaMA-7B)\n2. Run supervised fine-tuning (SFT) using the sft.sh script to adapt the model to the instruction-following format\n3. Train a reward model using reward-model.sh with preference data that captures helpfulness\n4. Train a cost model using cost-model.sh with preference data that captures harmfulness\n5. Use the ppo-lag.sh script to run the Safe RLHF training with the PPO-Lagrangian algorithm\n6. The training process will optimize the model to maximize rewards (helpfulness) while keeping costs (harmfulness) below a specified threshold\n7. Monitor the training progress through logs and evaluate the resulting model using the arena evaluation tools\n8. Compare the final model against the original SFT model to verify improvements in both helpfulness and safety",
+    "requirements": [
+      "Step 1: Set up the environment with necessary dependencies including DeepSpeed for distributed training (/workspace/scripts/sft.sh:23-29, /workspace/scripts/reward-model.sh:23-29, /workspace/scripts/cost-model.sh:23-29, /workspace/scripts/ppo-lag.sh:23-29)",
+      "Step 2: Perform supervised fine-tuning (SFT) on a pre-trained language model (e.g., LLaMA-7B) using an instruction dataset like Alpaca to adapt it for instruction following (/workspace/scripts/sft.sh:110-132)",
+      "Step 3: Train a reward model using preference data that captures helpfulness, initializing from the SFT model (/workspace/scripts/reward-model.sh:110-140)",
+      "Step 4: Train a cost model using preference data that captures harmfulness/safety concerns, also initializing from the SFT model (/workspace/scripts/cost-model.sh:110-140)",
+      "Step 5: Implement the PPO-Lagrangian algorithm that uses the SFT model as the actor and the trained reward and cost models to optimize for both helpfulness and safety (/workspace/scripts/ppo-lag.sh:148-198)",
+      "Step 6: In the PPO-Lagrangian training, maximize reward (helpfulness) while keeping cost (harmfulness) below a specified threshold using a Lagrange multiplier (/workspace/scripts/ppo-lag.sh:181-186)",
+      "Step 7: Monitor training progress and evaluate the resulting model to verify improvements in both helpfulness and safety metrics (/workspace/scripts/ppo-lag.sh:192-194)"
+    ],
+    "agent_instructions": "Your task is to implement a Safe RLHF (Reinforcement Learning from Human Feedback) training pipeline to fine-tune a language model that optimizes for both helpfulness and safety. The pipeline should follow these steps:\n\n1. Start with a pre-trained language model (such as LLaMA-7B)\n\n2. Implement supervised fine-tuning (SFT) to adapt the model to follow instructions using an instruction dataset\n\n3. Train a reward model that captures helpfulness using preference data\n\n4. Train a cost model that captures harmfulness/safety concerns using preference data\n\n5. Implement the PPO-Lagrangian algorithm that:\n   - Uses the SFT model as the actor model\n   - Uses the reward model to optimize for helpfulness\n   - Uses the cost model to enforce safety constraints\n   - Employs a Lagrange multiplier to balance reward maximization with cost constraints\n\n6. The training should maximize the reward (helpfulness) while keeping the cost (harmfulness) below a specified threshold\n\n7. Include functionality to monitor training progress and evaluate the resulting model\n\nYou'll need to use distributed training frameworks like DeepSpeed to handle large language models efficiently. The datasets should include instruction data for SFT and preference data for reward and cost models. The final model should demonstrate improved performance on both helpfulness and safety metrics compared to the original SFT model."
+  }
+]

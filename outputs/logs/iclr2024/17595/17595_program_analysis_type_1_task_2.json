@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Check if required libraries are installed (libibverbs-dev) (/workspace/examples/test_all_schedules.sh:3-8)",
+    "Step 2: Define scheduling methods to compare: '1f1b', '1f1b-interleaved', 'zb' (for ZB-1p), and a second 'zb' configuration (for ZB-2p) (/workspace/examples/test_all_schedules.sh:10-20)",
+    "Step 3: Set up environment variables for distributed training (WORLD_SIZE, RANK, MASTER_ADDR, MASTER_PORT) (/workspace/examples/test_all_schedules.sh:22-34)",
+    "Step 4: Configure model parameters: PIPELINE_SIZE=16, LAYERS=46, HIDDEN_SIZE=5120, ATTENTION_HEADS=40, SEQ_LENGTH=1024 (/workspace/examples/test_all_schedules.sh:78-86)",
+    "Step 5: Set up microbatch sizes to test: 48, 64, and 128 (/workspace/examples/test_all_schedules.sh:82)",
+    "Step 6: Configure ZB-1p with memory limit equal to pipeline size (/workspace/examples/test_all_schedules.sh:105-107)",
+    "Step 7: Configure ZB-2p with memory limit equal to 2x pipeline size (/workspace/examples/test_all_schedules.sh:105-107)",
+    "Step 8: Download and prepare the dataset if not already available (/workspace/examples/pretrain_zero_bubble.sh:13-20)",
+    "Step 9: For each scheduling method and microbatch size, run the appropriate training script (/workspace/examples/test_all_schedules.sh:71-174)",
+    "Step 10: For standard methods, use pretrain_zero_bubble.sh (/workspace/examples/test_all_schedules.sh:157)",
+    "Step 11: For offload methods, use pretrain_offload.sh (/workspace/examples/test_all_schedules.sh:155)",
+    "Step 12: Configure training parameters including optimizer settings, learning rate, and model architecture (/workspace/examples/pretrain_zero_bubble.sh:72-114)",
+    "Step 13: Run the training with torchrun to enable distributed execution (/workspace/examples/pretrain_zero_bubble.sh:151-155)",
+    "Step 14: Collect and log throughput measurements for each configuration (/workspace/examples/test_all_schedules.sh:144-146)",
+    "Final Step: Compare throughput results across different scheduling methods and microbatch sizes (/workspace/examples/test_all_schedules.sh:71-175)"
+  ],
+  "agent_instructions": "Create scripts to compare throughput across different pipeline parallelism scheduling methods for a large language model. The experiment should:\n\n1. Compare four scheduling methods:\n   - 1F1B (one-forward-one-backward)\n   - 1F1B-interleaved\n   - Zero Bubble with 1x pipeline memory limit (ZB-1p)\n   - Zero Bubble with 2x pipeline memory limit (ZB-2p)\n\n2. Configure a 14.6B parameter model with:\n   - 16 pipeline stages (using all 16 GPUs)\n   - 46 layers\n   - Hidden size of 5120\n   - 40 attention heads\n   - Sequence length of 1024\n\n3. Test with different microbatch sizes: 48, 64, and 128\n\n4. For each configuration:\n   - Set up the appropriate environment variables\n   - Configure the model parameters\n   - Run the training process\n   - Measure and log the throughput\n\n5. The main script should:\n   - Check for required dependencies\n   - Loop through each scheduling method\n   - Configure the appropriate parameters for each method\n   - Run the training script with the correct arguments\n   - Log results to a 'logs' directory\n\n6. The training script should:\n   - Download a sample dataset if not already available\n   - Set up distributed training environment\n   - Configure model architecture and training parameters\n   - Run the training using torchrun for distributed execution\n   - Collect throughput measurements\n\nThe goal is to analyze how different scheduling methods perform with varying pipeline stages and microbatch sizes for a 14.6B parameter model.",
+  "masked_source": [
+    "/workspace/examples/test_all_schedules.sh",
+    "/workspace/examples/pretrain_zero_bubble.sh",
+    "/workspace/examples/pretrain_offload.sh"
+  ]
+}

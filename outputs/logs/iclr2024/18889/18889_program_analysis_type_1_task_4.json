@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including model directory path, fusion method, and optional flags for Laplace noise (/workspace/opencood/tools/inference_w_noise.py:23-36)",
+    "Step 2: Load model configuration from the specified model directory (/workspace/opencood/tools/inference_w_noise.py:43-53)",
+    "Step 3: Create and load the trained model from the checkpoint (/workspace/opencood/tools/inference_w_noise.py:54-64)",
+    "Step 4: Define noise levels for position (0, 0.2, 0.4, 0.6 meters) and rotation (0, 0.2, 0.4, 0.6 degrees) (/workspace/opencood/tools/inference_w_noise.py:67-70)",
+    "Step 5: Determine whether to use Laplace distribution in addition to Gaussian based on command line arguments (/workspace/opencood/tools/inference_w_noise.py:73-76)",
+    "Step 6: For each noise distribution type (Gaussian and optionally Laplace) (/workspace/opencood/tools/inference_w_noise.py:78-210)",
+    "Step 7: For each noise level combination, set up the noise parameters (/workspace/opencood/tools/inference_w_noise.py:82-97)",
+    "Step 8: Build the dataset with the current noise setting (/workspace/opencood/tools/inference_w_noise.py:100-110)",
+    "Step 9: Initialize result statistics dictionary for evaluation metrics (/workspace/opencood/tools/inference_w_noise.py:113-115)",
+    "Step 10: For each batch in the dataset, perform inference using the specified fusion method (/workspace/opencood/tools/inference_w_noise.py:120-154)",
+    "Step 11: Calculate true positives and false positives for evaluation at different IoU thresholds (0.3, 0.5, 0.7) (/workspace/opencood/tools/inference_w_noise.py:160-174)",
+    "Step 12: Periodically save visualization results of the detection (/workspace/opencood/tools/inference_w_noise.py:177-199)",
+    "Step 13: Calculate average precision metrics (AP30, AP50, AP70) for the current noise level (/workspace/opencood/tools/inference_w_noise.py:203-207)",
+    "Step 14: Save the evaluation results to a YAML file (/workspace/opencood/tools/inference_w_noise.py:209-210)"
+  ],
+  "agent_instructions": "Create a script to evaluate a cooperative perception model's robustness under imperfect localization conditions. The script should:\n\n1. Accept command line arguments for:\n   - Path to a trained model checkpoint\n   - Fusion method to use (intermediate, late, early, or no fusion)\n   - Optional flag to test with Laplace distribution noise in addition to Gaussian noise\n\n2. Test the model with different levels of noise added to agent poses:\n   - Position noise: 0, 0.2, 0.4, 0.6 meters\n   - Rotation noise: 0, 0.2, 0.4, 0.6 degrees\n   - Use Gaussian distribution by default, with option to also test Laplace distribution\n\n3. For each noise level:\n   - Load the dataset with the specified noise parameters\n   - Run inference using the specified fusion method\n   - Calculate detection metrics (Average Precision) at IoU thresholds of 0.3, 0.5, and 0.7\n   - Periodically save visualizations of detection results\n\n4. Save the evaluation results (AP30, AP50, AP70) for each noise level to a YAML file in the model directory.\n\nThe script should be compatible with the OPV2V-H dataset and support different fusion methods for cooperative perception. The implementation should handle loading the model, adding noise to agent poses, running inference, and evaluating detection performance.",
+  "masked_source": [
+    "/workspace/opencood/tools/inference_w_noise.py"
+  ]
+}

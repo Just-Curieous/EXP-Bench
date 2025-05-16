@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Set up command-line argument parsing for training parameters including model type, image size, drop path rate, epochs, batch size, learning rate, weight decay, augmentation settings, and paths (/workspace/train.py:17-259)",
+    "Step 2: Initialize distributed training environment with NCCL backend if multiple GPUs are available (/workspace/train.py:343-356)",
+    "Step 3: Set up mixed precision training with PyTorch AMP or NVIDIA Apex based on availability (/workspace/train.py:362-376)",
+    "Step 4: Create MogaNet model with specified architecture (tiny, xtiny) and parameters (/workspace/train.py:380-396)",
+    "Step 5: Move model to GPU and set up synchronized batch normalization for distributed training if required (/workspace/train.py:419-436)",
+    "Step 6: Create AdamW optimizer with specified learning rate and weight decay (/workspace/train.py:443)",
+    "Step 7: Set up cosine learning rate scheduler with warmup (/workspace/train.py:452-459)",
+    "Step 8: Create ImageNet dataset and data loaders with specified augmentations (/workspace/train.py:461-493)",
+    "Step 9: Set up mixup and cutmix augmentations if enabled (/workspace/train.py:495-507)",
+    "Step 10: Implement training loop for specified number of epochs (/workspace/train.py:509-521)",
+    "Step 11: For each batch, apply mixup/cutmix, forward pass, calculate loss, and update model parameters (/workspace/train.py:688-767)",
+    "Step 12: Save checkpoints periodically and at the end of training (/workspace/train.py:522-531)",
+    "Step 13: Set up validation script with command-line argument parsing for model type, image size, crop percentage, and paths (/workspace/validate.py:10-122)",
+    "Step 14: Load trained model from checkpoint (/workspace/validate.py:158-172)",
+    "Step 15: Create validation data loader with appropriate preprocessing (/workspace/validate.py:198-226)",
+    "Step 16: Implement validation loop to compute top-1 and top-5 accuracy (/workspace/validate.py:228-296)",
+    "Final Step: Report validation results including accuracy metrics (/workspace/validate.py:293-296)"
+  ],
+  "agent_instructions": "Create two Python scripts for training and validating MogaNet models on ImageNet-1K:\n\n1. Training Script:\n   - Implement a script that trains MogaNet variants (tiny, xtiny) on ImageNet-1K\n   - Support distributed training across multiple GPUs using PyTorch's distributed data parallel\n   - Use mixed precision training with PyTorch AMP or NVIDIA Apex\n   - Implement the AdamW optimizer with configurable learning rate (default 1e-3) and weight decay\n   - Use a cosine learning rate scheduler with warmup\n   - Support data augmentation techniques including mixup, cutmix, and AutoAugment\n   - Allow configuration of key hyperparameters via command-line arguments:\n     * Model type (moganet_tiny, moganet_xtiny)\n     * Image size (224, 256)\n     * Drop path rate (0.1 for tiny, 0.05 for xtiny)\n     * Training epochs (default 300)\n     * Batch size (default 128)\n     * Weight decay (0.04 for tiny, 0.03 for xtiny)\n   - Save checkpoints periodically and at the end of training\n\n2. Validation Script:\n   - Implement a script that evaluates trained MogaNet models on ImageNet-1K validation set\n   - Load model weights from a checkpoint file\n   - Support the same model configurations as the training script\n   - Calculate and report top-1 and top-5 accuracy metrics\n   - Allow configuration of key parameters via command-line arguments:\n     * Model type\n     * Image size\n     * Crop percentage (default 0.9)\n     * Path to checkpoint file\n     * Path to dataset\n\nBoth scripts should use the timm library for model creation, data loading, and training utilities.",
+  "masked_source": [
+    "/workspace/train.py",
+    "/workspace/validate.py"
+  ]
+}

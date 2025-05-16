@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Set up environment variables for distributed training, including number of GPUs, nodes, port, and paths to datasets (/workspace/train.sh:1-16)",
+    "Step 2: Configure the training script to use the specified configuration file and dataset paths (/workspace/train.sh:17-27)",
+    "Step 3: Define configuration for training with 128M samples, including model architecture (ViT-L-16), batch size (16384), and appropriate subset of training data (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml:1-36)",
+    "Step 4: Define configuration for training with 512M samples, including model architecture (ViT-L-16), batch size (16384), and appropriate subset of training data (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml:1-36)",
+    "Step 5: Define configuration for training with 1.28B samples, including model architecture (ViT-L-14), batch size (16384), and appropriate subset of training data (/workspace/opencls/configs/cls_schedule/cls_vit_l14_s1.28B_bs16k.yaml:1-36)",
+    "Step 6: Execute distributed training using torchrun with the specified configuration files to train models with different numbers of samples (/workspace/train.sh:21-27)",
+    "Final Step: Evaluate models on ImageNet-1K for both zero-shot classification and linear probing performance (/workspace/train.sh:26-27)"
+  ],
+  "agent_instructions": "Your task is to implement a distributed training system to evaluate how scaling the number of seen samples impacts zero-shot classification and linear probing performance in vision models.\n\n1. Create a distributed training script that:\n   - Sets up environment variables for distributed training (GPUs, nodes, etc.)\n   - Takes a configuration file path as input\n   - Uses torchrun to launch the training process\n   - Specifies paths to the Datacomp-1B dataset and ImageNet-1K validation set\n\n2. Create three configuration files for training vision transformer models with different numbers of samples:\n   - Configuration for 128M samples using ViT-L-16 architecture\n   - Configuration for 512M samples using ViT-L-16 architecture\n   - Configuration for 1.28B samples using ViT-L-14 architecture\n\n3. Each configuration should include:\n   - Model architecture specification\n   - Training parameters (batch size of 16384, learning rate, etc.)\n   - Number of training samples (128M, 512M, or 1.28B)\n   - Path to the appropriate subset of training data\n   - Settings for evaluation on ImageNet-1K\n\n4. The training process should automatically evaluate both zero-shot classification accuracy and linear probing accuracy on ImageNet-1K.\n\nThe goal is to compare how model performance scales with the number of training samples seen during pre-training.",
+  "masked_source": [
+    "/workspace/train.sh",
+    "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml",
+    "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml",
+    "/workspace/opencls/configs/cls_schedule/cls_vit_l14_s1.28B_bs16k.yaml"
+  ]
+}

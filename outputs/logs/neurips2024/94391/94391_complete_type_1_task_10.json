@@ -1,0 +1,105 @@
+{
+  "questions": [
+    {
+      "question": "Does the RCF technique, a more powerful STD approach, outperform the existing STD technique, Sparse from SparseTSF, on the Electricity forecasting task?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Compare the effectiveness of RCF-based and Sparse-based trend estimation techniques in time-series forecasting.\n    - **Objective:** \n    Determine whether RCF provides superior forecasting accuracy compared to Sparse when applied to Electricity forecasting.\n\n2. **Testing Dataset:** \n    - Electricity (time series forecasting tasks)\n    - Preprocessing operations on the datasets, such as dataset splitting and normalization methods, remained consistent with prior works (e.g., Autoformer [Haixu Wu, Jiehui Xu, Jianmin Wang, and Mingsheng Long. Autoformer: Decomposition transformers with auto-correlation for long-term series forecasting. Advances in neural information processing systems, 34:22419\u201322430, 2021.], iTransformer [Yong Liu, Tengge Hu, Haoran Zhang, Haixu Wu, Shiyu Wang, Lintao Ma, and Mingsheng Long. itransformer: Inverted transformers are effective for time series forecasting. In The Twelfth International Conference on Learning Representations, 2024.], etc.).\n3. **Comparative Evaluation:**  \n    - Models:\n        - CLinear (RCF + Linear)\n        - SLinear (Sparse + Linear)\n    - Ensure no normalization is applied to isolate the effect of the STD method.\n\n4. **Training Detail:**\n    - Fixed look-back window (L=96)\n    - Forecast horizons (H \u2208 {96, 192, 336, 720})\n    - Use PyTorch and Adam optimizer for training\n    - Utilize an NVIDIA GeForce RTX 4090 GPU for training\n\n5. **Normalization detail:**\n    - no additional instance normalization\n\n6. **Loss Function:**\n    - CycleNet defaults to using Mean Squared Error (MSE) as the loss function to ensure fair comparison with other methods, formulated as:\n        - Loss = \\( \\| x_{t+1:t+H} - \\bar{x}_{t+1:t+H} \\|_2^2 \\)\n\n7. **Evaluation Metrics:**\n    - MSE (Mean Squared Error)\n    - MAE (Mean Absolute Error)\n    - Compute the average performance across all forecast horizons.\n\n8. **Experiment Detail:**\n- We utilized widely used benchmark datasets for LTSF tasks, including the ETT series, Electricity, Solar-Energy, Traffic, and Weather. Following prior works such as Autoformer and iTransformer, we split the ETTs dataset into training, validation, and test sets with a ratio of 6:2:2, while the other datasets were split in a ratio of 7:1:2. \n- We implemented CycleNet using PyTorch and conducted experiments on a single NVIDIA RTX 4090 GPU with 24GB of memory. CycleNet was trained for 30 epochs with early stopping based on a patience of 5 on the validation set. The batch size was set uniformly to 256 for ETTs and the Weather dataset, and 64 for the remaining datasets. This adjustment was made because the latter datasets have a larger number of channels, requiring a relatively smaller batch size to avoid out-of-memory issues. The learning rate was selected from the range {0.002, 0.005, 0.01} based on the performance on the validation set. The hyperparameter W was set consistently to the pre-inferred cycle length. Additionally, the hidden layer size of CycleNet/MLP was uniformly set to 512. By default, CycleNet uses RevIN without learnable affine parameters. However, we found that on the Solar dataset, using RevIN leads to a significant performance drop. The primary reason for this may be that photovoltaic power generation data contains continuous segments of zero values (no power generation at night). When the look-back windows are not an integer multiple of a day, the calculation of means in RevIN can be significantly affected, leading to decreased performance. Therefore, for this dataset, we did not apply the RevIN strategy.\n\n9. **Addtional Note:**\nTo directly compare the effects of STD, the configuration used here is consistent with that of DLinear, with a sufficient look-back window length of 336 and no additional instance normalization strategies. Thus, CLinear here refers to CycleNet/Linear without RevIN.",
+      "expected_outcome": "RCF significantly outperforms other STD methods. As for the Sparse technique, being a lightweight decomposition method, it relys more on longer look-back windows and instance normalization strategies to ensure adequate performance.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "dataset": [
+              "Electricity"
+            ],
+            "look_back_window": [
+              "336"
+            ],
+            "normalization": "No instance normalization; all configurations except the method under test are kept constant"
+          },
+          "independent_variables": {
+            "method_setting": [
+              "CLinear (RCF+Linear)",
+              "Slinear (Sparse+Linear)"
+            ],
+            "forecast_horizon": [
+              "96",
+              "192",
+              "336",
+              "720"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": [
+              "MSE",
+              "MAE"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Dataset (Electricity forecasting)",
+            "Method settings (CLinear: RCF+Linear, Slinear: Sparse+Linear)",
+            "Fixed look-back window (L=336)",
+            "Forecast horizon variations ({96, 192, 336, 720})",
+            "Performance metrics (MSE, MAE)",
+            "Ablation study design",
+            "Statistical comparison procedure",
+            "Instance normalization configuration"
+          ],
+          "setup_steps": [
+            "Select and prepare the experimental dataset: Electricity forecasting",
+            "Set a fixed look-back window (L=336)",
+            "Configure forecast horizons to the values 96, 192, 336, and 720",
+            "Implement two experimental settings: CLinear (RCF+Linear) and Slinear (Sparse+Linear) while keeping other configurations constant (with no normalization applied)",
+            "Run the forecasting experiments in each setting, replicating them to average performance metrics",
+            "Compute performance metrics (MSE and MAE) for each experimental run",
+            "Aggregate the results and perform a statistical comparison of the outcomes"
+          ],
+          "optional_other_sources_of_complexity": []
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {}
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic training and evaluation variability",
+          "description": "Variability introduced by the inherent randomness in model initialization, sampling, and gradient updates during the forecasting experiments. Despite keeping configurations fixed (e.g., look-back window and forecast horizons), repeated training runs may yield different MSE and MAE outcomes due to random seeds and stochastic processes in optimization.",
+          "impact": "This can lead to fluctuations in aggregated performance metrics, making it challenging to determine if observed differences are due to the method under test or random variations in model training.",
+          "possible_modifications": [
+            "Increase the number of experiment replications with different random seeds to better quantify and average out the variability.",
+            "Introduce fixed random seed settings during training to reduce randomness or explicitly report the standard deviations of performance metrics.",
+            "Apply controlled random perturbations (e.g., slight noise injection) in a systematic manner to study the influence of random uncertainty on forecasting outcomes."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {}
+      },
+      "source": [
+        "/workspace/run_std.sh"
+      ],
+      "usage_instructions": "Execute the run_std.sh script which will run both CycleNet (RCF technique) and SparseTSF (Sparse technique) on the Electricity dataset with a fixed look-back window of 336 and forecast horizons of {96, 192, 336, 720}. The script will run the following two key components:\n\n1. /workspace/scripts/CycleNet/STD/CycleNet.sh - This runs CycleNet with linear model type (CLinear) on the Electricity dataset\n2. /workspace/scripts/CycleNet/STD/SparseTSF.sh - This runs SparseTSF (SLinear) on the Electricity dataset\n\nBoth scripts use the same configuration with no instance normalization (--use_revin 0) and the same look-back window length (seq_len=336), which matches the experiment requirements. The results will show MSE and MAE metrics for both methods across all forecast horizons, allowing direct comparison of RCF vs Sparse techniques on the Electricity forecasting task.",
+      "requirements": [
+        "Step 1: Create a shell script that will execute both CycleNet and SparseTSF models on multiple datasets (/workspace/run_std.sh:1-9)",
+        "Step 2: For CycleNet, configure it to use a linear model type with a fixed look-back window of 336 and forecast horizons of 96, 192, 336, and 720 (/workspace/scripts/CycleNet/STD/CycleNet.sh:195-225)",
+        "Step 3: For CycleNet on Electricity dataset, set the appropriate parameters including model name, data path, features type (multivariate), and disable instance normalization (use_revin=0) (/workspace/scripts/CycleNet/STD/CycleNet.sh:195-225)",
+        "Step 4: For CycleNet on Electricity dataset, set the appropriate cycle length (168) and input dimension (321) (/workspace/scripts/CycleNet/STD/CycleNet.sh:218-219)",
+        "Step 5: For SparseTSF on Electricity dataset, configure it with the same look-back window of 336 and forecast horizons of 96, 192, 336, and 720 (/workspace/scripts/CycleNet/STD/SparseTSF.sh:188-216)",
+        "Step 6: For SparseTSF on Electricity dataset, set the appropriate parameters including model name, data path, features type (multivariate), and disable instance normalization (use_revin=0) (/workspace/scripts/CycleNet/STD/SparseTSF.sh:188-216)",
+        "Step 7: For SparseTSF on Electricity dataset, set the appropriate period length (24) and input dimension (862) (/workspace/scripts/CycleNet/STD/SparseTSF.sh:209-210)",
+        "Step 8: Execute the script to run both models and evaluate their performance using MSE and MAE metrics (/workspace/run_std.sh:3-6)"
+      ],
+      "agent_instructions": "Create a shell script that runs experiments comparing two time series forecasting approaches (CycleNet and SparseTSF) on the Electricity dataset. The script should:\n\n1. Run both models with a fixed look-back window of 336 and forecast horizons of 96, 192, 336, and 720.\n\n2. For CycleNet (which implements a Recurrent Cycle Forecasting approach):\n   - Use a linear model type\n   - Disable instance normalization\n   - Set appropriate cycle length for the Electricity dataset\n   - Configure for multivariate forecasting\n\n3. For SparseTSF (which implements a Sparse Time Series Forecasting approach):\n   - Use the same look-back window as CycleNet\n   - Disable instance normalization\n   - Set appropriate period length for the Electricity dataset\n   - Configure for multivariate forecasting\n\n4. Both models should be evaluated using MSE and MAE metrics to allow direct comparison of their performance across all forecast horizons.\n\nThe experiment should demonstrate the effectiveness of both approaches on the Electricity dataset for different prediction lengths.",
+      "masked_source": [
+        "/workspace/run_std.sh"
+      ]
+    }
+  ]
+}

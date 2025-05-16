@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments and load configuration from YAML file (/workspace/examples/musc_main.py:11-33)",
+    "Step 2: Override default configuration with command line arguments (/workspace/examples/musc_main.py:32-77)",
+    "Step 3: Initialize the MuSc model with the configuration (/workspace/examples/musc_main.py:86)",
+    "Step 4: Load the appropriate backbone model (ViT or DINO) based on configuration (/workspace/models/musc.py:64-76)",
+    "Step 5: For each category in the dataset, load test data (/workspace/models/musc.py:79-93)",
+    "Step 6: Extract features from test images using the backbone model (/workspace/models/musc.py:149-179)",
+    "Step 7: Apply LNAMD (Local Neighborhood Aggregation with Multiple Degrees) for each aggregation degree in r_list (/workspace/models/musc.py:183-202)",
+    "Step 8: Apply MSM (Mutual Similarity Measurement) to compute anomaly scores for each feature layer (/workspace/models/musc.py:204-217)",
+    "Step 9: Interpolate anomaly maps to match the original image size (/workspace/models/musc.py:222-227)",
+    "Step 10: Apply RsCIN (Robust Score Calibration with Image Neighborhood) to calibrate anomaly scores based on dataset type (/workspace/models/musc.py:242-248)",
+    "Step 11: Compute evaluation metrics (AUROC, F1-max, AP) for both image-level and pixel-level detection (/workspace/models/musc.py:250-260)",
+    "Step 12: Aggregate results across all categories and calculate mean metrics (/workspace/models/musc.py:269-303)",
+    "Step 13: Save results to Excel file if save_excel is enabled (/workspace/models/musc.py:306-326)",
+    "Final Step: Run the experiment twice - once with RsCIN enabled (k_score=[1,2,3] for MVTec_AD) and once with RsCIN disabled (k_score=[0]) to compare performance (/workspace/models/musc.py:242-248)"
+  ],
+  "agent_instructions": "Create a script to evaluate the impact of the RsCIN (Robust Score Calibration with Image Neighborhood) module on anomaly detection performance. The script should:\n\n1. Implement an anomaly detection pipeline using a pretrained vision transformer (ViT) backbone that:\n   - Extracts features from test images\n   - Applies local neighborhood aggregation with multiple degrees (LNAMD)\n   - Uses mutual similarity measurement (MSM) to compute anomaly scores\n   - Optionally applies score calibration (RsCIN)\n   - Computes evaluation metrics (AUROC, F1-max, AP) for both image-level and pixel-level detection\n\n2. Accept command line arguments for:\n   - Dataset path and name (MVTec_AD or VisA)\n   - Class name (specific category or 'ALL' for all categories)\n   - Backbone model configuration (ViT-L-14-336 with OpenAI pretrained weights)\n   - Feature extraction layers (e.g., 5, 11, 17, 23)\n   - Image resize dimensions\n   - Aggregation degrees for LNAMD (e.g., 1, 3, 5)\n   - Batch size\n   - Output directory\n   - Option to save results to Excel\n\n3. Include a mechanism to enable/disable the RsCIN module:\n   - When enabled, RsCIN should use different k_score values based on the dataset (e.g., [1,2,3] for MVTec_AD)\n   - When disabled, RsCIN should use k_score=[0]\n\n4. Run the script twice (with RsCIN enabled and disabled) and compare the results to evaluate the impact of RsCIN on anomaly classification performance.\n\nThe script should output detailed metrics for each category and the mean across all categories, and optionally save these results to Excel files for comparison.",
+  "masked_source": [
+    "/workspace/examples/musc_main.py"
+  ]
+}

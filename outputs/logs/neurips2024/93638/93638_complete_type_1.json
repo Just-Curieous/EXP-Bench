@@ -1,0 +1,349 @@
+{
+  "questions": [
+    {
+      "question": "Will the SPAG method (SPAG-1, SPAG-2, SPAG-3) outperform existing baseline methods on standard reasoning benchmarks in LLaMA-2-7B?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Evaluate the effectiveness of SPAG variants in improving reasoning performance in LLaMA-2-7B across multiple training regimes.\n    - **Objective:** \n    Compare SPAG-based training against baseline methods such as standard fine-tuning, Chain-of-Thought (CoT), AlpacaSFT variants (AlpacaSFT-1, AlpacaSFT-2, AlpacaSFT-3), and imitation learning approaches (20Q, Guess-My-City).\n\n2. **Testing Dataset:** \n    - Reasoning Benchmarks:\n        - MMLU\n        - BIG-Bench Hard (BBH)\n        - ARC Easy (ARC-e)\n        - ARC Challenge (ARC-c)\n        - Mutual\n        - WinoGrande\n        - LogiQA2\n        - PIQA\n    - Models are evaluated using a consistent dataset split and evaluation protocol, ensuring comparability across methods.\n3. **Comparative Evaluation:**  \n    - Baseline Methods:\n        - LLaMA-2-7B (no additional fine-tuning)\n        - LLaMA-2-7B-CoT\n        - AlpacaSFT-1, AlpacaSFT-2, AlpacaSFT-3\n        - Imitation learning methods (20Q, Guess-My-City)\n    - SPAG Variants:\n        - SPAG-1\n        - SPAG-2\n        - SPAG-3\n4. **Training Detail:**\nFor imitation learning,the learning rate is 5e-6 and the KL-penalty coefficient \u03b21 = 0.1.For SPAG training,the learning rate is 2e-6,the KL-penalty coefficient \u03b22=0.2,and the SFT coefficient \u03b1=0.5. For the Alpaca SFT baseline,we exactly follow the training setups of Alpaca and set the learning rate to 2e-6. Among all training stages,the batch size is 128 and the max sequence length is 2048. Each training\nprocess maintains one epoch over the offline collected trajectories The the decay parameter \u03b3 is set to 0.8.The maximum turn of the Adversarial Taboo is 5.\n\n5. **Evaluation Metrics:**\n    - The numerical score the model has on each benchmark\n    - For overall performance: Geometric Mean (GM) of numerical scores across all benchmarks.",
+      "expected_outcome": "It is expected that the SPAG variants, particularly SPAG-3, will exhibit improved performance by achieving higher average GM scores compared to baseline models. These results would support the claim that adversarial self-play learning in SPAG notably enhances reasoning abilities relative to standard imitation learning or continuous supervised fine-tuning.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "training_hyperparameters": "Learning rate, batch size, max sequence length, and other training details are fixed",
+            "evaluation_setup": "Dataset splits, evaluation metrics, and GM computation over scores are kept constant",
+            "hardware": "32 NVIDIA A100-SXM4 GPUs with 40GB memory are used for all experiments"
+          },
+          "independent_variables": {
+            "training_regime": [
+              "Original LLaMA-2-7B (baseline)",
+              "LLaMA-2-7B-CoT",
+              "AlpacaSFT-1",
+              "AlpacaSFT-2",
+              "AlpacaSFT-3",
+              "Imitation Learning based on 20Q",
+              "Imitation Learning based on Guess-My-City",
+              "SPAG-1",
+              "SPAG-2",
+              "SPAG-3"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": [
+              "MMLU",
+              "BIG-Bench Hard (BBH)",
+              "ARC easy (ARC-e)",
+              "ARC challenge (ARC-c)",
+              "Mutual",
+              "WinoGrande",
+              "LogiQA2",
+              "PIQA",
+              "Geometric Mean (GM) of the above scores"
+            ],
+            "statistical_significance": "Paired test results from one full training epoch over offline-collected trajectories and additional sample efficiency and hyper-parameter effectiveness analyses"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "offline_trajectory_details": "The details regarding the offline-collected trajectories (such as size, source, and selection criteria) are not explicitly mentioned"
+          },
+          "possible_modifications": {
+            "refine_offline_data_specifications": [
+              "Provide clear definitions and possible values for the size and composition of offline trajectories",
+              "Detail the criteria for data selection in offline collections"
+            ]
+          }
+        }
+      },
+      "experiment_constraints": "```json\n    \"experiment_constraints\": {\n        \"resource_constraints\": {},\n        \"time_constraints\": {},\n        \"money_constraints\": {},\n        \"possible_modifications\": {}\n    }\n```",
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic variability in training dynamics",
+          "description": "The training processes (e.g., mini-batch sampling, weight initialization, and gradient updates) inherently involve stochastic elements that can lead to variations in performance. In this experiment, uncertainties are also introduced via unspecified hyperparameter numerical values and random elements in the offline data handling, which can cause performance metrics such as Geometric Mean (GM) scores to vary across different runs.",
+          "impact": "Such random variability can result in inconsistent outcomes that make it challenging to ascertain if observed performance differences (e.g., SPAG-3 outperforming baselines) are statistically robust or merely due to chance.",
+          "possible_modifications": [
+            "Run multiple training iterations with different random seeds to average out noise from stochastic effects.",
+            "Implement controlled noise injection experiments (e.g., deliberate token dropping) to assess the sensitivity of model performance to randomness.",
+            "Explicitly document and fix random initialization and data shuffling procedures to reduce run-to-run variability."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Bias in offline data and fixed hyperparameter choices",
+          "description": "Systematic uncertainty arises from potential biases introduced by the offline-collected trajectories whose size, source, and selection criteria are not defined, as well as from using hyperparameters strictly based on published specifications without exploration of alternatives. This may lead to consistent biases in training and evaluation, affecting the fairness and robustness of comparisons between SPAG methods and baselines.",
+          "impact": "This uncertainty can skew evaluation metrics consistently, possibly inflating or deflating the real performance differences between methods. The systematic biases might also affect paired significance tests and the sample efficiency analyses, leading to conclusions that are not fully generalizable.",
+          "possible_modifications": [
+            "Obtain a clean, well-documented offline dataset with clear selection criteria to eliminate biases.",
+            "Expand the independent variables to include a range of hyperparameter values to test robustness against systematic effects.",
+            "Incorporate additional statistical tests (e.g., confidence interval analysis) and alternative evaluation metrics to mitigate the influence of potential biases."
+          ]
+        }
+      },
+      "no_answer": "The repository contains the implementation of the SPAG method and shows in the README.md that it outperforms baseline methods on standard reasoning benchmarks in LLaMA-2-7B. However, there is no specific script in the repository that directly answers this experiment question. The repository mentions using the external 'lm-evaluation-harness' tool from EleutherAI for evaluation, but this tool is not included in the repository. The repository contains scripts for training SPAG models and collecting self-play episodes, but not for evaluating the models on reasoning benchmarks. To answer the experiment question, one would need to use the external 'lm-evaluation-harness' tool with the trained SPAG models, which requires additional setup and configuration not provided in this repository."
+    },
+    {
+      "question": "Does imitation learning using GPT-4 self-play episodes improve the reasoning performance of LLMs compared to their base versions?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Assess whether training open-source LLMs (e.g., LLaMA-2-7B and Baichuan-2-13B) with imitation learning from GPT-4 self-play episodes improves reasoning abilities.\n    - **Objective:** \n    Compare reasoning performance before and after imitation learning, ensuring improvements do not come at the cost of general language understanding.\n\n2. **Testing Dataset:** \n    Reasoning Benchmarks:\n        - MMLU\n        - BIG-Bench Hard (BBH)\n        - ARC Easy (ARC-e)\n        - ARC Challenge (ARC-c)\n    Establish baseline scores for LLMs before training.\n\n3. **Comparative Evaluation:**  \n    Baseline Models:\n        - LLaMA-2-7B (original version)\n        - Baichuan-2-13B (original version)\n        - Imitation Learning Models (IM):\n        - LLaMA-2-7B-IM (trained with GPT-4 self-play episodes).\n        - Baichuan-2-13B-IM (trained with GPT-4 self-play episodes).\n\n4. **Training Detail:**\n- Utilize collected GPT-4 self-play episodes for imitation learning.\n\n- For imitation learning,the learning rate is 5e-6 and the KL-penalty coefficient \u03b21 = 0.1.For SPAG training,the learning rate is 2e-6,the KL-penalty coefficient \u03b22=0.2,and the SFT coefficient \u03b1=0.5. For the Alpaca SFT baseline,we exactly follow the training setups of Alpaca and set the learning rate to 2e-6. Among all training stages,the batch size is 128 and the max sequence length is 2048. Each training process maintains one epoch over the offline collected trajectories The the decay parameter \u03b3 is set to 0.8.The maximum turn of the Adversarial Taboo is 5.\n\n5. **Evaluation Metrics:**\n    - Score on different benchmarks\n    - Track any changes in general language capacity, MMLU scores to ensure that reasoning improvements do not come at a significant cost to general performance.\n\n6. **Imitation Learning Data:**\nThe Taboo game is played one episode per target word, with attacker and defender prompts detailed:\n\n```markdown\n- Attacker Systme Prompt:\nLet's play a game. Do not mention you are an AI developed by OpenAI.",
+      "description_of_the_game": "**Game Name:** Adversarial Taboo  \n\n**Rules:**  \n1. There are two players in the game, one is called **attacker**, another is called **defender**.  \n2. At the beginning, the **attacker** will get a **target word**. It is talking with a **defender** who is **not informed** of the target word. The task of the **attacker** is to **induce** the **defender** to **utter** the target word **unconsciously**\u2014if successful, the **attacker wins** the game. At the same time, the **defender** is guessing the **target word**\u2014if the defender **identifies** the target word correctly, the **defender wins**.  \n3. The game will last for a total of **{maxturns} turns**. If nobody wins during **{maxturns} turns**, the game ends in a **tie**.",
+      "game_states": "**Role:** You are a **defender**. Make sure you understand the rules of the game.",
+      "attention": "1. **Do not utter your thinking process.**  \n2. **You can only guess once.**  \n3. If you have identified the target word, **utter**:  \n   **\"I know word! It is <targetword>\"**  \n   Rigorously in this form. If your target word is correct, you **win** the game, otherwise, you **lose**. You only have **one chance**, so be careful when uttering your answer.\n```\n\n- Due to resource limitations, GPT-4 self-play samples are collected for the top 30K words from V_target.\n\n- The maximum interaction turn is randomly selected in the range [3,8].\n- The results are collected as T_im for for imitation learning.",
+      "expected_outcome": "The imitation-learned (IM) models are expected to show uniform improvements on reasoning benchmarks with maintained or slightly altered general language capacity. This is supported by results indicating that, for instance, the IM LLaMA-2 model gains reasoning improvements when minor degradations occur in other metrics.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "evaluation_benchmarks": "A fixed set of reasoning benchmarks (MMLU, BBH, ARC-e, ARC-c) is used to measure performance for both base and imitation-learned models."
+          },
+          "independent_variables": {
+            "llm_model": [
+              "LLaMA-2-7B",
+              "Baichuan-2-13B"
+            ],
+            "training_type": [
+              "base version",
+              "imitation learning (using GPT-4 self-play episodes)"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": [
+              "reasoning performance (quantitative scores on benchmarks)",
+              "general language capacity (MMLU scores)"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "GPT-4 self-play episodes",
+            "Open-source LLMs (LLaMA-2-7B, Baichuan-2-13B)",
+            "Baseline evaluation datasets (reasoning benchmarks: MMLU, BBH, ARC-e,ARC-c)",
+            "Imitation learning training framework",
+            "Performance evaluation and comparison tools"
+          ],
+          "setup_steps": [
+            "Collect or generate GPT-4 self-play episodes",
+            "Establish baseline performance metrics on selected reasoning benchmarks using the original models",
+            "Prepare the training setup to perform imitation learning using the collected episodes",
+            "Retrain the LLMs (imitation learning) and monitor the training process",
+            "Evaluate the imitation-learned models on the same reasoning benchmarks",
+            "Compare key numerical results and performance visualizations between base and IM models",
+            "Analyze changes in general language capacity, particularly focusing on MMLU scores"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Data Collection and Processing",
+              "description": "The process of generating, filtering, and validating GPT-4 self-play episodes can add significant complexity."
+            },
+            {
+              "source": "System Integration",
+              "description": "Integrating multiple components (episode generation, training pipeline, evaluation framework) introduces challenges in ensuring compatibility and synchronization."
+            }
+          ]
+        }
+      },
+      "experiment_constraints": "```json\n    \"experiment_constraints\": {\n        \"resource_constraints\": {},\n        \"time_constraints\": {},\n        \"money_constraints\": {},\n        \"possible_modifications\": {}\n    }\n```",
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Variability in GPT-4 self-play episode generation and training randomness",
+          "description": "The process of generating GPT-4 self-play episodes involves stochastic sampling methods and may yield episodes of varying quality. Additionally, random initialization and training procedures in imitation learning could result in fluctuations in performance metrics. This variability introduces random uncertainty in the observed outcomes across experimental runs.",
+          "impact": "Random fluctuations can lead to discrepancies in reasoning performance scores and general language capacity measurements, making it more challenging to attribute observed improvements strictly to the imitation learning approach.",
+          "possible_modifications": [
+            "Increase the number of self-play episodes to average out the stochastic variations.",
+            "Perform multiple training runs with different random seeds to assess the variability in performance metrics.",
+            "Implement controlled random noise experiments, such as varying the temperature in GPT-4 responses, to quantify the effect of randomness on the learning outcomes."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Bias introduced during GPT-4 self-play episode selection and dataset preparation",
+          "description": "The method of generating and selecting GPT-4 self-play episodes may inadvertently introduce systematic biases. For example, if the episodes overemphasize certain reasoning patterns or contain consistent errors, this bias will propagate through the imitation learning process. In addition, inconsistencies in evaluation benchmark composition may further exacerbate the effects of systematic bias on the performance assessment.",
+          "impact": "Systematic bias could lead to uniformly inflated or deflated performance metrics on reasoning benchmarks, affecting the validity of comparisons between the base and imitation-learned models, as well as masking potential trade-offs in general language capacity.",
+          "possible_modifications": [
+            "Refine and document the criteria for episode generation and selection, ensuring a balanced and representative set of reasoning scenarios.",
+            "Integrate additional quality control and filtering mechanisms to mitigate biases inherent in self-play episodes.",
+            "Augment the evaluation benchmarks with a more diverse set of tasks to identify and correct for any systematic skew in performance improvements."
+          ]
+        }
+      },
+      "no_answer": "While the repository contains scripts for training models with imitation learning using GPT-4 self-play episodes, it does not contain a specific script for evaluating the reasoning performance on the benchmarks mentioned in the question (MMLU, BBH, ARC-e, ARC-c). The README mentions using the external 'lm-evaluation-harness' repository for evaluation with 'the setups described in our paper', but these evaluation scripts are not included in this repository. The repository focuses on the training process (imitation learning and self-play) but relies on external tools for the evaluation part that would answer the specific experiment question about improved reasoning performance."
+    },
+    {
+      "question": "Will iterative self-play training with the SPAG methodology lead to further improvements in reasoning performance over successive epochs?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Investigate whether iterative self-play training using the SPAG methodology (SPAG-1, SPAG-2, SPAG-3) results in improved reasoning performance over multiple training epochs.\n    - **Objective:** \n    Compare the performance of models after each SPAG epoch with the initial imitation learning (IM) model to assess incremental improvements in reasoning tasks and overall performance.\n\n2. **Testing Dataset:** \n    - Reasoning Benchmarks:\n        - MMLU\n        - BIG-Bench Hard (BBH)\n        - ARC Easy (ARC-e)\n        - ARC Challenge (ARC-c)\n        - Mutual\n        - WinoGrande\n        - LogiQA2\n        - PIQA\n\n3. **Comparative Evaluation:**  \n    - Models:\n        - LLaMA-2-7B\n        - Baichuan-2-13B\n    - Use the same models that have already undergone imitation learning.\n    - Conduct self-play training for multiple epochs as the following algorithm:\n        ```markdown\n        ### Algorithm 2: Self-play of adversarial language games (SPAG)\n\n        **Inputs:**\n        - LLM policy \\( \\pi_\\theta(y|x) \\)\n        - Target word set \\( V_{\\text{target}} \\)\n        - Attacker and defender prompts \\( f_{\\text{attack}}, f_{\\text{defend}} \\)\n\n        **for self-play epoch iterations do:**\n        1. Make a copy of \\( \\pi_\\theta \\) as \\( \\bar{\\pi}_\\theta \\).\n        2. Set \\( \\bar{\\mu}_\\theta(u|s) = \\bar{\\pi}_\\theta(u|f_{\\text{attack}}(s)) \\) and \\( \\bar{\\nu}_\\theta(v|s') = \\bar{\\pi}_\\theta(v|f_{\\text{defend}}(s')) \\).\n        3. For each \\( w \\in V_{\\text{target}} \\), sample an episode \\( \\tau \\sim \\bar{\\mu}_\\theta \\times \\bar{\\nu}_\\theta \\). Collect \\( \\bar{T}_\\theta = \\{ \\tau \\sim \\bar{\\mu}_\\theta \\times \\bar{\\nu}_\\theta \\} \\).\n        4. Split the attacker-winning set \\( T_{\\text{attack}}^\\theta \\).\n        5. Update \\( \\pi_\\theta \\) with loss \\( L_{\\text{SPAG}}(\\pi_\\theta) \\).\n\n        **end for**\n        ```\n    - Denote the models after each epoch as SPAG-1, SPAG-2, and SPAG-3.\n\n4. **Training Detail:**\n- Utilize collected GPT-4 self-play episodes for imitation learning.\n\n- For imitation learning,the learning rate is 5e-6 and the KL-penalty coefficient \u03b21 = 0.1.For SPAG training,the learning rate is 2e-6,the KL-penalty coefficient \u03b22=0.2,and the SFT coefficient \u03b1=0.5. For the Alpaca SFT baseline,we exactly follow the training setups of Alpaca and set the learning rate to 2e-6. Among all training stages,the batch size is 128 and the max sequence length is 2048. Each training process maintains one epoch over the offline collected trajectories The the decay parameter \u03b3 is set to 0.8.The maximum turn of the Adversarial Taboo is 5.\n\n5. **Evaluation Metrics:**\n    - The numerical score the model has on each benchmark\n    - For overall performance: Geometric Mean (GM) of numerical scores across all benchmarks.",
+      "expected_outcome": "- It is expected that, across most reasoning benchmarks, performance will steadily improve with additional SPAG epochs, particularly from SPAG-1 to SPAG-2 and SPAG-3. However, for some models (e.g., Baichuan-2-13B), language-understanding metrics such as MMLU may slightly decline while overall performance (GM score) increases.\n\n- For LLaMA-2-7B, although the first-epoch SPAG model has a relatively lower performance than the imitation-learned (IM) model on WinoGrande, after an additional epoch of self-play iteration, SPAG-2 has achieved sufficient improvement to surpass the performance of the IM model. Considering the general language capability on MMLU, SPAG models cannot guarantee continuous improvement, especially for Baichuan-2-13B whose performance slightly decays during the SPAG training. Compared to the improvements in the reasoning benchmarks, this language-understanding decline is still within an acceptable range, since the overall performance (GM score) maintains increasing significantly.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "training_method": "SPAG iterative self-play training remains constant across experiments",
+            "evaluation_setup": "Same evaluation framework used for all model conditions"
+          },
+          "independent_variables": {
+            "llm_model": [
+              "LLaMA-2-7B",
+              "Baichuan-2-13B"
+            ],
+            "training_epoch": [
+              "IM (initial model)",
+              "SPAG-1",
+              "SPAG-2",
+              "SPAG-3"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": [
+              "Benchmark results (WinoGrande, BBH, other reasoning tasks)",
+              "Language understanding performance (MMLU)",
+              "Overall performance (GM score)"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "LLM models (LLaMA-2-7B and Baichuan-2-13B)",
+            "Initial imitation-trained model (IM) as baseline",
+            "Self-play training module implementing the SPAG methodology",
+            "Algorithm 2 for iterative self-play training",
+            "Evaluation framework using benchmark tables",
+            "Reasoning task benchmarks (WinoGrande, BBH, and other reasoning tasks)",
+            "General language task benchmark (MMLU)",
+            "Performance metrics computation (including overall GM score)"
+          ],
+          "setup_steps": [
+            "Prepare the baseline imitation-trained models (IM) for each LLM",
+            "Implement the SPAG self-play training algorithm as described in the Algorithm",
+            "Train the models iteratively over multiple epochs, producing SPAG-1, SPAG-2, and SPAG-3",
+            "Set up the evaluation framework",
+            "Evaluate the models on both reasoning benchmarks (WinoGrande, BBH, etc.) and general language tasks (MMLU)",
+            "Compare the performance of each SPAG epoch against the baseline IM model and analyze any trade-offs"
+          ]
+        }
+      },
+      "experiment_constraints": "```json\n    \"experiment_constraints\": {\n        \"resource_constraints\": {},\n        \"time_constraints\": {},\n        \"money_constraints\": {},\n        \"possible_modifications\": {}\n    }\n```",
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Variability in self-play training dynamics",
+          "description": "The iterative self-play training process inherently involves random sampling during token generation and stochastic gradient updates. This randomness can lead to fluctuations in the models performance between runs, resulting in varying reasoning scores across SPAG epochs.",
+          "impact": "Such random fluctuations may obscure the true effect of the SPAG methodology by introducing noise into the performance metrics. This can make it harder to determine whether improvements are due to the training method or simply random variation in the training process.",
+          "possible_modifications": [
+            "Introduce controlled random seed settings for training to reduce variability.",
+            "Experiment with adjustments in mini-batch sampling or dropout rates to study their effect on performance stability.",
+            "Simulate additional randomness by, for example, randomly dropping tokens during training to test the robustness of the model improvement."
+          ]
+        }
+      },
+      "no_answer": "The repository contains code for training models using the SPAG methodology (imitation learning, self-play episode collection, reward assignment, and reinforcement learning), but it does not include scripts that directly evaluate the models on the reasoning benchmarks mentioned in the experiment question (MMLU, BBH, ARC-e, ARC-c, Mutual, WinoGrande, LogiQA2, PIQA). According to the README.md, the evaluation is done using an external tool called 'lm-evaluation-harness' with setups described in their paper, but this tool and the specific evaluation scripts are not included in this repository. Therefore, there is no direct script in this repository that answers the experiment question about whether iterative self-play training with SPAG methodology leads to further improvements in reasoning performance over successive epochs."
+    },
+    {
+      "question": "Does the adversarial game setup used in SPAG, which includes imitation learning of GPT-4 followed by self-play on game episodes (specifically via the adversarial Taboo game), provide superior reasoning improvements compared to non-adversarial setups like 20-Question and Guess-My-City?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Investigate whether the adversarial game setup in SPAG (using the Adversarial Taboo game for self-play) leads to superior reasoning improvements compared to non-adversarial setups (e.g., 20-Question and Guess-My-City).\n    - **Objective:** \n    Compare reasoning performance and game-play outcomes for LLaMA-2-7B and Baichuan-2-13B under adversarial and non-adversarial training regimes.\n\n2. **Testing Dataset:** \n    - Reasoning Benchmarks:\n        - MMLU\n        - BIG-Bench Hard (BBH)\n        - ARC Easy (ARC-e)\n        - ARC Challenge (ARC-c)\n        - Mutual\n        - WinoGrande\n        - LogiQA2\n        - PIQA\n    - Models are evaluated using a consistent dataset split and evaluation protocol, ensuring comparability across methods.\n3. **Training Regimes:**  \n    - Adversarial Setup (SPAG):\n        - Imitation learning via GPT-4 generated self-play episodes following the Adversarial Taboo game rules.\n        - Use target words from the top 50K most frequent words from CoCA (after excluding stop words).\n        - Iterative self-play learning to refine reasoning abilities.\n    - Non-Adversarial Setups:\n        - Imitation-20Q (based on the 20-Question game).\n        - Imitation-GuessCity (based on the Guess-My-City game).\n\n4. **Training Detail:**\nFor imitation learning,the learning rate is 5e-6 and the KL-penalty coefficient \u03b21 = 0.1.For SPAG training,the learning rate is 2e-6,the KL-penalty coefficient \u03b22=0.2,and the SFT coefficient \u03b1=0.5. For the Alpaca SFT baseline,we exactly follow the training setups of Alpaca and set the learning rate to 2e-6. Among all training stages,the batch size is 128 and the max sequence length is 2048. Each training\nprocess maintains one epoch over the offline collected trajectories The the decay parameter \u03b3 is set to 0.8.The maximum turn of the Adversarial Taboo is 5.\n\n5. **Evaluation Metrics:**\n    - The numerical score the model has on each benchmark\n    - For overall performance: Geometric Mean (GM) of numerical scores across all benchmarks.\n\n6. **Comparative Evaluation:**  \n    Models trained under different setups:\n        - adversarial setup using SPAG\n        - non-adversarial setups: 20-Question and Guess-My-City\n\n7. **Gaming Rule:**\n    Game rule descriptions to the non-adversarial games:\n        - 20-Question: one player (the oracle) thinks of an object, while the other player (the guesser) attempts to identify it by asking a series of yes-or-no questions. The game will have 20 rounds.\n        - Guess-My-City: one player (the oracle) thinks of a city, while the other player (the guesser) attempts to identify it by asking a series yes/no questions and open-ended questions. The game will have 20 rounds.\n    Game rule descriptions to the adversarial games:\n        - An attacker and a defender perform a conversation around a target word only visible to the attacker. The attacker aims to induce the defender to speak out the target word unconsciously; the defender tries to avoid unconscious utterance of the target word and guess the word from the dialogue history. To win the adversarial game in information-limited conversations, both players are required to have high-level language capacities in terms of expression, upstanding, and reasoning. Moreover, by collecting target words from a vast vocabulary, this game can cover a broad range of topics providing sufficient language versatility. Besides, the game outcomes can be automatically and explicitly judged: we only need to check whether the target word appears in the defender\u2019s utterances (attacker wins) or its inference patterns (defender wins).\\",
+      "expected_outcome": "The adversarial game setup (SPAG) is expected to yield superior performance compared to non-adversarial approaches.",
+      "experiment_constraints": "```json\n    \"experiment_constraints\": {\n        \"resource_constraints\": {},\n        \"time_constraints\": {},\n        \"money_constraints\": {},\n        \"possible_modifications\": {}\n    }\n```",
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic elements in self-play generation and model updates",
+          "description": "The adversarial self-play process, including GPT-4 imitation learning and iterative self-play rounds, introduces randomness. For example, variations in prompt responses, the order of generated episodes, and random selections of target words from the top 50K list can lead to inconsistent training paths and fluctuating performance across runs.",
+          "impact": "This randomness can result in unstable gradient updates, variable normalized reasoning scores, and inconsistent win rates in game-play evaluations, making it harder to precisely isolate the benefits of the adversarial setup compared to non-adversarial setups.",
+          "possible_modifications": [
+            "Introduce controlled noise by varying the imitation learning prompt parameters to see how robust the training is.",
+            "Randomly drop tokens in selected self-play episodes to simulate unpredictable noise and test model resilience.",
+            "Adjust random seed settings or randomly reorder self-play episodes to further explore the impact of training stochasticity."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Biases introduced by data collection and game-rule design",
+          "description": "The experimental setup uses specific rules (e.g., adversarial Taboo game rules and target word selection from the top 50K frequent words) which may inherently favor certain language patterns or reasoning structures. Additionally, differences in how the GPT-4 imitation learning episodes are generated can systematically bias the dataset, influencing both the adversarial and non-adversarial training outcomes.",
+          "impact": "These systematic biases can lead to over- or under-estimation of the true improvement provided by the adversarial setup relative to non-adversarial methods, potentially skewing the interpretation of normalized reasoning scores and win rate metrics.",
+          "possible_modifications": [
+            "Implement alternative target word filtering strategies to reduce inherent dataset bias.",
+            "Retrieve a clean copy of the data or use additional datasets to cross-validate the model's performance and remove systematic pre-selection biases.",
+            "Clarify and vary the game rules across experiments, including introducing new non-adversarial game setups, to assess the impact of the systematic bias in the game-rule design."
+          ]
+        }
+      },
+      "no_answer": "After thoroughly exploring the repository, I couldn't find any specific scripts that directly compare the adversarial game setup (SPAG) with non-adversarial setups like 20-Question and Guess-My-City. The repository contains code for training models using the SPAG approach (imitation learning followed by self-play), but it doesn't include scripts for evaluating and comparing different training regimes. The README.md mentions that they use the lm-evaluation-harness repository for reasoning benchmarks evaluation, but there are no specific scripts in this repository that would answer the experiment question directly. Additionally, I couldn't find any implementation or mention of the non-adversarial setups (20-Question and Guess-My-City) in the codebase."
+    },
+    {
+      "question": "How do key hyperparameters (imitation episode size, KL coefficients, and SFT coefficients) influence the overall performance of SPAG on reasoning tasks?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Conduct an ablation study to examine the impact of varying hyperparameters while keeping all other factors constant. Focus on the following parameters: imitation data size, KL coefficients for imitation learning, and coefficients for self-play training.\n    - **Objective:** \n    Understand how each hyperparameter affects the performance of models trained using the SPAG methodology, particularly in terms of sample efficiency and reasoning improvements.\n\n2. **Testing Dataset:** \n    - Reasoning Benchmarks:\n        - MMLU\n        - BIG-Bench Hard (BBH)\n        - ARC Easy (ARC-e)\n        - ARC Challenge (ARC-c)\n        - Mutual\n        - WinoGrande\n        - LogiQA2\n        - PIQA\n\n3. **Abalation Study Parts:**  \n    - Imitation Data Size:\n        - Vary the imitation data size by collecting GPT-4 self-play episodes based on top-k frequency (with \ud835\udc58=1,2,3,5,10,15,20,30).\n        - Measure the geometric mean (GM) scores.\n        - Track the performance changes as the number of episodes increases, and identify the point at which gains plateau (around 5K episodes).\n\n    - KL Coefficient:\u03b21 in Imitation Learning:\n        - Test \u03b21 values within the range [0, 0.4]\n\n    - Self-Play Training Coefficients:\n        - Vary the supervised fine-tuning (SFT) coefficient (\u03b1) and the SPAG loss KL coefficient (\u03b22).\n        - Inspect performance variations.\n\n5. **Evaluation Metrics:**\n    - For overall performance: Geometric Mean (GM) of numerical scores across all benchmarks.\n\n6. **Hyperparamter:**\nFor hyperparameter undefined before, use the following: (If the question test on that hyperparamter, just ignore this part)\n    - For imitation learning,the learning rate is 5e-6 and the KL-penalty coefficient \u03b21 = 0.1.For SPAG training,the learning rate is 2e-6,the KL-penalty coefficient \u03b22=0.2,and the SFT coefficient \u03b1=0.5. For the Alpaca SFT baseline,we exactly follow the training setups of Alpaca and set the learning rate to 2e-6. Among all training stages,the batch size is 128 and the max sequence length is 2048. Each training\n    process maintains one epoch over the offline collected trajectories The the decay parameter \u03b3 is set to 0.8.The maximum turn of the Adversarial Taboo is 5.",
+      "expected_outcome": "The results should confirm that increasing the imitation data size beyond 5K episodes does not contribute significant additional reasoning improvements. It is expected that the optimal KL coefficient for imitation learning is around 0.1, and that maintaining an SFT coefficient below 0.5 is critical for self-play training, with the best SPAG performance achieved at a KL coefficient of approximately 0.2.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "training_framework": "The SPAG training scheme and all non-varied training hyperparameters (e.g., network architecture, optimizer settings) remain constant"
+          },
+          "independent_variables": {
+            "imitation_episode_size": [
+              "k = 1",
+              "k = 2",
+              "k = 3",
+              "k = 5",
+              "k = 10",
+              "k = 15",
+              "k = 20",
+              "k = 30"
+            ],
+            "KL_coefficient_imitation": "Values in the range [0, 0.4] (with expected optimum near 0.1)",
+            "SFT_coefficient": "Various values with emphasis on values <= 0.5 (noting that values > 0.5 yield minimal improvements)",
+            "SPAG_loss_KL_coefficient": "Tested values with an expected peak performance around 0.2"
+          },
+          "dependent_variables": {
+            "reasoning_performance": "Measured via geometric mean (GM) scores"
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "SPAG training framework (constant training architecture and optimizer settings)",
+            "Imitation learning module with a top-k episode selection mechanism (varied k values)",
+            "Self-play training module integrating supervised fine-tuning (SFT) and KL loss",
+            "Hyperparameter controllers for imitation episode size, KL coefficient  in imitation learning, SFT coefficient , and SPAG loss KL coefficient)",
+            "Data collection system for acquiring GPT-4 game episodes based on top-k frequency",
+            "Performance evaluation tools (recording geometric mean scores from Figure 3, supplemented by Tables 1, 2 and Figure 4 metrics)"
+          ],
+          "setup_steps": [
+            "Fix all constant variables in the training framework (e.g., network architecture, optimizer settings, learning rate, batch size, number of epochs)",
+            "Design the ablation study to vary only one hyperparameter at a time (imitation_episode_size, KL coefficient for imitation learning, SFT coefficient, and SPAG loss KL coefficient)",
+            "For imitation data, collect GPT-4 game episodes using specified top-k criteria (k values: 1, 2, 3, 5, 10, 15, 20, 30) and record geometric mean scores",
+            "Vary the KL coefficient in imitation learning in the range [0, 0.4] to identify performance peaks around 0.1",
+            "Adjust the SFT coefficient and the SPAG loss KL coefficient in self-play training",
+            "Collect and analyze performance data"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Interdependent Hyperparameter Effects",
+              "description": "The simultaneous influence of multiple hyperparameters might introduce subtle, interactive complexities even though one parameter is varied at a time."
+            },
+            {
+              "source": "Data Collection and Filtering Process",
+              "description": "The method for selecting and filtering GPT-4 game episodes based on top-k frequency might introduce additional complexity if further selection criteria are applied."
+            },
+            {
+              "source": "Performance Metric Computation",
+              "description": "The normalization and specific calculation methods for geometric mean scores and supplementary metrics from Tables 1, 2 and Figure 4 add additional layers of complexity."
+            }
+          ]
+        }
+      },
+      "experiment_constraints": "```json\n    \"experiment_constraints\": {\n        \"resource_constraints\": {},\n        \"time_constraints\": {},\n        \"money_constraints\": {},\n        \"possible_modifications\": {}\n    }\n```",
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic variations in training and data selection",
+          "description": "Random uncertainty arises from the inherent stochasticity in the training process, such as random initialization, sampling of mini-batches, and the procedure for selecting the top-k episodes. These random factors can lead to fluctuations in performance metrics like the geometric mean scores, even when hyperparameters are held constant.",
+          "impact": "This randomness can cause variations in recorded performance across different runs, potentially masking the true effect of varying hyperparameters. It may result in noisy performance curves, making it harder to pinpoint the exact influence of each hyperparameter on reasoning improvements.",
+          "possible_modifications": [
+            "Introduce fixed random seeds for all stochastic components to reduce variability.",
+            "Repeat each experiment multiple times and average the results to mitigate random fluctuations.",
+            "Implement robust statistical tests to distinguish true performance changes from random noise."
+          ]
+        }
+      },
+      "no_answer": "While the repository contains the implementation of the SPAG methodology and scripts for training with different hyperparameters (train.py, tools/play_llm_game.py, tools/assign_rewards.py), there is no dedicated script or set of scripts that specifically performs the ablation study described in the experiment question. The repository provides the basic building blocks for training models with different hyperparameter values, but users would need to manually run these scripts multiple times with different parameter settings and then evaluate the results using an external tool (lm-evaluation-harness) which is not included in the repository. There is no automated workflow or script that systematically varies the imitation episode size, KL coefficients, and SFT coefficients to analyze their impact on reasoning performance as described in the experiment question."
+    }
+  ]
+}

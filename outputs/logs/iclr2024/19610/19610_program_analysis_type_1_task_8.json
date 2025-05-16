@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including config file path, checkpoint path, number of GPUs, and evaluation options (/workspace/tools/dist_test.sh:3-9)",
+    "Step 2: Set up distributed PyTorch environment with specified number of GPUs, nodes, and ports (/workspace/tools/dist_test.sh:11-17)",
+    "Step 3: Launch the test script with the provided configuration, checkpoint, and additional arguments (/workspace/tools/dist_test.sh:18-22)",
+    "Step 4: Load the configuration file and merge any override options (/workspace/tools/test.py:147-151)",
+    "Step 5: Set up multi-processing and CUDA settings (/workspace/tools/test.py:154-158)",
+    "Step 6: Initialize distributed environment if specified (/workspace/tools/test.py:172-176)",
+    "Step 7: Build the dataset from the configuration (/workspace/tools/test.py:205)",
+    "Step 8: Build the data loader with appropriate settings (/workspace/tools/test.py:206)",
+    "Step 9: Build the model according to the configuration (either ResNet-50 or Swin-B backbone) (/workspace/tools/test.py:210)",
+    "Step 10: Load the checkpoint into the model (/workspace/tools/test.py:214)",
+    "Step 11: Run the model in distributed or single-GPU mode based on the configuration (/workspace/tools/test.py:230-245)",
+    "Step 12: Evaluate the model using the specified metrics and output the results (/workspace/tools/test.py:255-264)",
+    "Final Step: Compare evaluation metrics (DET_l, DET_t, TOP_ll, TOP_lt, OLS) between runs with and without YOLOv8 proposals (usage_instructions)"
+  ],
+  "agent_instructions": "Your task is to implement a distributed testing framework for evaluating a topological multi-layer perception (TopoMLP) model on autonomous driving perception tasks. The experiment compares the performance with and without using YOLOv8 object detection proposals across different backbone architectures.\n\n1. Create a distributed testing script that:\n   - Takes a configuration file path, checkpoint path, and number of GPUs as inputs\n   - Sets up a PyTorch distributed environment\n   - Launches the test script with appropriate arguments\n\n2. Create configuration files for two backbone architectures:\n   - ResNet-50 backbone configuration\n   - Swin Transformer backbone configuration\n   - Both configurations should define the TopoMLP model architecture with lane detection head (lc_head), traffic element detection head (te_head), lane-to-lane topology head (lclc_head), and lane-to-traffic-element topology head (lcte_head)\n\n3. Implement the testing logic that:\n   - Loads the specified configuration and checkpoint\n   - Sets up distributed testing environment\n   - Builds the dataset and dataloader\n   - Runs inference on the model\n   - Evaluates the results using metrics including DET_l (lane detection), DET_t (traffic element detection), TOP_ll (lane-to-lane topology), TOP_lt (lane-to-traffic topology), and OLS (overall score)\n\n4. Support running experiments in two modes:\n   - Baseline mode: without external object proposals\n   - Enhanced mode: with YOLOv8 object detection proposals provided through configuration options\n\nThe goal is to compare the performance metrics between the baseline and enhanced modes across both backbone architectures to determine if YOLOv8 proposals improve the model's performance.",
+  "masked_source": [
+    "/workspace/tools/dist_test.sh",
+    "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+    "/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+        "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+    ],
+    "usage_instructions": "1. Run the DSPy COPRO script with: `python /workspace/examples/bbh/run_prompt_bigbench_dspy.py --copro --task_start 0 --task_end 27 --save_path results/bigbench_dspy`\n2. Run the Trace script with: `python /workspace/examples/bbh/run_prompt_bigbench_trace.py --task_start 0 --task_end 27 --save_path results/bigbench_trace`\n3. The scripts will automatically split the dataset into 15 examples for training, 5 for validation, and the rest for testing. They will run on all 27 tasks in the Big-Bench Hard dataset, which includes the 11 algorithmic tasks. The results will be saved in the specified directories and can be compared to analyze the performance difference between Trace and DSPy's COPRO."
+}

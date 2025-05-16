@@ -1,0 +1,38 @@
+{
+  "requirements": [
+    "Step 1: Set up a distributed training environment with 8 GPUs using torchrun for both training and testing scripts (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:1-1, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:3-3)",
+    "Step 2: Initialize the EVA02-CLIP-B-16 model with pretrained weights from the 'eva' source (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:2-2, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:4-4)",
+    "Step 3: Configure the training parameters including batch size (2), learning rate (1e-5), weight decay (0.1), training epochs (6), and number of workers (4) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:1-2)",
+    "Step 4: Set up the dataset type as 'grid_distill' for training, which creates a grid of image patches for self-distillation (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:2-2, /workspace/src/training/main.py:139-140)",
+    "Step 5: Configure the test dataset type as 'coco_panoptic' for evaluation (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:3-3, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:4-4)",
+    "Step 6: Specify the training data path (COCO instances_train2017.json) and validation data path (panoptic_val2017.json) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:3-4, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:4-5)",
+    "Step 7: Load pre-computed text embeddings for COCO panoptic categories from the specified embed path (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:5-5, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:6-6)",
+    "Step 8: Set the image directories for training (train2017) and validation (val2017) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:5-6, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:7-7)",
+    "Step 9: Load the pretrained model checkpoint from the cache directory (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:6-6, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:7-7)",
+    "Step 10: Configure the model to lock the image tower and specify the number of unlocked groups (layers) to fine-tune (12 by default, but can be changed to 3, 6, 9 as per instructions) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:7-7, /workspace/src/training/main.py:161-166)",
+    "Step 11: Set the feature extraction type to 'v2' for both training and testing (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:7-7, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:7-7)",
+    "Step 12: Configure the experiment name, checkpoint saving frequency (every 6 epochs), and zero-shot evaluation frequency (every 1 epoch) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:7-8)",
+    "Step 13: Set the downsample factor to 16 and detection image size to 1024 for both training and testing (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:8-8, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:7-8)",
+    "Step 14: Set the alpha parameter to 0.7 for student-teacher ensemble during training (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:8-9, /workspace/src/training/main.py:282-296)",
+    "Step 15: Initialize the CLIPSelf method for self-distillation training (/workspace/src/training/main.py:140-140, /workspace/src/training/clipself.py:6-49)",
+    "Step 16: Create data loaders for the grid_distill dataset type, which divides images into grids and extracts patches (/workspace/src/training/data.py:135-281)",
+    "Step 17: For each training batch, process images, normalized boxes, and image crops (/workspace/src/training/clipself.py:11-15)",
+    "Step 18: Extract features from image crops using the teacher model (dist_model) (/workspace/src/training/clipself.py:37-38)",
+    "Step 19: Extract features from regions of interest using the student model (/workspace/src/training/clipself.py:39-40)",
+    "Step 20: Calculate the cosine similarity loss between normalized student and teacher features (/workspace/src/training/clipself.py:42-46)",
+    "Step 21: Train the model for the specified number of epochs, saving checkpoints at the specified frequency (/workspace/src/training/main.py:273-342)",
+    "Step 22: Perform zero-shot evaluation at the specified frequency during training (/workspace/src/training/main.py:330-342)",
+    "Step 23: After training, evaluate the model using the test script with the trained checkpoint (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:1-8)",
+    "Step 24: During evaluation, calculate mean accuracy (macc) metrics for 'thing' and 'stuff' categories (/workspace/src/training/zero_shot.py:177-193)",
+    "Final Step: Report the Top1 accuracy results as 'rois.thing.macc1' and 'rois.stuff.macc1' metrics from the evaluation output (/workspace/src/training/zero_shot.py:169-172)"
+  ],
+  "masked_source": [
+    "/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh",
+    "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh",
+    "/workspace/src/training/main.py",
+    "/workspace/src/training/clipself.py",
+    "/workspace/src/training/train.py",
+    "/workspace/src/training/data.py",
+    "/workspace/src/training/zero_shot.py"
+  ]
+}

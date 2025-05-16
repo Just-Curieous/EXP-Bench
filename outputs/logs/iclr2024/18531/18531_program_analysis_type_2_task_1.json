@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including random, os, BaseAgent, and other required modules (/workspace/docs/getting_started/first_agent.md:102-103)",
+    "Step 2: Create a RandomLLMAgent class that inherits from BaseAgent (/workspace/docs/getting_started/first_agent.md:105)",
+    "Step 3: Initialize the agent with proper seed handling, including setting agent seed based on configuration parameters (/workspace/docs/getting_started/first_agent.md:106-113)",
+    "Step 4: Implement the act method that tracks the current turn and maintains a list of planned actor IDs (/workspace/docs/getting_started/first_agent.md:115-118)",
+    "Step 5: For each control type and actor in the LLM info, check if the actor has already been planned for in the current turn (/workspace/docs/getting_started/first_agent.md:120-123)",
+    "Step 6: For unplanned actors, get their available actions from the info dictionary (/workspace/docs/getting_started/first_agent.md:124)",
+    "Step 7: If there are available actions, randomly select one action from the list (/workspace/docs/getting_started/first_agent.md:125-126)",
+    "Step 8: Add the actor to the planned list and return the selected action as a tuple of (control_type, actor_id, action_name) (/workspace/docs/getting_started/first_agent.md:127-128)",
+    "Step 9: Create a main function that initializes the FreecivBase-v0 environment and wraps it with LLMWrapper (/workspace/docs/getting_started/first_agent.md:150-152)",
+    "Step 10: Create an instance of the RandomLLMAgent (/workspace/docs/getting_started/first_agent.md:153)",
+    "Step 11: Reset the environment and get initial observations and info (/workspace/docs/getting_started/first_agent.md:155)",
+    "Step 12: Implement a game loop that gets observations, calls the agent's act method, and steps the environment (/workspace/docs/getting_started/first_agent.md:157-167)",
+    "Step 13: Print information about each step, including step number, turn, reward, termination status, and action taken (/workspace/docs/getting_started/first_agent.md:163-166)",
+    "Step 14: Close the environment when done (/workspace/docs/getting_started/first_agent.md:171)",
+    "Final Step: Add code to plot game scores when the game is finished (/workspace/src/civrealm/random_game.py:51)"
+  ],
+  "agent_instructions": "Your task is to create a random LLM agent that interacts with the CivRealm LLM environment. The agent should randomly select actions from the available actions provided by the environment.\n\nHere's what you need to implement:\n\n1. Create a RandomLLMAgent class that inherits from BaseAgent.\n\n2. The agent should initialize with proper seed handling. It should check if random seed generation is enabled in the configuration, and if so, use the process ID as the seed. Otherwise, it should use the seed specified in the configuration if available.\n\n3. Implement the act method that:\n   - Tracks the current turn and maintains a list of planned actor IDs\n   - Resets the planned actor list when a new turn begins\n   - Iterates through each control type and actor in the LLM information\n   - Checks if an actor has already been planned for in the current turn\n   - For unplanned actors, gets their available actions\n   - If actions are available, randomly selects one\n   - Adds the actor to the planned list\n   - Returns the selected action as a tuple of (control_type, actor_id, action_name)\n\n4. Create a main function that:\n   - Initializes the FreecivBase-v0 environment\n   - Wraps it with LLMWrapper to provide the LLM interface\n   - Creates an instance of your RandomLLMAgent\n   - Implements a game loop that:\n     * Gets observations from the environment\n     * Calls the agent's act method to get an action\n     * Steps the environment with the selected action\n     * Prints information about each step (step number, turn, reward, termination status, action)\n   - Closes the environment when done\n   - Plots the game scores\n\nThe agent should be able to play through multiple turns in the CivRealm LLM environment by randomly selecting actions for each actor."
+}

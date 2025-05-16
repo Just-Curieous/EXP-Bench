@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Install the required dependencies by running 'pip install -r requirements.txt' to set up the environment (/workspace/requirements.txt:1-10)",
+    "Step 2: Download the benchmark datasets by running 'bash scripts/download.sh', which creates data directories and downloads LongBench and InfiniteBench datasets (/workspace/scripts/download.sh:1-13)",
+    "Step 3: Create a directory to store the evaluation results for the baseline Vicuna model (/workspace/scripts/infinitebench.sh:3-3)",
+    "Step 4: Evaluate the original Vicuna model (4K context window) on the InfiniteBench tasks by running the prediction script with the vicuna-origin.yaml configuration (/workspace/config/vicuna-origin.yaml:1-11)",
+    "Step 5: Run the evaluation script on the baseline results to calculate performance metrics and generate a result.json file (/workspace/benchmark/eval.py:123-160)",
+    "Step 6: Create a directory to store the evaluation results for the InfLLM-enhanced Vicuna model (/workspace/scripts/infinitebench.sh:3-3)",
+    "Step 7: Evaluate the InfLLM-enhanced Vicuna model (128K context window) on the same InfiniteBench tasks by running the prediction script with the vicuna-inf-llm.yaml configuration (/workspace/config/vicuna-inf-llm.yaml:1-18)",
+    "Step 8: Run the evaluation script on the InfLLM results to calculate performance metrics and generate a result.json file (/workspace/benchmark/eval.py:123-160)",
+    "Step 9: Compare the result.json files from both experiments to analyze the performance difference between the original Vicuna model (4K context) and the InfLLM-enhanced Vicuna model (128K context) (/workspace/benchmark/eval.py:157-160)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment that compares the performance of the original Vicuna model (4K context window) with an InfLLM-enhanced Vicuna model (128K context window) on long-context tasks. First, download the required datasets using the download script. Then evaluate the original Vicuna model on the specified tasks. Next, evaluate the InfLLM-enhanced Vicuna model on the same tasks. Finally, compare the results to see the performance difference between the two models. The experiment involves running prediction scripts with different model configurations and analyzing the evaluation metrics in the output JSON files.",
+  "masked_source": [
+    "/workspace/scripts/download.sh",
+    "/workspace/config/vicuna-origin.yaml",
+    "/workspace/config/vicuna-inf-llm.yaml",
+    "/workspace/benchmark/eval.py",
+    "/workspace/benchmark/pred.py",
+    "/workspace/benchmark/download.py",
+    "/workspace/scripts/infinitebench.sh"
+  ]
+}

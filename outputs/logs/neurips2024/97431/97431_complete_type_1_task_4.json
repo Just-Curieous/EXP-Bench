@@ -1,0 +1,186 @@
+{
+  "questions": [
+    {
+      "question": "How does fine-tuning, including domain-specific and open-chat fine-tuning, affect the safety alignment of large language models? Specifically, does fine-tuning significantly compromise robustness to jailbreak attacks, as measured by Attack Success Rate?",
+      "method": "#### Experiment Components\n\n- **Models & Fine-Tuning States**:\n  - **Pre-finetuning**: Base models such as LLaMA, Mistral, Qwen1.5 before any safety tuning\n  - **Post-finetuning**: Tulu, Vicuna, WizardLM variants (e.g., Vicuna-13B, Tulu-13B, Mistral-7B-Tulu)\n- **Attack Types**:\n  - **AutoDAN** (Token-level attack): Gradient-based suffix perturbation (10\u2013100 tokens)\n  - **PAIR** (Prompt-level attack): Prefix manipulation under constrained budgets (< 100 queries)\n- **Fine-Tuning Datasets**:\n  - **Tulu v2 SFT dataset**: 326,154 instruction-tuning samples\n  - **Open-chat data**: User-shared conversations, e.g., Vicuna\u2019s fine-tuning source\n- **Controlled Variables**:\n  - Prompt template: Default template\n  - Safety system prompt: \u201cYou are a helpful and honest assistant\u2026\u201d\n  - Attack budget: Fixed across all runs\n  - Adversarial suffix lengths: 10\u2013100 tokens\n  - Evaluation metrics:\n    - **ASRPrefix** (prefix-based)\n    - **ASRAgent** (GPT judge, as per Table 7 & 8)\n- **Tools & Frameworks**:\n  - Use official [JailTrickBench](https://github.com/usail-hkust/JailTrickBench) repository\n  - Configure pre/post-finetuned checkpoints from HuggingFace or original training scripts\n  - Follow evaluation and attack pipelines for AutoDAN and PAIR\n\n#### Reproduction Steps\n\n1. **Preparation**:\n   - Clone the JailTrickBench repo and install all dependencies\n   - Prepare both pre- and post-finetuned models (e.g., LLaMA \u2192 Vicuna, Mistral \u2192 Mistral-7B-Tulu)\n   - Use Tulu v2 SFT and Vicuna datasets for fine-tuning if needed\n2. **Pre-finetuning Evaluation**:\n   - Configure model with the default prompt template and safety prompt\n   - Run **AutoDAN** with suffix lengths ranging from 10 to 100 tokens\n   - Run **PAIR** under the constrained query budget\n   - Log ASRPrefix and ASRAgent results\n3. **Fine-tuning**:\n   - Fine-tune the same base model using:\n     - Domain-specific data (e.g., Tulu)\n     - Open-chat data (e.g., user-shared dialogues)\n   - Inject a small number of adversarial examples to simulate realistic misuse risks\n4. **Post-finetuning Evaluation**:\n   - Re-run identical jailbreak attack procedures under same settings\n   - Record ASR metrics and compare with pre-finetuning results\n5. **Analysis**:\n   - Visualize change in ASR (like Figure 3 with stacked bars)\n   - Examine how much ASR increases post-finetuning for each model\n   - Analyze trends using references from Tables 3, 4, and 7",
+      "expected_outcome": "Based on prior findings and the trends shown in Figure 3:\n\n| Model            | AutoDAN Pre-Finetuning ASR (%) | AutoDAN Post-Finetuning ASR (%) | PAIR Pre-Finetuning ASR (%) | PAIR Post-Finetuning ASR (%) |\n| ---------------- | ------------------------------ | ------------------------------- | --------------------------- | ---------------------------- |\n| Tulu-7B          | 32                             | 46                              | 8                           | 46                           |\n| Vicuna-7B        | 32                             | 80                              | 10                          | 68                           |\n| Mistral-7B-Tulu  | 26                             | 96                              | 84                          | 96                           |\n| Vicuna-13B       | 14                             | 88                              | 10                          | 94                           |\n| Tulu-13B         | 14                             | 44                              | 10                          | 52                           |\n| WizardLM-13B     | 14                             | 30                              | 10                          | 14                           |\n| Qwen1.5-14B-Tulu | 78                             | 86                              | 22                          | 40                           |\n\n- Fine-tuning significantly degrades the safety alignment of LLMs, increasing vulnerability to jailbreak attacks.\n- Expected Trend:\n  - Models such as Vicuna-13B and Tulu-13B will show a sharp increase in ASR post-finetuning.\n  - Mistral-7B-Tulu and Qwen1.5-14B-Tulu may show particularly high ASRs under PAIR after fine-tuning.\n  - WizardLM-13B may be more robust, but will still experience some ASR increase.",
+      "design_complexity": {
+        "constant_variables": {
+          "prompt_template": "Default template, kept constant across all experiments",
+          "safety_system_prompt": "Fixed as 'You are a helpful and honest assistant\u2026'",
+          "attack_budget": "Fixed number of queries across all runs",
+          "adversarial_suffix_range": "10\u2013100 tokens (fixed range for all evaluations)"
+        },
+        "independent_variables": {
+          "fine_tuning_state": [
+            "Pre-finetuning",
+            "Post-finetuning"
+          ],
+          "attack_type": [
+            "AutoDAN (token-level attack)",
+            "PAIR (prompt-level attack)"
+          ],
+          "model": [
+            "Base models such as LLaMA, Mistral, Qwen1.5",
+            "Post-finetuning variants like Tulu, Vicuna, WizardLM"
+          ],
+          "fine_tuning_dataset": [
+            "Tulu v2 SFT dataset",
+            "Open-chat (user-shared conversations)"
+          ]
+        },
+        "dependent_variables": {
+          "attack_success_rate_metrics": [
+            "ASRPrefix",
+            "ASRAgent"
+          ]
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "model": "The exact selection of models (e.g., which variants of LLaMA, Mistral, Qwen1.5) isn\u2019t fully detailed; some names appear in expected outcomes while others are mentioned only in the method.",
+          "attack_budget": "While it is mentioned as fixed, the exact number of queries is not explicitly provided.",
+          "adversarial_suffix_length": "Although the range is specified, the specific increments or the rationale for selecting this range is not elaborated.",
+          "fine_tuning_dataset": "The description of open-chat data is vague (e.g., source, quality, or selection criteria), which may affect reproducibility."
+        },
+        "possible_modifications": {
+          "modification_model_selection": [
+            "Explicitly enumerate all model variants (e.g., LLaMA-7B, Vicuna-13B, etc.) to reduce ambiguity."
+          ],
+          "modification_attack_budget": [
+            "Mask or specify the exact number of queries to be used, or allow varying budgets as an additional independent variable."
+          ],
+          "modification_suffix_length": [
+            "Introduce additional variable values; for example, test more granular token-length values (e.g., 10, 20, 30,\u2026, 100 tokens) to examine sensitivity."
+          ],
+          "modification_fine_tuning_dataset": [
+            "Clarify and potentially mask specific dataset identifiers to study the impact of different fine-tuning data sources on safety alignment."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Models & Fine-Tuning States (Pre-finetuning models like LLaMA, Mistral, Qwen1.5 and Post-finetuning variants such as Tulu, Vicuna, WizardLM)",
+          "Attack Types (AutoDAN for token-level attacks and PAIR for prompt-level attacks)",
+          "Fine-Tuning Datasets (Tulu v2 SFT dataset and Open-chat data sources)",
+          "Controlled Variables (Prompt template, Safety system prompt, fixed attack budget, and adversarial suffix token range)",
+          "Evaluation Metrics (ASRPrefix and ASRAgent)",
+          "Tools & Frameworks (JailTrickBench repository, HuggingFace checkpoints, official training/evaluation pipelines)"
+        ],
+        "setup_steps": [
+          "Preparation: Clone the JailTrickBench repository, install dependencies, and prepare pre-finetuned and post-finetuned model checkpoints using provided datasets",
+          "Pre-finetuning Evaluation: Configure models with the default prompt and safety system prompt; execute AutoDAN attacks with varying suffix lengths and PAIR attacks with a fixed query budget; log ASRPrefix and ASRAgent metrics",
+          "Fine-tuning: Fine-tune the same base models using domain-specific (Tulu v2 SFT) and open-chat datasets while injecting a few adversarial examples",
+          "Post-finetuning Evaluation: Re-run identical jailbreak attack procedures under the same fixed settings and record ASR metrics",
+          "Analysis: Visualize the change in ASR (e.g., using stacked bar figures similar to Figure 3) and compare trends across different models and attack types"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Integration of Pre/Post Models",
+            "description": "Coordinating between models obtained from different sources (e.g., original checkpoints, HuggingFace models, and custom fine-tuned versions) can introduce integration complexities."
+          },
+          {
+            "source": "Adversarial Suffix Configuration",
+            "description": "The choice of token range (10\u2013100 tokens) and the gradient-based perturbation process of AutoDAN adds complexity in parameter tuning and reproducibility."
+          },
+          {
+            "source": "Dataset Preparation",
+            "description": "Utilizing both structured fine-tuning datasets and ambiguous open-chat data increases the complexity of ensuring consistent training and evaluation conditions."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Model Selection: The exact variants of base models (e.g., which specific LLaMA, Mistral, or Qwen1.5 versions) are not completely detailed between the method description and expected outcomes.",
+          "Attack Budget: Although noted as fixed across experiments, the precise number of queries used remains unspecified.",
+          "Adversarial Suffix Length: While a range (10\u2013100 tokens) is provided, it is unclear whether increments are uniform or chosen based on other considerations.",
+          "Fine-Tuning Datasets: The description of open-chat data is vague, with insufficient detail on sources, quality, and selection criteria."
+        ],
+        "ambiguous_setup_steps": [
+          "Preparation of the Fine-Tuning Data: Instructions on how to exactly prepare and integrate both Tulu v2 SFT and open-chat datasets are not fully elaborated.",
+          "Configuration of Checkpoints: The steps for configuring and verifying pre- and post-finetuned checkpoints from different sources (HuggingFace vs. original scripts) are not explicitly clear.",
+          "Attack Implementation Details: The process for running AutoDAN and PAIR attacks (e.g., parameter settings besides token lengths and query counts) lacks full implementation detail."
+        ],
+        "possible_modifications": {
+          "modification_model_selection": [
+            "Explicitly enumerate all model variants to be used (e.g., LLaMA-7B, Vicuna-13B, Mistral-7B-Tulu, etc.) to remove ambiguity regarding model selection."
+          ],
+          "modification_attack_budget": [
+            "Clearly specify or mask the exact number of queries used for the attack budget, or allow it as an independent variable to examine its effect."
+          ],
+          "modification_suffix_length": [
+            "Detail the increment steps for adversarial suffix token lengths and provide a rationale for selecting the range of 10\u2013100 tokens."
+          ],
+          "modification_fine_tuning_dataset": [
+            "Clarify the open-chat data source by providing details on dataset origin, quality control measures, and selection criteria, or mask specific identifiers if needed for privacy or experimental variations."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Explicitly enumerate all model variants to remove ambiguity, or alternatively, enforce a constraint to use a smaller model variant (e.g., using a miniaturized version such as GPT-4o-mini) to test if similar safety alignment metrics can be achieved with reduced computational resources.",
+            "Limit the number of queries and the token-level attack budget to reduce GPU memory and compute usage."
+          ],
+          "time_constraints": [
+            "Constrain the range or increment steps for adversarial suffix lengths (for example, testing only at 10-token increments) to reduce evaluation complexity and overall experiment time.",
+            "Set a strict, fixed number of queries per attack type (e.g., under 100 queries) to streamline re-runs and shorten the experimental cycle."
+          ],
+          "money_constraints": [
+            "Restrict fine-tuning by possibly using a smaller subset of the Tulu v2 SFT dataset or a reduced version of the open-chat dataset, thereby lowering compute costs.",
+            "Implement a fixed attack budget in terms of token generation and queries, ensuring that any additional resource cost is minimized during evaluation."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Randomized modifications in adversarial suffix generation and gradient updates",
+        "description": "In the AutoDAN attack component, modifying the method to drop tokens randomly (instead of carefully dropping unimportant ones) introduces randomness in the gradient updates. This can lead to varying stability during training and fluctuations in the computed Attack Success Rate (ASR) metrics. Such randomness affects the token-level adversarial generation process, causing trial-to-trial variability.",
+        "impact": "Variation in ASR measurements across trials, making it challenging to compare safety alignment performance consistently, and potentially misrepresenting the model's robustness to jailbreak attacks.",
+        "possible_modifications": [
+          "Use a deterministic token-dropping strategy by targeting only known unimportant tokens instead of random ones.",
+          "Fix random seeds in data preprocessing and adversarial attack simulations to control variance.",
+          "Run multiple repetitive trials and average the ASR outcomes to mitigate the effects of random noise."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Biases in fine-tuning datasets and one-time modifications in dataset curation",
+        "description": "The experiment introduces systematic uncertainty through the fine-tuning process by using domain-specific (Tulu v2 SFT) and open-chat datasets. For example, if the open-chat data are culled from user-shared conversations with inherent biases, or if a one-time modification (such as misclassifying long texts) occurs, it can systematically skew the safety alignment. This bias is reflected in consistently higher ASRs post-finetuning as compared to pre-finetuning results.",
+        "impact": "Leads to a consistent shift in ASR outcomes across different models, as seen in the evaluation tables and Figure 3 trends, potentially compromising the validity of conclusions regarding fine-tuning effects on robustness.",
+        "possible_modifications": [
+          "Validate and clean the fine-tuning datasets by comparing against standard benchmarks to ensure minimal bias.",
+          "Perform controlled experiments with multiple fine-tuning datasets to assess the impact of specific dataset biases on safety alignment.",
+          "Introduce deliberate cross-validation between different data sources to detect and correct for systematic discrepancies."
+        ]
+      },
+      "source": [
+        "/workspace/scripts/6_trick_target_align_autodan.sh",
+        "/workspace/scripts/6_trick_target_align_pair.sh"
+      ],
+      "usage_instructions": "To run the experiment comparing pre-finetuning and post-finetuning models' robustness to jailbreak attacks:\n\n1. First, execute the AutoDAN token-level attack script:\n   ```bash\n   bash /workspace/scripts/6_trick_target_align_autodan.sh\n   ```\n   This will test both Vicuna-7B and Vicuna-13B (which are fine-tuned versions of LLaMA) against AutoDAN attacks.\n\n2. Then, execute the PAIR prompt-level attack script:\n   ```bash\n   bash /workspace/scripts/6_trick_target_align_pair.sh\n   ```\n   This will test the same models against PAIR attacks.\n\n3. The scripts will automatically evaluate the Attack Success Rate (ASR) using both prefix-based evaluation and GPT-based agent evaluation (corresponding to ASRPrefix and ASRAgent in the experiment question).\n\n4. Results will be saved to `/workspace/exp_results/trick_target_align_autodan/` and `/workspace/exp_results/trick_target_align_pair/` respectively.\n\n5. To analyze the results and generate ASR metrics, run:\n   ```bash\n   python /workspace/analysis/report_trick.py --exp t\n   ```\n   This will show a table with ASR percentages for both pre-finetuned and post-finetuned models.\n\nNote: The scripts are already configured to use the appropriate models, attack methods, and evaluation metrics as specified in the experiment question. The repository supports various models including LLaMA, Mistral, Qwen1.5, Tulu, and Vicuna variants, which align with the models mentioned in the experiment question.",
+      "requirements": [
+        "Step 1: Set up the experiment by defining the target models (Vicuna-7B and Vicuna-13B) for testing (/workspace/scripts/6_trick_target_align_autodan.sh:1-10, /workspace/scripts/6_trick_target_align_pair.sh:1-12)",
+        "Step 2: Configure the attack parameters - AutoDAN for token-level attack and PAIR for prompt-level attack (/workspace/scripts/6_trick_target_align_autodan.sh:4, /workspace/scripts/6_trick_target_align_pair.sh:4)",
+        "Step 3: Load the harmful prompts dataset containing 50 harmful instructions (/workspace/scripts/6_trick_target_align_autodan.sh:5, /workspace/scripts/6_trick_target_align_pair.sh:6)",
+        "Step 4: Set up the evaluation metrics including prefix-based evaluation and agent-based evaluation (/workspace/scripts/6_trick_target_align_autodan.sh:7-9, /workspace/scripts/6_trick_target_align_pair.sh:7-9)",
+        "Step 5: Execute the attack on the target models by generating adversarial prompts (/workspace/main.py:255-257)",
+        "Step 6: For AutoDAN attack, generate adversarial suffixes through an evolutionary algorithm approach (/workspace/baseline/AutoDAN/AutoDAN_single_main.py:156-220)",
+        "Step 7: For PAIR attack, use an iterative approach with attack, target, and judge models to generate and evaluate adversarial prompts (/workspace/baseline/PAIR/PAIR_single_main.py:50-100)",
+        "Step 8: Evaluate the attack success using prefix-based evaluation to check if the model's response contains refusal prefixes (/workspace/baseline/AutoDAN/AutoDAN_single_main.py:41-58, /workspace/baseline/PAIR/PAIR_single_main.py:109-111)",
+        "Step 9: Perform agent-based evaluation using GPT to determine if the model's response actually fulfills the harmful request (/workspace/main.py:396-399)",
+        "Step 10: Save the results to the specified output directories for later analysis (/workspace/main.py:264-265)",
+        "Final Step: Calculate the Attack Success Rate (ASR) metrics for both prefix-based and agent-based evaluations (/workspace/main.py:376-399)"
+      ],
+      "agent_instructions": "Your task is to create scripts to evaluate the robustness of language models against jailbreak attacks. You need to implement two types of attacks: a token-level attack (AutoDAN) and a prompt-level attack (PAIR), and test them against Vicuna-7B and Vicuna-13B models.\n\nThe evaluation should:\n1. Use a dataset of harmful instructions (50 examples) to test the models\n2. Implement the AutoDAN attack which uses an evolutionary algorithm to generate adversarial suffixes\n3. Implement the PAIR attack which uses an iterative approach with attack, target, and judge models\n4. Evaluate attack success using two metrics:\n   - Prefix-based evaluation: Check if the model's response contains refusal prefixes\n   - Agent-based evaluation: Use a judge model to determine if the response actually fulfills the harmful request\n5. Calculate and report the Attack Success Rate (ASR) for both evaluation methods\n\nThe scripts should save results to appropriate directories for later analysis. The implementation should allow for resuming experiments and should handle both attacks consistently across the target models.",
+      "masked_source": [
+        "/workspace/scripts/6_trick_target_align_autodan.sh",
+        "/workspace/scripts/6_trick_target_align_pair.sh",
+        "/workspace/main.py",
+        "/workspace/baseline/AutoDAN/AutoDAN_single_main.py",
+        "/workspace/baseline/PAIR/PAIR_single_main.py"
+      ]
+    }
+  ]
+}

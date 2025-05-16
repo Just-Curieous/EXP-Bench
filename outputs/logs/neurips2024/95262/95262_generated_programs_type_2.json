@@ -1,0 +1,26 @@
+[
+  {
+    "mode": "B",
+    "question": "How can you use MoE Jetpack to perform image classification on a custom image using a pre-trained model?",
+    "method": "Create a script that uses the MoE Jetpack framework to classify an image using a pre-trained model. The script should load a model, process an input image, and output the classification results.",
+    "expected_outcome": "A JSON output containing the classification results for the input image, including the predicted class and confidence score.",
+    "source": ["/workspace/demo/image_demo.py"],
+    "usage_instructions": "1. Import necessary libraries including mmengine.fileio and rich for output formatting\n2. Define a main function that parses command-line arguments for image path, model name, and optional checkpoint path\n3. Create an ImageClassificationInferencer with the specified model and checkpoint\n4. Run inference on the input image\n5. Format and display the classification results\n6. Handle any errors that might occur during model loading or inference"
+  },
+  {
+    "mode": "A",
+    "question": "How can you convert a pre-trained dense Vision Transformer (ViT) model into a Mixture of Experts (MoE) model using MoE Jetpack's checkpoint recycling technique?",
+    "method": "Use the MoE Jetpack framework to convert a pre-trained dense ViT model into a Mixture of Experts model by initializing MoE weights from the dense model using the checkpoint recycling technique.",
+    "expected_outcome": "A saved MoE model checkpoint file that has been initialized from a dense model using the checkpoint recycling technique.",
+    "source": ["/workspace/moejet/tools/gen_ViT_MoE_weight.py"],
+    "usage_instructions": "1. Set up the configuration for the MoE model, including the number of experts, MoE layers, and other hyperparameters\n2. Load the pre-trained dense model (e.g., ViT-Tiny or ViT-Small)\n3. Prepare a dataset for feature analysis (optional, depending on the selection method)\n4. Analyze the features of the dense model to determine which weights to select for each expert\n5. Generate expert indices based on the feature analysis or using random/uniform selection\n6. Extract and organize the selected weights from the dense model\n7. Initialize the MoE model with the selected weights\n8. Save the initialized MoE model checkpoint"
+  },
+  {
+    "mode": "A",
+    "question": "How can you fine-tune a MoE Jetpack model on the ImageNet dataset using the provided configuration?",
+    "method": "Use the MoE Jetpack framework to fine-tune a pre-initialized MoE model on the ImageNet dataset using the provided configuration file.",
+    "expected_outcome": "A trained MoE model with improved accuracy compared to the dense baseline model.",
+    "source": ["/workspace/moejet/configs/timm/vit_tiny_dual_moe_timm_21k_ft.py", "/workspace/tools/dist_train.sh"],
+    "usage_instructions": "1. Ensure the MoE model has been initialized using checkpoint recycling\n2. Set up the training configuration, including batch size, learning rate, and other hyperparameters\n3. Configure the optimizer with layer-wise learning rate decay\n4. Set up the learning rate scheduler with warm-up and cosine annealing\n5. Run the distributed training script with the appropriate configuration file\n6. Monitor the training progress and validation accuracy\n7. Save and evaluate the fine-tuned model"
+  }
+]

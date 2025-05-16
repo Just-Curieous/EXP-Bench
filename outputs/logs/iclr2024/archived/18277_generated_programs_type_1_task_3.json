@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/alpaca_finetuning_v1/finetuning.py"],
+    "usage_instructions": "To run the experiment testing different numbers of layers (L) for inserting adaptation prompts, execute the finetuning.py script multiple times with different --adapter_layer values (10, 20, 30, 32). Use the following command for each configuration:\n\ntorchrun --nproc_per_node 8 finetuning.py \\\n    --model Llama7B_adapter \\\n    --llama_model_path $TARGET_FOLDER/ \\\n    --data_path $DATA_PATH/alpaca_data.json \\\n    --adapter_layer [10|20|30|32] \\\n    --adapter_len 10 \\\n    --max_seq_len 512 \\\n    --batch_size 4 \\\n    --epochs 5 \\\n    --warmup_epochs 2 \\\n    --blr 9e-3 \\\n    --weight_decay 0.02 \\\n    --output_dir ./checkpoint_layer_[10|20|30|32]/"
+}

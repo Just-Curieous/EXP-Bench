@@ -1,0 +1,72 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you create a language-adaptive sales agent that correctly identifies Spanish input and responds with 'Hola' instead of 'Hello'?",
+    "method": "Use the Trace framework to create an agent that can detect the language of user input and respond with an appropriate greeting. The agent should be able to learn from feedback and improve its responses over time.",
+    "expected_outcome": "An agent that correctly identifies Spanish input ('Hola, soy Juan.') and responds with 'Hola, Juan!' instead of 'Hello, Juan!'",
+    "source": [
+      "/workspace/examples/greeting.py"
+    ],
+    "usage_instructions": "1. Create a Trace model class that represents a sales assistant agent\n2. Define trainable nodes for language detection and name extraction\n3. Implement methods to decide language and generate appropriate greetings\n4. Create a feedback function that evaluates if the greeting matches the expected language\n5. Set up a training loop that uses OptoPrime optimizer to improve the agent based on feedback\n6. Test the agent with Spanish input to verify it responds with 'Hola' instead of 'Hello'",
+    "requirements": [
+      "Step 1: Import necessary modules from the Trace framework (opto.trace) and optimizer (opto.optimizers) (/workspace/examples/greeting.py:1-3)",
+      "Step 2: Create a model class for the sales agent using the trace.model decorator (/workspace/examples/greeting.py:6-7)",
+      "Step 3: Initialize the agent with a system prompt and create trainable nodes for language detection and name extraction (/workspace/examples/greeting.py:9-12)",
+      "Step 4: Implement the main call method that processes user input through the language detection and name extraction nodes (/workspace/examples/greeting.py:14-23)",
+      "Step 5: Create a trainable bundle method to determine the language of the input (en or es) (/workspace/examples/greeting.py:25-28, 86-89)",
+      "Step 6: Create a trainable bundle method to generate appropriate greetings based on the detected language (/workspace/examples/greeting.py:30-34, 91-95)",
+      "Step 7: Implement a feedback function that evaluates if the greeting matches the expected language (/workspace/examples/greeting.py:37-43)",
+      "Step 8: Create a training function that initializes the agent and optimizer (/workspace/examples/greeting.py:46-49)",
+      "Step 9: Set up a training loop that tests the agent with Spanish input and uses feedback to improve responses (/workspace/examples/greeting.py:51-65)",
+      "Final Step: Return the trained agent (/workspace/examples/greeting.py:67)"
+    ],
+    "agent_instructions": "Create a language-adaptive sales agent using the Trace framework that can detect Spanish input and respond with 'Hola' instead of 'Hello'. Your implementation should follow these steps:\n\n1. Import the necessary modules from the Trace framework (opto.trace) and optimizer (opto.optimizers).\n\n2. Create a model class for a sales assistant agent using the trace.model decorator.\n\n3. Initialize the agent with a system prompt (e.g., 'You are a sales assistant') and create trainable nodes for:\n   - Language detection (to determine if input is English or Spanish)\n   - Name extraction (to extract the user's name from the input)\n\n4. Implement the main call method that processes user input by:\n   - Using the language detection node to determine the language\n   - Using the name extraction node to extract the user's name\n   - Generating an appropriate greeting based on the detected language and name\n\n5. Create trainable methods to:\n   - Determine if the input language is English or Spanish\n   - Generate the appropriate greeting ('Hello' or 'Hola') based on the detected language\n\n6. Implement a feedback function that evaluates if the greeting matches the expected language (returns 'Correct' or 'Incorrect').\n\n7. Create a training function that:\n   - Initializes the agent and optimizer (OptoPrime)\n   - Sets up a training loop that tests the agent with Spanish input\n   - Uses feedback to improve the agent's responses\n   - Continues training until the agent correctly responds with 'Hola' to Spanish input\n\n8. Test the agent with Spanish input (e.g., 'Hola, soy Juan.') to verify it responds with 'Hola, Juan!' instead of 'Hello, Juan!'\n\nThe goal is to create an agent that can adapt to different languages and respond appropriately based on the input language."
+  },
+  {
+    "mode": "A",
+    "question": "How can you implement a Battleship game agent that learns to make better shot placements based on game feedback?",
+    "method": "Use the Trace framework to create an agent that plays the Battleship game and optimizes its strategy for placing shots on the board. The agent should learn from hits and misses to improve its targeting strategy.",
+    "expected_outcome": "An agent that demonstrates improved shot placement strategy over time, resulting in more hits and fewer misses when playing Battleship",
+    "source": [
+      "/workspace/examples/battleship.py",
+      "/workspace/docs/examples/game/battleship.ipynb"
+    ],
+    "usage_instructions": "1. Use the provided BattleshipBoard class to create a game environment\n2. Define a Trace model for the agent with trainable components for shot selection strategy\n3. Implement methods for the agent to select coordinates for shots based on board state\n4. Create a feedback mechanism that rewards hits and penalizes misses\n5. Set up a training loop using OptoPrime optimizer to improve the agent's strategy\n6. Evaluate the agent's performance by tracking hit rate before and after training",
+    "requirements": [
+      "Step 1: Set up the necessary imports for the Trace framework, including bundle, node, Module, GRAPH from opto.trace, OptoPrime from opto.optimizers, and other required libraries (battleship.ipynb:31-41)",
+      "Step 2: Create a Battleship game environment with functions to initialize the board, place ships, and check hits (battleship.ipynb:112-170)",
+      "Step 3: Implement a BattleshipBoard class that encapsulates the game state, tracks hits and misses, and provides methods to interact with the board (battleship.ipynb:186-263)",
+      "Step 4: Define a Policy class that inherits from Module with two trainable components: a reasoning function to analyze the board state and an action function to select shot coordinates (battleship.ipynb:279-306)",
+      "Step 5: Implement helper functions to evaluate the policy's performance, including functions to get feedback from shot placement and calculate average rewards (battleship.ipynb:322-355)",
+      "Step 6: Create an initial policy and evaluate its performance before training (battleship.ipynb:382-391)",
+      "Step 7: Set up an optimization loop that allows the agent to interact with the environment, receive feedback, and update its strategy (battleship.ipynb:926-963)",
+      "Step 8: Use the OptoPrime optimizer to update the agent's trainable components based on the feedback received (battleship.ipynb:951-953)",
+      "Step 9: Periodically evaluate the agent's performance during training to track improvement (battleship.ipynb:958-959)",
+      "Final Step: Compare the agent's performance before and after training to demonstrate improved shot placement strategy (battleship.ipynb:958-959)"
+    ],
+    "agent_instructions": "Create a Battleship game agent that learns to make better shot placements using the Trace framework. Your implementation should include:\n\n1. A Battleship game environment:\n   - Create a board representation with randomly placed ships\n   - Implement functionality to track hits, misses, and game state\n   - Provide methods to check shots and update the board accordingly\n\n2. An intelligent agent with trainable components:\n   - Define a Policy class using the Trace framework's Module\n   - Implement two key trainable functions:\n     - A reasoning function that analyzes the current board state (hits, misses, unknown cells)\n     - An action function that selects coordinates for the next shot based on the reasoning\n\n3. A training and optimization system:\n   - Use the OptoPrime optimizer to improve the agent's strategy\n   - Create a feedback mechanism that rewards hits and penalizes misses\n   - Implement a training loop where the agent interacts with the environment and learns from feedback\n\n4. Evaluation methods:\n   - Track the agent's hit rate before and after training\n   - Implement functions to run multiple game episodes and calculate average performance\n   - Demonstrate that the agent's shot placement strategy improves over time\n\nThe goal is to create an agent that starts with no knowledge of optimal Battleship strategy but learns to make increasingly strategic shot placements based on the patterns of hits and misses it observes during gameplay."
+  },
+  {
+    "mode": "A",
+    "question": "How can you optimize a Python function to correctly implement a 'strange sort' algorithm using Trace?",
+    "method": "Use the Trace framework to optimize a Python function that implements a 'strange sort' algorithm, which alternates between selecting minimum and maximum values from a list. The optimization should be guided by test cases and feedback.",
+    "expected_outcome": "A correctly implemented 'strange_sort_list' function that transforms [1, 2, 3, 4] into [1, 4, 2, 3] by alternating between min and max selections",
+    "source": [
+      "/workspace/docs/quickstart/quick_start.ipynb"
+    ],
+    "usage_instructions": "1. Define a Python function decorated with @bundle(trainable=True) that attempts to implement the strange sort algorithm\n2. Create test cases with input lists and expected outputs\n3. Implement a feedback function that evaluates if the function's output matches the expected result\n4. Set up an optimization loop using OptoPrime to improve the function implementation\n5. Run the optimization for multiple epochs until the function correctly implements the strange sort algorithm\n6. Verify the function works correctly on test cases like [1, 2, 3, 4] \u2192 [1, 4, 2, 3]",
+    "requirements": [
+      "Step 1: Import the necessary modules from the Trace framework (opto.trace) (/workspace/docs/quickstart/quick_start.ipynb:170-171)",
+      "Step 2: Define a function decorated with @bundle(trainable=True) that implements the strange sort algorithm (/workspace/docs/quickstart/quick_start.ipynb:172-185)",
+      "Step 3: Create test cases with input lists and expected outputs for the strange sort algorithm (/workspace/docs/quickstart/quick_start.ipynb:379-380)",
+      "Step 4: Define a feedback function that evaluates if the function's output matches the expected result (/workspace/docs/quickstart/quick_start.ipynb:338-342)",
+      "Step 5: Import and initialize an optimizer (OptoPrime) with the function's parameters (/workspace/docs/quickstart/quick_start.ipynb:376-384)",
+      "Step 6: Set up an optimization loop that runs for multiple epochs (/workspace/docs/quickstart/quick_start.ipynb:386-402)",
+      "Step 7: In each epoch, execute the function with test inputs and compare outputs to expected results (/workspace/docs/quickstart/quick_start.ipynb:388-395)",
+      "Step 8: Provide feedback to the optimizer based on the correctness of the output (/workspace/docs/quickstart/quick_start.ipynb:400-402)",
+      "Step 9: Break the loop if the function produces correct outputs (/workspace/docs/quickstart/quick_start.ipynb:397-398)",
+      "Final Step: Verify the optimized function works correctly on test cases like [1, 2, 3, 4] \u2192 [1, 4, 2, 3] (/workspace/docs/quickstart/quick_start.ipynb:621-623)"
+    ],
+    "agent_instructions": "Your task is to implement a 'strange sort' algorithm using the Trace framework for optimization. The strange sort algorithm takes a list of integers and returns a new list where elements are arranged by alternating between selecting the minimum and maximum values from the remaining elements.\n\nFollow these steps:\n\n1. Install the Trace framework (trace-opt)\n\n2. Create a Python function that attempts to implement the strange sort algorithm. The function should:\n   - Take a list of integers as input\n   - Return a list where elements are arranged by alternating between minimum and maximum values\n   - For example, [1, 2, 3, 4] should become [1, 4, 2, 3]\n   - Decorate this function with @bundle(trainable=True) from the Trace framework\n\n3. Create test cases to verify the function's behavior, such as:\n   - Input [1, 2, 3, 4] should produce [1, 4, 2, 3]\n   - Input [5, 5, 5, 5] should produce [5, 5, 5, 5]\n   - Input [] should produce []\n\n4. Implement a feedback function that evaluates if the function's output matches the expected result\n\n5. Set up an optimization loop using OptoPrime from the Trace framework to improve the function implementation:\n   - Initialize the optimizer with the function's parameters\n   - Run the function with test inputs\n   - Provide feedback based on correctness\n   - Allow the optimizer to update the function\n   - Continue until the function produces correct outputs\n\n6. Verify the optimized function works correctly on various test cases\n\nThe final implementation should correctly implement the strange sort algorithm by alternating between selecting minimum and maximum values from the remaining elements in the list."
+  }
+]

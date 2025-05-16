@@ -1,0 +1,10 @@
+{
+    "source": [
+        "/workspace/experimental_benchmark/cross_match.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/embed.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb",
+        "/workspace/experimental_benchmark/galaxy10_decals/trainer.py",
+        "/workspace/experimental_benchmark/galaxy_properties/trainer.py"
+    ],
+    "usage_instructions": "1. First, use cross_match.py to create multimodal datasets by cross-matching data from different sources (Legacy Surveys, DESI, MaNGA): `python /workspace/experimental_benchmark/cross_match.py [left_dataset_path] [right_dataset_path] [cache_dir] --matching_radius 1.0`. 2. Use embed.py to generate embeddings from the multimodal dataset using AstroCLIP: `python /workspace/experimental_benchmark/astroclip/property_estimation/embed.py [astroclip_model_path] [desi_decals_path] [provabgs_path] [save_path]`. 3. For morphology classification evaluation, run the Galaxy10 DECaLS trainer: `python /workspace/experimental_benchmark/galaxy10_decals/trainer.py fit --config /workspace/experimental_benchmark/galaxy10_decals/config.yaml`. 4. For physical parameter estimation, run the galaxy properties trainer: `python /workspace/experimental_benchmark/galaxy_properties/trainer.py fit --config /workspace/experimental_benchmark/galaxy_properties/configs/spectrum.yaml`. 5. Finally, use the property_estimation.ipynb notebook to evaluate the performance of the embeddings on galaxy property estimation using k-Nearest Neighbors regression."
+}

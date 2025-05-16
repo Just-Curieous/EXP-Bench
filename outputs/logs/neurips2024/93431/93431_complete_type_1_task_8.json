@@ -1,0 +1,144 @@
+{
+  "questions": [
+    {
+      "question": "- **Does OptoPrime (within Trace) or TextGrad achieve faster optimization?**",
+      "method": "1. **Task Setup:**  \n   - **Goal:** Compare Trace and TextGrad for AI workflow optimization.  \n   - **Key Difference Between Methods:**  \n     - **Trace propagates minimal subgraphs** to separate tracing infrastructure from optimization algorithms.  \n     - **TextGrad propagates text feedback**, tightly coupling infrastructure and optimization.   \n\n2. **Experimental Design for Fair Comparison:**  \n   - Applied **Trace directly to the evaluation code released with the TextGrad library**.  \n   - Both frameworks used the **same LLM APIs at around the same time** to ensure fairness.  \n   - **Optimization Tasks Compared:**  \n     - **Solution Optimization** (TextGrad Table 2).  \n     - **Prompt Optimization** (TextGrad Table 3).  \n\n3. **Comparative Evaluation:**  \n   - **OptoPrime (Trace\u2019s optimizer)**  \n   - **TextGrad (original implementation)**",
+      "expected_outcome": "- **OptoPrime should be approximately 3x faster than TextGrad**, since:  \n  - OptoPrime makes **one LLM call per optimization step**.  \n  - TextGrad makes **a number of LLM calls proportional to the graph\u2019s size**.",
+      "experiment_design_complexity": {
+        "constant_variables": {
+          "api_call_timing": "same_time"
+        },
+        "independent_variables": {
+          "optimization_method": [
+            "OptoPrime",
+            "TextGrad"
+          ],
+          "optimization_task": [
+            "Solution Optimization",
+            "Prompt Optimization"
+          ],
+          "llm_model": [
+            "The optimizer is GPT-4o-2024-08-06",
+            "The student model is GPT-35-turbo-1106"
+          ]
+        },
+        "dependent_variables": {
+          "time_in_minutes": "Measured as the total time taken for optimization"
+        }
+      },
+      "experiment_design_ambiguity": {
+        "ambiguous_variables": {
+          "optimization_method": "It is unclear what these methods represent, the agent needs to refer to another paper.",
+          "llm_model": "It is unclear what an optimizer, or a student model means."
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Trace framework (OptoPrime optimizer)",
+            "TextGrad framework",
+            "LLM APIs (GPT-4o-2024-08-06, GPT-35-turbo-1106)",
+            "Optimization tasks (Solution Optimization, Prompt Optimization)",
+            "Evaluation function (automatic comparison of outputs to ground truth)",
+            "Performance metric (time in minutes)",
+            "Hardware setup (We run the experiments on a standard PC with 16 GB RAM)"
+          ],
+          "setup_steps": [
+            "Configure and initialize the Trace framework",
+            "Integrate TextGrad as an optimizer within Trace",
+            "Ensure LLM API access for both frameworks",
+            "Load dataset for Solution Optimization and Prompt Optimization tasks",
+            "Run optimization trials for OptoPrime and TextGrad using identical conditions",
+            "Collect results: execution time and LLM calls per optimization step",
+            "Compare and analyze results to evaluate efficiency and effectiveness"
+          ],
+          "possible_modifications": {
+            "increase_interconnected_components": [
+              "Introduce additional optimization tasks beyond Solution and Prompt Optimization",
+              "Evaluate optimization performance across multiple LLMs (e.g., GPT-4o, Claude, Gemini)",
+              "Incorporate an additional evaluation metric, such as optimization success rate"
+            ],
+            "add setup dependencies": [
+              "Require integration with external logging frameworks for tracking optimization steps",
+              "Introduce constraints on LLM API usage to evaluate optimization efficiency under token limits"
+            ]
+          }
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Optimization tasks (Solution Optimization, Prompt Optimization): Unclear what this is"
+          ],
+          "ambiguous_setup_steps": [
+            "Integration of TextGrad into Trace: The process is described but lacks implementation details",
+            "Preprocessing of dataset: No explicit mention of data cleaning or transformations before use",
+            "Dataset source: Unclear how to obtain Solution Optimization and Prompt Optimization tasks"
+          ],
+          "possible_modifications": {
+            "mask_existing_instructions": [
+              "Remove details on integrating TextGrad into Trace, requiring inference from users",
+              "Omit preprocessing instructions for dataset preparation",
+              "Mask LLM API configurations, requiring users to determine the optimal settings"
+            ],
+            "imply need for new setup steps": [
+              "Introduce explicit documentation requirements for hardware specifications",
+              "Require a structured process for hyperparameter tuning and optimization constraints"
+            ]
+          }
+        }
+      },
+      "experiment_uncertainty": {
+        "random_uncertainty": {
+          "source": "Variability in LLM API response times",
+          "description": "LLM API responses may have fluctuations in latency, leading to inconsistent time measurements across optimization trials.",
+          "impact": "Results in variations in recorded optimization time, affecting performance comparisons.",
+          "possible_modifications": [
+            "Introduce artificial delays in API response times to test optimizer robustness.",
+            "Randomly drop tokens from API responses to simulate noise in optimization feedback.",
+            "Vary the temperature parameter for LLM calls, injecting randomness into text outputs."
+          ]
+        },
+        "systematic_uncertainty": {}
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "tightening_existing constraints": [
+            "Restrict LLM API usage further by enforcing a stricter token budget.",
+            "Reduce the allowed optimization iterations for all methods to amplify differences in efficiency.",
+            "Enforce model size constraints by requiring performance parity with a smaller model (e.g., using GPT-4o-mini instead of GPT-4o)."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py",
+        "/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py"
+      ],
+      "usage_instructions": "1. First, ensure TextGrad is installed: `pip install textgrad`\n2. For solution optimization comparison, run: `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo trace` for OptoPrime and `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo ttextgrad` for TextGrad's original implementation\n3. For prompt optimization comparison, run: `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo trace` for OptoPrime and `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo textgrad` for TextGrad\n4. The scripts will output timing information in the results JSON files in the 'textgrad_figures' directory, which can be compared to verify that OptoPrime is approximately 3x faster than TextGrad",
+      "requirements": [
+        "Step 1: Set up the environment by importing necessary libraries and loading environment variables (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:3-17, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:3-18)",
+        "Step 2: Define utility functions for setting random seeds and parsing command line arguments (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:27-41, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:19-35)",
+        "Step 3: For solution optimization: Implement a majority voting ensemble method to combine multiple predictions (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:44-57)",
+        "Step 4: For solution optimization: Implement a function to get zero-shot answers from an LLM without optimization (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:60-71)",
+        "Step 5: For solution optimization: Implement the original TextGrad test-time training function that optimizes LLM responses through iterative feedback (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:74-120)",
+        "Step 6: For solution optimization: Implement the Trace-based test-time training function that uses OptoPrime or TextGrad optimizers (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:142-210)",
+        "Step 7: For solution optimization: Set up concurrent execution to process multiple test samples in parallel (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:231-249)",
+        "Step 8: For solution optimization: Calculate and save performance metrics and timing information (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:251-274)",
+        "Step 9: For prompt optimization: Implement functions to evaluate individual samples and entire datasets (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:39-72)",
+        "Step 10: For prompt optimization: Implement validation logic to revert to previous prompts if performance decreases (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:74-87)",
+        "Step 11: For prompt optimization: Set up the optimization environment with appropriate models and optimizers (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:89-122)",
+        "Step 12: For prompt optimization: Define Trace operations by wrapping TextGrad code in trace bundles (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:132-153)",
+        "Step 13: For prompt optimization: Implement the training loop that optimizes system prompts through iterative feedback (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:156-209)",
+        "Final Step: For prompt optimization: Calculate and save final performance metrics and timing information (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:212-220)"
+      ],
+      "agent_instructions": "Create two scripts to compare the performance and speed of TextGrad and OptoPrime optimization algorithms for large language models:\n\n1. Solution Optimization Script:\n   - Create a script that optimizes LLM responses to multiple-choice questions at test time\n   - Implement two approaches: the original TextGrad implementation and the OptoPrime implementation\n   - The script should:\n     - Load a task (default: MMLU_machine_learning)\n     - Get initial zero-shot responses from an LLM\n     - Apply iterative optimization to improve responses\n     - Use majority voting to ensemble multiple predictions\n     - Run optimization in parallel using multiple threads\n     - Track and report performance metrics and timing information\n     - Save results to JSON files in a 'textgrad_figures' directory\n   - Support command-line arguments to select the algorithm, task, engine, etc.\n\n2. Prompt Optimization Script:\n   - Create a script that optimizes system prompts for improved LLM performance\n   - Implement TextGrad and OptoPrime approaches for prompt optimization\n   - The script should:\n     - Load a task (default: BBH_object_counting)\n     - Train a system prompt over multiple epochs\n     - Evaluate performance on validation and test sets\n     - Optionally revert to previous prompts if validation performance decreases\n     - Track and report performance metrics and timing information\n     - Save results to JSON files in a 'textgrad_figures' directory\n   - Support command-line arguments to select the algorithm, task, engines, etc.\n\nBoth scripts should be designed to demonstrate that OptoPrime is approximately 3x faster than TextGrad while achieving similar performance. The scripts should use the TextGrad and Opto libraries.",
+      "masked_source": [
+        "/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py",
+        "/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py"
+      ]
+    }
+  ]
+}

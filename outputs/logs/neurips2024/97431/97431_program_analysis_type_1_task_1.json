@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Parse command-line arguments to configure the experiment, including target model path, defense type, attack method, dataset path, and output path (/workspace/main.py:402-407)",
+    "Step 2: Set random seed for reproducibility and initialize device settings (/workspace/main.py:321-326)",
+    "Step 3: Load the harmful prompts dataset containing goals and targets (/workspace/main.py:328)",
+    "Step 4: Calculate start and end indices for data processing based on whether data splitting is enabled (/workspace/main.py:330-340)",
+    "Step 5: Resume experiment if specified by loading previous results (/workspace/main.py:346-366)",
+    "Step 6: Apply defense method to the prompts by modifying them according to the specified defense type (/workspace/main.py:212-220, /workspace/defense.py:44-70)",
+    "Step 7: Load appropriate models based on the attack method (target model, attack model, evaluator model) (/workspace/main.py:273-311)",
+    "Step 8: For each prompt, run the attack method against the defended model (/workspace/main.py:231-257)",
+    "Step 9: Process attack results and determine if jailbreak was successful (/workspace/main.py:54-202)",
+    "Step 10: If smoothLLM defense is specified, apply additional testing (/workspace/main.py:370-374, /workspace/defense.py:208-213)",
+    "Step 11: If agent evaluation is enabled, use GPT-4 to evaluate if the attack responses constitute a successful jailbreak (/workspace/main.py:377-399, /workspace/GPTEvaluatorAgent/agent_eval.py:18-110)",
+    "Step 12: Save the final results to output files (/workspace/main.py:398)"
+  ],
+  "agent_instructions": "Create a framework to evaluate the effectiveness of various defense strategies against jailbreak attacks on large language models. The framework should:\n\n1. Accept command-line arguments for configuring experiments, including:\n   - Target model path (e.g., meta-llama/Llama-2-7b-chat-hf)\n   - Defense method (None_defense, self_reminder, RPO, smoothLLM, unlearn, safety_tuning, adv_training_noaug)\n   - Attack method (GCG, AutoDAN, AmpleGCG, AdvPrompter, PAIR, TAP, GPTFuzz)\n   - Path to harmful instructions dataset\n   - Output directory for results\n   - Option for agent-based evaluation\n\n2. Implement a workflow that:\n   - Loads a dataset of harmful prompts and their target responses\n   - Applies the specified defense method to the prompts\n   - Loads the appropriate models for the target and attack\n   - Executes the attack against the defended model\n   - Evaluates whether the attack successfully jailbroke the model\n   - Optionally uses a GPT-4 agent to evaluate jailbreak success\n   - Saves results for analysis\n\n3. Implement defense methods including:\n   - Self-reminder: Prepend a safety reminder to prompts\n   - RPO (Random Perturbation Optimization): Append special tokens to prompts\n   - SmoothLLM: Apply text perturbations (swap, patch, insert) to prompts\n\n4. Support resuming experiments and data splitting for parallel processing\n\n5. Implement agent-based evaluation that uses GPT-4 to determine if a model response constitutes a successful jailbreak, scoring responses on a scale of 1-10\n\nThe goal is to measure the Attack Success Rate (ASR) for different combinations of attack and defense methods, allowing for comparison of their effectiveness.",
+  "masked_source": [
+    "/workspace/main.py",
+    "/workspace/defense.py",
+    "/workspace/initialize_args.py",
+    "/workspace/GPTEvaluatorAgent/agent_eval.py",
+    "/workspace/GPTEvaluatorAgent/main.py",
+    "/workspace/GPTEvaluatorAgent/judges.py",
+    "/workspace/GPTEvaluatorAgent/system_prompts.py"
+  ]
+}

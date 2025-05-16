@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, torchopt, and visualization tools (matplotlib, numpy, pandas) (/workspace/examples/few-shot/maml_omniglot.py:42-54)",
+    "Step 2: Create a data loader for the Omniglot dataset that supports N-way, K-shot few-shot learning tasks with support and query sets (/workspace/examples/few-shot/helpers/omniglot_loaders.py:140-332)",
+    "Step 3: Define a simple convolutional neural network architecture for image classification (/workspace/examples/few-shot/maml_omniglot.py:98-113)",
+    "Step 4: Initialize the meta-optimizer (Adam) to optimize the model's initial parameters (/workspace/examples/few-shot/maml_omniglot.py:117)",
+    "Step 5: Initialize the inner optimizer using TorchOpt's MetaSGD for the inner adaptation loop (/workspace/examples/few-shot/maml_omniglot.py:130)",
+    "Step 6: Implement the meta-training loop that iterates through batches of tasks (/workspace/examples/few-shot/maml_omniglot.py:127-194)",
+    "Step 7: For each task, extract the model state before adaptation to restore it after each task (/workspace/examples/few-shot/maml_omniglot.py:150-151)",
+    "Step 8: Implement the inner adaptation loop that updates the model on the support set for each task (/workspace/examples/few-shot/maml_omniglot.py:158-161)",
+    "Step 9: Evaluate the adapted model on the query set and compute the query loss and accuracy (/workspace/examples/few-shot/maml_omniglot.py:166-170)",
+    "Step 10: Restore the original model state after processing each task (/workspace/examples/few-shot/maml_omniglot.py:172-173)",
+    "Step 11: Compute the meta-loss as the mean of query losses across all tasks (/workspace/examples/few-shot/maml_omniglot.py:175)",
+    "Step 12: Update the meta-parameters by backpropagating through the entire process (/workspace/examples/few-shot/maml_omniglot.py:176-177)",
+    "Step 13: Implement a testing procedure that evaluates the meta-learned model on new tasks (/workspace/examples/few-shot/maml_omniglot.py:197-252)",
+    "Step 14: Create a visualization function to plot the training and testing accuracy over epochs (/workspace/examples/few-shot/maml_omniglot.py:255-274)",
+    "Final Step: Run the main function that executes the meta-training and testing process for multiple epochs (/workspace/examples/few-shot/maml_omniglot.py:62-124)"
+  ],
+  "agent_instructions": "Your task is to implement Model-Agnostic Meta-Learning (MAML) for few-shot image classification using TorchOpt. MAML is a meta-learning algorithm that learns how to quickly adapt to new tasks with minimal data.\n\nYou need to:\n\n1. Set up a few-shot learning environment using the Omniglot dataset, which contains handwritten characters from various alphabets. Configure it for N-way, K-shot classification (e.g., 5-way, 5-shot means classifying among 5 classes with 5 examples per class).\n\n2. Create a simple convolutional neural network for image classification.\n\n3. Implement the MAML algorithm using TorchOpt's differentiable optimization capabilities:\n   - Use TorchOpt's MetaSGD optimizer for the inner loop adaptation\n   - Implement a meta-training procedure with these key components:\n     a. An outer loop that iterates through batches of tasks\n     b. An inner loop that adapts the model to each task's support set\n     c. Evaluation of the adapted model on the query set\n     d. Meta-optimization that updates the initial parameters to improve adaptation\n\n4. Implement a testing procedure to evaluate the meta-learned model on new tasks.\n\n5. Create visualizations to track the improvement in query accuracy over meta-training iterations.\n\nThe program should demonstrate how meta-learning enables the model to learn new tasks with just a few examples, showing improved accuracy on query sets as meta-training progresses."
+}

@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/ParametricModels/AutoML_parametric.py"],
+    "usage_instructions": "Execute the AutoML_parametric.py script with the correct path to the parametric data file. The script needs to be modified slightly to point to the correct location of the DrivAerNet_ParametricData.csv file. Change line 331 from 'file_path = '../ParametricData/DrivAerNet_ParametricData.csv'' to 'file_path = '/workspace/ParametricModels/DrivAerNet_ParametricData.csv''. The script will then load the data, train multiple surrogate models (AutoGluon, XGBoost, LightGBM, RandomForest, and GradientBoosting) on different training set sizes, evaluate their performance using R² score, and generate visualizations showing how model performance scales with increasing training data size for both the fastback-only and combined datasets."
+}

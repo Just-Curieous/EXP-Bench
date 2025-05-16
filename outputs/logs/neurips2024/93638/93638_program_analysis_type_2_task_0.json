@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Load target words from a specified file path (/workspace/tools/play_llm_game.py:28-31)",
+    "Step 2: Load language models for both attacker and defender roles, with option to use the same model for both roles (/workspace/tools/play_llm_game.py:54-82, 93-99)",
+    "Step 3: Initialize game state for each target word with empty history and maximum turns (/workspace/tools/play_llm_game.py:115-118)",
+    "Step 4: Implement turn-based gameplay loop that alternates between attacker and defender (/workspace/tools/play_llm_game.py:120-187)",
+    "Step 5: For each turn, construct a prompt containing game rules, history, and role-specific instructions (/workspace/tools/play_llm_game.py:145-152, /workspace/utils.py:114-132)",
+    "Step 6: Configure model generation parameters based on task type (testing or sampling) (/workspace/tools/play_llm_game.py:124-142)",
+    "Step 7: Generate model responses using the constructed prompts (/workspace/tools/play_llm_game.py:162-168)",
+    "Step 8: Process model outputs to extract the actual response text (/workspace/tools/play_llm_game.py:170-177)",
+    "Step 9: Check for game ending conditions (defender guessing the word) (/workspace/tools/play_llm_game.py:179-183)",
+    "Step 10: Save complete game histories to JSON output files (/workspace/tools/play_llm_game.py:194-216)"
+  ],
+  "agent_instructions": "Your task is to create a script that simulates the Adversarial Taboo game between two language models. In this game, an attacker tries to make a defender say a target word without saying it themselves, while the defender tries to guess the word.\n\nThe script should:\n\n1. Accept command-line arguments for:\n   - Paths to attacker and defender language models (can be the same model)\n   - Maximum number of turns for the game\n   - Path to a file containing target words\n   - Output directory for results\n   - Mode of operation ('testing' for deterministic or 'sampling' for stochastic generation)\n\n2. Load the specified language models using the Hugging Face Transformers library\n\n3. For each target word, simulate a game where:\n   - Players alternate turns (attacker goes first)\n   - Each turn includes constructing a prompt with:\n     * Game rules explaining Adversarial Taboo\n     * Current game history\n     * Role-specific instructions (attacker knows the target word, defender doesn't)\n   - Generate responses from the appropriate model\n   - Track the conversation history\n   - Check for win conditions:\n     * Defender wins if they correctly guess the target word\n     * Attacker wins if they trick the defender into saying the target word\n     * Game ends in a tie if maximum turns are reached\n\n4. Save the complete game histories to JSON files in the specified output directory\n\nThe output JSON should contain the full conversation history with alternating turns between attacker and defender, along with the target word and game outcome."
+}

@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "question": "Does the distributed IMPALA implementation in TorchRL, which leverages the library\u2019s distributed data collection components with a centralized learner, replicate state-of-the-art performance on Atari environments?",
+      "method": "Implement IMPALA in TorchRL following the original paper\u2019s specifications. Use several Atari environments (e.g., Pong, Freeway, Boxing, Breakout) as test cases. Configure distributed data collection using TorchRL\u2019s distributed components, ensuring that the hyperparameters and training procedures exactly match those described in the original IMPALA work. Specifically, use settings such as a discount factor (\u03b3) of 0.99, a horizon (T) of 4096, and the corresponding optimizer configurations as per the original specifications. Run each experiment for 200M game frames (or 50M timesteps when using a frameskip of 4), and for Pong and Boxing, evaluate rewards using only the first 50M frames due to early convergence. Execute each configuration for 5 independent seeds per environment and collect the mean final rewards and their standard deviations. Note that the experimental settings should be consistent with the paper\u2019s reported benchmarks to validate that the distributed training approach has been faithfully and scalably replicated.",
+      "expected_outcome": "The expectation is that the IMPALA implementation in TorchRL will produce performance metrics close to the benchmarks provided in the original paper. For example, the performance on Atari environments should approximate rewards such as ~20.54 \u00b10.18 for Pong, 0.0 \u00b10.0 for Freeway, ~99.19 \u00b10.54 for Boxing, and ~525.57 \u00b1105.47 for Breakout. This outcome would confirm that the distributed training approach is faithfully replicated, scalable, and yields state-of-the-art performance.",
+      "subsection_source": "4 RESULTS",
+      "source": [
+        "/workspace/sota-implementations/impala/impala_multi_node_ray.py",
+        "/workspace/sota-implementations/impala/config_multi_node_ray.yaml"
+      ],
+      "usage_instructions": "1. Modify the config_multi_node_ray.yaml file to set the desired Atari environments (e.g., change 'env_name: PongNoFrameskip-v4' to other environments like 'FreewayNoFrameskip-v4', 'BoxingNoFrameskip-v4', or 'BreakoutNoFrameskip-v4'). 2. Make sure the 'total_frames' parameter is set to 200,000,000 in the config file (which is already the default). 3. Run the script with 'python impala_multi_node_ray.py' for each environment. 4. For Pong and Boxing, you can evaluate rewards using only the first 50M frames by setting 'total_frames: 50_000_000' in the config file. 5. To run with multiple seeds, execute the script 5 times with different random seeds by adding 'seed=X' where X is 1-5.",
+      "requirements": [
+        "Step 1: Set up the environment configuration including Atari environment name, backend, and Ray distributed computing parameters (/workspace/sota-implementations/impala/config_multi_node_ray.yaml:1-69)",
+        "Step 2: Create utility functions to build and transform Atari environments with proper preprocessing (grayscale, frame stacking, etc.) (/workspace/sota-implementations/impala/utils.py:42-60)",
+        "Step 3: Create utility functions to build neural network models (CNN + MLP architecture) for actor and critic networks (/workspace/sota-implementations/impala/utils.py:68-163)",
+        "Step 4: Create utility function for model evaluation on test environments (/workspace/sota-implementations/impala/utils.py:171-184)",
+        "Step 5: Parse configuration using Hydra and set up device (CPU/GPU) (/workspace/sota-implementations/impala/impala_multi_node_ray.py:16-39)",
+        "Step 6: Adjust frame skip and calculate total frames, frames per batch, and test intervals (/workspace/sota-implementations/impala/impala_multi_node_ray.py:41-45)",
+        "Step 7: Extract other configuration parameters for training (/workspace/sota-implementations/impala/impala_multi_node_ray.py:47-59)",
+        "Step 8: Create actor and critic models and move them to the appropriate device (/workspace/sota-implementations/impala/impala_multi_node_ray.py:62-63)",
+        "Step 9: Set up Ray distributed collector with proper configuration (/workspace/sota-implementations/impala/impala_multi_node_ray.py:66-105)",
+        "Step 10: Create replay buffer with appropriate storage and sampler (/workspace/sota-implementations/impala/impala_multi_node_ray.py:107-113)",
+        "Step 11: Create VTrace advantage module and A2C loss module (/workspace/sota-implementations/impala/impala_multi_node_ray.py:115-129)",
+        "Step 12: Create RMSprop optimizer with configured parameters (/workspace/sota-implementations/impala/impala_multi_node_ray.py:131-138)",
+        "Step 13: Set up logger for tracking metrics (/workspace/sota-implementations/impala/impala_multi_node_ray.py:140-155)",
+        "Step 14: Create test environment for evaluation (/workspace/sota-implementations/impala/impala_multi_node_ray.py:157-161)",
+        "Step 15: Implement main training loop to collect experience from workers (/workspace/sota-implementations/impala/impala_multi_node_ray.py:163-169)",
+        "Step 16: Process collected data and track training metrics (/workspace/sota-implementations/impala/impala_multi_node_ray.py:171-187)",
+        "Step 17: Accumulate data batches and perform policy updates (/workspace/sota-implementations/impala/impala_multi_node_ray.py:189-244)",
+        "Step 18: Track and log training losses and times (/workspace/sota-implementations/impala/impala_multi_node_ray.py:245-256)",
+        "Step 19: Periodically evaluate model performance on test environment (/workspace/sota-implementations/impala/impala_multi_node_ray.py:258-275)",
+        "Step 20: Log metrics, update policy weights, and prepare for next iteration (/workspace/sota-implementations/impala/impala_multi_node_ray.py:277-283)",
+        "Final Step: Clean up resources and report total execution time (/workspace/sota-implementations/impala/impala_multi_node_ray.py:285-288)"
+      ],
+      "agent_instructions": "Implement a distributed reinforcement learning system using the IMPALA (Importance Weighted Actor-Learner Architecture) algorithm to train agents on Atari environments. The system should use Ray for distributed training across multiple nodes.\n\nYour implementation should include:\n\n1. A configuration system that allows setting parameters for:\n   - The Atari environment (default: PongNoFrameskip-v4)\n   - Ray distributed computing settings\n   - Neural network and training hyperparameters\n   - Logging and evaluation settings\n\n2. Environment preprocessing that includes:\n   - Frame skipping (4 frames)\n   - Grayscale conversion\n   - Resizing to 84x84\n   - Frame stacking (4 frames)\n   - Normalization\n   - Reward clipping (sign transform)\n\n3. A neural network architecture with:\n   - A shared convolutional backbone\n   - Separate heads for policy (actor) and value function (critic)\n   - Appropriate action distribution for Atari environments\n\n4. A distributed training system that:\n   - Uses Ray to distribute rollout collection across multiple workers\n   - Implements VTrace for off-policy correction\n   - Uses A2C loss for policy updates\n   - Employs RMSprop optimizer\n   - Supports learning rate annealing\n\n5. A training loop that:\n   - Collects experience from distributed workers\n   - Processes and accumulates batches of experience\n   - Performs policy updates\n   - Periodically evaluates the agent\n   - Logs metrics for training and evaluation\n\nThe system should be able to train for 200 million frames (or 50 million for some environments like Pong and Boxing), and support running with different random seeds (1-5) for statistical significance.",
+      "masked_source": [
+        "/workspace/sota-implementations/impala/impala_multi_node_ray.py",
+        "/workspace/sota-implementations/impala/config_multi_node_ray.yaml",
+        "/workspace/sota-implementations/impala/utils.py"
+      ]
+    }
+  ]
+}

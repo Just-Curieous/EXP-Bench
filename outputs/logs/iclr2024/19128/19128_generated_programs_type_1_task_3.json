@@ -1,0 +1,3 @@
+{
+    "no_answer": "After a thorough search of the repository, I couldn't find any scripts or code specifically related to Cat-Seg, Cat-Seg+CLIPSelf, or evaluating on ADE-150 dataset with mIoU and mAcc metrics. The repository contains code for CLIPSelf and F-ViT models, but doesn't include the specific experiment comparing Cat-Seg and Cat-Seg+CLIPSelf on ADE-150 as described in the question. The repository focuses on CLIPSelf for open-vocabulary dense prediction but doesn't contain the Cat-Seg implementation or ADE-150 evaluation scripts."
+}

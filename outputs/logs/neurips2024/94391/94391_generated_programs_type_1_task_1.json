@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/run_std.sh"],
+    "usage_instructions": "Execute the run_std.sh script which will run both CycleNet (RCF) and LDLinear (LD) models on the ETTh1 dataset with a fixed look-back window of 336 and forecast horizons of 96, 192, 336, and 720. The script disables normalization for both models to isolate the effect of the STD method. The results will show that RCF significantly outperforms LD on the ETTh1 forecasting task."
+}

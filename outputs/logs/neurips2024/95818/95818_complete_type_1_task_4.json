@@ -1,0 +1,140 @@
+{
+  "questions": [
+    {
+      "question": "Does the use of subword-level tokenizers improve classification performance compared to word-level tokenizers?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Compare the performance of word-level tokenizers and subword-level tokenizers in classification tasks.\n    - **Pretraining data:**\n    Datacomp-1B dataset\n    - **Trainable Parameters:**\n        - ViT-S/16, ViT-B/16, ViT-L/16, trained using either a word-level or subword-level tokenizer.\n        - Identical batch size of 16K for fair comparison.\n    - **Objective:** \n    Determine whether subword-level tokenizers improve classification accuracy, particularly as model size scales up.\n\n2. **Benchmark Dataset:** \n    Classification: ImageNet-1K (Zero-shot & Linear Probing).\n\n3. **Comparative Evaluation:**  \n    - Tokenizer Type: Compare word-level and subword-level tokenization.\n    - Model Scaling: Evaluate across ViT-S/16, ViT-B/16, ViT-L/16.\n\n4. **Evaluation Metrics:**\n    - Zero-shot classification accuracy on ImageNet-1K.\n\n    - Linear probing accuracy on ImageNet-1K.\n\n5. **Hyperparamters:**\n    - All experiments are conducted with a batch size of 16k. \n    - Use 90k batch size, adopt the AdamW with a cosine schedule, and set the same learning rate and decay as CLIP",
+      "expected_outcome": "-  ForViT-S/16 word-level tokenizer achieves better classification accuracy than subword-level tokenizer.\n-  With the increasing size of the model, subword-level tokenizer gradually outperforms the word-level tokenizer.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "training_settings": "Same settings across experiments, including batch size (16k), number of seen samples (512M), dataset used (Datacomp-1B), and other hyperparameters such as optimizer details (kept constant across experiments)"
+          },
+          "independent_variables": {
+            "tokenizer_type": [
+              "word-level",
+              "subword-level"
+            ],
+            "model_capacity": [
+              "ViT-S/16",
+              "ViT-B/16",
+              "ViT-L/16"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": "Classification accuracy on ImageNet-1k"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "exact_hyperparameters": "While the constant training settings are mentioned, the precise optimizer settings, learning rate schedules, and other hyperparameter details are not explicitly detailed in the paper.",
+            "tokenizer_implementation_details": "Specific implementation differences between the word-level tokenizer (using 40,000 gold labels) and subword-level tokenizers (e.g., OpenaiCLIP) may introduce ambiguities in how data is preprocessed."
+          },
+          "possible_modifications": {
+            "modification_variable_masking": [
+              "Masking detailed optimizer hyperparameters to focus solely on the effect of tokenizer type.",
+              "Introducing additional tokenizer types or adjusting vocabulary sizes to further explore their impact."
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Constant training settings (batch size, number of samples, dataset, optimizer details)",
+            "Independent variables: tokenizer type (word-level and subword-level) and model capacity (ViT-S/16, ViT-B/16, ViT-L/16)",
+            "Dependent variables: performance metrics including zero shot accuracy and linear probing accuracy"
+          ],
+          "setup_steps": [
+            "Initialize experiment with the constant training settings (e.g., fixed batch size, sample count, dataset, and optimizer hyperparameters)",
+            "Configure the independent variables by selecting different tokenizer types and model capacities",
+            "Run the experiments under these fixed conditions to evaluate performance differences",
+            "Collect and compare the dependent performance metrics across the different experimental setups"
+          ],
+          "optional_other_sources_of_complexity": [
+            {}
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Exact hyperparameters: While training settings are constant, details such as the precise optimizer settings and learning rate schedules are not fully specified.",
+            "Tokenizer implementation: The specific differences in implementation details between the word-level tokenizer (using 40,000 gold labels) and the subword-level tokenizer (such as OpenaiCLIP) are not thoroughly documented."
+          ],
+          "ambiguous_setup_steps": [
+            "Configuration of optimizer and learning rate schedule: The steps for setting these parameters are mentioned generally but lack explicit values and adjustment strategies.",
+            "Preprocessing of text for different tokenizers: The exact procedures for how the word-level and subword-level tokenizers process the input text remain somewhat unclear."
+          ],
+          "possible_modifications": {
+            "modification_variable_masking": [
+              "Mask detailed optimizer hyperparameters to focus analysis solely on the effect of tokenizer type.",
+              "Introduce additional tokenizer types or adjust vocabulary sizes to explore their impact in a more controlled manner."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Constrain compute resources by requiring that similar classification performance be achieved using a reduced number of training samples or fewer GPUs than the original 512M samples setup. This tests the method's robustness under limited computational resources."
+            ],
+            "time_constraints": [
+              "Impose a tighter training time budget, for example, by reducing the number of epochs or iterations. This forces the model to reach comparable performance within a shorter window, highlighting efficiency differences between tokenizer types."
+            ],
+            "money_constraints": [
+              "Limit the budget for compute by simulating a cost-effective experimental setup, such as using lower-cost cloud instances or restricting high-end GPU time, to assess whether similar performance can be maintained under financial constraints."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic training processes and data sampling",
+          "description": "Even with constant training settings, the inherent randomness of model initialization, mini-batch sampling, and other stochastic aspects of optimization can lead to performance variations. This is particularly relevant for smaller models (e.g., ViT-S/16) where random fluctuations may have a larger impact on classification accuracy.",
+          "impact": "Random variations might obscure subtle performance differences between word-level and subword-level tokenizers, making it harder to accurately assess the true effect of tokenizer type on downstream task results.",
+          "possible_modifications": [
+            "Run multiple training trials with different random seeds to measure statistical variance.",
+            "Inject controlled random noise (e.g., randomly dropping tokens) during training to evaluate the robustness of the results.",
+            "Adopt techniques like dropout normalization or use ensemble averages to reduce the impact of randomness on the final evaluation."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Ambiguities in tokenizer implementation and hyperparameter settings",
+          "description": "Uncertainties arise from the detailed implementation differences between the word-level tokenizer (using 40,000 gold labels) and the subword-level tokenizer (e.g., OpenaiCLIP) as well as incomplete documentation of optimizer hyperparameters and learning rate schedules. These factors may introduce consistent biases in performance measurement across different model capacities.",
+          "impact": "Such systematic biases could lead to a consistent over- or underestimation of classification accuracy depending on the tokenizer used. This is especially critical when comparing performance across models of different sizes, as seen in the expected outcome where the benefit of subword-level tokenizers grows with model capacity.",
+          "possible_modifications": [
+            "Standardize tokenizer implementation details (e.g., vocabulary size and preprocessing routines) to minimize correlated bias.",
+            "Fully document and, if possible, control the optimizer settings and learning rate scheduler parameters for reproducibility.",
+            "Introduce additional tokenizer types or adjust vocabulary sizes in controlled experiments to further isolate the impact of implementation choices."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/train.sh",
+        "/workspace/opencls/training/zero_shot.py"
+      ],
+      "usage_instructions": "To compare word-level and subword-level tokenizers for classification performance across different model sizes, follow these steps:\n\n1. First, train the models with word-level tokenizer (SimpleTokenizer) using:\n   ```\n   bash train.sh opencls/configs/cls_schedule/cls_vit_s16_s512m_bs16k.yaml opencls\n   bash train.sh opencls/configs/cls_schedule/cls_vit_b16_s512m_bs16k.yaml opencls\n   bash train.sh opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml opencls\n   ```\n\n2. Then, train the models with subword-level tokenizer by modifying the model configurations to use HFTokenizer. Create copies of the config files and add `\"hf_tokenizer_name\": \"bert-base-uncased\"` to the `text_cfg` section in each config file. Then run:\n   ```\n   bash train.sh opencls/configs/cls_schedule/cls_vit_s16_subword_s512m_bs16k.yaml opencls\n   bash train.sh opencls/configs/cls_schedule/cls_vit_b16_subword_s512m_bs16k.yaml opencls\n   bash train.sh opencls/configs/cls_schedule/cls_vit_l16_subword_s512m_bs16k.yaml opencls\n   ```\n\n3. The zero-shot evaluation on ImageNet-1K will be performed automatically during training if you set the appropriate zeroshot_frequency in the config files. The results will show that for ViT-S/16, the word-level tokenizer achieves better classification accuracy, while as model size increases to ViT-B/16 and ViT-L/16, the subword-level tokenizer gradually outperforms the word-level tokenizer, matching the expected outcome.",
+      "requirements": [
+        "Step 1: Set up environment variables and paths for training (train.sh:1-16)",
+        "Step 2: Change to the project directory (train.sh:18-19)",
+        "Step 3: Launch distributed training using torchrun with specified parameters (train.sh:21-27)",
+        "Step 4: Build a zero-shot classifier using ImageNet class names and templates (opencls/training/zero_shot.py:60-71)",
+        "Step 5: Evaluate model performance on ImageNet validation set using the zero-shot classifier (opencls/training/zero_shot.py:17-41)",
+        "Step 6: Calculate and return top-1 and top-5 accuracy metrics (opencls/training/zero_shot.py:73-86)"
+      ],
+      "agent_instructions": "Create scripts to perform zero-shot evaluation of vision-language models on ImageNet-1K. The system should:\n\n1. Create a training script that:\n   - Takes configuration file path and project directory as input parameters\n   - Sets up environment variables for distributed training\n   - Launches distributed training using torchrun with appropriate parameters\n   - Passes training data path and ImageNet validation data path to the main training module\n\n2. Create a zero-shot evaluation module that:\n   - Implements a function to calculate accuracy metrics (top-1 and top-5) for model predictions\n   - Implements a function to run evaluation on a dataloader, computing image features and comparing against a classifier\n   - Implements a zero-shot evaluation function that:\n     - Builds a zero-shot classifier using ImageNet class names and templates\n     - Evaluates the model on ImageNet validation data\n     - Returns metrics including top-1 and top-5 accuracy\n\nThe system should support comparing word-level tokenizers (SimpleTokenizer) and subword-level tokenizers (HFTokenizer) across different model sizes (ViT-S/16, ViT-B/16, ViT-L/16) to demonstrate how tokenization affects classification performance as model size increases.",
+      "masked_source": [
+        "/workspace/train.sh",
+        "/workspace/opencls/training/zero_shot.py"
+      ]
+    }
+  ]
+}

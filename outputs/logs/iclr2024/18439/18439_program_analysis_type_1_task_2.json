@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including matplotlib, pandas, numpy, scipy, and sklearn for data manipulation and visualization (/workspace/notebooks/paper_experiments.ipynb:9-22)",
+    "Step 2: Configure the plotting style for reliability diagrams (/workspace/notebooks/paper_experiments.ipynb:32-33)",
+    "Step 3: Define a plot_compare function that creates two side-by-side reliability diagrams (binned vs. smooth) for a given set of predictions and ground truth labels (/workspace/notebooks/paper_experiments.ipynb:43-62)",
+    "Step 4: For the DNN calibration experiment, load ImageNet validation data from external URLs, extract prediction confidences and binary correctness labels, and generate reliability diagrams (/workspace/notebooks/paper_experiments.ipynb:80-86, 114)",
+    "Step 5: For the Solar Flares experiment, load solar flare forecasting data from an external URL, extract DAFFS predictions and ground truth labels, and generate reliability diagrams (/workspace/notebooks/paper_experiments.ipynb:8-13 in cell 8)",
+    "Step 6: For the Rain in Finland experiment, load precipitation data from an external URL, process it to extract binary rain events and forecast probabilities, and generate reliability diagrams (/workspace/notebooks/paper_experiments.ipynb:10-14 in cell 10)",
+    "Step 7: For each experiment, use the plot_compare function which automatically determines the optimal number of bins for the binned diagram and uses automatic kernel bandwidth selection for the smooth diagram (/workspace/notebooks/paper_experiments.ipynb:52-57)",
+    "Step 8: For each experiment, display two reliability diagrams side by side - one using traditional binning (rel_diagram_binned) and one using smooth reliability diagram (rel_diagram) (/workspace/notebooks/paper_experiments.ipynb:57-61)",
+    "Step 9: For each reliability diagram, compute and display calibration error metrics (/workspace/src/relplot/diagrams.py:101, 194-264)"
+  ],
+  "agent_instructions": "Create a notebook that demonstrates how smooth reliability diagrams reflect calibration quality across three diverse domains compared to traditional binned reliability diagrams. The notebook should include the following experiments:\n\n1. Deep Neural Network (DNN) calibration using ImageNet validation data\n2. Solar flare forecasting using a dataset with 731 days and 25.7% event rate\n3. Daily rain forecasts in Finland with discrete probabilities in 10% increments\n\nFor each experiment, you should:\n- Load the appropriate dataset (ImageNet validation data, solar flare forecasting data, or rain forecast data)\n- Extract prediction probabilities/confidences and ground truth labels\n- Create a function that generates two reliability diagrams side by side:\n  - A traditional binned reliability diagram on the left\n  - A smooth reliability diagram with automatic kernel bandwidth selection on the right\n- Compute calibration error metrics for both approaches\n\nThe goal is to demonstrate that the smooth reliability diagram effectively adapts to different prediction distributions across these diverse domains, providing clearer visual interpretability compared to binned methods. Your implementation should handle the automatic selection of appropriate binning and smoothing parameters based on the data characteristics.",
+  "masked_source": [
+    "/workspace/notebooks/paper_experiments.ipynb",
+    "/workspace/src/relplot/__init__.py",
+    "/workspace/src/relplot/diagrams.py",
+    "/workspace/src/relplot/metrics.py",
+    "/workspace/src/relplot/estimators.py",
+    "/workspace/src/relplot/kernels.py",
+    "/workspace/src/relplot/config.py"
+  ]
+}

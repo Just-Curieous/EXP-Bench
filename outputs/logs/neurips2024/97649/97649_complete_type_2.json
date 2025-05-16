@@ -1,0 +1,110 @@
+[
+  {
+    "mode": "B",
+    "question": "How can you create a simple Multi-Particle Environment (MPE) simulation with random agent actions and visualize the results?",
+    "method": "Create a program that initializes the MPE simple_reference environment, runs it for a fixed number of steps with random actions, and visualizes the agent movements.",
+    "expected_outcome": "A visualization of the MPE environment showing agents moving randomly for 25 steps, with the final state displayed or saved as an animation.",
+    "source": [
+      "/workspace/jaxmarl/tutorials/mpe_introduction.py"
+    ],
+    "usage_instructions": "1. Import the necessary libraries (jax and jaxmarl)\n2. Set up parameters including the number of steps and random keys\n3. Initialize the MPE environment using the make function with 'MPE_simple_reference_v3'\n4. Reset the environment to get initial observations and state\n5. Create a loop to run the environment for the specified number of steps:\n   - Store each state in a sequence\n   - Generate random actions for each agent\n   - Step the environment forward using the actions\n6. Create a visualizer using the MPEVisualizer class\n7. Generate and display an animation of the agent movements",
+    "requirements": [
+      "Step 1: Import necessary libraries including jax and jaxmarl modules (/workspace/jaxmarl/tutorials/mpe_introduction.py:5-7)",
+      "Step 2: Set up parameters including the number of steps (25) and initialize random keys (/workspace/jaxmarl/tutorials/mpe_introduction.py:10-12)",
+      "Step 3: Initialize the MPE environment using the make function with 'MPE_simple_reference_v3' (/workspace/jaxmarl/tutorials/mpe_introduction.py:15)",
+      "Step 4: Reset the environment to get initial observations and state (/workspace/jaxmarl/tutorials/mpe_introduction.py:16)",
+      "Step 5: Create a list to store the sequence of states (/workspace/jaxmarl/tutorials/mpe_introduction.py:25)",
+      "Step 6: Run a loop for the specified number of steps (25) (/workspace/jaxmarl/tutorials/mpe_introduction.py:26-34)",
+      "Step 7: Within each loop iteration, store the current state in the sequence (/workspace/jaxmarl/tutorials/mpe_introduction.py:27)",
+      "Step 8: Generate new random keys for each step and agent (/workspace/jaxmarl/tutorials/mpe_introduction.py:29-30)",
+      "Step 9: Sample random actions for each agent using their respective action spaces (/workspace/jaxmarl/tutorials/mpe_introduction.py:31)",
+      "Step 10: Step the environment forward using the actions and get updated observations, state, rewards, etc. (/workspace/jaxmarl/tutorials/mpe_introduction.py:34)",
+      "Step 11: Create a visualizer using the MPEVisualizer class with the environment and state sequence (/workspace/jaxmarl/tutorials/mpe_introduction.py:37)",
+      "Step 12: Generate and display an animation of the agent movements (/workspace/jaxmarl/tutorials/mpe_introduction.py:38)"
+    ],
+    "agent_instructions": "Create a program that demonstrates how to use the Multi-Particle Environment (MPE) in JaxMarl to run a simple simulation with random agent actions and visualize the results. Your program should:\n\n1. Import the necessary libraries from jax and jaxmarl, particularly the 'make' function and the MPEVisualizer class.\n\n2. Set up the simulation parameters, including a fixed number of steps (25) and initialize random keys for reproducibility.\n\n3. Create the MPE environment using the 'MPE_simple_reference_v3' environment type.\n\n4. Reset the environment to get the initial state and observations.\n\n5. Run a simulation loop for the specified number of steps where you:\n   - Store each state in a sequence for later visualization\n   - Generate random actions for each agent in the environment\n   - Step the environment forward using these actions\n   - Collect the updated observations, state, rewards, and other information\n\n6. After completing the simulation, create a visualizer using the MPEVisualizer class and generate an animation showing how the agents moved throughout the simulation.\n\nThe final output should be a visualization of the MPE environment showing the agents moving randomly over the course of the simulation."
+  },
+  {
+    "mode": "B",
+    "question": "How can you create a STORM environment simulation with random agent actions and save the results as a GIF?",
+    "method": "Create a program that initializes the STORM environment with specific parameters, runs it for multiple steps with random actions, and saves the visualization as a GIF.",
+    "expected_outcome": "A GIF file showing the STORM environment simulation with agents taking random actions over multiple timesteps.",
+    "source": [
+      "/workspace/jaxmarl/tutorials/storm_introduction.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries (jax, PIL, os)\n2. Set up environment parameters (num_agents, num_inner_steps, num_outer_steps)\n3. Initialize the STORM environment with specific parameters including payoff matrix\n4. Reset the environment to get initial state\n5. Render and save the initial state as an image\n6. Create a loop to run the environment for multiple timesteps:\n   - Generate random actions for each agent with specific probabilities\n   - Step the environment forward\n   - Render and save each state as an image\n7. Compile all the saved images into a GIF animation\n8. Save the GIF to disk",
+    "requirements": [
+      "Step 1: Import necessary libraries including PIL (for image processing), os (for directory operations), jax (for JAX operations), and jaxmarl (for the STORM environment) (/workspace/jaxmarl/tutorials/storm_introduction.py:1-7)",
+      "Step 2: Set up environment parameters including number of agents, number of inner steps, and number of outer steps (/workspace/jaxmarl/tutorials/storm_introduction.py:9-15)",
+      "Step 3: Initialize the random number generator with a seed (/workspace/jaxmarl/tutorials/storm_introduction.py:17)",
+      "Step 4: Create the STORM environment with specific parameters including payoff matrix and freeze penalty (/workspace/jaxmarl/tutorials/storm_introduction.py:18-24)",
+      "Step 5: Reset the environment to get the initial state (/workspace/jaxmarl/tutorials/storm_introduction.py:27)",
+      "Step 6: Create a directory for storing state images if it doesn't exist (/workspace/jaxmarl/tutorials/storm_introduction.py:63-64)",
+      "Step 7: Render the initial state, save it as an image, and add it to a list of images (/workspace/jaxmarl/tutorials/storm_introduction.py:62-68)",
+      "Step 8: JIT-compile the environment step function for better performance (/workspace/jaxmarl/tutorials/storm_introduction.py:79)",
+      "Step 9: Run a loop for multiple timesteps, generating random actions for each agent with specific probabilities (/workspace/jaxmarl/tutorials/storm_introduction.py:81-87)",
+      "Step 10: Step the environment forward with the generated actions (/workspace/jaxmarl/tutorials/storm_introduction.py:96-98)",
+      "Step 11: Render the new state, save it as an image, and add it to the list of images (/workspace/jaxmarl/tutorials/storm_introduction.py:103-105)",
+      "Step 12: Update the old state with the new state for the next iteration (/workspace/jaxmarl/tutorials/storm_introduction.py:116)",
+      "Step 13: Convert the list of images to PIL Image objects (/workspace/jaxmarl/tutorials/storm_introduction.py:123)",
+      "Final Step: Save the list of images as a GIF animation (/workspace/jaxmarl/tutorials/storm_introduction.py:124-132)"
+    ],
+    "agent_instructions": "Create a program that simulates the STORM environment from the jaxmarl library and generates a GIF animation of the simulation. Your program should:\n\n1. Import the necessary libraries: PIL (for image processing), os (for directory operations), jax (for JAX operations), and jaxmarl (for the STORM environment).\n\n2. Set up the simulation parameters:\n   - Number of agents (e.g., 2)\n   - Number of inner steps (e.g., 150)\n   - Number of outer steps (e.g., 3)\n\n3. Initialize a random number generator with a seed for reproducibility.\n\n4. Create the STORM environment with specific parameters:\n   - Set the number of inner and outer steps\n   - Set the number of agents\n   - Use a fixed coin location\n   - Define a payoff matrix (a 2x2x2 JAX array representing the game theory payoffs)\n   - Set a freeze penalty\n\n5. Reset the environment to get the initial state.\n\n6. Create a directory to store the state images if it doesn't exist.\n\n7. Render the initial state, save it as an image, and add it to a list of images.\n\n8. JIT-compile the environment step function for better performance.\n\n9. Run a simulation loop for multiple timesteps:\n   - Generate random actions for each agent with specific probabilities\n   - Step the environment forward with these actions\n   - Print information about the current timestep, actions, and environment state\n   - Render the new state, save it as an image, and add it to the list of images\n   - Update the old state with the new state for the next iteration\n\n10. Convert the list of images to PIL Image objects and save them as a GIF animation.\n\nThe final output should be a GIF file showing the STORM environment simulation with agents taking random actions over multiple timesteps."
+  },
+  {
+    "mode": "A",
+    "question": "How can you train an Independent Proximal Policy Optimization (IPPO) agent on a Multi-Particle Environment?",
+    "method": "Use the IPPO implementation to train agents in the MPE_simple_spread_v3 environment and evaluate their performance.",
+    "expected_outcome": "A plot showing the training returns over time and trained agent parameters that can solve the MPE simple spread task.",
+    "source": [
+      "/workspace/baselines/IPPO/ippo_ff_mpe.py",
+      "/workspace/baselines/IPPO/config/ippo_ff_mpe.yaml"
+    ],
+    "usage_instructions": "1. Set up the configuration for the IPPO algorithm using the provided config file\n2. Initialize the MPE environment using the make function\n3. Create the actor-critic network architecture\n4. Set up the training loop with the following components:\n   - Environment reset and initialization\n   - Action selection based on policy\n   - Environment stepping and trajectory collection\n   - Advantage calculation using GAE\n   - Policy and value function updates using PPO loss\n   - Logging of metrics\n5. Run the training for the specified number of updates\n6. Plot and save the training returns\n7. Evaluate the trained policy",
+    "requirements": [
+      "Step 1: Import necessary libraries including JAX, Flax, NumPy, Optax, Distrax, and JaxMARL for implementing the IPPO algorithm (/workspace/baselines/IPPO/ippo_ff_mpe.py:5-19)",
+      "Step 2: Define an ActorCritic neural network architecture with separate policy (actor) and value (critic) networks, using feed-forward layers with tanh activation (/workspace/baselines/IPPO/ippo_ff_mpe.py:21-56)",
+      "Step 3: Create a Transition class to store trajectory data including observations, actions, rewards, values, log probabilities, and done flags (/workspace/baselines/IPPO/ippo_ff_mpe.py:58-65)",
+      "Step 4: Implement utility functions to handle batching and unbatching of data across multiple agents (/workspace/baselines/IPPO/ippo_ff_mpe.py:67-77)",
+      "Step 5: Initialize the MPE_simple_spread_v3 environment with appropriate wrappers for logging (/workspace/baselines/IPPO/ippo_ff_mpe.py:80-89)",
+      "Step 6: Set up the actor-critic network and optimizer with learning rate scheduling option (/workspace/baselines/IPPO/ippo_ff_mpe.py:97-114)",
+      "Step 7: Initialize the environment state and reset it to start training (/workspace/baselines/IPPO/ippo_ff_mpe.py:116-119)",
+      "Step 8: Implement the main training loop that collects trajectories by having agents interact with the environment (/workspace/baselines/IPPO/ippo_ff_mpe.py:124-158)",
+      "Step 9: Calculate advantages using Generalized Advantage Estimation (GAE) with gamma and lambda parameters (/workspace/baselines/IPPO/ippo_ff_mpe.py:160-189)",
+      "Step 10: Implement the PPO update step with clipped objective function for both policy and value networks (/workspace/baselines/IPPO/ippo_ff_mpe.py:192-248)",
+      "Step 11: Process and log metrics during training including returns, losses, and other statistics (/workspace/baselines/IPPO/ippo_ff_mpe.py:276-296)",
+      "Step 12: Run multiple training seeds in parallel using JAX's vectorization capabilities (/workspace/baselines/IPPO/ippo_ff_mpe.py:320-323)",
+      "Step 13: Plot and save the training returns to visualize agent performance (/workspace/baselines/IPPO/ippo_ff_mpe.py:325-329)",
+      "Final Step: Configure the experiment with appropriate hyperparameters including learning rate, discount factor, clip epsilon, and environment settings (/workspace/baselines/IPPO/config/ippo_ff_mpe.yaml:1-23)"
+    ],
+    "agent_instructions": "Your task is to implement an Independent Proximal Policy Optimization (IPPO) algorithm to train agents in the Multi-Particle Environment (MPE) simple spread task. This involves creating a system where multiple agents learn independently to solve a cooperative task.\n\nYou should:\n\n1. Set up the MPE_simple_spread_v3 environment from the JaxMARL library\n\n2. Implement an actor-critic neural network architecture with:\n   - A policy network (actor) that outputs a categorical distribution over actions\n   - A value network (critic) that estimates state values\n   - Feed-forward layers with tanh activation functions\n\n3. Create a training loop that:\n   - Collects trajectories by having agents interact with the environment\n   - Calculates advantages using Generalized Advantage Estimation (GAE)\n   - Updates policies using the PPO clipped objective function\n   - Updates value functions to minimize squared error\n   - Includes entropy regularization to encourage exploration\n\n4. Implement the IPPO approach where each agent learns independently with its own observations\n\n5. Configure the training with appropriate hyperparameters:\n   - Discount factor (gamma) around 0.99\n   - GAE lambda around 0.95\n   - Learning rate around 2.5e-4 with optional annealing\n   - PPO clip epsilon around 0.2\n   - Multiple parallel environments for data collection\n\n6. Track and visualize the training performance by plotting episode returns over time\n\n7. Run multiple training seeds to evaluate the robustness of your implementation\n\nThe goal is to train agents that can successfully coordinate in the simple spread environment, where agents need to cover different landmarks while avoiding collisions."
+  },
+  {
+    "mode": "A",
+    "question": "How can you implement Value Decomposition Networks (VDN) with RNNs for cooperative multi-agent reinforcement learning?",
+    "method": "Use the VDN implementation to train agents in a cooperative multi-agent environment and evaluate their performance.",
+    "expected_outcome": "Trained VDN agents that can solve cooperative tasks with improved sample efficiency compared to independent learners.",
+    "source": [
+      "/workspace/baselines/QLearning/vdn_rnn.py",
+      "/workspace/baselines/QLearning/config/config.yaml"
+    ],
+    "usage_instructions": "1. Set up the configuration for the VDN algorithm using the provided config file\n2. Initialize the environment with the CTRolloutManager wrapper for centralized training\n3. Create the network architecture with RNN components for temporal dependencies\n4. Set up the replay buffer for experience storage\n5. Implement the VDN training loop with:\n   - Experience collection through environment interaction\n   - Storage of transitions in the replay buffer\n   - Batch sampling from the replay buffer\n   - Q-value calculation and target network updates\n   - Value decomposition for cooperative learning\n   - Periodic target network updates\n6. Run the training for the specified number of steps\n7. Evaluate the trained policy on test episodes",
+    "requirements": [
+      "Step 1: Import necessary libraries including JAX, Flax, Optax, and environment wrappers (/workspace/baselines/QLearning/vdn_rnn.py:1-29)",
+      "Step 2: Implement a recurrent neural network module (ScannedRNN) using GRU cells for temporal dependencies (/workspace/baselines/QLearning/vdn_rnn.py:31-59)",
+      "Step 3: Create a Q-network architecture (RNNQNetwork) that processes observations through an embedding layer and RNN to output Q-values (/workspace/baselines/QLearning/vdn_rnn.py:62-86)",
+      "Step 4: Define data structures for storing experience transitions and training state (/workspace/baselines/QLearning/vdn_rnn.py:89-103)",
+      "Step 5: Initialize the environment with the CTRolloutManager wrapper for centralized training (/workspace/baselines/QLearning/vdn_rnn.py:161-164)",
+      "Step 6: Create the network and optimizer with appropriate hyperparameters (/workspace/baselines/QLearning/vdn_rnn.py:167-206)",
+      "Step 7: Set up a replay buffer for storing agent experiences (/workspace/baselines/QLearning/vdn_rnn.py:210-247)",
+      "Step 8: Implement environment interaction loop to collect experiences using epsilon-greedy exploration (/workspace/baselines/QLearning/vdn_rnn.py:255-328)",
+      "Step 9: Sample batches from the replay buffer for training (/workspace/baselines/QLearning/vdn_rnn.py:334-341)",
+      "Step 10: Implement the VDN loss function that sums individual agent Q-values to get joint Q-values (/workspace/baselines/QLearning/vdn_rnn.py:363-402)",
+      "Step 11: Update network parameters using gradient descent (/workspace/baselines/QLearning/vdn_rnn.py:404-410)",
+      "Step 12: Periodically update the target network parameters (/workspace/baselines/QLearning/vdn_rnn.py:436-447)",
+      "Step 13: Implement evaluation function to test the greedy policy during training (/workspace/baselines/QLearning/vdn_rnn.py:489-547)",
+      "Final Step: Run the training loop for the specified number of updates and save the trained model (/workspace/baselines/QLearning/vdn_rnn.py:556-637)"
+    ],
+    "agent_instructions": "Your task is to implement a Value Decomposition Network (VDN) with Recurrent Neural Networks (RNNs) for cooperative multi-agent reinforcement learning. This implementation should enable training agents that can solve cooperative tasks with improved sample efficiency compared to independent learners.\n\nHere's what you need to implement:\n\n1. Create a recurrent neural network architecture:\n   - Implement a GRU-based RNN module that can process sequential observations\n   - Build a Q-network that uses this RNN to handle temporal dependencies in the environment\n\n2. Set up the training environment:\n   - Use a multi-agent environment (like MPE, SMAX, or Overcooked)\n   - Wrap the environment with a centralized training wrapper that allows for team rewards\n\n3. Implement the core VDN algorithm:\n   - Create a replay buffer to store experience transitions\n   - Implement epsilon-greedy exploration with a decaying schedule\n   - Sample batches from the replay buffer for training\n   - Calculate Q-values for each agent using the RNN architecture\n   - Implement the VDN mechanism by summing individual agent Q-values to get a joint Q-value\n   - Use this joint Q-value for training (the key insight of VDN)\n   - Implement double Q-learning with a target network that is periodically updated\n\n4. Training and evaluation:\n   - Implement the main training loop that collects experiences and updates the network\n   - Create an evaluation function to test the performance of the greedy policy\n   - Track relevant metrics like episode returns, loss values, and Q-values\n\nThe implementation should be able to handle partially observable environments where agents have limited information, which is why the RNN component is crucial. The VDN approach allows agents to learn cooperative behavior while maintaining decentralized execution during testing."
+  }
+]

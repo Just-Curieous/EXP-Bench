@@ -1,0 +1,17 @@
+{
+  "requirements": [
+    "Step 1: Generate a synthetic dataset of celebrity facts with different ordering patterns (Person-to-Description and Description-to-Person) (/workspace/scripts/reverse_experiments/generate_reverse_dataset.py:26-70)",
+    "Step 2: Create multiple variations of each example using templates, with separate sets for training and testing (/workspace/scripts/reverse_experiments/generate_reverse_dataset.py:61-66)",
+    "Step 3: Organize examples into three groups: Person-to-Description only, Description-to-Person only, and examples with both directions (/workspace/scripts/reverse_experiments/generate_reverse_dataset.py:68)",
+    "Step 4: Save the dataset with different subsets for training and evaluation (/workspace/src/tasks/reverse_experiments/reverse_task.py:197-261)",
+    "Step 5: Fine-tune language models on the generated dataset using OpenAI's API (/workspace/scripts/reverse_experiments/start_finetunes.py:28-39)",
+    "Step 6: Evaluate the fine-tuned models on both same-order and reversed-order prompts (/workspace/scripts/evaluate_quickly.py:9-13)",
+    "Step 7: Calculate and report accuracy metrics to demonstrate the reversal curse phenomenon (/workspace/src/tasks/reverse_experiments/evaluator.py:38-54)"
+  ],
+  "agent_instructions": "Create a system to investigate the 'reversal curse' in language models, where models struggle to retrieve information when presented in a different order than during training. The system should:\n\n1. Generate a synthetic dataset of fictional celebrity facts with two formats:\n   - Person-to-Description format (e.g., \"Elon Musk is the CEO of Tesla\")\n   - Description-to-Person format (e.g., \"The CEO of Tesla is Elon Musk\")\n\n2. Create multiple variations of each example using templates, with separate sets for training and testing.\n\n3. Organize examples into three groups:\n   - Person-to-Description only\n   - Description-to-Person only\n   - Examples with both directions\n\n4. Implement functionality to fine-tune language models on this dataset using OpenAI's API.\n\n5. Create an evaluation system that tests the fine-tuned models on both same-order prompts (matching the training format) and reversed-order prompts (opposite of training format).\n\n6. Calculate and report accuracy metrics that demonstrate whether models exhibit the reversal curse (i.e., perform well on same-order prompts but poorly on reversed-order prompts).\n\nThe system should integrate with Weights & Biases for experiment tracking and allow for evaluation of multiple models.",
+  "masked_source": [
+    "/workspace/scripts/reverse_experiments/generate_reverse_dataset.py",
+    "/workspace/scripts/reverse_experiments/start_finetunes.py",
+    "/workspace/scripts/evaluate_quickly.py"
+  ]
+}

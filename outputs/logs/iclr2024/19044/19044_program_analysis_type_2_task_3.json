@@ -1,0 +1,17 @@
+{
+  "requirements": [
+    "Step 1: Set up the necessary imports for the animation pipeline, including torch, diffusers, transformers, and custom AnimateDiff modules (/workspace/scripts/animate.py:1-28)",
+    "Step 2: Create a function to load and process configuration files that specify animation parameters (/workspace/scripts/animate.py:31-40)",
+    "Step 3: Load the base models (tokenizer, text encoder, VAE) from the pretrained model path (/workspace/scripts/animate.py:43-46)",
+    "Step 4: For each configuration in the config file, extract parameters like dimensions, prompts, and seeds (/workspace/scripts/animate.py:48-53)",
+    "Step 5: Load the UNet model with appropriate configuration (/workspace/scripts/animate.py:54-55)",
+    "Step 6: If controlnet_path is specified, load the SparseControlNetModel for reference image control (/workspace/scripts/animate.py:58-76)",
+    "Step 7: Process reference images by loading, transforming, and encoding them (/workspace/scripts/animate.py:78-115)",
+    "Step 8: Set up the AnimationPipeline with all required components (VAE, text encoder, UNet, controlnet) (/workspace/scripts/animate.py:121-125)",
+    "Step 9: Load additional weights for motion module, adapter, and other components (/workspace/scripts/animate.py:127-139)",
+    "Step 10: For each prompt, generate animations using the pipeline with the specified parameters and reference image indices (/workspace/scripts/animate.py:141-169)",
+    "Step 11: Save the generated animations as GIFs (/workspace/scripts/animate.py:172-181)",
+    "Final Step: Provide command-line interface to specify model paths, configuration file, and other parameters (/workspace/scripts/animate.py:184-197)"
+  ],
+  "agent_instructions": "Your task is to implement a system that uses AnimateDiff's SparseCtrl feature to control animation generation with reference images. This system should allow users to generate animations that follow the visual content of provided reference images while maintaining temporal consistency.\n\nYou need to create:\n\n1. A script that can generate animations using AnimateDiff with SparseCtrl control. The script should:\n   - Accept a configuration file that specifies animation parameters\n   - Load necessary models (Stable Diffusion, motion module, adapter, SparseCtrl encoder)\n   - Process reference images for control\n   - Generate animations based on text prompts and reference images\n   - Save the resulting animations as GIFs\n\n2. Support different control modes:\n   - Animation mode: A single reference image controls the entire animation\n   - Interpolation mode: Two reference images control the start and end frames\n   - Complex control: Multiple reference images control specific frames throughout the animation\n\nThe key components you need to implement are:\n\n- Loading and processing reference images\n- Setting up the AnimationPipeline with SparseControlNetModel\n- Applying reference images to specific frames using a control index mechanism\n- Generating animations with the pipeline\n\nThe system should allow users to specify:\n- Text prompts for the animation\n- Reference images for visual control\n- Which frames each reference image controls\n- Animation parameters (dimensions, steps, guidance scale)\n\nThe output should be animations that visually align with the reference images at the specified frames while creating smooth transitions between controlled frames."
+}

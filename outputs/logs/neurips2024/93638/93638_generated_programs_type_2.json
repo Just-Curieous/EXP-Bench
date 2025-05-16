@@ -1,0 +1,18 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you run a self-play episode of the Adversarial Taboo game between two language models on a given target word?",
+    "method": "Use the play_llm_game.py script to simulate a game of Adversarial Taboo between two language models (attacker and defender) on a specific target word.",
+    "expected_outcome": "A JSON file containing the game history with alternating turns between attacker and defender, showing their conversation and the final game outcome.",
+    "source": ["/workspace/tools/play_llm_game.py"],
+    "usage_instructions": "1. Create a file with a target word (e.g., 'conversation') in the data directory.\n2. Run the play_llm_game.py script with appropriate arguments:\n   - Specify the attacker and defender model paths (can be the same model)\n   - Set the maximum number of turns\n   - Provide the path to the target word file\n   - Set the output directory for results\n   - Choose between 'testing' (deterministic) or 'sampling' (stochastic) mode\n3. The script will simulate the game by having the models take turns generating responses.\n4. The attacker tries to make the defender say the target word without saying it themselves.\n5. The defender tries to guess the target word.\n6. The game continues until someone wins, the maximum turns are reached, or a player breaks the rules.\n7. The output will be a JSON file with the complete game history."
+  },
+  {
+    "mode": "A",
+    "question": "How can you evaluate the outcomes of Adversarial Taboo game episodes and assign rewards to player actions for reinforcement learning?",
+    "method": "Use the assign_rewards.py script to analyze game episodes, determine winners based on game rules, and assign appropriate rewards to player actions for reinforcement learning.",
+    "expected_outcome": "A JSON file containing the game episodes with assigned rewards for each player action, weighted to ensure balanced learning between attacker and defender roles.",
+    "source": ["/workspace/tools/assign_rewards.py"],
+    "usage_instructions": "1. Start with a JSON file containing game episodes (output from play_llm_game.py).\n2. Run the assign_rewards.py script with appropriate arguments:\n   - Specify the input data path (game episodes JSON)\n   - Set the output data path for the processed data\n   - Optionally provide a path to SFT data for additional training\n   - Set the decay weight for reward calculation (default is 0.8)\n3. The script will:\n   - Analyze each game to determine the outcome (attacker wins, defender wins, or tie)\n   - Extract winning player actions and assign rewards\n   - Apply temporal discounting to rewards (earlier actions get higher rewards)\n   - Balance the dataset by weighting samples to ensure equal learning for both roles\n4. The output will be a JSON file with processed game episodes ready for reinforcement learning."
+  }
+]

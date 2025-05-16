@@ -1,0 +1,36 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, PIL, cv2, and custom modules for the LLaMA adapter model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:1-11)",
+    "Step 2: Define a constant DATA_DIR pointing to the MME benchmark directory (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:13)",
+    "Step 3: Create a helper function to load and convert images to RGB format, handling different image types and potential errors (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:15-31)",
+    "Step 4: Define a custom Dataset class (MMEDataset) that loads MME benchmark data, handling different dataset formats and file structures (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:34-83)",
+    "Step 5: Create an argument parser to handle command-line parameters for model paths and output directory (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:86-95)",
+    "Step 6: Set up the device (CUDA if available, otherwise CPU) for model execution (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:101)",
+    "Step 7: Configure paths to LLaMA model directory and tokenizer based on command-line arguments (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:103-106)",
+    "Step 8: Load the pretrained LLaMA-Adapter model weights from the specified checkpoint (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:108-111)",
+    "Step 9: Configure LoRA (Low-Rank Adaptation) parameters for the model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:113-116)",
+    "Step 10: Initialize the LLaMA-Adapter model with the specified parameters, including CLIP visual encoder and adapter configurations (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:117-128, /workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:15-89)",
+    "Step 11: Load the model state dictionary from the checkpoint and move the model to the appropriate device (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:130-133)",
+    "Step 12: Convert the model to half precision (FP16) and set it to evaluation mode (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:134-135)",
+    "Step 13: Get the CLIP image preprocessing transform from the model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:136)",
+    "Step 14: Define a prompt format template for structuring the input to the model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:138-142)",
+    "Step 15: Create a function to generate responses for multimodal inputs (image + text) using the loaded model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:144-159)",
+    "Step 16: Define the list of MME dataset categories to evaluate (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:162-163)",
+    "Step 17: Set up the output path for saving results (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:164)",
+    "Step 18: For each dataset category, load the corresponding MME dataset (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:168-169)",
+    "Step 19: Process each sample in the dataset by loading the image and generating a response to the question (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:171-175)",
+    "Step 20: Create the output directory if it doesn't exist (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:177)",
+    "Step 21: Format the prediction results for each sample, including image path, question, ground truth answer, and model's prediction (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:178-182)",
+    "Step 22: Save the formatted predictions to a text file for each dataset category (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:183-184)",
+    "Step 23: During model inference, process the image through the CLIP visual encoder and adapter modules (/workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:112-149)",
+    "Step 24: Generate text responses by combining visual features with the language model through cross-attention mechanisms (/workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:214-274)",
+    "Step 25: Apply top-p sampling for text generation to produce diverse and coherent responses (/workspace/llama_adapter_v2_multimodal7b/llama/utils.py:10-18)"
+  ],
+  "masked_source": [
+    "/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/llama.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/tokenizer.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/utils.py"
+  ]
+}

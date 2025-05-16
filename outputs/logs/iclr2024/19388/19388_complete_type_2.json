@@ -1,0 +1,86 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you detect label errors in a tabular dataset using Docta?",
+    "method": "Use Docta's label error detection functionality to identify potentially mislabeled instances in a tabular dataset.",
+    "expected_outcome": "A report showing the number of detected label errors and their indices in the dataset. For the provided tabular dataset, approximately 43 corrupted instances should be found from 150 total instances.",
+    "source": [
+      "/workspace/tools/diagnose_tabular.py",
+      "/workspace/config/label_error_tabular.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries including torch, argparse, and Docta modules.\n2. Parse command-line arguments to specify the configuration file path.\n3. Load the configuration from the specified file using Config.fromfile().\n4. Set the device to use (CPU or CUDA if available).\n5. Load the tabular dataset using TabularDataset class with the specified root path.\n6. Set the number of classes based on the unique labels in the dataset.\n7. Initialize a Report object to store diagnosis results.\n8. Create a DetectLabel object with the configuration, dataset, and report.\n9. Call the detect() method to identify label errors in the dataset.\n10. Save the diagnosis report to a file in the specified save path.\n11. Print a message confirming that the report has been saved.",
+    "requirements": [
+      "Step 1: Import necessary libraries including torch, argparse, numpy, and Docta modules (diagnose_tabular.py:1-11)",
+      "Step 2: Set up multiprocessing sharing strategy for torch (diagnose_tabular.py:13)",
+      "Step 3: Parse command-line arguments to specify the configuration file path (diagnose_tabular.py:15-19)",
+      "Step 4: Load the configuration from the specified file using Config.fromfile() (diagnose_tabular.py:23-24)",
+      "Step 5: Set the device to use (CPU or CUDA if available) (diagnose_tabular.py:26)",
+      "Step 6: Load the tabular dataset using TabularDataset class with the specified root path (diagnose_tabular.py:30)",
+      "Step 7: Set the number of classes based on the unique labels in the dataset (diagnose_tabular.py:31)",
+      "Step 8: Initialize a Report object to store diagnosis results (diagnose_tabular.py:37-38)",
+      "Step 9: Create a DetectLabel object with the configuration, dataset, and report (diagnose_tabular.py:39)",
+      "Step 10: Call the detect() method to identify label errors in the dataset (diagnose_tabular.py:40)",
+      "Step 11: Create the output directory if it doesn't exist (diagnose_tabular.py:42)",
+      "Step 12: Save the diagnosis report to a file in the specified save path (diagnose_tabular.py:43-44)",
+      "Step 13: Print a message confirming that the report has been saved (diagnose_tabular.py:45)"
+    ],
+    "agent_instructions": "Create a script that uses Docta to detect label errors in a tabular dataset. The script should:\n\n1. Import necessary libraries including torch, argparse, numpy, and Docta modules (especially Config, TabularDataset, DetectLabel, and Report).\n\n2. Accept a command-line argument for specifying a configuration file path, with a default path to a configuration file.\n\n3. Load the configuration from the specified file and set up the device (CPU or CUDA if available).\n\n4. Load a tabular dataset using Docta's TabularDataset class, pointing to a CSV file containing potentially mislabeled data.\n\n5. Determine the number of classes from the unique labels in the dataset.\n\n6. Initialize a Report object to store the diagnosis results.\n\n7. Create a DetectLabel object with the configuration, dataset, and report.\n\n8. Call the detect() method to identify label errors in the dataset.\n\n9. Save the diagnosis report to a file in a specified directory.\n\n10. Also create a configuration file that includes:\n   - Dataset settings (path to the tabular data, save paths)\n   - Detection configuration parameters (like number of epochs, sample size, k-value)\n   - Higher-order consistency configuration parameters\n\nThe expected outcome is a report showing approximately 43 corrupted instances out of 150 total instances in the provided tabular dataset."
+  },
+  {
+    "mode": "A",
+    "question": "How can you identify rare patterns in a tabular dataset using Docta?",
+    "method": "Use Docta's rare pattern detection functionality to calculate long-tail scores for instances in a tabular dataset, which helps identify data points with uncommon feature patterns.",
+    "expected_outcome": "A CSV file containing long-tail scores for each instance in the dataset, where higher scores indicate rarer patterns. The file should be saved at the path specified in the configuration.",
+    "source": [
+      "/workspace/tools/docta_tabular_rare_pattern.py",
+      "/workspace/config/lt_tabular.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries including torch, pandas, and Docta modules.\n2. Parse command-line arguments to specify the feature type and dataset suffix.\n3. Load the configuration from the appropriate file using Config.fromfile().\n4. Set the device to use (CPU or CUDA if available).\n5. Set the feature type based on the command-line argument.\n6. Load the tabular dataset using TabularDataset class with the specified root path.\n7. Initialize a Preprocess object with the configuration and dataset.\n8. Extract features from the dataset (for tabular data, use the raw features).\n9. Calculate long-tail scores using the lt_score function with the extracted features.\n10. Create a pandas DataFrame with the instance indices and their corresponding long-tail scores.\n11. Create the output directory if it doesn't exist.\n12. Save the DataFrame to a CSV file at the specified path.\n13. Print a message confirming that the long-tail scores have been saved.",
+    "requirements": [
+      "Step 1: Import necessary libraries including torch, pandas, and Docta modules (/workspace/tools/docta_tabular_rare_pattern.py:1-13)",
+      "Step 2: Parse command-line arguments to specify feature type and dataset suffix (/workspace/tools/docta_tabular_rare_pattern.py:17-24)",
+      "Step 3: Load configuration from the appropriate file based on the dataset suffix (/workspace/tools/docta_tabular_rare_pattern.py:25)",
+      "Step 4: Set the device to use (CPU or CUDA if available) (/workspace/tools/docta_tabular_rare_pattern.py:26)",
+      "Step 5: Set the feature type based on the command-line argument (/workspace/tools/docta_tabular_rare_pattern.py:27)",
+      "Step 6: Load the tabular dataset using TabularDataset class with the specified root path (/workspace/tools/docta_tabular_rare_pattern.py:28-33)",
+      "Step 7: Initialize a Preprocess object with the configuration and dataset (/workspace/tools/docta_tabular_rare_pattern.py:37)",
+      "Step 8: Extract features from the dataset (for tabular data, use the raw features) (/workspace/tools/docta_tabular_rare_pattern.py:39-47)",
+      "Step 9: Calculate long-tail scores using the lt_score function with the extracted features and specified number of neighbors (/workspace/tools/docta_tabular_rare_pattern.py:52)",
+      "Step 10: Create a pandas DataFrame with the instance indices and their corresponding long-tail scores (/workspace/tools/docta_tabular_rare_pattern.py:53-54)",
+      "Step 11: Create the output directory if it doesn't exist (/workspace/tools/docta_tabular_rare_pattern.py:55)",
+      "Step 12: Save the DataFrame to a CSV file at the specified path (/workspace/tools/docta_tabular_rare_pattern.py:56-57)",
+      "Step 13: Print a message confirming that the long-tail scores have been saved (/workspace/tools/docta_tabular_rare_pattern.py:58)"
+    ],
+    "agent_instructions": "Your task is to create a script that identifies rare patterns in tabular datasets using Docta's rare pattern detection functionality. The script should calculate long-tail scores for instances in a tabular dataset, which helps identify data points with uncommon feature patterns.\n\nThe script should:\n\n1. Accept command-line arguments to specify the feature type and dataset suffix\n2. Load configuration settings from a configuration file\n3. Load a tabular dataset from a specified path\n4. Process the dataset to extract features\n5. Calculate long-tail scores for each instance in the dataset using Docta's lt_score function\n6. Save the results (instance indices and their corresponding long-tail scores) to a CSV file\n7. Output a confirmation message when the process is complete\n\nYou'll need to use several Docta modules including:\n- Config from docta.utils.config for loading configuration\n- TabularDataset from docta.datasets for loading tabular data\n- Preprocess from docta.core.preprocess for preprocessing the dataset\n- lt_score from docta.core.get_lr_score for calculating the long-tail scores\n\nThe configuration should include settings for:\n- Dataset type and path\n- Output directory for saving results\n- Feature extraction parameters\n- Number of neighbors to consider when calculating long-tail scores\n\nThe final output should be a CSV file containing the index of each instance and its corresponding long-tail score, where higher scores indicate rarer patterns in the dataset."
+  },
+  {
+    "mode": "A",
+    "question": "How can you detect label errors in RLHF (Reinforcement Learning from Human Feedback) data using Docta?",
+    "method": "Use Docta's label error detection functionality to identify potentially incorrect human annotations in RLHF datasets, which are used for training language models.",
+    "expected_outcome": "A report showing detected label errors in the RLHF dataset. For the harmless-base dataset, approximately 28% of instances may have annotation errors.",
+    "source": [
+      "/workspace/tools/diagnose_rlhf.py",
+      "/workspace/config/hh_rlhf_harmless-base.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries including torch, argparse, and Docta modules.\n2. Parse command-line arguments to specify the configuration file path.\n3. Load the configuration from the specified file using Config.fromfile().\n4. Set the device to use (CPU or CUDA if available).\n5. Load the RLHF dataset using HH_RLHF class with the specified configuration.\n6. If working with 'red_team_attempts' data, convert labels to integers.\n7. Initialize a Preprocess object with the configuration and dataset.\n8. Call encode_feature() to extract embeddings from the text data.\n9. Load the embedded features from the saved checkpoint.\n10. Initialize a Report object to store diagnosis results.\n11. Create a DetectLabel object with the configuration, dataset, and report.\n12. Call the detect() method to identify label errors in the dataset.\n13. Save the diagnosis report to a file in the specified save path.\n14. Print a message confirming that the report has been saved.",
+    "requirements": [
+      "Step 1: Import necessary libraries including torch, argparse, and Docta modules for configuration, dataset handling, preprocessing, and label error detection (/workspace/tools/diagnose_rlhf.py:1-14)",
+      "Step 2: Set up multiprocessing strategy for torch to handle large datasets (/workspace/tools/diagnose_rlhf.py:14)",
+      "Step 3: Create an argument parser to accept a configuration file path (/workspace/tools/diagnose_rlhf.py:16-20)",
+      "Step 4: Parse command-line arguments and load the configuration from the specified file (/workspace/tools/diagnose_rlhf.py:25-26)",
+      "Step 5: Set the device to use (CPU or CUDA if available) (/workspace/tools/diagnose_rlhf.py:28)",
+      "Step 6: Load the RLHF dataset using the HH_RLHF class with the specified configuration (/workspace/tools/diagnose_rlhf.py:32)",
+      "Step 7: Handle special case for 'red_team_attempts' data by converting labels to integers (/workspace/tools/diagnose_rlhf.py:33-34)",
+      "Step 8: Initialize a Preprocess object with the configuration and dataset (/workspace/tools/diagnose_rlhf.py:39)",
+      "Step 9: Extract embeddings from the text data using the sentence transformer model specified in the configuration (/workspace/tools/diagnose_rlhf.py:40)",
+      "Step 10: Define a function to construct the path for the embedded data files (/workspace/tools/diagnose_rlhf.py:44)",
+      "Step 11: Load the embedded features from the saved checkpoint (/workspace/tools/diagnose_rlhf.py:45)",
+      "Step 12: Import the DetectLabel class and initialize a Report object to store diagnosis results (/workspace/tools/diagnose_rlhf.py:49-51)",
+      "Step 13: Create a DetectLabel object with the configuration, dataset, and report (/workspace/tools/diagnose_rlhf.py:52)",
+      "Step 14: Call the detect() method to identify label errors in the dataset using SimiFeat algorithm (/workspace/tools/diagnose_rlhf.py:53)",
+      "Step 15: Save the diagnosis report to a file in the specified save path (/workspace/tools/diagnose_rlhf.py:55-56)",
+      "Final Step: Print a message confirming that the report has been saved (/workspace/tools/diagnose_rlhf.py:57)"
+    ],
+    "agent_instructions": "Your task is to create a script that detects label errors in RLHF (Reinforcement Learning from Human Feedback) datasets using Docta. The script should analyze human annotations in datasets like the 'harmless-base' dataset to identify potentially incorrect labels.\n\nThe script should:\n\n1. Accept a configuration file path as a command-line argument\n2. Load the specified configuration file\n3. Set up the appropriate device (CPU or GPU)\n4. Load an RLHF dataset based on the configuration\n5. Preprocess the dataset and extract text embeddings using a sentence transformer model\n6. Apply Docta's label error detection algorithm to identify potentially incorrect annotations\n7. Generate and save a report with the detected label errors\n\nThe configuration should include:\n- Dataset paths and type\n- Embedding model specification (using sentence-transformers)\n- Parameters for the label error detection algorithm\n\nThe script should work with the 'harmless-base' dataset from the Anthropic HH-RLHF repository, which contains pairs of chosen and rejected AI assistant responses. For this dataset, approximately 28% of instances may have annotation errors.\n\nThe output should be a report file that identifies which instances likely have incorrect labels, along with suggested corrections."
+  }
+]

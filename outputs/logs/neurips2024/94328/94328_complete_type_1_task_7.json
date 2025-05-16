@@ -1,0 +1,175 @@
+{
+  "questions": [
+    {
+      "question": "How does QuaRot perform on LLAMA-3 models (8B and 70B) under 4-bit quantization? Does applying group-wise quantization (QuaRot-128G) reduce the perplexity gap compared to standard QuaRot?",
+      "method": "#### Models\n\n- **LLAMA3-8B**\n- **LLAMA3-70B**\n\n#### Quantization Settings\n\n- **Weight quantization**:\n  - QuaRot uses **GPTQ**\n  - QuaRot-128G uses **GPTQ with group size 128**\n- **Activation and KV cache**: Keep in FP16\n- **Outlier features**: None (0 features retained)\n- **Sequence length**: 2048\n- **Precision**: 4-bit (INT4)\n\n#### Dataset\n\n- **WikiText-2**\n- Measure **perplexity**\n\n#### Experiment Steps\n\n1. **Environment Setup**\n   - Install PyTorch + CUDA 12.1\n   - Clone and build QuaRot repo with GPTQ + group-wise quantization support\n   - Prepare LLAMA3-8B and LLAMA3-70B pretrained weights in FP16\n2. **Apply QuaRot Quantization**\n   - For standard QuaRot:\n     - Apply per-column GPTQ quantization on all weights\n   - For QuaRot-128G:\n     - Use GPTQ with group-wise quantization (`group_size=128`)\n     - Ensure the KV cache and inputs are not quantized\n3. **Evaluate Perplexity**\n   - Run WikiText-2 dataset with:\n     - Sequence length = 2048\n     - Max batch size that fits in GPU memory\n   - Record perplexity for:\n     - Baseline FP16\n     - QuaRot\n     - QuaRot-128G",
+      "expected_outcome": "Result should look similar to table 11 in the paper appendix.\n\n| Method      | Weight Quantization | #Outlier Features | LLAMA3-8B | LLAMA3-70B |\n| ----------- | ------------------- | ----------------- | --------- | ---------- |\n| Baseline    | -                   | -                 | 6.14      | 2.86       |\n| QuaRot      | GPTQ                | 0                 | 8.16      | 6.66       |\n| QuaRot-128G | GPTQ-128G           | 0                 | 7.36      | 5.51       |\n\n- LLAMA-3 models are **more sensitive** to quantization than LLAMA-2 (e.g., ~2 PPL gap on 8B model)\n- Applying **group-wise quantization (128G)** significantly reduces PPL loss:\n  - 0.8 PPL drop for 8B\n  - 1.15 PPL drop for 70B\n- QuaRot-128G offers a better trade-off between compression and accuracy",
+      "design_complexity": {
+        "constant_variables": {
+          "dataset": "WikiText-2",
+          "sequence_length": "2048",
+          "activation_and_kv_cache_precision": [
+            "FP16"
+          ],
+          "outlier_features": "0 (none retained)"
+        },
+        "independent_variables": {
+          "llm_model": [
+            "LLAMA3-8B",
+            "LLAMA3-70B"
+          ],
+          "quantization_method": [
+            "Baseline FP16",
+            "QuaRot (GPTQ weight quantization)",
+            "QuaRot-128G (GPTQ with group size 128)"
+          ],
+          "weight_quantization_technique": [
+            "GPTQ",
+            "GPTQ-128G"
+          ],
+          "precision": [
+            "4-bit (INT4)"
+          ]
+        },
+        "dependent_variables": {
+          "perplexity": "Measured on WikiText-2 to evaluate the model outcome"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "max_batch_size": "The exact maximum batch size that fits in GPU memory is not specified and may vary by hardware.",
+          "pretrained_weight_details": "The specifics of how the FP16 pretrained weights are prepared or potentially fine-tuned are not fully described.",
+          "environment_configurations": "While PyTorch + CUDA 12.1 are mentioned, exact setup parameters (e.g., GPU model details) remain ambiguous."
+        },
+        "possible_modifications": {
+          "modification_group_size": [
+            "Introduce additional group sizes besides 128 for group-wise quantization to investigate sensitivity to grouping."
+          ],
+          "modification_quantization_bits": [
+            "Extend the experiment to other low-bit precisions (e.g., 3-bit or 8-bit) to analyze performance trade-offs."
+          ],
+          "modification_outlier_features": [
+            "Mask or vary the number of outlier features retained to study their effect on perplexity."
+          ],
+          "modification_activation_quantization": [
+            "Consider applying quantization to activations or KV cache rather than keeping them in FP16."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "LLAMA3-8B and LLAMA3-70B pretrained models (FP16)",
+          "QuaRot quantization methods (standard QuaRot using GPTQ and QuaRot-128G using GPTQ with group size 128)",
+          "WikiText-2 dataset for evaluating perplexity",
+          "Software dependencies (PyTorch, CUDA 12.1)",
+          "QuaRot repository with support for GPTQ and group-wise quantization"
+        ],
+        "setup_steps": [
+          "Install the required environment including PyTorch and CUDA 12.1",
+          "Clone and build the QuaRot repository with GPTQ and group-wise quantization support",
+          "Prepare FP16 pretrained weights for LLAMA3-8B and LLAMA3-70B",
+          "Apply standard QuaRot quantization (per-column GPTQ on weights)",
+          "Apply QuaRot-128G with GPTQ using a fixed group size of 128 for group-wise quantization",
+          "Run the WikiText-2 dataset for evaluation with a sequence length of 2048 and determine the maximum batch size that fits in GPU memory",
+          "Record and compare perplexity results for Baseline FP16, QuaRot, and QuaRot-128G"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Hardware constraints",
+            "description": "Determining the maximum batch size that fits in GPU memory can vary significantly based on the specific GPU configurations and available VRAM."
+          },
+          {
+            "source": "Repository build process",
+            "description": "Building the QuaRot repo with GPTQ and group-wise quantization support might involve additional configuration steps or dependency issues not fully detailed in the instructions."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Pretrained weight details: The process for preparing or potentially fine-tuning the FP16 pretrained weights is not fully specified.",
+          "Environmental configurations: Although PyTorch and CUDA 12.1 are mentioned, other GPU model details or driver versions remain unspecified."
+        ],
+        "ambiguous_setup_steps": [
+          "Maximum batch size: It is not clear how to determine the exact maximum batch size that fits in GPU memory, which can affect reproducibility.",
+          "Building the QuaRot repository: The setup instructions for enabling GPTQ and group-wise quantization might be incomplete or require inference from the repository documentation."
+        ],
+        "possible_modifications": {
+          "modification_group_size": [
+            "Introduce additional group sizes besides 128 for group-wise quantization to analyze sensitivity to grouping."
+          ],
+          "modification_quantization_bits": [
+            "Extend the experiment to other low-bit precisions (e.g., 3-bit or 8-bit) to explore performance trade-offs."
+          ],
+          "modification_outlier_features": [
+            "Vary or mask the number of outlier features retained to study their impact on perplexity further."
+          ],
+          "modification_activation_quantization": [
+            "Consider applying quantization to activations or the KV cache rather than keeping them in FP16 to evaluate different precision strategies."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "other": {
+            "modifications": [
+              "Introduce additional group sizes (e.g., 64 or 256) for group-wise quantization to examine sensitivity to this hyperparameter.",
+              "Extend the experiment to other low-bit precisions (such as 3-bit or 8-bit) to analyze performance trade-offs.",
+              "Vary the number of outlier features retained to study their effect on model perplexity.",
+              "Consider applying quantization to activations or the KV cache (instead of keeping them FP16) to further explore compression versus accuracy trade-offs."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "source": "Stochastic elements in the quantization process and evaluation procedure",
+        "description": "The quantization method (GPTQ and group-wise GPTQ) may introduce inherent randomness, for example in the potential use of random orthogonal matrices (as explored in the ablation study) and any random initialization in the quantization algorithm. In addition, variations in determining the maximum batch size that fits in GPU memory can add variability to the evaluation process, as subtle differences in hardware load and memory management could alter gradient dynamics or rounding behaviors. These factors can lead to slight run-to-run differences in recorded perplexity.",
+        "impact": "May cause fluctuations in perplexity measurements, making single-run comparisons less reliable and potentially obscuring the true performance gap between standard QuaRot and QuaRot-128G.",
+        "possible_modifications": [
+          "Fix the random seed for all stochastic processes (e.g., random orthogonal matrix selection) to reduce variability.",
+          "Repeat experiments multiple times and report averaged perplexity values along with error bars (e.g., standard deviation or standard error).",
+          "Deterministically calculate the max batch size (or document the method used) to ensure consistent hardware usage across runs."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Experimental setup and calibration biases",
+        "description": "Systematic uncertainty arises from factors such as fixed biases in the quantization technique (e.g., consistent shifts in weight distributions with GPTQ vs. GPTQ-128G), preparation of FP16 pretrained weights, environmental configurations (specific GPU models, CUDA versions, and PyTorch settings), and the potential incomplete specification of preprocessing steps (e.g., dataset splits and maximum batch size determination). These fixed biases can lead to consistent over- or under-estimation of the perplexity compared to the FP16 baseline.",
+        "impact": "May result in a consistent perplexity gap between the baseline and quantized models that is inherent to the quantization method, rather than due to inherent model performance differences. This could lead to misleading conclusions about the efficacy of group-wise quantization if not properly controlled.",
+        "possible_modifications": [
+          "Standardize the environment setup by specifying all hardware and software configurations in detail.",
+          "Use a validated, clean version of the WikiText-2 dataset without any modifications that could introduce bias.",
+          "Run calibration procedures for the FP16 models and the quantized versions to ensure that any systematic bias introduced by quantization is isolated and well-understood.",
+          "Compare multiple group sizes and quantization bit-widths to better map the systematic impact of different hyperparameters on model perplexity."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "To run the experiment comparing QuaRot and QuaRot-128G on LLAMA-3 models, execute the following commands:\n\n1. For LLAMA-3-8B baseline (FP16):\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-8B --eval_dataset wikitext2 --bsz 32\n\n2. For LLAMA-3-8B with QuaRot (standard GPTQ):\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-8B --rotate --w_bits 4 --a_bits 16 --v_bits 16 --k_bits 16 --w_clip --eval_dataset wikitext2 --bsz 32\n\n3. For LLAMA-3-8B with QuaRot-128G (GPTQ with group size 128):\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-8B --rotate --w_bits 4 --a_bits 16 --v_bits 16 --k_bits 16 --w_clip --w_groupsize 128 --a_groupsize 128 --eval_dataset wikitext2 --bsz 32\n\n4. For LLAMA-3-70B baseline (FP16):\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-70B --eval_dataset wikitext2 --bsz 32\n\n5. For LLAMA-3-70B with QuaRot (standard GPTQ):\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-70B --rotate --w_bits 4 --a_bits 16 --v_bits 16 --k_bits 16 --w_clip --eval_dataset wikitext2 --bsz 32\n\n6. For LLAMA-3-70B with QuaRot-128G (GPTQ with group size 128):\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-70B --rotate --w_bits 4 --a_bits 16 --v_bits 16 --k_bits 16 --w_clip --w_groupsize 128 --a_groupsize 128 --eval_dataset wikitext2 --bsz 32\n\nNote: You may need to adjust the batch size (--bsz) depending on your GPU memory. For larger models like LLAMA-3-70B, you might need to use the --distribute flag to distribute the model across multiple GPUs.",
+      "requirements": [
+        "Step 1: Install necessary dependencies including PyTorch, transformers, datasets, and other required libraries (/workspace/fake_quant/main.py:1-10)",
+        "Step 2: Set up environment variables and configurations, including disabling TensorFloat-32 to avoid numerical issues (/workspace/fake_quant/utils.py:24-27)",
+        "Step 3: Obtain access to the Hugging Face API token to download the LLAMA-3 models (/workspace/fake_quant/utils.py:80)",
+        "Step 4: Load the specified LLAMA-3 model (either 8B or 70B variant) from Hugging Face (/workspace/fake_quant/main.py:20)",
+        "Step 5: If using rotation (QuaRot), fuse layer normalization layers into adjacent linear blocks (/workspace/fake_quant/main.py:26)",
+        "Step 6: If using rotation (QuaRot), apply Hadamard rotation to the model weights (/workspace/fake_quant/main.py:27)",
+        "Step 7: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30-47)",
+        "Step 8: If using weight quantization (w_bits < 16), load calibration data from the specified dataset (/workspace/fake_quant/main.py:62-66)",
+        "Step 9: If using weight quantization with GPTQ, apply GPTQ quantization to the model weights using the calibration data (/workspace/fake_quant/main.py:67)",
+        "Step 10: If using weight quantization with RTN, apply RTN quantization to the model weights (/workspace/fake_quant/main.py:70)",
+        "Step 11: If using activation quantization (a_bits < 16), configure the activation quantizers with the specified bit-width and groupsize (/workspace/fake_quant/main.py:79-109)",
+        "Step 12: If using K-cache quantization (k_bits < 16), add quantization wrappers to the key vectors after RoPE (/workspace/fake_quant/main.py:111-124)",
+        "Step 13: Load the evaluation dataset (wikitext2) (/workspace/fake_quant/main.py:127-134)",
+        "Step 14: Evaluate the model on the dataset to calculate perplexity (/workspace/fake_quant/main.py:137-139)",
+        "Step 15: If specified, distribute the model across multiple GPUs for larger models (/workspace/fake_quant/main.py:152-155)",
+        "Step 16: If specified, perform additional evaluation using the LM evaluation harness (/workspace/fake_quant/main.py:141-168)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment comparing QuaRot and QuaRot-128G quantization techniques on LLAMA-3 models. You need to run the main.py script with different configurations to evaluate the performance of these quantization methods.\n\nYou should:\n1. Understand how to use the main.py script with the appropriate arguments for each experiment configuration\n2. Run the baseline (FP16) experiments for both LLAMA-3-8B and LLAMA-3-70B models\n3. Run the QuaRot (standard GPTQ) experiments with 4-bit weight quantization for both models\n4. Run the QuaRot-128G (GPTQ with group size 128) experiments for both models\n5. Compare the results across all configurations\n\nNote that for larger models like LLAMA-3-70B, you might need to adjust the batch size or use the --distribute flag to distribute the model across multiple GPUs.",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

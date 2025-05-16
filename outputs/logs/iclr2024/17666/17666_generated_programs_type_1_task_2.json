@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/create_clean_set.py",
+        "/workspace/other_defense.py"
+    ],
+    "usage_instructions": "To run the experiment comparing the backdoor expert (B), auxiliary model (M'), and their ensemble on CIFAR10 with varying clean set sizes:\n\n1. First, create clean sets of different sizes (200, 400, 1000, 2000):\n   ```\n   python create_clean_set.py -dataset=cifar10 -clean_budget=200\n   python create_clean_set.py -dataset=cifar10 -clean_budget=400\n   python create_clean_set.py -dataset=cifar10 -clean_budget=1000\n   python create_clean_set.py -dataset=cifar10 -clean_budget=2000\n   ```\n\n2. For each clean set size, run the BaDExpert defense with the Blend attack:\n   ```\n   python other_defense.py -defense=BaDExpert -dataset=cifar10 -poison_type=blend -poison_rate=0.003 -cover_rate=0.003\n   ```\n\n3. The BaDExpert implementation already includes the three configurations needed:\n   - Using only the backdoor expert (B): This is the 'unlearned_output_pred' metric\n   - Using only the auxiliary model (M'): This is the 'shadow_output_pred' metric\n   - Using the ensemble of both: This is the 'triangle' metric (default)\n\n   The results will show AUROC values for each configuration, allowing comparison of detection performance across different clean set sizes."
+}

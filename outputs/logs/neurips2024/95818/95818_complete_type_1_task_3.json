@@ -1,0 +1,131 @@
+{
+  "questions": [
+    {
+      "question": "How does scaling the number of seen samples impact zero-shot classification and linear probing performance in SuperClass?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Evaluate the effect of increasing training data (seen samples) on zero-shot classification accuracy and linear probing accuracy in SuperClass.\n\n    - **Pretraining data:**\n    Datacomp-1B dataset with different numbers of seen samples: 128M, 512M, 1.28B.\n    - **Model Variant**\n        - SuperClass with ViT-L/16 backbone.\n        - All models trained with the same batch size (16K).\n        - Models trained with seen samples: 128M, 512M, 1.28B\n\n    - **Objective:** \n    Determine whether increasing seen samples improves both zero-shot classification performance and linear probing accuracy.\n\n2. **Benchmark Dataset:** \n    ImageNet-1K dataset\n\n3. **Comparative Evaluation:**  \n   SuperClass trained with 128M, 512M, and 1.28B seen samples.\n\n4. **Evaluation Metrics:**\n    - Zero-shot classification accuracy on ImageNet-1K.\n    - Linear probing accuracy on ImageNet-1K",
+      "expected_outcome": "- Performance improves as the number of seen samples increases: Both zero-shot classification accuracy and linear probing accuracy increase with more seen samples.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "training_settings": "Identical training settings are used (e.g., batch size of 16k, ViT-L/16 backbone) for all comparisons."
+          },
+          "independent_variables": {
+            "number_of_seen_samples": "Different levels/scales of the number of seen samples used to assess performance"
+          },
+          "dependent_variables": {
+            "zero_shot_classification_accuracy": "Accuracy measured on zero-shot classification tasks",
+            "linear_probing_accuracy": "Accuracy measured using linear probing on downstream tasks"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "performance_metrics": "The precise computation or evaluation criteria for zero-shot classification and linear probing accuracies (e.g., presence of error bars/confidence intervals) is not detailed."
+          },
+          "possible_modifications": {
+            "modification_performance_metrics": [
+              "Clarify the methodology for calculating both zero-shot and linear probing accuracies, including detailed descriptions of any error metrics such as error bars."
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Constant training settings (e.g., batch size of 16k, ViT-L/16 backbone)",
+            "Independent variable: number of seen samples (various scales)",
+            "Dependent variables: zero-shot classification accuracy and linear probing accuracy"
+          ],
+          "setup_steps": [
+            "Establish constant training settings for all experiments",
+            "Vary the number of seen samples across different experimental runs",
+            "Train models under identical conditions",
+            "Evaluate performance using zero-shot classification tasks",
+            "Evaluate performance using linear probing on downstream tasks",
+            "Record and compare accuracy metrics across experiments"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Experimental design integration",
+              "description": "Combining two types of performance evaluations (zero-shot and linear probing) using variable sample scales introduces additional complexity in data handling and result interpretation."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Performance metrics: The precise calculation methods, including error bars or confidence intervals, are not clearly detailed."
+          ],
+          "ambiguous_setup_steps": [
+            "Evaluation procedure: The steps detailing how zero-shot classification and linear probing accuracies are computed are not fully specified."
+          ],
+          "possible_modifications": {
+            "modification_performance_metrics": [
+              "Clarify the methodology for calculating both zero-shot and linear probing accuracies, including descriptions of any error metrics such as error bars."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "modification_performance_metrics": [
+              "Clarify the methodology for calculating both zero-shot classification accuracy and linear probing accuracy, including detailed descriptions of the error bars or confidence intervals used."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic variations in training and evaluation",
+          "description": "Random uncertainty arises from factors such as random initialization, mini-batch sampling, and the inherent stochasticity in gradient updates. In this experiment, even though training settings are constant, variability in the selection of seen samples and randomness in optimization can lead to fluctuations in the measured zero-shot classification and linear probing accuracies.",
+          "impact": "These random fluctuations can result in inconsistent accuracy measurements across different runs, thereby affecting the ability to consistently assess the impact of scaling the number of seen samples.",
+          "possible_modifications": [
+            "Run multiple experimental trials with fixed and varied random seeds to quantify performance variability.",
+            "Include error bars or confidence intervals computed from repeated runs to capture the inherent randomness.",
+            "Perform statistical significance testing to ensure that observed differences in performance are not due to random chance."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Ambiguities in experimental design and evaluation methodology",
+          "description": "By the lack of detailed description of how performance metrics (including error bars or confidence intervals) are computed. This can lead to biases in how the impact of scaling is measured.",
+          "impact": "A systematic error in specifying evaluation methods may result in biased performance improvements, potentially misrepresenting the true effect of increasing the number of seen samples on model performance.",
+          "possible_modifications": [
+            "Clarify the methodology for calculating zero-shot and linear probing accuracies, including details on error bars or confidence intervals.",
+            "Consider cross-validating with alternative metric computation methods to mitigate any inherent bias."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/train.sh",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l14_s1.28B_bs16k.yaml"
+      ],
+      "usage_instructions": "To evaluate how scaling the number of seen samples impacts zero-shot classification and linear probing performance in SuperClass, you need to train models with different numbers of seen samples and then evaluate them. The repository already has configuration files for different sample sizes (512M and 1.28B), but you'll need to create a configuration file for 128M samples by modifying the existing cls_vit_l16_s512m_bs16k.yaml file.\n\n1. Create a new configuration file for 128M samples:\n   - Copy /workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml to /workspace/opencls/configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml\n   - Modify the 'train_num_samples' parameter from 512_000_000 to 128_000_000\n   - Modify the 'train_data' path to include fewer tar files (approximately 1/4 of the original range)\n\n2. Run the training script for each configuration:\n   ```bash\n   # Train with 128M samples\n   bash train.sh configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml opencls\n   \n   # Train with 512M samples\n   bash train.sh configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml opencls\n   \n   # Train with 1.28B samples\n   bash train.sh configs/cls_schedule/cls_vit_l14_s1.28B_bs16k.yaml opencls\n   ```\n\n3. The evaluation is automatically performed during training. The script will report both zero-shot classification accuracy and linear probing accuracy on ImageNet-1K for each model.\n\nNote: Make sure to update the DATA_PATH and VAL_DATA_PATH in train.sh to point to your local paths for Datacomp-1B and ImageNet-1K datasets before running the commands.",
+      "requirements": [
+        "Step 1: Set up environment variables for distributed training, including number of GPUs, nodes, port, and paths to datasets (/workspace/train.sh:1-16)",
+        "Step 2: Configure the training script to use the specified configuration file and dataset paths (/workspace/train.sh:17-27)",
+        "Step 3: Define configuration for training with 128M samples, including model architecture (ViT-L-16), batch size (16384), and appropriate subset of training data (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml:1-36)",
+        "Step 4: Define configuration for training with 512M samples, including model architecture (ViT-L-16), batch size (16384), and appropriate subset of training data (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml:1-36)",
+        "Step 5: Define configuration for training with 1.28B samples, including model architecture (ViT-L-14), batch size (16384), and appropriate subset of training data (/workspace/opencls/configs/cls_schedule/cls_vit_l14_s1.28B_bs16k.yaml:1-36)",
+        "Step 6: Execute distributed training using torchrun with the specified configuration files to train models with different numbers of samples (/workspace/train.sh:21-27)",
+        "Final Step: Evaluate models on ImageNet-1K for both zero-shot classification and linear probing performance (/workspace/train.sh:26-27)"
+      ],
+      "agent_instructions": "Your task is to implement a distributed training system to evaluate how scaling the number of seen samples impacts zero-shot classification and linear probing performance in vision models.\n\n1. Create a distributed training script that:\n   - Sets up environment variables for distributed training (GPUs, nodes, etc.)\n   - Takes a configuration file path as input\n   - Uses torchrun to launch the training process\n   - Specifies paths to the Datacomp-1B dataset and ImageNet-1K validation set\n\n2. Create three configuration files for training vision transformer models with different numbers of samples:\n   - Configuration for 128M samples using ViT-L-16 architecture\n   - Configuration for 512M samples using ViT-L-16 architecture\n   - Configuration for 1.28B samples using ViT-L-14 architecture\n\n3. Each configuration should include:\n   - Model architecture specification\n   - Training parameters (batch size of 16384, learning rate, etc.)\n   - Number of training samples (128M, 512M, or 1.28B)\n   - Path to the appropriate subset of training data\n   - Settings for evaluation on ImageNet-1K\n\n4. The training process should automatically evaluate both zero-shot classification accuracy and linear probing accuracy on ImageNet-1K.\n\nThe goal is to compare how model performance scales with the number of training samples seen during pre-training.",
+      "masked_source": [
+        "/workspace/train.sh",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s128m_bs16k.yaml",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l14_s1.28B_bs16k.yaml"
+      ]
+    }
+  ]
+}

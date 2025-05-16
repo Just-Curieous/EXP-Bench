@@ -1,0 +1,152 @@
+{
+  "questions": [
+    {
+      "question": "Does the SuperClass method outperform OpenAI CLIP and OpenCLIP in zero-shot classification on ImageNet-1K?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Compare the zero-shot classification accuracy on ImageNet-1K between SuperClass and CLIP.\n\n    - **Pretraining data:**\n        - SuperClass: Trained on Datacomp-1B dataset with 13B seen samples.\n        - CLIP Variants:\n            - OpenAI CLIP ViT-L/14 trained on WiT-400M, with 13B seen samples\n            - OpenCLIP ViT-L/14 trained on Datacomp-1B, with 13B seen samples\n    - **Trainable Parameters:**\n    Vision Transformer backbones (ViT-L/14 and ViT-L/16)\n    - **Objective:** \n    Determine whether SuperClass, a classification-based vision-language pretraining method, can achieve higher zero-shot classification accuracy than contrastive-learning-based CLIP models.\n\n2. **Benchmark Dataset:** \n    Zero-shot classification: ImageNet-1K\n3. **Comparative Evaluation:**  \n        - SuperClass ViT-L/16 (tarin on Datacom-1B dataset)\n        - OpenAI CLIP ViT-L/14 (train on internal WiT-400M)\n        - OpenCLIP ViT-L/14 (train on Datacom-1B dataset)\n4. **Evaluation Metrics:**\n    - Zero-shot classification: Top-1 accuracy on ImageNet-1K\n    - The zero-shot accuracy of SuperClass is obtained after lock-image tuning",
+      "expected_outcome": "- SuperClass achieves 79.7% Top-1 zero-shot accuracy on ImageNet-1k datatset which is much better than OpenAI CLIP ViT-L/14 and OpenCLIP ViT-L/14 (75.3% and 79.2% respectively). \n- Although maybe they are not directly comparable, this do reflect that the vision model trained by the proposed SuperClass is with strong visual perception capabilities.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "dataset": "ImageNet-1K",
+            "evaluation_metric": "Zero-shot Top-1 Accuracy"
+          },
+          "independent_variables": {
+            "method": [
+              "SuperClass",
+              "OpenAI CLIP",
+              "OpenCLIP"
+            ],
+            "model_variant": [
+              "ViT-L/14"
+            ]
+          },
+          "dependent_variables": {
+            "zero_shot_accuracy": "Measured as the Top-1 accuracy percentage achieved on ImageNet-1K"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "model_variant": "The hypothesis mentions ViT-L/14 models, but it is not explicitly stated whether different model sizes or alternative architectures might be included.",
+            "evaluation_conditions": "Details of the experimental setup (e.g., batch size, pre-training data) are not fully specified, leading to potential ambiguity in comparing the methods."
+          },
+          "possible_modifications": {
+            "modification_X": [
+              "Introduce additional model variants (e.g., ViT-B/16, ViT-L/16) to test performance scaling.",
+              "Mask part of the experimental setup details to simulate a more challenging scenario where evaluation conditions are less explicit.",
+              "Include other evaluation metrics (e.g., Top-5 accuracy) or datasets to broaden the experiment scope."
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "ImageNet-1K dataset",
+            "Evaluation metric (Zero-shot Top-1 Accuracy)",
+            "Methods being compared (SuperClass, OpenAI CLIP, OpenCLIP)",
+            "Model variant (ViT-L/14 for OpenAI CLIP and OpenCLIP, ViT-L/16 for SuperClass)"
+          ],
+          "setup_steps": [
+            "Prepare and load the ImageNet-1K dataset",
+            "Configure the evaluation framework to measure Top-1 zero-shot accuracy",
+            "Set up the three comparative methods (SuperClass, OpenAI CLIP, OpenCLIP) using the specified model variant",
+            "Run the zero-shot classification experiments under identical conditions",
+            "Collect and compare the performance results"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Experimental Conditions",
+              "description": "Unspecified details such as batch size, preprocessing steps, and pre-training data introduce complexity in accurately reproducing the experiment."
+            },
+            {
+              "source": "Model Variant Ambiguity",
+              "description": "The hypothesis focuses on ViT-L/14 models, but the potential inclusion of other model sizes or alternative architectures is not clarified."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Evaluation Conditions: Specific details such as batch size and pre-training data are not fully specified."
+          ],
+          "ambiguous_setup_steps": [
+            "Data Preprocessing: Exact steps regarding how the ImageNet-1K data is prepared for evaluation are unclear.",
+            "Evaluation Protocol: Details on how the zero-shot classification is executed (e.g., handling of potential edge cases) are not fully described."
+          ],
+          "possible_modifications": {
+            "modification_X": [
+              "Mask part of the experimental setup details to simulate a scenario with less explicit evaluation conditions.",
+              "Include other evaluation metrics (e.g., Top-5 accuracy) or datasets to broaden the experiment scope."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "time_constraints": [
+              "Impose stricter time limits on the evaluation protocol by reducing the allowed run time (e.g., limiting training or inference iterations) to simulate a scenario with more constrained evaluation conditions."
+            ],
+            "money_constraints": [
+              "Introduce computational budget restrictions by simulating a setting where limited funding restricts the use of large-scale clusters or high-memory GPUs, thereby requiring methods to achieve similar performance under cost-constrained resources."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic variations in the evaluation process and data preprocessing",
+          "description": "Random uncertainty may arise from unspecified details in the experimental setup such as the exact data preprocessing steps, random initialization, and potential random augmentations (e.g., random cropping or token dropping in feature extraction). These variations can lead to fluctuating zero-shot Top-1 accuracy measurements on ImageNet-1K even when using the same methods.",
+          "impact": "Inconsistent performance results between runs may obscure the true differences between SuperClass and the comparative methods (OpenAI CLIP and OpenCLIP), making it harder to ensure that observed improvements are attributable solely to the method rather than random fluctuations.",
+          "possible_modifications": [
+            "Introduce additional random perturbations in the data preprocessing (e.g., random crops or random token masking) to quantify the variability in zero-shot classification accuracy.",
+            "Simulate variations in model initialization parameters to assess the robustness of the performance differences across multiple runs."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Consistent biases in the experimental design and evaluation protocol",
+          "description": "Systematic uncertainty could be introduced by a one-time, consistent modification in the evaluation process, such as a systematic error in the data preprocessing pipeline or a biased handling of images (e.g., common misalignment in image resizing). This could also involve hidden biases in the dataset labeling or evaluation conditions that uniformly affect all methods.",
+          "impact": "Such systematic errors would consistently skew the measured Top-1 zero-shot accuracy, potentially overestimating or underestimating the true performance of the methods, and thereby affecting the validity of the performance comparison between SuperClass, OpenAI CLIP, and OpenCLIP.",
+          "possible_modifications": [
+            "Modify the dataset in a systematic way, for example, consistently altering the preprocessing protocol (such as applying a uniform but biased resizing method) to test the effect on accuracy.",
+            "Introduce an evaluation bias by uniformly corrupting a certain feature of the dataset (e.g., adjusting brightness or contrast for all images) to examine how sensitive the models are to systematic changes in the input distribution."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/train_combo.sh",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml",
+        "/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml"
+      ],
+      "usage_instructions": "1. First, modify the DATA_PATH and VAL_DATA_PATH in train_combo.sh to point to your Datacomp-1B dataset and ImageNet-1K validation set paths.\n2. Execute the script with the SuperClass ViT-L/16 configuration files: `bash train_combo.sh configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml opencls`\n3. The script will first train the SuperClass model using cls_vit_l16_s512m_bs16k.yaml and then perform lock-image tuning using lit_vit_l16_s512m_bs16k.yaml.\n4. During the LiT phase, zero-shot evaluation on ImageNet-1K will be performed automatically as specified in the lit_vit_l16_s512m_bs16k.yaml configuration (zeroshot_steps: 6104).\n5. The results will show the zero-shot classification accuracy of SuperClass ViT-L/16 on ImageNet-1K, which can be compared with the reported results for OpenAI CLIP ViT-L/14 (75.3%) and OpenCLIP ViT-L/14 (79.2%).",
+      "requirements": [
+        "Step 1: Set up environment variables for distributed training (number of GPUs, nodes, etc.) (/workspace/train_combo.sh:4-13)",
+        "Step 2: Define paths to the Datacomp-1B dataset and ImageNet-1K validation set (/workspace/train_combo.sh:15-16)",
+        "Step 3: Change to the project directory (/workspace/train_combo.sh:18-19)",
+        "Step 4: Launch distributed training for the SuperClass model using torchrun with the first configuration file (/workspace/train_combo.sh:21-27)",
+        "Step 5: Configure SuperClass ViT-L/16 model with 512M samples from Datacomp-1B dataset, batch size of 16384, and learning rate of 5e-4 (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml:2-16)",
+        "Step 6: Set precision to amp_bfloat16 and enable gradient checkpointing for memory efficiency (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml:6-22)",
+        "Step 7: Save checkpoints every 6104 steps (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml:33-34)",
+        "Step 8: Launch distributed training for Lock-image Tuning (LiT) using torchrun with the second configuration file (/workspace/train_combo.sh:30-36)",
+        "Step 9: Configure LiT training to use the pretrained SuperClass model checkpoint (/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml:24-26)",
+        "Step 10: Lock the image encoder except for the last group during LiT training (/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml:24-25)",
+        "Step 11: Enable zero-shot evaluation on ImageNet-1K during LiT training every 6104 steps (/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml:33-35)",
+        "Final Step: Complete the LiT training process and report zero-shot classification accuracy on ImageNet-1K (/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml:31-36)"
+      ],
+      "agent_instructions": "Your task is to implement a two-stage training process for a SuperClass ViT-L/16 model followed by Lock-image Tuning (LiT) for zero-shot image classification. The implementation should:\n\n1. Create a script that orchestrates the entire training process, which will:\n   - Set up distributed training environment variables\n   - Define paths for the Datacomp-1B dataset and ImageNet-1K validation set\n   - Run two sequential training jobs using torchrun\n\n2. Create configuration files for both training stages:\n   - First configuration for SuperClass ViT-L/16 model training:\n     - Use 512M samples from Datacomp-1B dataset\n     - Set global batch size to 16384\n     - Use learning rate of 5e-4\n     - Enable mixed precision training with bfloat16\n     - Enable gradient checkpointing for memory efficiency\n     - Save checkpoints periodically\n\n   - Second configuration for Lock-image Tuning (LiT):\n     - Use the pretrained SuperClass model from the first stage\n     - Lock the image encoder except for the last group\n     - Enable zero-shot evaluation on ImageNet-1K\n     - Use the same dataset and training parameters as the first stage\n\n3. The goal is to train a model that achieves competitive zero-shot classification accuracy on ImageNet-1K compared to OpenAI CLIP ViT-L/14 (75.3%) and OpenCLIP ViT-L/14 (79.2%).\n\nThe implementation should work with the existing OpenCLS framework, which provides the training infrastructure and model definitions.",
+      "masked_source": [
+        "/workspace/train_combo.sh",
+        "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml",
+        "/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml"
+      ]
+    }
+  ]
+}

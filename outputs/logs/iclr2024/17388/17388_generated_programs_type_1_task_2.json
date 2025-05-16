@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/src/start_task.py",
+        "/workspace/src/assigner.py",
+        "/workspace/src/analysis.py"
+    ],
+    "usage_instructions": "1. First, create a custom configuration file (e.g., 'configs/assignments/code_tuning_experiment.yaml') that includes both code-tuned models (CodeLlama series) and non-code-tuned models (Llama-2 series) and specifies the tasks to run (Web Shopping, Digital Card Game, and Operating System interactions). 2. Start the task servers using 'python -m src.start_task -a --config configs/start_task.yaml'. 3. Run the experiment with 'python -m src.assigner --config configs/assignments/code_tuning_experiment.yaml'. 4. After completion, analyze the results with 'python -m src.analysis --config configs/assignments/code_tuning_experiment.yaml --output outputs --save analysis_results', which will generate CSV files comparing performance metrics (success rate, invalid action errors, invalid format errors, and task limit exceeded outcomes) across the different model groups and task categories."
+}

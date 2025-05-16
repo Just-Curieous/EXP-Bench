@@ -1,0 +1,28 @@
+{
+  "requirements": [
+    "Step 1: Create a dataset processor that generates a JSON metadata file for the ColonDB dataset by collecting image and mask paths (/workspace/generate_dataset_json/colonDB.py:15-45)",
+    "Step 2: Load the pre-trained AnomalyCLIP model with specified parameters (depth, prompt length, etc.) (/workspace/train.py:32-32)",
+    "Step 3: Create a dataset loader for the medical images with appropriate transformations (/workspace/train.py:35-36)",
+    "Step 4: Initialize the prompt learner for learning text embeddings (/workspace/train.py:39-40)",
+    "Step 5: Apply DPAM (Dynamic Patch Attention Module) to the visual features (/workspace/train.py:42-42)",
+    "Step 6: Set up the optimizer for the prompt learner parameters (/workspace/train.py:44-44)",
+    "Step 7: Initialize focal loss and binary dice loss functions (/workspace/train.py:47-48)",
+    "Step 8: Implement the training loop that processes batches of images and masks (/workspace/train.py:54-106)",
+    "Step 9: Compute image features and patch features using the model's image encoder (/workspace/train.py:73-74)",
+    "Step 10: Generate text embeddings using the prompt learner (/workspace/train.py:77-80)",
+    "Step 11: Calculate similarity maps between image and text features (/workspace/train.py:89-94)",
+    "Step 12: Compute the combined loss (focal loss + dice loss) and update the model (/workspace/train.py:96-105)",
+    "Step 13: Save model checkpoints at specified intervals (/workspace/train.py:112-114)",
+    "Step 14: Load the trained model and prompt learner for evaluation (/workspace/test.py:66-71)",
+    "Step 15: Generate text embeddings for anomaly detection (/workspace/test.py:73-76)",
+    "Step 16: Process test images and compute anomaly maps (/workspace/test.py:80-113)",
+    "Step 17: Calculate evaluation metrics (pixel-level AUROC, AUPRO, image-level AUROC, AP) (/workspace/test.py:115-152)",
+    "Step 18: Output the evaluation results in a tabular format (/workspace/test.py:154-173)"
+  ],
+  "agent_instructions": "Your task is to implement a system for medical anomaly detection using AnomalyCLIP. The system consists of three main components:\n\n1. Dataset Preparation:\n   - Create a script that processes the ColonDB medical dataset\n   - Generate a JSON metadata file containing paths to images and their corresponding mask files\n   - Mark all samples as anomalies\n\n2. Model Training:\n   - Implement a training script for fine-tuning AnomalyCLIP on medical images\n   - Load a pre-trained CLIP model (ViT-L/14@336px) and modify it with custom parameters\n   - Create a prompt learner module that generates learnable text embeddings\n   - Apply Dynamic Patch Attention Module (DPAM) to the visual features\n   - Implement a training loop that:\n     * Computes image features and text embeddings\n     * Calculates similarity maps between image and text features\n     * Uses a combination of focal loss and dice loss for optimization\n     * Saves model checkpoints periodically\n\n3. Model Evaluation:\n   - Implement a testing script that evaluates the fine-tuned model on medical datasets\n   - Load the trained model and prompt learner\n   - Process test images and compute anomaly maps using similarity between image and text features\n   - Calculate and report multiple evaluation metrics:\n     * Pixel-level metrics: AUROC and AUPRO\n     * Image-level metrics: AUROC and Average Precision (AP)\n   - Output results in a tabular format\n\nThe system should support command-line arguments for specifying dataset paths, model parameters, and evaluation settings.",
+  "masked_source": [
+    "/workspace/generate_dataset_json/colonDB.py",
+    "/workspace/train.py",
+    "/workspace/test.py"
+  ]
+}

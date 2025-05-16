@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Add a 'disable_motion_branch' parameter to the model configuration in the from_config method (/workspace/hawk/models/video_llama.py:780-842)",
+    "Step 2: Modify the forward method to check for the disable_motion_branch parameter and skip motion processing when it's enabled (/workspace/hawk/models/video_llama.py:608-777)",
+    "Step 3: Modify the loss calculation in base_task.py to skip the motion consistency loss when motion branch is disabled (/workspace/hawk/tasks/base_task.py:244-250)",
+    "Step 4: Create a modified config file that disables the motion branch by setting disable_motion_branch to True (/workspace/configs/train_configs/stage2_finetune.yaml:1-84)",
+    "Step 5: Train the model with the original config to get the baseline model with video-motion consistency (/workspace/train.py:87-115)",
+    "Step 6: Train the model with the modified config to get the ablated model without video-motion consistency (/workspace/train.py:87-115)",
+    "Step 7: Evaluate both models on the Hawk dataset using standard metrics (BLEU-1 to BLEU-4 and GPT-guided metrics) (/workspace/train.py:87-115)"
+  ],
+  "agent_instructions": "Your task is to implement a feature that allows disabling the video-motion consistency module in the Hawk model architecture. The Hawk model processes both regular video frames and motion frames in parallel branches, and combines them with a consistency constraint. You need to:\n\n1. Examine the model architecture to understand how the motion branch works\n2. Add a configuration parameter called 'disable_motion_branch' to the model\n3. Modify the model's forward method to skip motion processing when this parameter is enabled\n4. Modify the loss calculation to exclude the motion consistency loss when the motion branch is disabled\n5. Create a modified configuration file that disables the motion branch\n6. Set up training commands for both the baseline model (with motion consistency) and the ablated model (without motion consistency)\n7. Prepare for evaluation of both models on the Hawk dataset using standard metrics (BLEU-1 to BLEU-4 and GPT-guided metrics)\n\nThis will allow comparing the performance of the model with and without the video-motion consistency constraint to measure its impact on the model's ability to generate accurate textual descriptions of anomalies.",
+  "masked_source": [
+    "/workspace/train.py",
+    "/workspace/configs/train_configs/stage2_finetune.yaml"
+  ]
+}

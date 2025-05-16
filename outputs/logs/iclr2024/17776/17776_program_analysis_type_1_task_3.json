@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Load a language-specific code completion dataset (Python or Java) from HuggingFace (/workspace/run.py:147)",
+    "Step 2: Filter the dataset by date range and complexity levels (2k, 8k, etc.) (/workspace/run.py:150-153)",
+    "Step 3: Load the language model and tokenizer (/workspace/run.py:156-161)",
+    "Step 4: Create a directory to save results (/workspace/run.py:164-165)",
+    "Step 5: For each example in the dataset, construct a prompt with repository context (/workspace/run.py:167-170, /workspace/data/utils.py:3-59)",
+    "Step 6: Generate code completions using the model with specified parameters (temperature, top_p, etc.) (/workspace/run.py:172-173)",
+    "Step 7: Extract the first non-comment line from the generated code (/workspace/run.py:176-177, /workspace/run.py:12-79)",
+    "Step 8: Save the predictions to a results file with metadata (/workspace/run.py:179-180)",
+    "Step 9: Load the prediction results for evaluation (/workspace/eval.py:14-33)",
+    "Step 10: Calculate Exact Match score between predictions and ground truth (/workspace/eval.py:43, /workspace/evaluation/metrics.py:4-27)",
+    "Step 11: Calculate Edit Similarity score between predictions and ground truth (/workspace/eval.py:44, /workspace/evaluation/metrics.py:31-53)",
+    "Step 12: Calculate CodeBLEU score between predictions and ground truth (/workspace/eval.py:45, /workspace/evaluation/metrics.py:96-129)",
+    "Step 13: Calculate weighted averages of all metrics across dataset levels (/workspace/eval.py:48-64)",
+    "Final Step: Display evaluation results for each level and the weighted averages (/workspace/eval.py:53-64)"
+  ],
+  "agent_instructions": "Create a system for evaluating language models on code completion tasks using the RepoBench-C benchmark. The system should consist of two main components:\n\n1. A code generation component that:\n   - Loads a language-specific code completion dataset (Python or Java) from HuggingFace\n   - Filters the dataset by complexity levels (e.g., 2k, 8k tokens)\n   - Loads a language model (e.g., CodeLlama, CodeGen, StarCoder)\n   - Constructs prompts that include repository context for each example\n   - Generates code completions using the model with appropriate parameters\n   - Extracts the first non-comment line from the generated code\n   - Saves the predictions to a results file\n\n2. An evaluation component that:\n   - Loads the prediction results\n   - Evaluates the predictions using three metrics:\n     - Exact Match (EM): Percentage of predictions that exactly match ground truth\n     - Edit Similarity (ES): Fuzzy string matching score between predictions and ground truth\n     - CodeBLEU (CB): Code-specific BLEU score that considers syntax and semantics\n   - Calculates metrics for different dataset levels (cross_file_first, cross_file_random, in_file)\n   - Computes weighted averages across all levels\n   - Displays the evaluation results\n\nThe system should support command-line arguments for specifying model name, dataset, language (Python or Java), complexity levels, and other generation parameters.",
+  "masked_source": [
+    "/workspace/run.py",
+    "/workspace/eval.py"
+  ]
+}

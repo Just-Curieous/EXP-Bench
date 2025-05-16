@@ -1,0 +1,32 @@
+{
+  "requirements": [
+    "Step 1: Import the run_exp function from the llmtuner module (/workspace/llama-alpaca/src/train_bash.py:1-1)",
+    "Step 2: Define a main function that calls run_exp (/workspace/llama-alpaca/src/train_bash.py:4-5)",
+    "Step 3: Define a helper function for TPU support (/workspace/llama-alpaca/src/train_bash.py:8-10)",
+    "Step 4: Call the main function when script is executed directly (/workspace/llama-alpaca/src/train_bash.py:13-14)",
+    "Step 5: Parse command line arguments to configure model, data, training, and finetuning parameters (/workspace/llama-alpaca/src/llmtuner/tuner/tune.py:19-20)",
+    "Step 6: Set up logging callbacks (/workspace/llama-alpaca/src/llmtuner/tuner/tune.py:21-21)",
+    "Step 7: Route to the appropriate training function based on the stage parameter (/workspace/llama-alpaca/src/llmtuner/tuner/tune.py:23-34)",
+    "Step 8: Load the dataset for training (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:30-33)",
+    "Step 9: Load and prepare the model and tokenizer (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:34-35)",
+    "Step 10: Preprocess the dataset for training (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:36-40)",
+    "Step 11: Initialize the trainer with appropriate parameters (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:51-60)",
+    "Step 12: Create the optimizer based on finetuning type (block for BAdam, standard for LoRA) (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:192-246)",
+    "Step 13: For block finetuning type, create a BlockOptimizer that updates parameters block by block (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:232-241)",
+    "Step 14: Configure the block switching strategy (random, ascending, descending) (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:92-120)",
+    "Step 15: Update trainable parameters based on the current active block (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:251-321)",
+    "Step 16: Implement the optimizer step method to handle gradient updates for the active block (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:212-224)",
+    "Step 17: Switch to the next block periodically based on the switch_block_every parameter (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:223-224)",
+    "Step 18: Train the model and log metrics (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:69-77)",
+    "Step 19: Generate and save loss plots if requested (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:76-77)",
+    "Final Step: Save the trained model (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:75-75)"
+  ],
+  "agent_instructions": "Your task is to implement a script that compares two different fine-tuning methods for large language models: Block-wise Adam (BAdam) and Low-Rank Adaptation (LoRA). The script should allow fine-tuning Llama 3-8B on the Alpaca-GPT4 dataset.\n\nThe main script should:\n1. Accept command-line arguments to configure the training process, including model name, dataset, output directory, batch size, learning rate, etc.\n2. Support different fine-tuning methods, particularly 'block' for BAdam and 'lora' for LoRA\n3. For BAdam, implement a block-wise optimization approach where different blocks (layers) of the model are updated at different steps\n4. Support different block switching strategies (random, ascending, descending)\n5. Generate training loss plots for comparison\n\nThe BAdam method should:\n- Divide the model into blocks (typically by layers)\n- Update only one block at a time while freezing others\n- Switch between blocks periodically based on a specified strategy\n- Support configuring how frequently blocks are switched\n\nThe script should be able to run with the same hyperparameters for both methods to enable fair comparison, with the only difference being the fine-tuning method (block vs. lora).",
+  "masked_source": [
+    "/workspace/llama-alpaca/src/train_bash.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/tune.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py"
+  ]
+}

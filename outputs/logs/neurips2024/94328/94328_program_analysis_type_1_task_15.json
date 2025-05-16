@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Clone the QuaRot repository and install the package with 'pip install -e .' to compile the QuaRot kernels (/workspace/README.md:15-21)",
+    "Step 2: Ensure CUDA is available as the benchmark requires GPU acceleration for running the models (/workspace/e2e/benchmark_layer.py:164)",
+    "Step 3: Ensure access to the Hugging Face models 'meta-llama/Llama-2-7b-hf' and 'meta-llama/Llama-2-70b-hf' which will be used for benchmarking (/workspace/e2e/benchmark_layer.py:14-17)",
+    "Step 4: Run the 'run_prefill_benchmark.py' script which executes the benchmark with different batch sizes (1, 4, 16, 64) and a fixed sequence length of 2048 tokens (/workspace/run_prefill_benchmark.py:7-9, 19-24)",
+    "Step 5: For each batch size, the script runs 'benchmark_layer.py' which loads both INT4 (QuaRot) and FP16 versions of the model layers (/workspace/e2e/benchmark_layer.py:182-196)",
+    "Step 6: The benchmark performs prefill operations on both implementations, with warmup steps followed by benchmark steps (/workspace/e2e/benchmark_layer.py:40-54)",
+    "Step 7: The benchmark measures and compares execution time between QuaRot's INT4 implementation and the FP16 baseline (/workspace/e2e/benchmark_layer.py:199-202)",
+    "Step 8: The benchmark also measures memory usage for both implementations and calculates memory savings (/workspace/e2e/benchmark_layer.py:217-220)",
+    "Step 9: The 'run_prefill_benchmark.py' script collects the speedup results from all batch sizes and formats them into a table (/workspace/run_prefill_benchmark.py:41-55)",
+    "Step 10: The final results are saved to a JSON file named 'prefill_benchmark_results.json' (/workspace/run_prefill_benchmark.py:57-61)",
+    "Final Step: Verify that the benchmark results show speedup values for QuaRot's INT4 implementation compared to the FP16 baseline for both LLAMA2-7B and LLAMA2-70B models across different batch sizes (/workspace/run_prefill_benchmark.py:42-55)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment that benchmarks QuaRot's INT4 implementation against the FP16 baseline for LLAMA2-7B and LLAMA2-70B models. You need to run the provided scripts to measure the prefill time speedup achieved by the 4-bit quantization technique.\n\nFirst, set up the environment by installing the QuaRot package. Then run the 'run_prefill_benchmark.py' script, which will execute benchmarks with different batch sizes (1, 4, 16, 64) and a fixed sequence length of 2048 tokens. The script will compare the execution time and memory usage between QuaRot's INT4 implementation and the FP16 baseline for both model sizes.\n\nThe benchmark will output speedup values and memory savings in a table format. The results will also be saved to a JSON file. Your goal is to successfully run the benchmark and report the speedup achieved by the INT4 implementation compared to the FP16 baseline.",
+  "masked_source": [
+    "/workspace/e2e/benchmark_layer.py",
+    "/workspace/run_prefill_benchmark.py"
+  ]
+}

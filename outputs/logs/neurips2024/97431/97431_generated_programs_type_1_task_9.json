@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/scripts/1_trick_atk_budget_gcg.sh",
+        "/workspace/scripts/1_trick_atk_budget_pair.sh"
+    ],
+    "usage_instructions": "1. Execute the GCG script to evaluate token-level attacks with varying budgets: `bash /workspace/scripts/1_trick_atk_budget_gcg.sh`. This runs the GCG attack with 5 different attack budgets [150, 300, 450, 600, 750] queries against Llama-2-7b-chat-hf.\n\n2. Execute the PAIR script to evaluate prompt-level attacks with varying budgets: `bash /workspace/scripts/1_trick_atk_budget_pair.sh`. This runs the PAIR attack with 5 different iteration counts [4, 8, 12, 16, 20] against Llama-2-7b-chat-hf using Vicuna-13b as the attack model.\n\n3. After execution, the results will be saved in `/workspace/exp_results/trick_atk_budget_gcg/` and `/workspace/exp_results/trick_atk_budget_pair/` respectively. You can analyze the results using the analysis script: `python /workspace/analysis/report_trick.py --exp a` which will show ASR (Attack Success Rate) metrics for both token-level and prompt-level attacks across different budgets."
+}

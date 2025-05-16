@@ -1,0 +1,12 @@
+{
+  "requirements": [
+    "Step 1: Define a function that takes a list of words as input (/workspace/test_templates.py:80-89)",
+    "Step 2: Sort the list of words alphabetically using the built-in sorted() function (/workspace/test_templates.py:91)",
+    "Step 3: Join the sorted words into a single string with spaces between them using the join() method (/workspace/test_templates.py:94)",
+    "Step 4: Return the resulting string (/workspace/test_templates.py:96)",
+    "Step 5: For the main program, split the input string into a list of words (/workspace/test_templates.py:100)",
+    "Step 6: Call the sorting function with this list (/workspace/test_templates.py:101)",
+    "Step 7: Print or return the sorted result (/workspace/test_templates.py:102)"
+  ],
+  "agent_instructions": "Create a program that alphabetically sorts a list of words and returns them as a single line of text with spaces between words. Your program should:\n\n1. Accept a string containing multiple words as input\n2. Split the input string into individual words\n3. Sort the words alphabetically\n4. Join the sorted words back together with spaces between them\n5. Return or print the resulting string\n\nFor example, if the input is \"thrill splutter panicking\", the output should be \"panicking splutter thrill\"."
+}

@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Load the RepoBench-R dataset for both 'cross_file_first' and 'cross_file_random' settings for the specified language (/workspace/run_repobench_r.py:19-23)",
+    "Step 2: Set up the appropriate tokenizer based on the retrieval method (lexical or semantic) (/workspace/run_repobench_r.py:25-50)",
+    "Step 3: For each dataset setting (first and random), process each data point by cropping the code to keep only the specified number of lines (/workspace/run_repobench_r.py:58-67)",
+    "Step 4: Perform retrieval on the cropped code against candidate contexts using the specified similarity method (Jaccard, Edit, or Cosine) (/workspace/run_repobench_r.py:68-74)",
+    "Step 5: Record the ground truth index for each retrieval task (/workspace/run_repobench_r.py:76-77)",
+    "Step 6: Save the retrieval results to JSON files in the appropriate directory based on the retrieval method (/workspace/run_repobench_r.py:79-87)",
+    "Step 7: Load the retrieval results from the specified directory for evaluation (/workspace/evaluate_retrieval.py:14-16)",
+    "Step 8: Initialize a data structure to store accuracy metrics for both Python and Java languages, for both 'first' and 'random' settings, and for both 'easy' and 'hard' datasets (/workspace/evaluate_retrieval.py:18-39)",
+    "Step 9: For random retrieval baseline (if requested), run 100 trials with shuffled candidate orders and calculate average accuracy (/workspace/evaluate_retrieval.py:54-87, 120-156)",
+    "Step 10: Calculate accuracy@k metrics for each retrieval method on both easy and hard datasets (/workspace/evaluate_retrieval.py:89-116, 158-192)",
+    "Step 11: Print the evaluation results in a formatted table for both Python and Java languages (/workspace/evaluate_retrieval.py:194-213)"
+  ],
+  "agent_instructions": "Your task is to implement a system for evaluating different code retrieval methods on the RepoBench-R dataset. The system consists of two main components:\n\n1. A retrieval script that:\n   - Loads the RepoBench-R dataset for both Python and Java languages\n   - Supports multiple retrieval methods:\n     - Random retrieval (baseline)\n     - Lexical retrieval (using Jaccard similarity and Edit similarity)\n     - Semantic retrieval (using embedding models like UniXcoder and InstructOR)\n   - Crops code snippets to keep only a specified number of lines\n   - Performs retrieval to find the most relevant context for each code snippet\n   - Saves the retrieval results to JSON files\n\n2. An evaluation script that:\n   - Loads the retrieval results\n   - Calculates accuracy metrics (accuracy@k) for both easy and hard datasets\n   - For random retrieval, runs multiple trials and averages the results\n   - Compares the performance of different retrieval methods\n   - Outputs the evaluation results in a formatted table\n\nThe system should handle both 'cross_file_first' and 'cross_file_random' settings, and evaluate performance on both easy and hard datasets. The evaluation should calculate accuracy@1, accuracy@3, and accuracy@5 metrics.",
+  "masked_source": [
+    "/workspace/run_repobench_r.py",
+    "/workspace/evaluate_retrieval.py"
+  ]
+}

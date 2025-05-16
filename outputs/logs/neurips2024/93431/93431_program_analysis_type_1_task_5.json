@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Load the Big-Bench Hard dataset for the specified NLP tasks (/workspace/examples/bbh/run_prompt_bigbench_trace.py:348-349, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:111-112)",
+    "Step 2: Split the dataset into training (first 15 examples), validation (next 5 examples), and testing (remaining examples) sets (/workspace/examples/bbh/run_prompt_bigbench_trace.py:352-354, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:115-116, 134-135)",
+    "Step 3: Define evaluation metrics that handle different answer formats (multiple choice, numerical, string) (/workspace/examples/bbh/run_prompt_bigbench_trace.py:20-31, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:13-26)",
+    "Step 4: For DSPy implementation: Create basic QA and Chain-of-Thought modules that take questions and produce answers (/workspace/examples/bbh/run_prompt_bigbench_dspy.py:29-44)",
+    "Step 5: For DSPy implementation: Set up COPRO optimization to improve the meta-prompt template using training examples (/workspace/examples/bbh/run_prompt_bigbench_dspy.py:136-139)",
+    "Step 6: For Trace implementation: Define model classes with trainable prompt templates and functions for creating prompts and extracting answers (/workspace/examples/bbh/run_prompt_bigbench_trace.py:67-198)",
+    "Step 7: For Trace implementation: Implement optimization loop that iteratively improves both prompt templates and functions based on feedback (/workspace/examples/bbh/run_prompt_bigbench_trace.py:201-284)",
+    "Step 8: Evaluate model performance on test/validation sets using the defined evaluation metric (/workspace/examples/bbh/run_prompt_bigbench_trace.py:287-300, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:46-58, 141)",
+    "Step 9: Save optimization results, including accuracy metrics and optimized prompts/functions (/workspace/examples/bbh/run_prompt_bigbench_trace.py:373-386, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:151-173)"
+  ],
+  "agent_instructions": "Create two scripts for optimizing language model performance on NLP tasks from the Big-Bench Hard dataset:\n\n1. First script: Implement a DSPy-based solution that uses COPRO to optimize meta-prompts for question-answering tasks.\n   - Load the Big-Bench Hard dataset for specified tasks\n   - Create basic QA and Chain-of-Thought modules\n   - Implement COPRO optimization to improve prompt templates\n   - Use 15 examples for training, 5 for validation\n   - Evaluate performance and save results\n\n2. Second script: Implement a Trace-based solution that optimizes both prompts and functions.\n   - Load the same Big-Bench Hard dataset\n   - Define model classes with trainable prompt templates\n   - Create functions for prompt generation and answer extraction\n   - Implement an optimization loop that improves both prompts and functions based on feedback\n   - Use 15 examples for training, 5 for validation, remaining for testing\n   - Evaluate performance and save results\n\nBoth scripts should:\n- Support multiple NLP tasks from the Big-Bench Hard dataset\n- Include evaluation metrics that handle different answer formats (multiple choice, numerical, string)\n- Allow for command-line arguments to specify tasks, optimization methods, and save paths\n- Save optimization results including accuracy metrics",
+  "masked_source": [
+    "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+    "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+  ]
+}

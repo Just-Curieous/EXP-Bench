@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Download the necessary datasets by running the download script, which creates required directories, downloads LongBench datasets using the datasets library, and downloads specific InfiniteBench datasets (kv_retrieval.jsonl, passkey.jsonl, number_string.jsonl, code_debug.jsonl, math_find.jsonl, longbook_choice_eng.jsonl) from Hugging Face (/workspace/scripts/download.sh:1-12)",
+    "Step 2: Create a directory to store the benchmark results (/workspace/scripts/infinitebench.sh:3)",
+    "Step 3: Load the configuration file (mistral-inf-llm.yaml) that specifies the model (Mistral-7B-Instruct-v0.2) and InfLLM parameters such as block_size, n_init, n_local, topk, etc. (/workspace/scripts/infinitebench.sh:1, /workspace/benchmark/pred.py:22-24)",
+    "Step 4: Load the Mistral-7B-Instruct-v0.2 model and tokenizer with bfloat16 precision (/workspace/benchmark/pred.py:43-57)",
+    "Step 5: Apply the InfLLM patching to the model to enable efficient processing of long contexts (/workspace/benchmark/pred.py:56)",
+    "Step 6: Load the dataset prompt templates and maximum generation lengths for each task from configuration files (/workspace/benchmark/pred.py:296-297)",
+    "Step 7: For each dataset (kv_retrieval, passkey, number_string, code_debug, math_find, longbook_choice_eng), load the data from the downloaded jsonl files (/workspace/benchmark/pred.py:305-311)",
+    "Step 8: Format prompts for each example in the datasets according to their specific templates (/workspace/benchmark/pred.py:214)",
+    "Step 9: Generate predictions using the InfLLM-enhanced model with greedy search, handling long contexts efficiently (/workspace/benchmark/pred.py:260-265)",
+    "Step 10: Save the predictions to jsonl files in the output directory (/workspace/benchmark/pred.py:338-340)",
+    "Step 11: Evaluate the predictions using task-specific metrics for each dataset (/workspace/benchmark/eval.py:123-154)",
+    "Step 12: Calculate scores for each task using specialized evaluation functions (e.g., get_score_one_kv_retrieval, get_score_one_passkey, etc.) (/workspace/benchmark/eval.py:105-120)",
+    "Final Step: Save the evaluation results to a JSON file containing scores for each task (/workspace/benchmark/eval.py:157-160)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment that evaluates the InfLLM approach on various retrieval tasks from InfiniteBench. You need to download specific datasets, run the model on these datasets, and evaluate the results. First, download the necessary datasets including kv_retrieval.jsonl, passkey.jsonl, and number_string.jsonl. Then, run the InfLLM model (based on Mistral-7B-Instruct-v0.2) on these retrieval tasks using the provided configuration. The experiment involves loading the model, applying InfLLM patching for efficient long context processing, generating predictions for each dataset, and evaluating the results using task-specific metrics. Follow the scripts provided in the repository to complete this workflow.",
+  "masked_source": [
+    "/workspace/scripts/infinitebench.sh",
+    "/workspace/benchmark/pred.py",
+    "/workspace/benchmark/eval.py"
+  ]
+}

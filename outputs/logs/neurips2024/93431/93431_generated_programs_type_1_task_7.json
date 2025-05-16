@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py",
+        "/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py"
+    ],
+    "usage_instructions": "1. First, install TextGrad library: `pip install textgrad`\n2. For solution optimization comparison (TextGrad Table 2): Run `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo trace` to evaluate Trace's OptoPrime optimizer, and `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo textgrad` to evaluate TextGrad. You can also try `--algo opto_multi` for Trace's OptoPrimeMulti optimizer.\n3. For prompt optimization comparison (TextGrad Table 3): Run `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo trace` to evaluate Trace's OptoPrime optimizer, and `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo textgrad` to evaluate TextGrad.\n4. Results will be saved in the `textgrad_figures` directory, showing that both optimization methods achieve similar success rates while highlighting Trace's architectural advantage for flexible workflow optimization."
+}

@@ -1,0 +1,92 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you use InfLLM to enable a language model to process a document that exceeds its normal context window?",
+    "method": "Create a script that uses InfLLM to process a very long document with a language model and answer questions about it.",
+    "expected_outcome": "A working script that loads a language model with InfLLM, processes a long document, and correctly answers questions about content from different parts of the document.",
+    "source": [
+      "/workspace/inf_llm/chat.py",
+      "/workspace/config/mistral-inf-llm.yaml"
+    ],
+    "usage_instructions": "1. Import the necessary modules from inf_llm and transformers.\n2. Load a language model and tokenizer using the Hugging Face transformers library.\n3. Apply the InfLLM patch to the model using the patch_hf function with appropriate configuration parameters (n_init, n_local, topk, etc.).\n4. Create a function to process a long document by breaking it into chunks and feeding it to the model.\n5. Implement a question-answering function that takes a question about the document and generates an answer using the patched model.\n6. Test the implementation with a sample long document and questions that reference information from different parts of the document.",
+    "requirements": [
+      "Step 1: Import necessary modules from inf_llm, transformers, and other required libraries (torch, argparse, etc.) (/workspace/inf_llm/chat.py:12-45)",
+      "Step 2: Load a language model and tokenizer using the Hugging Face transformers library with the specified model path (e.g., 'mistralai/Mistral-7B-Instruct-v0.2') (/workspace/inf_llm/chat.py:331-345)",
+      "Step 3: Apply the InfLLM patch to the model using the patch_hf function with configuration parameters from the YAML file (n_init=128, n_local=4096, topk=16, etc.) (/workspace/inf_llm/chat.py:346-347, /workspace/config/mistral-inf-llm.yaml:1-17)",
+      "Step 4: Set up the context length to effectively infinite (2147483647) to handle very long documents (/workspace/inf_llm/chat.py:362-363)",
+      "Step 5: Create a conversation template based on the model type to properly format prompts and responses (/workspace/inf_llm/chat.py:366-373)",
+      "Step 6: Implement a function to process user input and generate responses using the patched model (/workspace/inf_llm/chat.py:486-489)",
+      "Step 7: Set up generation parameters including temperature, repetition penalty, top_k, top_p, and max_new_tokens (/workspace/inf_llm/chat.py:493-504)",
+      "Step 8: Use the generate_stream function to process the input and generate responses, which handles the long context through the InfLLM patch (/workspace/inf_llm/chat.py:508-516)",
+      "Step 9: Implement the core InfLLM attention mechanism that divides context into blocks and uses a combination of local and global attention (/workspace/inf_llm/attention/inf_llm.py:5-80)",
+      "Step 10: Create a context manager that handles caching of key-value pairs and efficient retrieval for long contexts (/workspace/inf_llm/attention/context_manager.py:1-50)",
+      "Step 11: Implement the patch_hf function that modifies the model's attention mechanism to use InfLLM's approach (/workspace/inf_llm/utils/patch.py:33-172)",
+      "Step 12: Stream the generated output back to the user and update the conversation history (/workspace/inf_llm/chat.py:517-521)",
+      "Final Step: Implement a chat loop that continuously processes user input and generates responses, maintaining conversation history while efficiently handling long contexts (/workspace/inf_llm/chat.py:303-543)"
+    ],
+    "agent_instructions": "Create a script that uses InfLLM to enable a language model to process a document that exceeds its normal context window. Your script should:\n\n1. Import the necessary modules from inf_llm and transformers libraries\n2. Load a language model and tokenizer using the Hugging Face transformers library\n3. Apply the InfLLM patch to the model with appropriate configuration parameters (n_init, n_local, topk, etc.)\n4. Set up the context length to effectively handle very long documents\n5. Create a function to process a long document by breaking it into chunks and feeding it to the model\n6. Implement a question-answering function that takes questions about the document and generates answers using the patched model\n7. Test the implementation with a sample long document and questions that reference information from different parts of the document\n\nYour script should demonstrate how InfLLM enables the language model to process and answer questions about content from a document that would normally exceed the model's context window."
+  },
+  {
+    "mode": "A",
+    "question": "How can you evaluate InfLLM on the key-value retrieval task from InfiniteBench?",
+    "method": "Create a script that runs the key-value retrieval benchmark from InfiniteBench using InfLLM and analyzes the results.",
+    "expected_outcome": "A script that successfully runs the key-value retrieval benchmark and outputs evaluation metrics showing InfLLM's ability to retrieve information from long contexts.",
+    "source": [
+      "/workspace/benchmark/pred.py",
+      "/workspace/benchmark/eval.py",
+      "/workspace/scripts/infinitebench.sh"
+    ],
+    "usage_instructions": "1. Set up the benchmark environment by creating a directory for results.\n2. Load the InfLLM configuration from a YAML file.\n3. Use the pred.py script to run predictions on the kv_retrieval dataset from InfiniteBench.\n4. Configure the model to use InfLLM's memory-based attention mechanism.\n5. Process the benchmark data and generate predictions.\n6. Use the eval.py script to evaluate the model's performance on the key-value retrieval task.\n7. Analyze the results to understand how well InfLLM performs at retrieving specific key-value pairs from a long context.",
+    "requirements": [
+      "Step 1: Set up the environment by creating a directory to store benchmark results (/workspace/scripts/infinitebench.sh:3-3)",
+      "Step 2: Load the InfLLM configuration from a YAML file, which specifies parameters like block_size, n_init, n_local, topk, and other memory-based attention settings (/workspace/scripts/infinitebench.sh:1-1, /workspace/config/mistral-inf-llm.yaml:1-17)",
+      "Step 3: Initialize the prediction script with the configuration path, output directory path, and specify the key-value retrieval task from InfiniteBench (/workspace/scripts/infinitebench.sh:5-8)",
+      "Step 4: Parse command-line arguments and load the configuration settings for the model (/workspace/benchmark/pred.py:12-40)",
+      "Step 5: Load the model (Mistral-7B-Instruct) and tokenizer, applying the InfLLM memory-based attention mechanism patch to the model (/workspace/benchmark/pred.py:43-57)",
+      "Step 6: Load prompt formats and maximum generation lengths for each dataset from configuration files (/workspace/benchmark/pred.py:296-297)",
+      "Step 7: Load the key-value retrieval dataset from InfiniteBench, which contains contexts with key-value pairs and queries asking for specific values (/workspace/benchmark/pred.py:304-311)",
+      "Step 8: Format the prompts for the key-value retrieval task, which asks the model to extract values for specified keys from JSON objects (/workspace/benchmark/config/dataset2prompt.json:27-27)",
+      "Step 9: Process each example in the dataset by tokenizing the prompt and preparing it for the model (/workspace/benchmark/pred.py:214-257)",
+      "Step 10: Generate predictions using the InfLLM model with its memory-based attention mechanism that efficiently handles long contexts (/workspace/benchmark/pred.py:260-265)",
+      "Step 11: Post-process the model's output and save the predictions to a JSON file (/workspace/benchmark/pred.py:267-340)",
+      "Step 12: Run the evaluation script on the generated predictions to calculate the model's performance (/workspace/scripts/infinitebench.sh:10-10)",
+      "Step 13: Load the prediction results and extract the predictions, ground truth answers, and context lengths (/workspace/benchmark/eval.py:123-142)",
+      "Step 14: Score the key-value retrieval task by checking if the model's prediction contains the correct value for each key (/workspace/benchmark/eval.py:105-120, /workspace/benchmark/infinitebench_eval.py:140-144)",
+      "Step 15: Calculate the overall score as the percentage of correctly retrieved values and save the results to a JSON file (/workspace/benchmark/eval.py:153-160)"
+    ],
+    "agent_instructions": "Your task is to create a script that evaluates InfLLM on the key-value retrieval task from InfiniteBench. This task tests a model's ability to retrieve specific values associated with keys from a long context.\n\nYou need to:\n1. Set up the benchmark environment\n2. Configure InfLLM to use its memory-based attention mechanism\n3. Load the key-value retrieval dataset from InfiniteBench\n4. Run predictions using InfLLM on this dataset\n5. Evaluate the model's performance\n6. Analyze the results to understand how well InfLLM performs at retrieving key-value pairs from long contexts\n\nThe key-value retrieval task provides the model with a context containing key-value pairs and asks it to retrieve the value for a specific key. Success is measured by whether the model correctly outputs the value.\n\nYou should leverage InfLLM's specialized attention mechanism that divides the context into blocks and uses a combination of local and global attention with memory to efficiently handle long contexts."
+  },
+  {
+    "mode": "B",
+    "question": "How does InfLLM's memory-based attention mechanism work to process extremely long sequences?",
+    "method": "Create a simplified implementation of InfLLM's core memory-based attention mechanism to understand how it enables processing of long sequences.",
+    "expected_outcome": "A working implementation that demonstrates how InfLLM stores distant contexts in memory units and retrieves relevant units for attention computation.",
+    "source": [
+      "/workspace/inf_llm/attention/inf_llm.py",
+      "/workspace/inf_llm/attention/context_manager.py"
+    ],
+    "usage_instructions": "1. Implement a simplified version of the ContextManager class that manages memory units.\n2. Create a memory unit class that can store key-value pairs and efficiently load/offload them between CPU and GPU.\n3. Implement the core attention mechanism that retrieves relevant memory units based on query similarity.\n4. Add support for local attention window and initial tokens as attention sinks.\n5. Implement the topk retrieval mechanism that selects the most relevant memory units for each query.\n6. Create a simple forward function that demonstrates how the attention mechanism processes a sequence longer than the model's original context window.\n7. Test the implementation with a toy example to show how it maintains the ability to capture long-distance dependencies.",
+    "requirements": [
+      "Step 1: Import necessary libraries including torch and typing modules (/workspace/inf_llm/attention/inf_llm.py:1-3)",
+      "Step 2: Define a function that creates a forward function for the InfLLM attention mechanism with parameters for controlling local window size, initial tokens, topk retrieval, block sizes, and caching strategies (/workspace/inf_llm/attention/inf_llm.py:5-18)",
+      "Step 3: Implement the forward function that processes query and key-value tensors, reshapes them for multi-head attention, and initializes the context manager if it doesn't exist (/workspace/inf_llm/attention/inf_llm.py:20-58)",
+      "Step 4: Process the query and key-value pairs through the context manager's append method and reshape the output for the next layer (/workspace/inf_llm/attention/inf_llm.py:61-77)",
+      "Step 5: Create a CudaCache class that manages GPU memory allocation for memory units, with methods to allocate and free memory blocks (/workspace/inf_llm/attention/context_manager.py:6-26)",
+      "Step 6: Implement a MemoryUnit class that stores key-value pairs and manages their movement between CPU and GPU memory with load/offload capabilities (/workspace/inf_llm/attention/context_manager.py:29-110)",
+      "Step 7: Create a VectorTensor class for efficient storage and retrieval of vectors, with methods to append new vectors and find top-k similar vectors using inner product similarity (/workspace/inf_llm/attention/context_manager.py:112-166)",
+      "Step 8: Implement an optional Faiss-based vector storage class for more efficient similarity search when dealing with large numbers of vectors (/workspace/inf_llm/attention/context_manager.py:169-190)",
+      "Step 9: Create the core ContextManager class that manages the entire attention mechanism, initializing parameters for local window size, block sizes, and caching strategies (/workspace/inf_llm/attention/context_manager.py:196-245)",
+      "Step 10: Implement the block management system that removes least recently used blocks when cache is full (/workspace/inf_llm/attention/context_manager.py:246-266)",
+      "Step 11: Add methods to retrieve and process blocks of key-value pairs based on their relevance to the current query (/workspace/inf_llm/attention/context_manager.py:268-289)",
+      "Step 12: Implement the initialization method that sets up data structures for storing blocks, cached blocks, and global memory buffers (/workspace/inf_llm/attention/context_manager.py:292-363)",
+      "Step 13: Create a method to calculate the top-k most relevant blocks for each query based on similarity scores (/workspace/inf_llm/attention/context_manager.py:366-383)",
+      "Step 14: Implement a method to retrieve global hidden states and masks for attention computation based on the selected top-k blocks (/workspace/inf_llm/attention/context_manager.py:386-442)",
+      "Step 15: Create the core _append method that processes local and global attention, combining them to produce the final output (/workspace/inf_llm/attention/context_manager.py:474-545)",
+      "Step 16: Implement the append_global method that manages the storage of processed tokens into memory blocks and updates the global context (/workspace/inf_llm/attention/context_manager.py:614-680)",
+      "Step 17: Create the main append method that processes input sequences in chunks, handles local and global attention, and manages the context window (/workspace/inf_llm/attention/context_manager.py:682-813)",
+      "Step 18: Implement the attention mechanism using either a Torch-based or Triton-based implementation for dot product attention (/workspace/inf_llm/attention/dot_production_attention/__init__.py:4-26)",
+      "Step 19: Create a Torch implementation of multi-stage dot product attention that efficiently computes attention scores and combines multiple attention results (/workspace/inf_llm/attention/dot_production_attention/torch_impl.py:6-96)"
+    ],
+    "agent_instructions": "Your task is to create a simplified implementation of InfLLM's memory-based attention mechanism that enables processing of extremely long sequences. This mechanism allows language models to handle sequences much longer than their original context window by storing distant contexts in memory units and retrieving relevant units when needed.\n\nYou should implement:\n\n1. A memory management system that can store key-value pairs in memory units and efficiently move them between CPU and GPU\n2. A context manager that organizes tokens into blocks and manages which blocks are kept in memory\n3. A retrieval mechanism that finds the most relevant memory blocks for each query using similarity scores\n4. An attention mechanism that combines local attention (recent tokens) with global attention (retrieved memory blocks)\n5. Support for initial tokens as 'attention sinks' to maintain model stability\n6. A caching strategy to efficiently use GPU memory by keeping only the most relevant blocks loaded\n\nYour implementation should demonstrate how InfLLM can process sequences longer than the model's original context window while maintaining the ability to capture long-distance dependencies."
+  }
+]

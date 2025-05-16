@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/MolGen/generate_ds.py",
+        "/workspace/MolGen/generate.sh"
+    ],
+    "usage_instructions": "1. First, ensure the plogp_test.csv file contains the 800 molecules from ZINC250K with the lowest p-logP scores (this file already exists in /workspace/moldata/finetune/). 2. Modify the generate.sh script to use plogp_test.csv as input by changing '--input_path' to '../moldata/finetune/plogp_test.csv'. 3. Uncomment line 271 in generate_ds.py to enable similarity calculation: data['sim'] = data.parallel_apply(lambda x: sim(x['start_smiles'],x['candidate_smiles']),axis=1). 4. Run the script with 'bash generate.sh' which will perform constrained optimization using MOLGEN and automatically evaluate the results with similarity constraints δ = 0.6 and δ = 0.4 (these are already included in the statistics method). The script will output the mean improvements in p-logP scores for each similarity constraint."
+}

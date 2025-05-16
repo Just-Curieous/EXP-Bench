@@ -1,0 +1,3 @@
+{
+    "no_answer": "While the repository contains the implementation of LLaMA-Adapter with zero-initialized attention and the paper (LLaMA-Adapter-arXiv.pdf) includes an ablation study comparing zero-initialized vs random-initialized attention on the ScienceQA validation set (Table 5, page 8), there is no dedicated script in the repository that directly performs this comparison. The paper reports that zero-initialized attention contributes to a significant +43.27% performance gain on the ScienceQA validation set compared to random-initialized attention, but the code to reproduce this specific experiment is not readily available in the repository."
+}

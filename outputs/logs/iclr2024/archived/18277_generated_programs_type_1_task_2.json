@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py", "/workspace/llama_adapter_v2_multimodal7b/docs/eval.md"],
+    "usage_instructions": "1. Download MME datasets and eval_tool from the MME repo (https://github.com/bradyfu/awesome-multimodal-large-language-models#our-mllm-works) and put them under MME_Benchmark_release_version directory. 2. Generate MME results for LLaMA-Adapter V2 using: python util/evaluate_mme.py --pretrained_path [MODEL_PATH] --llama_path [LLAMA_DIR] --output_path [RESULT_FILE_PATH]. 3. Evaluate LLaMA-Adapter V2 with MME's eval_tool: python MME_Benchmark_release_version/eval_tool/calculation.py --results_dir [RESULT_FILE_PATH]. 4. Repeat steps 2-3 for LLaVA model. 5. Compare the Perception and Cognition scores between the two models."
+}

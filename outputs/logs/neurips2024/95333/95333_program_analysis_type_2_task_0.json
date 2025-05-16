@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including scene_path, output_path, num_samples (list of view counts), use_lr flag, and port for distributed training (train_render.py:1-50)",
+    "Step 2: Set up the environment and configuration for 3D Gaussian Splatting, including paths for the scene, COLMAP data, and output directories (train_render.py:50-100)",
+    "Step 3: For each specified number of views (e.g., 3, 6, 9, 24), select that many training views from the available images in the scene (train_render.py:100-150)",
+    "Step 4: For each view count, train a low-resolution 3D Gaussian Splatting model using the selected subset of views (train_render.py:150-250)",
+    "Step 5: Save the trained low-resolution models in separate directories based on the number of views used (train_render.py:250-300)",
+    "Step 6: For each trained model, render paired low-quality (from low-resolution model) and high-quality images (train_render.py:300-400)",
+    "Step 7: Organize the rendered images into the output directory structure: output_path/lr/{num_views}/train_{num_views}/ (train_render.py:400-450)",
+    "Final Step: Execute the entire pipeline with appropriate parameters through a shell script that calls the Python script (train.sh:1-20)"
+  ],
+  "agent_instructions": "Create a system to generate paired datasets of low-quality and high-quality 3D Gaussian Splatting renderings from a scene with different numbers of input views. The system should:\n\n1. Accept command line arguments for:\n   - Path to a 3D scene with COLMAP data (scene_path)\n   - Output directory for the generated dataset (output_path)\n   - List of view counts to generate (e.g., [3, 6, 9, 24])\n   - Flag to enable low-resolution rendering\n   - Port number for distributed training\n\n2. For each specified number of views:\n   - Select that many training views from the available images in the scene\n   - Train a low-resolution 3D Gaussian Splatting model using only those selected views\n   - Save the trained model in a dedicated directory\n\n3. For each trained model:\n   - Render images using the low-resolution model (low-quality)\n   - Generate corresponding high-quality renderings\n   - Save the paired images in an organized directory structure\n\n4. The final dataset should be organized with directories for each number of views, following the structure: output_path/lr/{num_views}/train_{num_views}/\n\n5. Create a shell script that executes this pipeline with appropriate default parameters.\n\nThe system requires a 3D scene with COLMAP data in the expected format (images_4 directory and colmap directory with sparse reconstruction)."
+}

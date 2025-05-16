@@ -1,0 +1,89 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you use the FuseLLM-7B model to generate text completions?",
+    "method": "Load the FuseLLM-7B model using the Hugging Face Transformers library and generate text completions for a given input.",
+    "expected_outcome": "The model should successfully load and generate a coherent text completion for the provided input.",
+    "source": [
+      "/workspace/FuseLLM/README.md"
+    ],
+    "usage_instructions": "1. Import the necessary libraries from transformers (AutoTokenizer, AutoModelForCausalLM).\n2. Load the tokenizer for 'Wanfq/FuseLLM-7B' with use_fast=False.\n3. Load the model with torch_dtype='auto'.\n4. Move the model to CUDA.\n5. Tokenize the input text and move it to the model's device.\n6. Generate tokens with the specified parameters (max_new_tokens=512, temperature=0.6, top_p=0.9, do_sample=True).\n7. Decode the generated tokens and print the result.",
+    "requirements": [
+      "Step 1: Import the necessary libraries from transformers (AutoTokenizer, AutoModelForCausalLM) (/workspace/FuseLLM/README.md:135-135)",
+      "Step 2: Load the tokenizer for 'Wanfq/FuseLLM-7B' with use_fast=False (/workspace/FuseLLM/README.md:136-136)",
+      "Step 3: Load the model with torch_dtype='auto' (/workspace/FuseLLM/README.md:137-137)",
+      "Step 4: Move the model to CUDA device (/workspace/FuseLLM/README.md:138-138)",
+      "Step 5: Tokenize the input text and move it to the model's device (/workspace/FuseLLM/README.md:139-139)",
+      "Step 6: Generate tokens with the specified parameters (max_new_tokens=512, temperature=0.6, top_p=0.9, do_sample=True) (/workspace/FuseLLM/README.md:140-146)",
+      "Step 7: Decode the generated tokens and print the result (/workspace/FuseLLM/README.md:147-147)"
+    ],
+    "agent_instructions": "Your task is to create a script that demonstrates how to use the FuseLLM-7B model to generate text completions. FuseLLM-7B is a language model that combines the capabilities of three different foundation models (Llama-2-7B, OpenLLaMA-7B, and MPT-7B).\n\nFollow these steps to implement the text generation functionality:\n\n1. Import the required libraries from the Hugging Face Transformers package\n2. Load the FuseLLM-7B tokenizer with the appropriate settings\n3. Load the FuseLLM-7B model with the appropriate data type settings\n4. Move the model to the GPU for faster inference\n5. Create a function that takes an input text, tokenizes it, and generates a completion\n6. Set appropriate generation parameters (such as temperature, top_p, and maximum new tokens)\n7. Decode and return the generated text\n8. Include a simple example that demonstrates how to use the function with a sample input\n\nThe script should be able to run on a system with CUDA support and the Transformers library installed."
+  },
+  {
+    "mode": "A",
+    "question": "How can you use the FuseChat-7B-v2.0 model for single-turn and multi-turn conversations?",
+    "method": "Load the FuseChat-7B-v2.0 model using the Transformers library and demonstrate how to format inputs for both single-turn and multi-turn conversations.",
+    "expected_outcome": "The model should correctly tokenize both single-turn and multi-turn conversation formats, producing the expected token IDs.",
+    "source": [
+      "/workspace/FuseChat/README.md"
+    ],
+    "usage_instructions": "1. Import the transformers library.\n2. Load the tokenizer for 'FuseAI/FuseChat-7B-v2.0'.\n3. Demonstrate single-turn conversation by tokenizing a string with the format 'GPT4 Correct User: Hello<|end_of_turn|>GPT4 Correct Assistant:'.\n4. Verify the token IDs match the expected output.\n5. Demonstrate multi-turn conversation by tokenizing a string with multiple turns.\n6. Verify the token IDs match the expected output.\n7. Show how to use the chat_template feature by creating a messages list with user and assistant roles.\n8. Apply the chat template with add_generation_prompt=True and verify the tokens match the expected output.",
+    "requirements": [
+      "Step 1: Import the transformers library (/workspace/FuseChat/README.md:99-99)",
+      "Step 2: Load the tokenizer for 'FuseAI/FuseChat-7B-v2.0' model (/workspace/FuseChat/README.md:100-100)",
+      "Step 3: Format and tokenize a single-turn conversation using the GPT4 template format (/workspace/FuseChat/README.md:101-103)",
+      "Step 4: Verify the token IDs match the expected output for single-turn conversation (/workspace/FuseChat/README.md:103-103)",
+      "Step 5: Format and tokenize a multi-turn conversation using the GPT4 template format (/workspace/FuseChat/README.md:104-106)",
+      "Step 6: Verify the token IDs match the expected output for multi-turn conversation (/workspace/FuseChat/README.md:106-106)",
+      "Step 7: Create a messages list with user and assistant roles for structured conversation formatting (/workspace/FuseChat/README.md:112-116)",
+      "Step 8: Apply the chat template with add_generation_prompt=True to format the conversation (/workspace/FuseChat/README.md:117-117)",
+      "Final Step: Verify the tokens match the expected output for the chat template approach (/workspace/FuseChat/README.md:118-118)"
+    ],
+    "agent_instructions": "Your task is to demonstrate how to use the FuseChat-7B-v2.0 model for both single-turn and multi-turn conversations. This model is a fusion of six prominent chat LLMs with diverse architectures and scales.\n\nFollow these steps:\n\n1. Import the necessary libraries from the transformers package.\n\n2. Load the tokenizer for the 'FuseAI/FuseChat-7B-v2.0' model from Hugging Face.\n\n3. Demonstrate how to format a single-turn conversation using the model's expected format. The format follows this pattern: 'GPT4 Correct User: [user_message]<|end_of_turn|>GPT4 Correct Assistant:'\n\n4. Show how to tokenize this single-turn conversation and print the resulting token IDs.\n\n5. Demonstrate how to format a multi-turn conversation where there are multiple exchanges between the user and assistant. Each turn should follow the same pattern with the <|end_of_turn|> separator.\n\n6. Show how to tokenize this multi-turn conversation and print the resulting token IDs.\n\n7. Demonstrate an alternative approach using the built-in chat_template feature:\n   - Create a structured messages list with alternating 'user' and 'assistant' roles\n   - Apply the chat template with add_generation_prompt=True\n   - Show the resulting tokens\n\n8. Verify that both approaches (manual formatting and using chat_template) produce the same token IDs for equivalent conversations.\n\nYour code should be well-commented to explain each step of the process."
+  },
+  {
+    "mode": "A",
+    "question": "How can you use the FuseO1-DeepSeekR1-QwQ-SkyT1-32B-Preview model to solve a mathematical reasoning problem?",
+    "method": "Load the FuseO1-DeepSeekR1-QwQ-SkyT1-32B-Preview model using VLLM and generate a step-by-step solution for a mathematical problem.",
+    "expected_outcome": "The model should provide a detailed step-by-step solution to the quadratic polynomial problem, with the final answer enclosed in \\boxed{}.",
+    "source": [
+      "/workspace/FuseO1-Preview/README.md"
+    ],
+    "usage_instructions": "1. Import the necessary libraries from vllm (LLM, SamplingParams).\n2. Initialize the LLM with the model 'FuseAI/FuseO1-DeepSeekR1-QwQ-SkyT1-32B-Preview' and tensor_parallel_size=8.\n3. Set up sampling parameters with max_tokens=32768, temperature=0.7, and appropriate stop tokens.\n4. Create a conversation list with a system message instructing to reason step by step and put the final answer in \\boxed{}.\n5. Add a user message containing the quadratic polynomial problem.\n6. Call the chat method on the LLM with the conversation and sampling parameters.\n7. Print the model's response.",
+    "requirements": [
+      "Step 1: Import the necessary libraries from vllm (LLM and SamplingParams) (/workspace/FuseO1-Preview/README.md:82-82)",
+      "Step 2: Initialize the LLM with the FuseO1-DeepSeekR1-QwQ-SkyT1-32B-Preview model and set tensor_parallel_size=8 (/workspace/FuseO1-Preview/README.md:84-84)",
+      "Step 3: Configure sampling parameters with max_tokens=32768, temperature=0.7, and appropriate stop tokens (/workspace/FuseO1-Preview/README.md:85-85)",
+      "Step 4: Create a conversation list with a system message instructing the model to reason step by step and put the final answer in \\boxed{} (/workspace/FuseO1-Preview/README.md:87-91)",
+      "Step 5: Add a user message containing the quadratic polynomial problem (/workspace/FuseO1-Preview/README.md:90-90)",
+      "Step 6: Call the chat method on the LLM with the conversation and sampling parameters (/workspace/FuseO1-Preview/README.md:94-94)",
+      "Step 7: Process and print the model's response (/workspace/FuseO1-Preview/README.md:96-97)"
+    ],
+    "agent_instructions": "Create a Python script that uses the FuseO1-DeepSeekR1-QwQ-SkyT1-32B-Preview model to solve a mathematical reasoning problem. The script should:\n\n1. Use the vllm library to load and interact with the model\n2. Initialize the model with appropriate parallel processing settings\n3. Configure the model to generate detailed responses with sufficient token length\n4. Set up a conversation that includes:\n   - A system message instructing the model to provide step-by-step reasoning and present the final answer in a boxed format\n   - A user message containing a challenging quadratic polynomial problem\n5. Generate and display the model's response\n\nThe goal is to demonstrate the model's mathematical reasoning capabilities by having it solve a complex problem with detailed step-by-step explanations, ultimately providing a boxed final answer."
+  },
+  {
+    "mode": "A",
+    "question": "How can you evaluate a language model on the MT-Bench benchmark using VLLM?",
+    "method": "Use the MT-Bench evaluation script to generate answers from a language model using VLLM and evaluate its performance.",
+    "expected_outcome": "The script should successfully generate model answers for the MT-Bench questions and save them to a JSON file for later evaluation.",
+    "source": [
+      "/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py",
+      "/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/generate_vllm.sh"
+    ],
+    "usage_instructions": "1. Set the VLLM_WORKER_MULTIPROC_METHOD environment variable to 'spawn'.\n2. Specify the model directory, model name, total number of GPUs, and GPUs per model.\n3. Run the gen_model_answer_vllm.py script with the appropriate parameters.\n4. The script will load the questions from the question file.\n5. For each question, it will generate responses using the specified model.\n6. The script handles both single-turn and multi-turn conversations by applying the appropriate chat template.\n7. The generated answers are saved to a JSON file in the specified output directory.\n8. The answers are organized by question ID for later evaluation.",
+    "requirements": [
+      "Step 1: Set up the environment by configuring the VLLM worker multiprocessing method to 'spawn' (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/generate_vllm.sh:1)",
+      "Step 2: Parse command line arguments including model path, number of GPUs, and output file path (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:153-215)",
+      "Step 3: Initialize Ray for distributed processing if using multiple GPUs (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:218-221)",
+      "Step 4: Load benchmark questions from the question file (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:33)",
+      "Step 5: Initialize the VLLM model with appropriate tensor parallelism based on available GPUs (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:72-77)",
+      "Step 6: Get the model's tokenizer and determine if special token handling is needed (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:78-87)",
+      "Step 7: For each question, determine the appropriate temperature based on the question category (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:92-100)",
+      "Step 8: Set up sampling parameters for text generation (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:102-105)",
+      "Step 9: Generate responses for each turn in the conversation using the model's chat template (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:110-122)",
+      "Step 10: Save the generated answers to a JSON file with appropriate metadata (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:127-136)",
+      "Step 11: Reorganize the answer file to sort by question ID and remove duplicates (/workspace/FuseChat-3.0/FuseEval/IF-Eval/MT-Bench/gen_model_answer_vllm.py:139-150)"
+    ],
+    "agent_instructions": "Your task is to create a script that evaluates a language model on the MT-Bench benchmark using VLLM. The script should do the following:\n\n1. Create a Python script that uses VLLM to generate answers for MT-Bench benchmark questions.\n\n2. The script should:\n   - Accept command line arguments for model path, output file path, and GPU configuration\n   - Load questions from a JSONL file containing benchmark questions\n   - Initialize a VLLM model with appropriate GPU parallelism settings\n   - Generate responses for each question using the model\n   - Handle both single-turn and multi-turn conversations by applying the appropriate chat template\n   - Apply different temperature settings based on question categories (e.g., lower temperature for math/reasoning, higher for creative tasks)\n   - Save the generated answers to a JSONL file with appropriate metadata including question ID, model ID, and timestamp\n   - Organize the answers by question ID for later evaluation\n\n3. Create a shell script wrapper that:\n   - Sets the VLLM worker multiprocessing method to 'spawn'\n   - Takes model directory, model name, total number of GPUs, and GPUs per model as arguments\n   - Calls the Python script with the appropriate parameters\n\nThe MT-Bench questions are stored in a JSONL file where each question has an ID, category, and one or more conversation turns. The script should generate responses for all turns and save them in a format suitable for later evaluation."
+  }
+]

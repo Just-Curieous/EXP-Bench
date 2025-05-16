@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/e2e/benchmark_layer.py", "/workspace/run_prefill_benchmark.py"],
+    "usage_instructions": "Execute the run_prefill_benchmark.py script which will run benchmark_layer.py with different batch sizes (1, 4, 16, 64) and sequence length of 2048 tokens. The script will compare the prefill time of QuaRot's INT4 implementation against the FP16 baseline for both LLAMA2-7B and LLAMA2-70B models, and output the speedup results in a table format matching the expected outcome."
+}

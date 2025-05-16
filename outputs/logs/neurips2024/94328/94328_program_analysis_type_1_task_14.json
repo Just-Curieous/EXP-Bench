@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Install the required Python packages including transformers, torch, datasets, and lm_eval (for evaluation harness). (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Set up the environment by disabling TensorFloat-32 tensor cores to avoid numerical issues. (/workspace/fake_quant/utils.py:24-27)",
+    "Step 3: Load the specified Llama2 model (7B, 13B, or 70B) from Hugging Face using the transformers library. (/workspace/fake_quant/main.py:20, /workspace/fake_quant/model_utils.py:40-71)",
+    "Step 4: If applying QuaRot quantization, fuse layer normalization operations into adjacent linear blocks to simplify the model architecture. (/workspace/fake_quant/main.py:26, /workspace/fake_quant/rotation_utils.py:44-85)",
+    "Step 5: If applying QuaRot quantization, rotate the model weights using Hadamard transformations to improve quantization robustness. (/workspace/fake_quant/main.py:27, /workspace/fake_quant/rotation_utils.py:229-251)",
+    "Step 6: Add activation quantization wrappers to the model's linear layers. (/workspace/fake_quant/main.py:30-31, /workspace/fake_quant/quant_utils.py:367-393)",
+    "Step 7: Apply Hadamard transformations to specific layers (down_proj and o_proj) to enable efficient quantization. (/workspace/fake_quant/main.py:32-45)",
+    "Step 8: If weight quantization is enabled (w_bits < 16), apply either GPTQ or RTN quantization method to the model weights. (/workspace/fake_quant/main.py:50-75, /workspace/fake_quant/gptq_utils.py:139-296)",
+    "Step 9: If activation quantization is enabled (a_bits < 16 or v_bits < 16), configure the quantization parameters for each layer. (/workspace/fake_quant/main.py:79-109)",
+    "Step 10: If key cache quantization is enabled (k_bits < 16), add quantization wrappers to the key projection layers. (/workspace/fake_quant/main.py:111-124)",
+    "Step 11: Load the evaluation dataset (PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, LAMBADA) using the lm_eval library. (/workspace/fake_quant/main.py:127-134, /workspace/fake_quant/main.py:144-147)",
+    "Step 12: Distribute the model across available GPUs if the distribute flag is set. (/workspace/fake_quant/main.py:152-155, /workspace/fake_quant/utils.py:252-271)",
+    "Step 13: Create a tokenizer for the model and initialize the HFLM wrapper for evaluation. (/workspace/fake_quant/main.py:157-158)",
+    "Step 14: Run the evaluation on the specified tasks using the lm_eval library and collect the results. (/workspace/fake_quant/main.py:160-161)",
+    "Step 15: Calculate and report the accuracy scores for each task and the average accuracy. (/workspace/fake_quant/main.py:163-165)",
+    "Final Step: Compare the results between the FP16 baseline and the 4-bit quantized model to verify the effectiveness of the QuaRot quantization technique. (/workspace/fake_quant/main.py:163-165)"
+  ],
+  "agent_instructions": "Your task is to reproduce the zero-shot evaluation results for QuaRot with full 4-bit quantization (A4W4KV4) across multiple benchmark tasks (PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, and LAMBADA) for Llama2 models. You need to:\n\n1. Understand the main script and its dependencies that implement the QuaRot quantization technique\n2. Run evaluations for both FP16 baseline and 4-bit quantized versions of Llama2 models (7B, 13B, and 70B)\n3. Compare the accuracy results between the baseline and quantized models\n\nThe main script takes various arguments to control the quantization process and evaluation. You'll need to run it with different configurations as specified in the usage instructions.",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

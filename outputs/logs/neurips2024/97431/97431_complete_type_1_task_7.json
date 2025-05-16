@@ -1,0 +1,183 @@
+{
+  "questions": [
+    {
+      "question": "How does the **ability of the attacker model** affect the effectiveness of jailbreak attacks? Specifically, do stronger LLMs like GPT-4 generate more successful adversarial prompts compared to weaker or open-source models like Vicuna-13B and Llama-2-13B?",
+      "method": "#### Experiment Components\n\n- **Attacker Models**:\n  - Llama-2-13B\n  - Vicuna-13B\n  - GPT-3.5 (via OpenAI API)\n  - GPT-4 (via OpenAI API)\n- **Attack Scenario**:\n  - Prompt-level adversarial refinement task using the **PAIR** pipeline\n  - Each attacker LLM generates and iteratively improves adversarial prompts targeting a fixed victim model\n  - Evaluate attack success rates of these prompts when applied to a standard target model (e.g., Llama-2-13B or GPT-4-tuned victim)\n- **Evaluation Metrics**:\n  - **ASRPrefix**: Whether the output matches harmful pattern via string/regex\n  - **ASRAgent**: Whether an evaluation agent (e.g., GPT-4 judge) deems the output harmful\n- **Datasets**:\n  - Adversarial instruction seeds from AdvBench or MaliciousInstruct\n- **Attack Pipeline**:\n  - Use the [PAIR](https://github.com/usail-hkust/JailTrickBench) refinement loop\n  - Limit iterations (e.g., 5 rounds) to generate optimized adversarial prompts\n  - Apply each generated prompt to the fixed target model and evaluate the outputs\n- **Tools**:\n  - JailTrickBench (for attack execution, logging, evaluation)\n  - OpenAI API (for GPT-3.5 and GPT-4 as attackers and optionally as judges)\n\n#### Reproduction Steps\n\n1. **Setup Environment**:\n   - Clone JailTrickBench\n   - Configure access to GPT-3.5 and GPT-4 APIs\n   - Load Llama-2-13B and Vicuna-13B locally\n2. **Configure PAIR Attack**:\n   - Fix the victim model (e.g., Vicuna-13B or Llama-2-13B)\n   - Use the same target prompts and safety system prompts\n   - For each attacker (Vicuna-13B, Llama-2-13B, GPT-3.5, GPT-4), run iterative prompt refinement\n   - Use a budgeted number of iterations (e.g., 5 refinements)\n3. **Evaluate Attack Prompts**:\n   - Deploy the final refined adversarial prompt to the victim model\n   - Compute:\n     - **ASRPrefix**: via token match\n     - **ASRAgent**: via GPT-4-as-judge or equivalent\n4. **Compare Results**:\n   - Visualize ASRPrefix and ASRAgent values per attacker (as in Figure 6a)\n   - Summarize insights on attacker strength and effectiveness",
+      "expected_outcome": "- **Hypothesis**: Stronger attacker models generate more effective adversarial prompts, yielding higher ASR rates.\n- **Trend from Figure 6a**:\n  - GPT-4 achieves the highest ASRPrefix (72%) and ASRAgent (30%)\n  - GPT-3.5 follows with 24% (prefix) and 16% (agent)\n  - Vicuna-13B performs modestly: 16% (prefix), 8% (agent)\n  - Llama-2-13B is the least effective: 50% (prefix) but only 2% (agent), suggesting false positives in naive keyword-based metrics\n\n| Attacker Model | ASRPrefix (%) | ASRAgent (%) |\n| -------------- | ------------- | ------------ |\n| Vicuna-13B     | 16            | 8            |\n| Llama-2-13B    | 50            | 2            |\n| GPT-3.5        | 24            | 16           |\n| GPT-4          | 72            | 30           |\n\nStrong attacker models (GPT-4, GPT-3.5) outperform open-source counterparts due to their better understanding of prompt structure and adversarial strategy, especially under agent-based evaluation.",
+      "design_complexity": {
+        "constant_variables": {
+          "victim_model": "A fixed target model is used (e.g., either Llama-2-13B or a GPT-4-tuned victim); its value does not vary across attacker runs",
+          "attack_pipeline": "PAIR iterative refinement pipeline with a fixed number of rounds (e.g., 5 rounds)",
+          "dataset": "Adversarial instruction seeds from AdvBench or MaliciousInstruct are used uniformly",
+          "evaluation_metrics": [
+            "ASRPrefix",
+            "ASRAgent"
+          ]
+        },
+        "independent_variables": {
+          "attacker_model": [
+            "Llama-2-13B",
+            "Vicuna-13B",
+            "GPT-3.5",
+            "GPT-4"
+          ]
+        },
+        "dependent_variables": {
+          "attack_success": [
+            "ASRPrefix (matched harmful output via token/regex)",
+            "ASRAgent (labeling by an evaluation agent such as GPT-4)"
+          ]
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "victim_model": "The description provides two potential fixed victim models (e.g., Llama-2-13B or GPT-4-tuned) without clear guidance on which to use",
+          "safety_system_prompt": "While it is mentioned that the same target prompts and safety system prompts are used, their exact content or configuration is not explicitly detailed",
+          "iteration_budget": "The number of refinement iterations is set at 5 rounds, but no rationale or exploration of different iteration counts is provided",
+          "adversarial_evaluation_thresholds": "The exact criteria or thresholds for ASRPrefix and ASRAgent are not explicitly defined (e.g., what constitutes a match or harmful output in quantitative terms)"
+        },
+        "possible_modifications": {
+          "modification_victim_model": [
+            "Clarify and standardize the choice of the victim model or consider running experiments with multiple fixed victims"
+          ],
+          "modification_safety_prompt": [
+            "Provide a detailed description of the safety system prompt or test with variant prompts to assess its impact"
+          ],
+          "modification_iteration_budget": [
+            "Introduce variable iteration counts as an experimental parameter to measure its effect on adversarial prompt quality"
+          ],
+          "modification_evaluation_thresholds": [
+            "Define explicit thresholds or criteria for what qualifies as harmful output under both ASRPrefix and ASRAgent evaluations"
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Attacker Models (Llama-2-13B, Vicuna-13B, GPT-3.5, GPT-4)",
+          "Victim Model (fixed target, e.g., Llama-2-13B or GPT-4-tuned)",
+          "Attack Pipeline (PAIR iterative refinement loop)",
+          "Evaluation Metrics (ASRPrefix with token/regex matching, ASRAgent using GPT-4 or equivalent as judge)",
+          "Datasets (Adversarial instruction seeds from AdvBench or MaliciousInstruct)",
+          "Tools (JailTrickBench for executing and logging the attack, OpenAI API for accessing GPT-3.5 and GPT-4)"
+        ],
+        "setup_steps": [
+          "Clone the JailTrickBench repository and set up the experimental environment",
+          "Configure API access for GPT-3.5 and GPT-4 and load local models (Llama-2-13B, Vicuna-13B)",
+          "Fix the victim model by selecting either Llama-2-13B or a GPT-4-tuned variant, and set consistent safety system prompts",
+          "Configure the PAIR adversarial refinement loop with a budgeted number of iterations (5 rounds) for each attacker model",
+          "Run iterative prompt refinement using each attacker model to generate adversarial prompts against the fixed victim",
+          "Deploy the final refined prompt to the victim and evaluate outputs via ASRPrefix and ASRAgent metrics",
+          "Visualize and compare results (as in Figure 6a) to assess how attacker strength affects adversarial prompt success"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Inter-model Interoperability",
+            "description": "Using both local open-source LLMs and cloud-based models (GPT-3.5, GPT-4 via API) introduces complexity in managing different frameworks, dependencies, and API configurations."
+          },
+          {
+            "source": "Evaluation Metrics Implementation",
+            "description": "Determining harmful output via string/regex matching (ASRPrefix) versus agent-based evaluation (ASRAgent) requires careful calibration and consistency across experiments."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Victim Model: The experiment description mentions a fixed victim model but is ambiguous between using Llama-2-13B and a GPT-4-tuned variant.",
+          "Safety System Prompt: The exact configuration or content of the safety system prompts is not provided, leading to uncertainty in replicability.",
+          "Adversarial Evaluation Thresholds: Criteria defining what qualifies as a harmful output for both ASRPrefix and ASRAgent are not explicitly defined."
+        ],
+        "ambiguous_setup_steps": [
+          "Selection of Victim Model: It is unclear which victim model should be standardized across experiments.",
+          "Iteration Budget: Although a 5-round refinement is suggested, there is no rationale for why this number is chosen or if variations would affect performance.",
+          "Deployment of Evaluation: The steps for how ASRPrefix and ASRAgent evaluations are exactly implemented (e.g., precise regex patterns, threshold levels, or decision criteria for the GPT-4 judge) are omitted."
+        ],
+        "possible_modifications": {
+          "modification_victim_model": [
+            "Clarify whether Llama-2-13B or a GPT-4-tuned variant is to be used as the fixed victim model, or provide guidelines for running experiments with multiple victim models."
+          ],
+          "modification_safety_prompt": [
+            "Provide a detailed description or example of the safety system prompts to ensure consistent replication across studies."
+          ],
+          "modification_iteration_budget": [
+            "Introduce a variable iteration count as an experimental parameter and justify the selection of 5 rounds, possibly testing alternative budgets."
+          ],
+          "modification_evaluation_thresholds": [
+            "Define explicit thresholds or criteria for what constitutes a match in ASRPrefix and what factors the evaluation agent (GPT-4-as-judge) should consider in ASRAgent."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "If local computational resources are limited, consider excluding or reducing reliance on API-based models (GPT-3.5 and GPT-4) and focus on local open-sourced models to lower the GPU and memory requirements.",
+            "Tighten model configuration constraints by enforcing that the experimental outcomes (e.g., ASR rates) must be matched by a smaller variant or using a pre-cached response setup, thereby reducing resource consumption."
+          ],
+          "time_constraints": [
+            "If rapid experiment turnaround is required, reduce the number of PAIR iterative refinement rounds from 5 to a smaller number (e.g., 3 rounds), while monitoring the impact on adversarial prompt quality."
+          ],
+          "money_constraints": [
+            "Due to the potential high cost of API usage for GPT-3.5 and GPT-4, impose a stricter query limit per experiment run or substitute some API calls with local model inference to stay within a defined budget.",
+            "Limit the number of experiment iterations with API-based models to reduce overall expenses."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Stochastic behavior in LLM responses and iterative refinement process",
+        "description": "In the experiment, the iterative prompt refinement using the PAIR pipeline introduces inherent randomness. Variability in LLM outputs\u2014due to temperature settings, random token selection during responses, or slight fluctuations in API behavior\u2014can lead to instability in the generation and effectiveness of adversarial prompts. This randomness is exemplified by potential token-level drops or variations which may change the prompt structure, impacting ASRPrefix and ASRAgent measures.",
+        "impact": "The random fluctuations can cause run-to-run differences in the evaluation metrics (as seen in variable ASR rates), making it harder to isolate the effect of the attacker's model strength. This uncertainty could lead to inconsistent assessments of attack success and misinterpretation of effectiveness.",
+        "possible_modifications": [
+          "Fix random seeds and temperature parameters in the iterative PAIR refinement loop to reduce variation.",
+          "Run multiple experimental replications and average the results to quantify and mitigate the impact of random noise.",
+          "Introduce controlled random perturbations (e.g., token dropout scenarios) to further study and adjust for stochastic effects."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Ambiguities and biases in experimental design choices",
+        "description": "Systematic uncertainties arise from choices that consistently bias the experiment. For example, the ambiguity in selecting the fixed victim model (between Llama-2-13B and a GPT-4-tuned variant), the undefined configuration of safety system prompts, and the unspecified evaluation thresholds for defining a harmful output contribute to a systematic bias in evaluating adversarial prompt success. This is further highlighted by discrepancies like Llama-2-13B\u2019s high ASRPrefix but very low ASRAgent, indicating potential false positives in keyword-based evaluations.",
+        "impact": "This bias can systematically skew attack success rates, leading to over- or underestimation of the adversarial effectiveness of different attacker models. Such distortions make it difficult to fairly compare the performance of stronger versus weaker attacker models and may confound conclusions regarding the relationship between attacker ability and jailbreak effectiveness.",
+        "possible_modifications": [
+          "Clearly standardize the choice of victim model, either by selecting one or by using multiple victim models and comparing outcomes.",
+          "Explicitly define the safety system prompt content and evaluation thresholds (e.g., detailed regex or criteria for harmful outputs) to ensure consistency in measurements.",
+          "Vary the iteration budget in a controlled manner to explore its effect on the metrics and to reduce bias introduced by a fixed number of rounds.",
+          "Validate and calibrate the evaluation metrics (ASRPrefix and ASRAgent) using additional baseline data or independent judges to minimize systematic misclassification."
+        ]
+      },
+      "source": [
+        "/workspace/scripts/2_trick_atk_ability_pair.sh"
+      ],
+      "usage_instructions": "Execute the script with `bash /workspace/scripts/2_trick_atk_ability_pair.sh`. This script runs the PAIR attack using four different attacker models (Vicuna-13B, Llama-2-13B, GPT-3.5, and GPT-4) against a fixed victim model (Llama-2-7B). The script evaluates each attacker model's effectiveness using both ASRPrefix (string/regex matching) and ASRAgent (GPT-4 judge) metrics. Results will be saved to `/workspace/exp_results/trick_atk_ability_pair/`. After execution, you can analyze the results using the analysis script at `/workspace/analysis/report_trick.py` with the command `python /workspace/analysis/report_trick.py --exp a` to see the attack success rates for each model.",
+      "requirements": [
+        "Step 1: Set up a script that runs the PAIR attack using four different attacker models (Vicuna-13B, Llama-2-13B, GPT-3.5, and GPT-4) against a fixed victim model (Llama-2-7B) (/workspace/scripts/2_trick_atk_ability_pair.sh:1-51)",
+        "Step 2: Load harmful instructions dataset containing 50 harmful tasks and their expected responses (/workspace/main.py:328-328)",
+        "Step 3: Initialize the PAIR attack by loading the attacker model, target model, and evaluator model (/workspace/main.py:282-284)",
+        "Step 4: For each harmful instruction, run the PAIR attack which iteratively refines adversarial prompts (/workspace/baseline/PAIR/PAIR_single_main.py:17-114)",
+        "Step 5: Generate adversarial prompts using the attacker model based on the harmful instruction (/workspace/baseline/PAIR/PAIR_single_main.py:61-68)",
+        "Step 6: Test the generated adversarial prompts against the target model to get responses (/workspace/baseline/PAIR/PAIR_single_main.py:71-72)",
+        "Step 7: Evaluate the target model's responses using a judge model that scores from 1-10 how successfully the model was jailbroken (/workspace/baseline/PAIR/PAIR_single_main.py:75-76)",
+        "Step 8: Process the target model's responses and provide feedback to improve the attack in the next iteration (/workspace/baseline/PAIR/PAIR_single_main.py:53-58)",
+        "Step 9: Continue the attack for a specified number of iterations or until a successful jailbreak is found (/workspace/baseline/PAIR/PAIR_single_main.py:50-102)",
+        "Step 10: Record attack results including the adversarial prompt, target model response, and jailbreak success metrics (/workspace/baseline/PAIR/PAIR_single_main.py:103-111)",
+        "Step 11: Perform agent-based evaluation using GPT-4 to determine if the attack was successful beyond simple string matching (/workspace/main.py:376-397)",
+        "Step 12: Process the model's response to remove emojis, code blocks, and other irrelevant content before evaluation (/workspace/GPTEvaluatorAgent/main.py:22-29)",
+        "Step 13: Use the agent evaluator to score the attack success and provide reasoning (/workspace/GPTEvaluatorAgent/main.py:40-42)",
+        "Step 14: Determine final jailbreak success based on the agent's evaluation score (/workspace/GPTEvaluatorAgent/main.py:46-57)",
+        "Step 15: Save all results to the specified output directory for later analysis (/workspace/main.py:264-265)"
+      ],
+      "agent_instructions": "Create a script that evaluates the effectiveness of different language models in generating adversarial prompts that can jailbreak a target language model. The script should implement the PAIR (Prompt Automatic Iterative Refinement) attack method, which works by iteratively refining adversarial prompts based on feedback.\n\nThe script should:\n\n1. Run experiments using four different attacker models (Vicuna-13B, Llama-2-13B, GPT-3.5, and GPT-4) against a fixed victim model (Llama-2-7B).\n\n2. Use a dataset of harmful instructions as the basis for the attacks.\n\n3. For each attacker model, implement the PAIR attack process:\n   - Generate adversarial prompts using the attacker model\n   - Test these prompts against the target model\n   - Evaluate the responses using a judge model\n   - Iteratively improve the attack based on feedback\n   - Continue until a successful jailbreak is found or maximum iterations are reached\n\n4. Evaluate attack success using two metrics:\n   - ASRPrefix: String/regex matching to detect refusals\n   - ASRAgent: Using GPT-4 as a judge to determine if the response actually fulfills the harmful request\n\n5. Save results to an output directory for later analysis.\n\nThe script should be configurable with parameters like the number of attack iterations, the models to use, and the output directory.",
+      "masked_source": [
+        "/workspace/scripts/2_trick_atk_ability_pair.sh",
+        "/workspace/baseline/PAIR/PAIR_single_main.py",
+        "/workspace/baseline/PAIR/conversers_pair.py",
+        "/workspace/baseline/PAIR/judges_pair.py",
+        "/workspace/baseline/PAIR/system_prompts.py",
+        "/workspace/GPTEvaluatorAgent/agent_eval.py",
+        "/workspace/GPTEvaluatorAgent/main.py",
+        "/workspace/GPTEvaluatorAgent/judges.py",
+        "/workspace/GPTEvaluatorAgent/system_prompts.py"
+      ]
+    }
+  ]
+}

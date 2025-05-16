@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with required dependencies including PyTorch, transformers, datasets, and other necessary libraries (main.py:1-10)",
+    "Step 2: Obtain access to Hugging Face token for downloading Llama-2 models (main.py:20)",
+    "Step 3: Load the specified Llama-2 model (7B, 13B, or 70B) from Hugging Face (main.py:20)",
+    "Step 4: For QuaRot methods, apply Hadamard transformation to the model weights by fusing layer norms and rotating the model (main.py:25-27)",
+    "Step 5: Add activation quantization wrappers to the model (main.py:30-47)",
+    "Step 6: For GPTQ quantization, load calibration data from WikiText-2 dataset (main.py:62-66)",
+    "Step 7: Apply GPTQ weight quantization using the calibration data if not using RTN (main.py:67-68)",
+    "Step 8: Apply RTN weight quantization if specified (main.py:69-71)",
+    "Step 9: Configure input quantization parameters if specified (main.py:78-109)",
+    "Step 10: Configure key-cache quantization if specified (main.py:111-124)",
+    "Step 11: Load the WikiText-2 evaluation dataset (main.py:127-134)",
+    "Step 12: Evaluate the quantized model on WikiText-2 to measure perplexity (main.py:137-139)",
+    "Step 13: Run the experiment with different configurations to compare RTN, GPTQ, QuaRot-RTN, and QuaRot-GPTQ at different weight precisions (2-4 bits) across different model sizes (usage_instructions)",
+    "Step 14: Compare the perplexity results to determine how QuaRot improves quantization quality at low bit precision (usage_instructions)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment comparing different quantization methods for Llama-2 models. You need to run the main.py script with various configurations to evaluate how QuaRot (a Hadamard transformation-based approach) compares to traditional quantization methods (RTN and GPTQ) at low bit precision (2-4 bits).\n\nYou should:\n1. Understand what the main.py script does and how it implements different quantization methods\n2. Set up the environment with necessary dependencies\n3. Obtain access to Llama-2 models (7B, 13B, and 70B variants)\n4. Run the script with different configurations as specified in the usage instructions:\n   - RTN (traditional round-to-nearest)\n   - GPTQ (error-minimizing quantization)\n   - QuaRot-RTN (RTN with Hadamard transformation)\n   - QuaRot-GPTQ (GPTQ with Hadamard transformation)\n5. For each method, test with different weight precisions (2, 3, and 4 bits)\n6. Analyze the perplexity results on WikiText-2 dataset to determine how QuaRot improves quantization quality\n\nThe experiment aims to demonstrate that QuaRot methods provide better quantization quality compared to traditional methods, especially at lower bit precision.",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

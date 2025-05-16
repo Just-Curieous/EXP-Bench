@@ -1,0 +1,17 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments and initialize the training environment, including setting up the output directory for checkpoints and logs (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:19-34)",
+    "Step 2: Set up training arguments, including model and datamodule configuration, and handle checkpoint resumption if specified (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:36-39)",
+    "Step 3: Train the model using the configured trainer and log the process (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:41-42)",
+    "Step 4: Test the trained model using the best checkpoint if not in fast development mode (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:43-45)",
+    "Step 5: Initialize the test environment with appropriate configurations for model evaluation (/workspace/OpenPDE/SineNet/pdearena/scripts/test.py:19-26)",
+    "Step 6: Perform model evaluation on test data to compute one-step prediction errors (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:248-261)",
+    "Step 7: Perform rollout evaluation to assess multi-step prediction performance (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:267-270)",
+    "Step 8: Calculate and log evaluation metrics for both one-step and rollout predictions (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:282-301)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for training and evaluating SineNet models with varying numbers of waves (K) on PDE datasets. The experiment aims to study how increasing K affects model performance while keeping parameter count approximately constant.\n\n1. Create a training script that:\n   - Accepts command-line arguments for model configuration, dataset selection, and training parameters\n   - Sets up the training environment with appropriate logging and checkpoint saving\n   - Trains SineNet models with different K values (2, 4, 6, 8, 10, 12, 14, 16) on three datasets (INS, CNS, SWE)\n   - Adjusts channel multipliers for each K value to maintain approximately constant parameter count\n   - Tests the trained model after training completes\n\n2. Create a testing script that:\n   - Evaluates trained models on test data\n   - Computes both one-step prediction errors and rollout errors\n   - For rollout evaluation, uses the model to make sequential predictions over multiple time steps\n   - Calculates appropriate error metrics for scalar and vector components\n   - Logs results for later analysis\n\nThe SineNet architecture uses multiple wave components, with each wave consisting of a series of downsampling and upsampling operations. The number of waves (K) is a key hyperparameter that affects model expressivity. When increasing K, you should adjust the channel multiplier to keep the total parameter count approximately constant.\n\nFor the CNS dataset, evaluation should include metrics for density, pressure, and velocity components. For all datasets, both one-step and multi-step (rollout) errors should be computed.",
+  "masked_source": [
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/train.py",
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/test.py"
+  ]
+}

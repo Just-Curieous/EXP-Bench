@@ -1,0 +1,38 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Does code tuning in LLMs improve performance on tasks with well-defined, static procedures (e.g., Web Shopping) while potentially undermining performance on tasks that demand more general reasoning (e.g., Digital Card Game and Operating System interactions)?",
+      "method": "Select two groups of models from the paper\u2019s evaluation: one with code tuning (e.g., the CodeLlama series) and one without (e.g., the Llama-2 series). Identify and group AGENT BENCH tasks into two categories: tasks following fixed, static procedures (e.g., Web Shopping) and tasks requiring flexible, general decision-making (e.g., Digital Card Game and Operating System interactions). For each model, execute the full task suite under identical settings (same dataset splits, inference parameters, and prompt templates). Record key metrics such as success rate (SR), invalid action (IA) errors, invalid format (IF) errors, and task limit exceeded (TLE) outcomes. Leverage the detailed breakdown provided in Table 2 (which includes the number of rounds, sample sizes, and task weightings) and Table 4 (which reports ratios of execution outcomes, highlighting prevalent error types) to inform statistical analysis. Additionally, incorporate insights from Figure 10, which presents the averaged sample validity ratios for the Web Shopping task, to provide visual support for performance differences. Statistically compare the performances of the two groups across both task categories to determine whether code tuning advantages static procedures while impairing general reasoning capabilities.",
+      "expected_outcome": "It is anticipated that code-tuned models will excel on tasks that require following a static and well-defined procedure, as evidenced by higher success rates and lower incidences of invalid action and format errors (supported by metrics from Table 2 and Table 4, and visualized in Figure 10). Conversely, these models are expected to underperform on tasks demanding broader reasoning and flexible decision-making (such as Digital Card Game and Operating System interactions), thereby confirming the ambivalent impact of code tuning observed in the evaluation.",
+      "subsection_source": "4.3 ANALYSIS",
+      "source": [
+        "/workspace/src/start_task.py",
+        "/workspace/src/assigner.py",
+        "/workspace/src/analysis.py"
+      ],
+      "usage_instructions": "1. First, create a custom configuration file (e.g., 'configs/assignments/code_tuning_experiment.yaml') that includes both code-tuned models (CodeLlama series) and non-code-tuned models (Llama-2 series) and specifies the tasks to run (Web Shopping, Digital Card Game, and Operating System interactions). 2. Start the task servers using 'python -m src.start_task -a --config configs/start_task.yaml'. 3. Run the experiment with 'python -m src.assigner --config configs/assignments/code_tuning_experiment.yaml'. 4. After completion, analyze the results with 'python -m src.analysis --config configs/assignments/code_tuning_experiment.yaml --output outputs --save analysis_results', which will generate CSV files comparing performance metrics (success rate, invalid action errors, invalid format errors, and task limit exceeded outcomes) across the different model groups and task categories.",
+      "requirements": [
+        "Step 1: Load configuration from a YAML file using a ConfigLoader (/workspace/src/start_task.py:80-80)",
+        "Step 2: Start a task controller if specified in the arguments or configuration (/workspace/src/start_task.py:84-112)",
+        "Step 3: Determine the controller address from arguments or configuration (/workspace/src/start_task.py:116-121)",
+        "Step 4: Start task workers based on configuration or command line arguments (/workspace/src/start_task.py:123-137)",
+        "Step 5: Initialize the Assigner with configuration and set up data structures for tracking tasks and agents (/workspace/src/assigner.py:42-68)",
+        "Step 6: Create output directory and save configuration (/workspace/src/assigner.py:71-75)",
+        "Step 7: Process existing output files to resume interrupted experiments (/workspace/src/assigner.py:77-151)",
+        "Step 8: Create agent instances based on configuration (/workspace/src/assigner.py:155-157)",
+        "Step 9: Implement a worker generator that allocates tasks to agents using a max flow algorithm (/workspace/src/assigner.py:161-236)",
+        "Step 10: Start the experiment by assigning tasks to agents and tracking progress with progress bars (/workspace/src/assigner.py:238-299)",
+        "Step 11: Record task completions and write results to files (/workspace/src/assigner.py:301-327, /workspace/src/assigner.py:329-384)",
+        "Step 12: Load experiment configuration and analyze output files (/workspace/src/analysis.py:56-141)",
+        "Step 13: Process results using task-specific handlers to extract the main metrics (/workspace/src/analysis.py:144-263)",
+        "Step 14: Generate summary statistics and create CSV files comparing model performance (/workspace/src/analysis.py:301-442)"
+      ],
+      "agent_instructions": "You need to implement a system for running and analyzing experiments comparing code-tuned models (CodeLlama series) with non-code-tuned models (Llama-2 series) on three types of tasks: Web Shopping, Digital Card Game, and Operating System interactions. The system should consist of three main components:\n\n1. A task server starter that:\n   - Reads a configuration file specifying which tasks to run\n   - Starts a controller process if needed\n   - Launches task worker processes (either directly or in Docker containers)\n   - Handles communication between components\n\n2. A task assigner that:\n   - Loads experiment configuration from a YAML file\n   - Sets up agents (models) and tasks based on the configuration\n   - Efficiently allocates tasks to agents using a max flow algorithm\n   - Tracks progress with progress bars\n   - Handles concurrency and resource allocation\n   - Records results and writes them to output files\n   - Supports resuming interrupted experiments\n\n3. An analysis tool that:\n   - Processes the output files generated during the experiment\n   - Extracts task-specific metrics for each agent/model\n   - Generates CSV files with performance metrics including:\n     * Success rate\n     * Invalid action errors\n     * Invalid format errors\n     * Task limit exceeded outcomes\n   - Compares performance across different model groups and task categories\n\nThe system should be configurable through YAML files that specify which models to use, which tasks to run, and concurrency settings. The output should include detailed logs and summary statistics that can be used to compare the performance of code-tuned vs. non-code-tuned models.",
+      "masked_source": [
+        "/workspace/src/start_task.py",
+        "/workspace/src/assigner.py",
+        "/workspace/src/analysis.py"
+      ]
+    }
+  ]
+}

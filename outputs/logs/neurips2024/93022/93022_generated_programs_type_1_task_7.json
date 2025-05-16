@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/tps_inference.py",
+        "/workspace/scripts/analyze_peptide_tps.py"
+    ],
+    "usage_instructions": "1. First, generate transition paths using MDGEN by running: `python tps_inference.py --sim_ckpt interpolation.ckpt --data_dir data/4AA_sims --split splits/4AA_test.csv --num_frames 100 --suffix _i100 --mddir data/4AA_sims --out_dir /path/to/output/directory`\n\n2. Then, analyze the generated paths and compare with MSMs from shorter MD simulations by running: `python -m scripts.analyze_peptide_tps --mddir data/4AA_sims --repdir data/4AA_sims_replica --pdbdir /path/to/output/directory --outdir /path/to/analysis/results --plot --save --num_workers 1`\n\nThe analysis script will compute the three key metrics mentioned in the question: Path Likelihood under the reference MSM, Fraction of Valid Paths, and Jensen-Shannon Divergence (JSD) between visited state distributions. It compares MDGEN's performance against MSMs built from replicate MD simulations of various durations (50ns, 30ns, 20ns, 10ns, 5ns, 2ns)."
+}

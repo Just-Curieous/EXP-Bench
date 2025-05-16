@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Set up the evaluation environment with necessary parameters (model path, tasks, output directories) (/workspace/shells/eval_internvl.sh:3-29)",
+    "Step 2: For each model and task combination, run the evaluation script with appropriate parameters (/workspace/shells/eval_internvl.sh:33-54)",
+    "Step 3: Combine the output files from distributed evaluation into a single result file for each task (/workspace/shells/eval_internvl.sh:55-57)",
+    "Step 4: Load and preprocess images for evaluation, supporting both single and multi-image inputs (/workspace/eval_internvl.py:93-102)",
+    "Step 5: Initialize the model with appropriate device mapping for distributed evaluation (/workspace/eval_internvl.py:105-156)",
+    "Step 6: Process evaluation samples by loading context, images, questions, and answers (/workspace/eval_internvl.py:276-291)",
+    "Step 7: Generate model responses for each sample using the chat function (/workspace/eval_internvl.py:294-306)",
+    "Step 8: Save evaluation results including question, answer, response, context length, and placed depth (/workspace/eval_internvl.py:316-325)",
+    "Step 9: Parse evaluation results and organize them by task and model (/workspace/calculate_scores.py:91-105)",
+    "Step 10: Calculate accuracy scores based on context length and depth placement (/workspace/calculate_scores.py:102-136)",
+    "Step 11: Generate heatmaps showing performance across different context lengths (/workspace/calculate_scores.py:138-160)",
+    "Step 12: Calculate and save average scores for each context length bin (/workspace/calculate_scores.py:162-181)",
+    "Final Step: Output consolidated results showing how model performance degrades with increasing context length (/workspace/calculate_scores.py:69-89)"
+  ],
+  "agent_instructions": "Your task is to implement a system for evaluating a multimodal large language model's performance across different context lengths. The system should test the model on three types of tasks (retrieval, counting, and reasoning) with both text and image inputs.\n\nFirst, create an evaluation script that:\n1. Takes a model path, task type, and output directory as inputs\n2. Loads the specified model and tokenizer\n3. Processes evaluation samples with varying context lengths (from 1K to 64K tokens)\n4. For each sample, generates a response from the model\n5. Saves the results including the question, answer, model response, context length, and the depth at which target information was placed\n\nThen, create a shell script that:\n1. Defines parameters for distributed evaluation (GPUs, partition, etc.)\n2. Runs the evaluation script for each task type (retrieval-text, retrieval-image, counting-text, counting-image, reasoning-text, reasoning-image) on both validation and test sets\n3. Combines the distributed evaluation results into single files\n\nFinally, create an analysis script that:\n1. Processes the evaluation results\n2. Groups results into context length bins (1K, 2K, 4K, 8K, 12K, 16K, 24K, 32K, 40K, 48K, 64K tokens)\n3. Calculates accuracy scores for each bin\n4. Generates heatmaps showing how performance varies with context length\n5. Outputs consolidated results showing performance degradation patterns\n\nThe system should support distributed evaluation across multiple GPUs and handle both text and image inputs appropriately.",
+  "masked_source": [
+    "/workspace/shells/eval_internvl.sh",
+    "/workspace/calculate_scores.py",
+    "/workspace/eval_internvl.py",
+    "/workspace/utils/tools.py",
+    "/workspace/utils/conversation.py",
+    "/workspace/shells/data/mm_niah.json"
+  ]
+}

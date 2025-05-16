@@ -1,0 +1,3 @@
+{
+    "no_answer": "While the repository contains scripts for training models with imitation learning using GPT-4 self-play episodes, it does not contain a specific script for evaluating the reasoning performance on the benchmarks mentioned in the question (MMLU, BBH, ARC-e, ARC-c). The README mentions using the external 'lm-evaluation-harness' repository for evaluation with 'the setups described in our paper', but these evaluation scripts are not included in this repository. The repository focuses on the training process (imitation learning and self-play) but relies on external tools for the evaluation part that would answer the specific experiment question about improved reasoning performance."
+}

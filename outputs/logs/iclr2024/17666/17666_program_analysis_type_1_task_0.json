@@ -1,0 +1,27 @@
+{
+  "requirements": [
+    "Step 1: Parse command-line arguments including dataset, poison_type, poison_rate, defense type, and other parameters (/workspace/other_defense.py:6-35)",
+    "Step 2: Set up environment variables and logging directories based on the provided arguments (/workspace/other_defense.py:36-70)",
+    "Step 3: Load the appropriate defense module based on the defense argument (BaDExpert, STRIP, Frequency, or ScaleUp) (/workspace/other_defense.py:92-188)",
+    "Step 4: For BaDExpert defense: Initialize the defense with parameters and prepare data loaders for clean and test sets (/workspace/other_defenses_tool_box/bad_expert.py:33-136)",
+    "Step 5: For BaDExpert defense: Create an unlearned model by loading the pretrained model and training it to unlearn backdoor patterns (/workspace/other_defenses_tool_box/bad_expert_utils.py:679-744)",
+    "Step 6: For BaDExpert defense: Create a shadow model by finetuning the pretrained model on clean data (/workspace/other_defenses_tool_box/bad_expert_utils.py:747-793)",
+    "Step 7: For BaDExpert defense: Evaluate the original, shadow, and unlearned models on test data and calculate metrics (/workspace/other_defenses_tool_box/bad_expert.py:186-191)",
+    "Step 8: For BaDExpert defense: Deploy the defense by comparing predictions from the three models to detect backdoored inputs (/workspace/other_defenses_tool_box/bad_expert_utils.py:180-273)",
+    "Step 9: For STRIP defense: Initialize the defense with parameters and prepare data loaders (/workspace/other_defenses_tool_box/strip.py:22-37)",
+    "Step 10: For STRIP defense: Calculate entropy values for clean and poisoned inputs by superimposing test images (/workspace/other_defenses_tool_box/strip.py:39-62)",
+    "Step 11: For STRIP defense: Determine threshold for detecting backdoored inputs based on entropy distribution (/workspace/other_defenses_tool_box/strip.py:83-86)",
+    "Step 12: For STRIP defense: Evaluate detection performance using ROC curve and confusion matrix (/workspace/other_defenses_tool_box/strip.py:144-150)",
+    "Step 13: For Frequency defense: Initialize a CNN model for frequency domain analysis (/workspace/other_defenses_tool_box/frequency.py:39-87)",
+    "Step 14: For Frequency defense: Convert images to frequency domain using DCT and analyze with the frequency model (/workspace/other_defenses_tool_box/frequency.py:89-146)",
+    "Step 15: For Frequency defense: Evaluate detection performance using ROC curve and confusion matrix (/workspace/other_defenses_tool_box/frequency.py:200-208)",
+    "Step 16: For ScaleUp defense: Initialize the defense with scaling parameters (/workspace/other_defenses_tool_box/scale_up.py:16-41)",
+    "Step 17: For ScaleUp defense: Scale up clean and poisoned inputs by different factors and analyze prediction consistency (/workspace/other_defenses_tool_box/scale_up.py:43-94)",
+    "Step 18: For ScaleUp defense: Evaluate detection performance using ROC curve and confusion matrix (/workspace/other_defenses_tool_box/scale_up.py:157-163)",
+    "Final Step: Print elapsed time for the defense execution (/workspace/other_defense.py:264-265)"
+  ],
+  "agent_instructions": "Create a script that implements a backdoor defense evaluation system for comparing different defense methods (BaDExpert, STRIP, Frequency, and SCALE-UP) against various backdoor attacks on image classification models.\n\nThe script should:\n\n1. Accept command-line arguments for:\n   - Dataset type (e.g., cifar10)\n   - Poison type (e.g., badnet, blend, trojan, etc.)\n   - Poison rate (e.g., 0.003)\n   - Defense method (BaDExpert, STRIP, Frequency, or ScaleUp)\n   - Other optional parameters like seed, device, etc.\n\n2. Implement the BaDExpert defense that:\n   - Loads a pretrained model that was trained on poisoned data\n   - Creates two expert models: an \"unlearned\" model trained to forget backdoor patterns and a \"shadow\" model finetuned on clean data\n   - Uses these models to detect backdoored inputs by analyzing prediction discrepancies\n   - Calculates metrics like AUROC, TPR, and FPR\n\n3. Implement the STRIP defense that:\n   - Detects backdoored inputs by superimposing test images with clean images\n   - Calculates entropy of predictions for these superimposed images\n   - Uses entropy distribution to distinguish between clean and backdoored inputs\n\n4. Implement the Frequency defense that:\n   - Converts images to frequency domain using DCT (Discrete Cosine Transform)\n   - Uses a CNN to analyze frequency patterns in clean vs. backdoored inputs\n   - Classifies inputs based on frequency domain characteristics\n\n5. Implement the SCALE-UP defense that:\n   - Scales up input images by different factors\n   - Analyzes prediction consistency across different scales\n   - Uses prediction consistency to identify backdoored inputs\n\n6. For each defense method, calculate and report:\n   - Clean Accuracy: accuracy on clean inputs\n   - ASR (Attack Success Rate): percentage of backdoored inputs that trigger the backdoor\n   - AUROC: area under ROC curve for backdoor detection\n   - TPR/FPR: true positive and false positive rates\n\nThe script should be designed to work with models trained on various backdoor attacks (badnet, blend, trojan, etc.) and should output metrics that can be used to compare the effectiveness of different defense methods.",
+  "masked_source": [
+    "/workspace/other_defense.py"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/tools/diagnose_rlhf.py",
+        "/workspace/tools/cure_red_team_rlhf.py",
+        "/workspace/tools/docta_rlhf.sh"
+    ],
+    "usage_instructions": "First, run the shell script '/workspace/tools/docta_rlhf.sh' which will execute the diagnosis and curing process for all RLHF datasets. This script automatically runs diagnose_rlhf.py to detect label errors and then cure_red_team_rlhf.py/cure_hh_rlhf.py to correct them. The script will process both the 'red-team-attempts' dataset (which contains potentially harmful content) and the 'harmless-base' dataset (which contains pairs of responses where one is supposed to be more harmful than the other). The framework will identify instances where subtle toxic cues like indirect insults, personal attacks, or negative stereotypes were missed by human annotators, and provide corrected labels with confidence scores. The results will be saved as *_docta.jsonl.gz files in the respective dataset directories."
+}

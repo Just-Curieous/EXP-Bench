@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including configuration file path, batch size, checkpoint path, and other parameters (/workspace/womd/tools/test.py:28-61, /workspace/womd/tools/submission.py:43-80)",
+    "Step 2: Load configuration from YAML file and set up environment (/workspace/womd/tools/test.py:52-59, /workspace/womd/tools/submission.py:71-78)",
+    "Step 3: Initialize distributed testing environment if specified (/workspace/womd/tools/test.py:86-93)",
+    "Step 4: Set up output directories and logging (/workspace/womd/tools/test.py:101-130, /workspace/womd/tools/submission.py:215-217)",
+    "Step 5: Build data loader for test dataset with appropriate configuration (/workspace/womd/tools/test.py:140-145, /workspace/womd/tools/submission.py:219-224)",
+    "Step 6: Build model according to configuration (/workspace/womd/tools/test.py:146, /workspace/womd/tools/submission.py:226)",
+    "Step 7: Load model parameters from checkpoint (/workspace/womd/tools/test.py:67-68, /workspace/womd/tools/submission.py:228)",
+    "Step 8: For marginal prediction: Evaluate model on test data and calculate metrics (/workspace/womd/tools/test.py:77-81)",
+    "Step 9: For joint prediction: Generate predictions and serialize them to the required format (/workspace/womd/tools/submission.py:165-181)",
+    "Step 10: For joint prediction: Save serialized predictions to file in the proper format for submission (/workspace/womd/tools/submission.py:83-113)",
+    "Final Step: Output evaluation results or submission file (/workspace/womd/tools/test.py:148-151, /workspace/womd/tools/submission.py:232-233)"
+  ],
+  "agent_instructions": "Create two Python scripts for evaluating motion prediction models on the Waymo Open Motion Dataset (WOMD) as described in the paper. The scripts should support both marginal prediction evaluation and joint prediction evaluation.\n\nScript 1: Evaluation Script\n- Create a script that evaluates a trained model on the WOMD test set for marginal motion prediction\n- The script should accept command line arguments for configuration file, batch size, checkpoint path, and other parameters\n- It should load model configuration from a YAML file\n- Support distributed testing across multiple GPUs\n- Build a data loader for the test dataset\n- Load a pre-trained model from a checkpoint\n- Evaluate the model on test data and calculate metrics including minADE, minFDE, Miss Rate, mAP, and Soft mAP\n- Save evaluation results to an output directory\n\nScript 2: Submission Script\n- Create a script that generates predictions for submission to the WOMD challenge\n- The script should accept similar command line arguments as the evaluation script\n- Support both marginal and joint prediction modes (controlled by an --interactive flag)\n- Load a pre-trained model from a checkpoint\n- Generate predictions on the test set\n- Serialize the predictions into the format required by the WOMD challenge\n- For joint prediction, properly handle the serialization of multiple agents' trajectories\n- Save the serialized predictions to a file in the proper format for submission\n\nBoth scripts should work with the BeTopNet model architecture and the WOMD dataset structure as described in the paper. The scripts should be compatible with the data preparation process outlined in the documentation.",
+  "masked_source": [
+    "/workspace/womd/tools/test.py",
+    "/workspace/womd/tools/submission.py"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "hypothesis": "MOLGEN effectively performs constrained molecular optimization, significantly improving property scores (e.g., p-logP) while maintaining high structural similarity between the input and optimized molecules. This balance of property enhancement with preservation of molecular identity is hypothesized to address the issue of molecular hallucinations, as evidenced by consistent improvements over baseline methods.",
+      "method": "\u2022 Select 800 molecules from the ZINC250K dataset that initially exhibit the lowest p-logP scores. \u2022 Perform constrained optimization using MOLGEN with two defined similarity constraints (\u03b4 = 0.6 and \u03b4 = 0.4), where similarity is quantified using the Tanimoto similarity metric applied to Morgan fingerprints. \u2022 Incorporate chemical feedback during optimization to align generated molecules with genuine chemical preferences, thereby mitigating molecular hallucinations. \u2022 Evaluate the optimization process by computing the mean and standard deviation of p-logP improvements under each similarity constraint and compare these metrics with baseline methods presented in Table 4. \u2022 Visualize a representative subset of the original and optimized molecules (as in Appendix Figure 1) to confirm that, despite property score improvements, critical structural features are conserved. \u2022 Optionally include additional visualizations (e.g., Appendix Figures 2 and 3) to further illustrate property variations and the maintenance of structural diversity, particularly for high-scoring molecules.",
+      "expected_outcome": "MOLGEN is anticipated to demonstrate substantial improvements in p-logP scores, with reported mean improvements around 12.08 for a similarity constraint of \u03b4 = 0.6 and approximately 12.35 for \u03b4 = 0.4. The result should indicate superior performance compared to other models that rely on additional retrieval databases or reward functions. Furthermore, the visual analyses are expected to confirm that MOLGEN successfully explores the proximate chemical space while preserving key molecular features, thereby alleviating molecular hallucinations and effectively balancing property enhancement with structural similarity.",
+      "subsection_source": "3.2 MAIN RESULTS",
+      "source": [
+        "/workspace/MolGen/generate_ds.py",
+        "/workspace/MolGen/generate.sh"
+      ],
+      "usage_instructions": "1. First, ensure the plogp_test.csv file contains the 800 molecules from ZINC250K with the lowest p-logP scores (this file already exists in /workspace/moldata/finetune/). 2. Modify the generate.sh script to use plogp_test.csv as input by changing '--input_path' to '../moldata/finetune/plogp_test.csv'. 3. Uncomment line 271 in generate_ds.py to enable similarity calculation: data['sim'] = data.parallel_apply(lambda x: sim(x['start_smiles'],x['candidate_smiles']),axis=1). 4. Run the script with 'bash generate.sh' which will perform constrained optimization using MOLGEN and automatically evaluate the results with similarity constraints \u03b4 = 0.6 and \u03b4 = 0.4 (these are already included in the statistics method). The script will output the mean improvements in p-logP scores for each similarity constraint.",
+      "requirements": [
+        "Step 1: Load a pre-trained BART model for molecule generation (/workspace/MolGen/generate_ds.py:37-56)",
+        "Step 2: Initialize the tokenizer and add SELFIES tokens to the vocabulary (/workspace/MolGen/generate_ds.py:44-55)",
+        "Step 3: Load input molecules from a CSV file containing SMILES strings and plogp values (/workspace/MolGen/generate_ds.py:101-107)",
+        "Step 4: Convert SMILES to SELFIES format if not already done (/workspace/MolGen/generate_ds.py:104-108)",
+        "Step 5: Create a dataloader for batch processing of input molecules (/workspace/MolGen/generate_ds.py:113-114)",
+        "Step 6: Initialize the prefix-tuning parameters for controlled generation (/workspace/MolGen/generate_ds.py:116-191)",
+        "Step 7: Generate optimized molecules using top-k sampling with the pre-trained model (/workspace/MolGen/generate_ds.py:193-237)",
+        "Step 8: Convert generated SELFIES back to SMILES format (/workspace/MolGen/generate_ds.py:234-236)",
+        "Step 9: Create a dataframe with input and generated molecules (/workspace/MolGen/generate_ds.py:238-251)",
+        "Step 10: Calculate property values (plogp) for the generated molecules (/workspace/MolGen/generate_ds.py:255-269)",
+        "Step 11: Calculate similarity between input and generated molecules (/workspace/MolGen/generate_ds.py:271)",
+        "Step 12: Evaluate property improvements with different similarity constraints (\u03b4 = 0.0, 0.2, 0.4, 0.6) (/workspace/MolGen/generate_ds.py:272-283)",
+        "Step 13: Report the mean improvement in plogp scores for each similarity threshold (/workspace/MolGen/generate_ds.py:280-283)",
+        "Final Step: Output the top 3 molecules with highest plogp values (/workspace/MolGen/generate_ds.py:284-298)"
+      ],
+      "agent_instructions": "Create a molecular optimization system that improves p-logP scores of input molecules while maintaining molecular similarity. Your task is to:\n\n1. Create a script that takes a CSV file containing molecules with their SMILES strings and p-logP values as input.\n\n2. Implement a molecule generation system that:\n   - Uses a pre-trained BART model for molecule generation\n   - Converts between SMILES and SELFIES molecular representations\n   - Generates multiple candidate molecules for each input molecule\n   - Uses prefix-tuning for controlled generation\n\n3. Implement an evaluation system that:\n   - Calculates p-logP values for all generated molecules\n   - Calculates molecular similarity between input and generated molecules\n   - Filters results based on similarity thresholds (\u03b4 = 0.6 and \u03b4 = 0.4)\n   - Calculates and reports the mean improvement in p-logP scores for each similarity threshold\n   - Identifies and reports the top 3 molecules with highest p-logP values\n\n4. Create a shell script that runs the molecule generation and evaluation with appropriate parameters:\n   - Uses DeepSpeed for distributed execution\n   - Specifies the input file path (../moldata/finetune/plogp_test.csv)\n   - Sets generation parameters (batch size, return number, top-k, etc.)\n   - Specifies the property to optimize (plogp)\n\nThe system should be able to process a dataset of 800 molecules and output statistics on how well it improved the p-logP scores while maintaining similarity to the original molecules.",
+      "masked_source": [
+        "/workspace/MolGen/generate_ds.py",
+        "/workspace/MolGen/generate.sh"
+      ]
+    }
+  ]
+}

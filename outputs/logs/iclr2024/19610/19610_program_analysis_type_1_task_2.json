@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Set up distributed training environment with PyTorch's distributed module (/workspace/tools/dist_train.sh:10-16)",
+    "Step 2: Parse command line arguments for configuration file, number of GPUs, and additional parameters (/workspace/tools/dist_train.sh:3-8)",
+    "Step 3: Execute the training script with the provided configuration and parameters (/workspace/tools/dist_train.sh:17-20)",
+    "Step 4: Set up distributed testing environment with PyTorch's distributed launch (/workspace/tools/dist_test.sh:11-17)",
+    "Step 5: Parse command line arguments for configuration file, checkpoint path, number of GPUs, and additional parameters (/workspace/tools/dist_test.sh:3-9)",
+    "Step 6: Execute the testing script with the provided configuration, checkpoint, and parameters (/workspace/tools/dist_test.sh:18-22)",
+    "Step 7: Configure the TopoMLP model architecture with ResNet-50 backbone, FPN neck, and specialized heads for lane detection and traffic element recognition (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:10-192)",
+    "Step 8: Define image normalization and data processing pipelines for training and testing (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:194-245)",
+    "Step 9: Configure dataset settings with paths and parameters, including the yolov8_file parameter which is set to None for the baseline model (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:247-279)",
+    "Step 10: Set up optimizer, learning rate schedule, and training parameters (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:281-298)",
+    "Step 11: Configure evaluation, checkpointing, and logging settings (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:299-316)",
+    "Final Step: Compare performance metrics between the baseline model (without YOLOv8) and the enhanced model (with YOLOv8) to evaluate the impact of YOLOv8 proposals (usage_instructions)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for training and evaluating a TopoMLP model for lane detection and traffic element recognition, with and without YOLOv8 proposals. You need to create three files:\n\n1. A distributed training script that:\n   - Takes a configuration file path, number of GPUs, and additional parameters as input\n   - Sets up a PyTorch distributed training environment\n   - Executes the training process with the specified parameters\n\n2. A distributed testing script that:\n   - Takes a configuration file path, checkpoint path, number of GPUs, and additional parameters as input\n   - Sets up a PyTorch distributed testing environment\n   - Executes the evaluation process with the specified parameters\n\n3. A configuration file for the TopoMLP model that:\n   - Defines a ResNet-50 backbone with FPN neck\n   - Configures specialized heads for lane detection (LaneHead) and traffic element recognition (TrafficHead)\n   - Includes topological heads for lane-lane (TopoLLHead) and lane-traffic element (TopoLTHead) relationships\n   - Sets up data processing pipelines for training and testing\n   - Configures dataset settings with a parameter for YOLOv8 detection file (set to None for baseline)\n   - Defines optimizer settings with AdamW and cosine annealing learning rate schedule\n   - Includes evaluation and logging configurations\n\nThe experiment involves comparing two versions of the model:\n1. A baseline TopoMLP model without YOLOv8 proposals\n2. An enhanced TopoMLP* model with YOLOv8 proposals\n\nThe difference between these versions is controlled by the 'yolov8_file' parameter in the dataset configuration, which should be None for the baseline and a path to YOLOv8 detection results for the enhanced version.\n\nThe workflow should allow for training both models, evaluating their performance, and comparing metrics to assess the impact of incorporating YOLOv8 proposals.",
+  "masked_source": [
+    "/workspace/tools/dist_train.sh",
+    "/workspace/tools/dist_test.sh",
+    "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py"
+  ]
+}

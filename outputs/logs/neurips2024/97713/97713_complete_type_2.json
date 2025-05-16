@@ -1,0 +1,85 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you run a demo of WorkArena-L1 atomic tasks and observe the automated solutions?",
+    "method": "Create a script that uses the BrowserGym environment to run through a sample of WorkArena-L1 atomic tasks, using the cheat function to automatically solve them and display the results.",
+    "expected_outcome": "A successful run of multiple WorkArena-L1 tasks with automated solutions and validation of the results, showing success messages for each task.",
+    "source": [
+      "/workspace/README.md"
+    ],
+    "usage_instructions": "1. Import the necessary modules: random, BrowserEnv from browsergym.core.env, ATOMIC_TASKS from browsergym.workarena, and sleep from time.\n2. Shuffle the ATOMIC_TASKS list to get a random order of tasks.\n3. Loop through a subset of tasks (limit to 3-5 tasks for demonstration).\n4. For each task, instantiate a BrowserEnv with the task_entrypoint and headless=False to make the browser visible.\n5. Reset the environment to initialize it.\n6. Add an initial assistant message to the chat indicating work is starting.\n7. Create an empty list to store cheat messages.\n8. Call the task's cheat function with the page and cheat_messages list.\n9. Add each cheat message to the chat.\n10. Add a completion message to the chat.\n11. Validate the solution using the task's validate function.\n12. Add appropriate user feedback based on the validation result.\n13. Wait a few seconds between tasks.\n14. Close the environment before moving to the next task.",
+    "requirements": [
+      "Step 1: Import the necessary modules: random for shuffling tasks, BrowserEnv from browsergym.core.env for the browser environment, ATOMIC_TASKS from browsergym.workarena for the task list, and sleep from time for adding delays between tasks (/workspace/README.md:134-138)",
+      "Step 2: Shuffle the ATOMIC_TASKS list to randomize the order of tasks for demonstration (/workspace/README.md:141)",
+      "Step 3: Create a loop to iterate through each task in the shuffled task list (/workspace/README.md:142-143)",
+      "Step 4: For each task, instantiate a new BrowserEnv environment with the current task as the task_entrypoint and set headless=False to make the browser visible (/workspace/README.md:145-147)",
+      "Step 5: Reset the environment to initialize it for the current task (/workspace/README.md:148)",
+      "Step 6: Add an initial assistant message to the chat interface indicating that work is starting (/workspace/README.md:151)",
+      "Step 7: Create an empty list to store the cheat messages that will be generated during the automated solution process (/workspace/README.md:152)",
+      "Step 8: Call the task's cheat function, passing the environment's page object and the cheat_messages list to automatically solve the task (/workspace/README.md:153)",
+      "Step 9: Iterate through each cheat message and add it to the chat interface with the appropriate role (/workspace/README.md:156-157)",
+      "Step 10: Add a completion message from the assistant to the chat interface indicating the task is done (/workspace/README.md:160)",
+      "Step 11: Validate the solution by calling the task's validate function with the page object and cheat messages (/workspace/README.md:163)",
+      "Step 12: Based on the validation result, add appropriate user feedback to the chat - positive feedback if successful (reward=1) or an error message if unsuccessful (/workspace/README.md:164-167)",
+      "Step 13: Wait for 3 seconds before proceeding to the next task (/workspace/README.md:169)",
+      "Step 14: Close the environment to clean up resources before moving to the next task (/workspace/README.md:170)"
+    ],
+    "agent_instructions": "Create a Python script that demonstrates WorkArena-L1 atomic tasks using BrowserGym. The script should:\n\n1. Import the necessary modules from browsergym and other required libraries\n2. Get a randomized list of WorkArena atomic tasks\n3. Loop through a selection of these tasks\n4. For each task:\n   - Create a visible browser environment\n   - Use the task's built-in 'cheat' function to automatically solve it\n   - Display the solution steps in the chat interface\n   - Validate if the solution was successful\n   - Show appropriate feedback based on the validation result\n   - Add a brief pause between tasks\n   - Clean up resources before moving to the next task\n\nThe goal is to create a demonstration that shows how WorkArena-L1 atomic tasks can be automatically solved and validated using the BrowserGym environment."
+  },
+  {
+    "mode": "A",
+    "question": "How can you run a demo of WorkArena-L2 compositional tasks that require multiple steps to complete?",
+    "method": "Create a script that uses the BrowserGym environment to run through a sample of WorkArena-L2 compositional tasks, using the cheat function to automatically solve each subtask and validate the results.",
+    "expected_outcome": "A successful run of multiple WorkArena-L2 compositional tasks with automated solutions for each subtask and validation of the overall results, showing success messages for each task.",
+    "source": [
+      "/workspace/README.md"
+    ],
+    "usage_instructions": "1. Import the necessary modules: random, BrowserEnv from browsergym.core.env, get_all_tasks_agents from browsergym.workarena, and sleep from time.\n2. Get a sample set of L2 tasks using get_all_tasks_agents(filter=\"l2\").\n3. Extract the tasks and seeds from the sampled set.\n4. Loop through a subset of tasks and their corresponding seeds (limit to 2-3 tasks for demonstration).\n5. For each task, instantiate a BrowserEnv with the task_entrypoint and headless=False to make the browser visible.\n6. Reset the environment to initialize it.\n7. Add an initial assistant message to the chat indicating work is starting.\n8. Loop through each subtask using range(len(env.task)).\n9. For each subtask, call the task's cheat function with the page, chat_messages, and subtask_idx.\n10. Wait a second between subtasks.\n11. Validate the solution after all subtasks are completed.\n12. Add appropriate user feedback based on the validation result.\n13. Wait a few seconds between tasks.\n14. Close the environment before moving to the next task.",
+    "requirements": [
+      "Step 1: Import the necessary Python modules: random for shuffling tasks, BrowserEnv from browsergym.core.env for creating the browser environment, get_all_tasks_agents from browsergym.workarena to access WorkArena tasks, and sleep from time for adding delays between operations (/workspace/README.md:177-188)",
+      "Step 2: Get a sample set of L2 compositional tasks by calling get_all_tasks_agents with filter='l2' (/workspace/README.md:183)",
+      "Step 3: Extract the tasks and seeds from the sampled set by unpacking the returned list of tuples into separate lists (/workspace/README.md:185-187)",
+      "Step 4: Create a loop to iterate through each task and its corresponding seed using zip() (/workspace/README.md:190)",
+      "Step 5: For each task, print the task name to track progress (/workspace/README.md:191)",
+      "Step 6: Instantiate a new BrowserEnv environment with the current task as the task_entrypoint and headless=False to make the browser visible (/workspace/README.md:193-195)",
+      "Step 7: Reset the environment to initialize it for the current task (/workspace/README.md:196)",
+      "Step 8: Add an initial assistant message to the chat indicating work is starting (/workspace/README.md:199)",
+      "Step 9: Create a loop to iterate through each subtask using range(len(env.task)) (/workspace/README.md:201)",
+      "Step 10: For each subtask, add a brief delay using sleep(1) before processing (/workspace/README.md:202)",
+      "Step 11: Call the task's cheat function with the page, chat_messages, and subtask_idx to automatically solve the current subtask (/workspace/README.md:203)",
+      "Step 12: Add another brief delay after solving the subtask (/workspace/README.md:204)",
+      "Step 13: Validate the solution after all subtasks are completed by calling env.task.validate with the page and chat_messages (/workspace/README.md:205)",
+      "Step 14: Check if the validation was successful (reward == 1) and add appropriate user feedback to the chat based on the result (/workspace/README.md:207-210)",
+      "Step 15: Wait for 3 seconds before closing the environment to allow time to see the results (/workspace/README.md:212)",
+      "Step 16: Close the environment to clean up resources before moving to the next task (/workspace/README.md:213)",
+      "Final Step: The script continues to the next task in the loop until all sampled tasks have been processed (/workspace/README.md:190-214)"
+    ],
+    "agent_instructions": "Create a Python script that demonstrates WorkArena-L2 compositional tasks using BrowserGym. The script should sample L2 tasks from WorkArena, run them in a visible browser environment, and use the built-in cheat function to automatically solve each subtask. For each task, the script should initialize the environment, solve each subtask sequentially, validate the solution, provide appropriate feedback, and then close the environment before moving to the next task. Make sure to include appropriate delays between operations to allow for visual inspection of the process."
+  },
+  {
+    "mode": "B",
+    "question": "How can you generate a knowledge base of company facts with corresponding articles and questions?",
+    "method": "Create a script that generates knowledge base articles for a list of company facts, creates questions to query those articles, and validates that the questions can be answered correctly from the articles.",
+    "expected_outcome": "A JSON file containing a knowledge base with facts, articles, questions, and alternative answer formulations for each fact.",
+    "source": [
+      "/workspace/scripts/generate_knowledge_base.ipynb",
+      "/workspace/generate_knowledge_base.ipynb"
+    ],
+    "usage_instructions": "1. Import the necessary modules: json, openai, os, and concurrent.futures.\n2. Set up the OpenAI client using an API key from environment variables.\n3. Create a chat function that sends messages to the OpenAI API and returns the response.\n4. Implement the generate_article function that:\n   a. Takes an item, value, and list of all facts as input\n   b. Creates a prompt for the LLM to generate an article containing the fact\n   c. Validates that the article contains the exact fact\n   d. Returns the cleaned article text\n5. Define a list of company facts, each with an 'item' and 'value' field.\n6. For each fact, generate an article using the generate_article function.\n7. Implement the generate_question function that:\n   a. Takes an article, item, value, and number of questions as input\n   b. Creates a prompt for the LLM to generate questions about the fact\n   c. Validates that the questions can be answered correctly using the is_question_answerable function\n   d. Returns a list of valid questions\n8. Implement the is_question_answerable function that:\n   a. Takes an article, question, and expected value as input\n   b. Tests if the question can be answered correctly from the article\n   c. Returns whether the question is answerable and any incorrect answers\n9. For each fact with its article, generate questions using the generate_question function.\n10. Implement the alternative_answers function that generates different ways to express the same answer.\n11. For each fact with its article and questions, generate alternative answers.\n12. Save the complete knowledge base to a JSON file.",
+    "requirements": [
+      "Step 1: Import necessary libraries including json, openai, os, and later concurrent.futures, re, and tqdm for progress tracking (/workspace/scripts/generate_knowledge_base.ipynb:42-45, 363-367)",
+      "Step 2: Set up the OpenAI client using an API key from environment variables (/workspace/scripts/generate_knowledge_base.ipynb:47)",
+      "Step 3: Create a chat function that sends messages to the OpenAI API (defaulting to gpt-4-1106-preview model) and returns the response (/workspace/scripts/generate_knowledge_base.ipynb:50-55)",
+      "Step 4: Define a generate_article function that takes an item, value, and list of all facts as input, creates a prompt for the LLM to generate an article containing the fact, validates that the article contains the exact fact, and returns the cleaned article text (/workspace/scripts/generate_knowledge_base.ipynb:66-132)",
+      "Step 5: Create a comprehensive list of company facts, each with an 'item' and 'value' field (e.g., 'password to conference room A-561' and 'roo918k') (/workspace/scripts/generate_knowledge_base.ipynb:147-304)",
+      "Step 6: For each fact in the list, generate an article using the generate_article function and store it in the fact dictionary (/workspace/scripts/generate_knowledge_base.ipynb:309-313)",
+      "Step 7: Define a generate_question function that takes an article, item, value, and number of questions as input, creates a prompt for the LLM to generate questions about the fact, validates that the questions are properly formatted and don't reveal the answer, and returns a list of valid questions (/workspace/scripts/generate_knowledge_base.ipynb:432-573)",
+      "Step 8: Define an is_question_answerable function that takes an article, question, and expected value as input, tests if the question can be answered correctly from the article using a weaker model (GPT-3.5), and returns whether the question is answerable and any incorrect answers (/workspace/scripts/generate_knowledge_base.ipynb:576-612)",
+      "Step 9: Use concurrent.futures to parallelize the generation of questions for each fact with its article (/workspace/scripts/generate_knowledge_base.ipynb:615-633)",
+      "Step 10: Define an alternative_answers function that takes an article, item, value, and questions as input, creates a prompt for the LLM to generate different ways to express the same answer, validates the responses, and returns a list of alternative answers (/workspace/scripts/generate_knowledge_base.ipynb:687-751)",
+      "Step 11: For each fact with its article and questions, generate alternative answers using the alternative_answers function (/workspace/scripts/generate_knowledge_base.ipynb:754-757)",
+      "Step 12: Save the complete knowledge base (containing facts, articles, questions, and alternative answers) to a JSON file (/workspace/scripts/generate_knowledge_base.ipynb:793)"
+    ],
+    "agent_instructions": "Create a script that generates a knowledge base of company facts with corresponding articles and questions. The script should:\n\n1. Set up an OpenAI client using an API key from environment variables\n2. Create a function to interact with the OpenAI API\n3. Define a list of company facts (at least 10-15 different facts), each with an 'item' field (what the fact is about) and a 'value' field (the actual information)\n4. Create a function that generates knowledge base articles for each fact, ensuring the exact fact is included in the article\n5. Create a function that generates multiple questions about each fact that can be answered using the article\n6. Create a function that validates whether questions can be answered correctly from the article\n7. Create a function that generates alternative ways to express the same answer\n8. Process all facts to generate articles, questions, and alternative answers\n9. Save the complete knowledge base to a JSON file\n\nThe final output should be a JSON file containing a knowledge base with facts, articles, questions, and alternative answer formulations for each fact."
+  }
+]

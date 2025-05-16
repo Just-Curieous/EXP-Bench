@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/shells/eval_internvl.sh",
+        "/workspace/calculate_scores.py"
+    ],
+    "usage_instructions": "1. First, run the evaluation script to test model performance across different context lengths: `sh shells/eval_internvl.sh`. This will evaluate the model on retrieval, counting, and reasoning tasks with both text and image needles, across various context length bins (1K-64K tokens).\n\n2. After the evaluation is complete, run `python calculate_scores.py --outputs-dir ./outputs/` to analyze the results. This will generate heatmaps and scores showing how model performance degrades as context length increases.\n\nThe calculate_scores.py script automatically groups results into context length bins (1K, 2K, 4K, 8K, 12K, 16K, 24K, 32K, 40K, 48K, 64K tokens) and calculates performance metrics for each bin. The resulting heatmaps will clearly show the performance degradation pattern across increasing context lengths for each task type."
+}

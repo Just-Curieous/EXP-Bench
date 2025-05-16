@@ -1,0 +1,35 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including datasets, argparse, os, and mmu.utils for cross-matching functionality (/workspace/experimental_benchmark/cross_match.py:1-4)",
+    "Step 2: Define a cross_match function that takes paths to two datasets, a cache directory, optional local root path, matching radius, and number of processes (/workspace/experimental_benchmark/cross_match.py:7-14)",
+    "Step 3: Adjust paths based on local_mmu_root if provided (/workspace/experimental_benchmark/cross_match.py:15-18)",
+    "Step 4: Load the datasets using datasets.load_dataset_builder with trust_remote_code=True (/workspace/experimental_benchmark/cross_match.py:20-22)",
+    "Step 5: Cross-match the datasets using cross_match_datasets function with the specified matching radius and number of processes (/workspace/experimental_benchmark/cross_match.py:26-32)",
+    "Step 6: Save the cross-matched dataset to the specified cache directory (/workspace/experimental_benchmark/cross_match.py:34)",
+    "Step 7: Set up command-line argument parsing for the cross-matching script (/workspace/experimental_benchmark/cross_match.py:37-46)",
+    "Step 8: Import necessary libraries for the embedding script including torch, numpy, astropy, datasets, and tqdm (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:1-11)",
+    "Step 9: Import AstroClipCollator and AstroClipDataloader from the datamodule (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:12)",
+    "Step 10: Import AstroClipModel for loading the pretrained model (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:13)",
+    "Step 11: Define an embed_provabgs function that takes paths to the AstroCLIP model, DESI-DECaLS dataset, PROVABGS dataset, and output directory (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:15-22)",
+    "Step 12: Load the AstroCLIP model from the checkpoint path and set it to evaluation mode (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:25-29)",
+    "Step 13: Load the PROVABGS dataset with specific columns and convert it to a table format (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:31-38)",
+    "Step 14: Scale the properties in the PROVABGS dataset and filter out galaxies with invalid data (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:40-51)",
+    "Step 15: Set up the AstroCLIP dataloader for the DESI-DECaLS dataset (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:53-61)",
+    "Step 16: Process images and spectra through the AstroCLIP model to generate embeddings for both train and test sets (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:63-75)",
+    "Step 17: Create tables for the train and test datasets with object IDs and embeddings (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:77-92)",
+    "Step 18: Join the PROVABGS and AstroCLIP datasets based on object IDs (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:94-102)",
+    "Step 19: Save the joined datasets to the specified output directory (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:104-106)",
+    "Step 20: Set up command-line argument parsing for the embedding script (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:108-137)",
+    "Step 21: Define the AstroClipDataloader class that inherits from Lightning's LightningDataModule (/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py:13-23)",
+    "Step 22: Implement setup method to load and split the dataset (/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py:25-31)",
+    "Step 23: Implement train_dataloader and val_dataloader methods (/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py:33-50)",
+    "Step 24: Define the AstroClipCollator class for processing images and spectra (/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py:53-62)",
+    "Step 25: Implement methods to process images and handle batch collation (/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py:64-80)"
+  ],
+  "agent_instructions": "Your task is to implement a data processing pipeline for enhancing candidate identification accuracy in the BTSbot task by integrating multi-survey astronomical data. You need to create two main components:\n\n1. A cross-matching utility that combines BTSbot data with DESI and Legacy Surveys data. This utility should:\n   - Accept paths to two datasets and an output directory\n   - Support specifying a local data root directory\n   - Allow configuring the matching radius (in arcseconds)\n   - Load the datasets and perform cross-matching based on celestial coordinates\n   - Save the cross-matched dataset to the specified output directory\n\n2. An embedding script that applies contrastive image-spectrum pretraining on the cross-matched data. This script should:\n   - Load a pretrained AstroCLIP model\n   - Process a DESI-DECaLS dataset and a PROVABGS dataset\n   - Generate embeddings for both images and spectra using the AstroCLIP model\n   - Join the embeddings with property data from PROVABGS\n   - Save the resulting datasets for both training and testing\n\nYou'll need to implement data loading, processing, and transformation functionality for astronomical data, including:\n   - Handling image data from multiple surveys\n   - Processing spectral data\n   - Performing coordinate-based cross-matching\n   - Generating embeddings using a pretrained model\n\nThe final output should enable training both a baseline BTSbot model (using only ZTF data) and an enhanced version (integrating the cross-matched features as additional input channels) for comparison using AUC metrics.",
+  "masked_source": [
+    "/workspace/experimental_benchmark/cross_match.py",
+    "/workspace/experimental_benchmark/astroclip/property_estimation/embed.py",
+    "/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py"
+  ]
+}

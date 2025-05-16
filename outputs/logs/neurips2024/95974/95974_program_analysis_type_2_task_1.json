@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments to configure the evaluation process, including config file path, checkpoint path, batch size, and other parameters (/workspace/womd/tools/test.py:28-61)",
+    "Step 2: Initialize distributed testing environment if multiple GPUs are specified (/workspace/womd/tools/test.py:86-93, /workspace/womd/tools/scripts/dist_test.sh:3-18)",
+    "Step 3: Set up output directories for evaluation results and logging (/workspace/womd/tools/test.py:101-119)",
+    "Step 4: Build the test dataset and dataloader with appropriate configuration (/workspace/womd/tools/test.py:140-145)",
+    "Step 5: Build the BeTopNet model according to the configuration (/workspace/womd/tools/test.py:146)",
+    "Step 6: Load the trained model checkpoint (/workspace/womd/tools/test.py:67-68)",
+    "Step 7: Evaluate the model on the test dataset, computing metrics like ADE and FDE (/workspace/womd/tools/test.py:77-81, 149-151)",
+    "Step 8: Save prediction results to files if specified (/workspace/womd/tools/test.py:79-80)",
+    "Step 9: Load prediction files and scene data for visualization (/workspace/womd/tools/render_tools/renderer.py:91-97)",
+    "Step 10: Render visualizations showing map elements, historical trajectories, and predicted trajectories (/workspace/womd/tools/render_tools/renderer.py:99-173)",
+    "Final Step: Save visualization images to the specified output directory (/workspace/womd/tools/render_tools/renderer.py:171-173)"
+  ],
+  "agent_instructions": "Your task is to evaluate a trained BeTopNet model on the Waymo Open Motion Dataset (WOMD) test set and visualize the prediction results. Follow these steps:\n\n1. Create an evaluation script that:\n   - Takes command line arguments for configuration file path, model checkpoint path, batch size, and output directory\n   - Supports distributed evaluation across multiple GPUs\n   - Loads the BeTopNet model architecture according to the configuration\n   - Loads the trained model weights from a checkpoint\n   - Creates a test dataloader for the WOMD dataset\n   - Evaluates the model on the test set, computing metrics like Average Displacement Error (ADE) and Final Displacement Error (FDE)\n   - Saves prediction results to files\n\n2. Create a distributed testing wrapper script that:\n   - Takes the number of GPUs and other parameters as input\n   - Launches the evaluation script in distributed mode\n   - Handles port selection for distributed communication\n\n3. Create a visualization script that:\n   - Loads prediction files generated during evaluation\n   - Renders visualizations showing:\n     - Map elements (road network)\n     - Historical trajectories of agents\n     - Predicted future trajectories with confidence scores\n   - Saves visualization images to a specified directory\n\nThe evaluation should support both single-GPU and multi-GPU setups. The visualization should clearly show the predicted trajectories alongside the map context and historical trajectories."
+}

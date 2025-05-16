@@ -1,0 +1,17 @@
+{
+  "requirements": [
+    "Step 1: Create configuration files for different lane query counts (200, 300, 500) based on the base configuration file (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:37-38)",
+    "Step 2: For 200 queries configuration, set num_lanes_one2one=200 and num_lane=1700 (200+1500) (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:37-38)",
+    "Step 3: For 300 queries configuration, use the existing config with num_lanes_one2one=300 and num_lane=1800 (300+1500) (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:37-38)",
+    "Step 4: For 500 queries configuration, set num_lanes_one2one=500 and num_lane=2000 (500+1500) (/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py:37-38)",
+    "Step 5: Train each model using distributed training with 8 GPUs, specifying the appropriate configuration file and work directory (/workspace/tools/dist_train.sh:1-20)",
+    "Step 6: Evaluate each trained model using distributed testing with 8 GPUs, specifying the configuration file, model checkpoint path, and bbox evaluation metric (/workspace/tools/dist_test.sh:1-22)",
+    "Final Step: Compare performance metrics (DETl, DETt, TOPll, TOPlt, and OLS) across the three configurations to analyze the impact of varying lane query counts (/workspace/usage_instructions)"
+  ],
+  "agent_instructions": "You need to implement an experiment to compare the performance of a lane detection model (TopoMLP) with different numbers of lane queries (200, 300, and 500). The experiment involves the following steps:\n\n1. Create three configuration files for the TopoMLP model with different lane query settings:\n   - One with 200 lane queries (set num_lanes_one2one=200 and num_lane=1700)\n   - One with 300 lane queries (set num_lanes_one2one=300 and num_lane=1800)\n   - One with 500 lane queries (set num_lanes_one2one=500 and num_lane=2000)\n\n2. Implement a distributed training script that can:\n   - Accept a configuration file path, number of GPUs, and work directory as parameters\n   - Set up distributed PyTorch training environment\n   - Train the model using the specified configuration\n\n3. Implement a distributed testing script that can:\n   - Accept a configuration file path, model checkpoint path, number of GPUs, and evaluation metrics as parameters\n   - Set up distributed PyTorch testing environment\n   - Evaluate the trained model using the specified configuration and metrics\n\n4. Execute the experiment by:\n   - Training each model configuration using 8 GPUs\n   - Evaluating each trained model with the bbox evaluation metric\n   - Comparing performance metrics (DETl, DETt, TOPll, TOPlt, and OLS) across the three configurations\n\nThe goal is to determine how varying the number of lane queries affects the model's performance on lane detection tasks.",
+  "masked_source": [
+    "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+    "/workspace/tools/dist_train.sh",
+    "/workspace/tools/dist_test.sh"
+  ]
+}

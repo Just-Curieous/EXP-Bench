@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Load game episodes from an input JSON file (/workspace/tools/assign_rewards.py:152-153)",
+    "Step 2: Define functions to detect target word usage and predictions in player messages (/workspace/tools/assign_rewards.py:13-42)",
+    "Step 3: Implement game outcome determination logic based on Adversarial Taboo rules (/workspace/tools/assign_rewards.py:45-68)",
+    "Step 4: Process each game episode to determine winners and calculate rewards for winning player actions (/workspace/tools/assign_rewards.py:72-123)",
+    "Step 5: Apply temporal discounting to rewards (earlier actions get higher rewards) (/workspace/tools/assign_rewards.py:90-113)",
+    "Step 6: Balance the dataset by calculating weights for attacker and defender samples (/workspace/tools/assign_rewards.py:125-138)",
+    "Step 7: Optionally incorporate supervised fine-tuning data if provided (/workspace/tools/assign_rewards.py:157-165)",
+    "Step 8: Save the processed data with rewards and weights to an output JSON file (/workspace/tools/assign_rewards.py:167-168)"
+  ],
+  "agent_instructions": "Create a script that processes game episodes from the Adversarial Taboo game and assigns rewards for reinforcement learning. The Adversarial Taboo game involves two players: an attacker who tries to make a defender say a target word without saying it themselves, and a defender who tries to guess the target word.\n\nYour script should:\n\n1. Take input arguments for:\n   - Input data path (JSON file with game episodes)\n   - Output data path (where to save processed data)\n   - Optional path for supervised fine-tuning data\n   - Decay weight for temporal discounting (default: 0.8)\n\n2. Implement game outcome determination logic:\n   - Defender wins if they correctly predict the target word\n   - Attacker wins if defender says the target word or makes an incorrect prediction\n   - Game is tied if no one wins within the maximum number of turns\n\n3. Process each game episode to:\n   - Determine the winner based on game rules\n   - Extract winning player actions and assign rewards\n   - Apply temporal discounting (earlier actions get higher rewards)\n\n4. Balance the dataset by calculating weights for attacker and defender samples to ensure equal learning for both roles\n\n5. Optionally incorporate supervised fine-tuning data if provided\n\n6. Save the processed data with rewards and weights to an output JSON file\n\nThe script should handle fuzzy matching of target words (including plurals, verb forms, etc.) and properly format the game history for training."
+}

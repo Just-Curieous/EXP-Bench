@@ -1,0 +1,148 @@
+{
+  "questions": [
+    {
+      "question": "How does LLaMA-Adapter performs, compared to LLaVA on Zero-shot Multi-modal Evaluation benchmark: MME?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Evaluate and compare the performance of LLaMA-Adapter and LLaVA on the MME benchmark under zero-shot conditions.\n    - **Objective:** \n    Determine if LLaMA-Adapter achieves higher scores in Perception and Cognition compared to LLaVA.\n\n2. **Evaluation Metrics:**\n    - Measure Perception and Cognition scores for both models on MME benchmark.\n3. **Comparative Evaluation:**\n    - Model:\n        - LLaMA-Adapter\n        - LLaVA\n\n4. **Settings for LLaMA-Adapter**:\n    -  Adopt CLIP as the image encoder to extract multi-scale visual features, and leverage a simple bottleneck MLP layer as the learnable projection network. \n    - Fine tune LLaMA-Adapter on 8 A100 GPUs for 5 epochs.\n    - Warmup epochs:2\n    - Batch size:64\n    - Learning rate: 0.009\n    - Weight decay: 0.02\n    - Utilize the pre-trained LLaMA model with 7B parameters and N = 32 transformer layers\n    - Adopt a prompt length K = 10 and insert the adaption prompts into the last L = 30 layers",
+      "expected_outcome": "For the multi-modal benchmark MME, compared to LLaVA, LLaMA-Adapter achieves higher scores in Perception and Cognition.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "benchmark": "MME benchmark and its evaluation protocol remain constant for all model evaluations"
+          },
+          "independent_variables": {
+            "model": [
+              "LLaMA-Adapter",
+              "LLaVA"
+            ],
+            "evaluation_metrics": [
+              "Perception score",
+              "Cognition score"
+            ]
+          },
+          "dependent_variables": {
+            "performance_scores": "The numerical scores achieved on the Perception and Cognition metrics"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {}
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "MME benchmark with evaluation protocol",
+            "Two models: LLaMA-Adapter and LLaVA",
+            "Evaluation metrics: Perception score and Cognition score",
+            "Data handling and preprocessing for zero-shot evaluation"
+          ],
+          "setup_steps": [
+            "Ensure the MME benchmark evaluation protocol remains constant for all tests",
+            "Load and preprocess the MME dataset according to the specified protocol",
+            "Run experiments independently on LLaMA-Adapter and LLaVA using the zero-shot setup",
+            "Compute numerical performance scores for Perception and Cognition metrics",
+            "Compare the scores between the two models to assess relative performance"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Inter-model comparison",
+              "description": "Maintaining identical experimental conditions across the two models can be complex, especially when comparing performance metrics."
+            },
+            {
+              "source": "Evaluation protocol implementation",
+              "description": "Implementing the detailed MME evaluation protocol adds procedural complexity."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_setup_steps": [
+            "Evaluation procedure: The exact steps to compute performance scores under the zero-shot setting are not explicitly described.",
+            "Data preprocessing: No details are provided on how the dataset should be processed or prepared prior to evaluation."
+          ],
+          "possible_modifications": {
+            "evaluation_method_detail": [
+              "Include explicit details on the evaluation procedure such as score computation, conditions of the zero-shot setup, and data preprocessing steps."
+            ],
+            "extend_metrics": [
+              "Consider incorporating additional evaluation metrics from other tables (e.g., metrics shown in Table 11) to provide a more comprehensive performance assessment.",
+              "Mask some instructions/tools to evaluate model robustness under incomplete information scenarios."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Enforce a model size constraint by requiring that a reduced-parameter version of LLaMA-Adapter (e.g., a mini version) must achieve comparable Perception and Cognition scores to LLaVA"
+            ],
+            "time_constraints": [
+              "Limit the evaluation runtime per experiment instance to reflect a more constrained real-time processing environment, such as reducing the allowed inference time compared to standard full-scale tests."
+            ],
+            "money_constraints": [
+              "Impose a computational budget cap by restricting the available hardware resources (for example, operating with fewer than the 8 A100 GPUs mentioned in related setups), thereby simulating a cost-sensitive execution scenario."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic variations in evaluation input handling",
+          "description": "Random uncertainty arises when random modifications affect the evaluation process. For example, if the protocol randomly drops tokens in data preprocessing or applies stochastic noise to inputs during zero-shot evaluation, it may lead to instability in the gradient updates or random fluctuations in the computed Perception and Cognition scores. This randomness can mask true performance differences between models like LLaMA-Adapter and LLaVA.",
+          "impact": "Inconsistent performance scores that may vary from run to run, thereby obscuring the true comparison between models on the MME benchmark. This could incorrectly favor one model over the other due to random input perturbations rather than genuine performance differences.",
+          "possible_modifications": [
+            "Enforce fixed random seeds during data preprocessing and evaluation to ensure consistency.",
+            "Deterministically process all inputs (avoid random token dropping or similar perturbations) to remove stochastic variations from the evaluation pipeline."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Biased evaluation dataset]",
+          "description": "Systematic uncertainty is introduced when the evaluation dataset or metric selection is inherently biased or incomplete. For instance, if only the Perception and Cognition metrics are considered while ignoring other important aspects (such as additional metrics in Table 11 or those from the LVLM-eHub benchmark), the evaluation might systematically favor one model.",
+          "impact": "The reported performance differences may reflect the biases in the test conditions rather than true differences between the models, leading to skewed conclusions about the superiority of one approach over the other.",
+          "possible_modifications": [
+            "Clarify and fully detail the evaluation procedure including all data preprocessing steps and metric computation methods.",
+            "Extend the evaluation to include additional metrics and benchmarks to mitigate the bias from over-focusing on only two metrics (Perception and Cognition)."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py",
+        "/workspace/llama_adapter_v2_multimodal7b/docs/eval.md"
+      ],
+      "usage_instructions": "1. Download MME datasets and eval_tool from the MME repo (https://github.com/bradyfu/awesome-multimodal-large-language-models#our-mllm-works) and put them under MME_Benchmark_release_version directory. 2. Generate MME results for LLaMA-Adapter V2 using: python util/evaluate_mme.py --pretrained_path [MODEL_PATH] --llama_path [LLAMA_DIR] --output_path [RESULT_FILE_PATH]. 3. Evaluate LLaMA-Adapter V2 with MME's eval_tool: python MME_Benchmark_release_version/eval_tool/calculation.py --results_dir [RESULT_FILE_PATH]. 4. Repeat steps 2-3 for LLaVA model. 5. Compare the Perception and Cognition scores between the two models.",
+      "requirements": [
+        "Step 1: Set up the environment by downloading the MME (Multimodal Evaluation) benchmark datasets and evaluation tool from the MME repository and place them in a directory named 'MME_Benchmark_release_version' (/workspace/llama_adapter_v2_multimodal7b/docs/eval.md:7-28)",
+        "Step 2: Define a function to load and process images from various file formats (JPEG, PNG, etc.) by converting them to RGB format (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:15-31)",
+        "Step 3: Create a dataset class that loads MME benchmark data by reading image paths and corresponding question-answer pairs from text files, handling both directory structures with separate image and question folders and flat structures (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:34-83)",
+        "Step 4: Set up command-line argument parsing to accept paths for the LLaMA model, pretrained checkpoint, and output directory (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:86-95)",
+        "Step 5: Initialize the device for computation (CPU or CUDA) and set up paths for the LLaMA model and tokenizer (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:101-106)",
+        "Step 6: Load the LLaMA-Adapter model weights from the specified checkpoint path (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:108-111)",
+        "Step 7: Configure the model parameters including LoRA (Low-Rank Adaptation) settings (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:113-116)",
+        "Step 8: Initialize the LLaMA-Adapter model with the specified configuration, including CLIP visual encoder, visual embedding dimension, query length, and other parameters (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:117-128, /workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:15-89)",
+        "Step 9: Load the model state dictionary from the checkpoint and move the model to the appropriate device (GPU/CPU) (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:130-136)",
+        "Step 10: Define a prompt format for the model that instructs it to respond with a single word or phrase (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:138-142)",
+        "Step 11: Create a function to generate responses for multimodal inputs by preprocessing images, formatting prompts, and using the model to generate text (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:144-159, /workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:214-274)",
+        "Step 12: Define the list of MME benchmark dataset categories to evaluate, including perception tasks (artwork, celebrity, color, count, etc.) and cognition tasks (code reasoning, commonsense reasoning, etc.) (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:162-163)",
+        "Step 13: For each dataset category, create a dataset instance and process all samples (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:168-169)",
+        "Step 14: Generate predictions for each sample by passing the image and question to the model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:172-175)",
+        "Step 15: Save the predictions to output files, with each line containing the image path, question, ground truth answer, and model prediction (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:177-184)",
+        "Step 16: After generating predictions for all dataset categories, use the MME evaluation tool to calculate scores by running the calculation.py script with the results directory (/workspace/llama_adapter_v2_multimodal7b/docs/eval.md:30)",
+        "Final Step: Compare the perception and cognition scores between LLaMA-Adapter V2 and other models (like LLaVA) to evaluate their multimodal understanding capabilities (/workspace/llama_adapter_v2_multimodal7b/docs/eval.md:32-62)"
+      ],
+      "masked_source": [
+        "/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py",
+        "/workspace/llama_adapter_v2_multimodal7b/docs/eval.md",
+        "/workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py",
+        "/workspace/llama_adapter_v2_multimodal7b/llama/llama.py",
+        "/workspace/llama_adapter_v2_multimodal7b/llama/tokenizer.py",
+        "/workspace/llama_adapter_v2_multimodal7b/llama/utils.py"
+      ]
+    }
+  ]
+}

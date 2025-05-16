@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Parse command-line arguments for checkpoint path, HLG graph, words file, and input audio files (/workspace/egs/yesno/ASR/tdnn/pretrained.py:50-83)",
+    "Step 2: Define parameters for feature extraction and decoding (feature dimension, number of classes, sample rate, beam sizes) (/workspace/egs/yesno/ASR/tdnn/pretrained.py:86-99)",
+    "Step 3: Load the pre-trained TDNN model from checkpoint (/workspace/egs/yesno/ASR/tdnn/pretrained.py:146-154)",
+    "Step 4: Load the HLG graph for decoding (/workspace/egs/yesno/ASR/tdnn/pretrained.py:156-158)",
+    "Step 5: Set up the Fbank feature extractor with appropriate parameters (frame rate, number of bins) (/workspace/egs/yesno/ASR/tdnn/pretrained.py:160-169)",
+    "Step 6: Read and process input audio files, resampling if necessary (/workspace/egs/yesno/ASR/tdnn/pretrained.py:102-126, 171-175)",
+    "Step 7: Extract features from audio using the Fbank computer (/workspace/egs/yesno/ASR/tdnn/pretrained.py:178-180)",
+    "Step 8: Run the model on the features to get log probabilities (/workspace/egs/yesno/ASR/tdnn/pretrained.py:183)",
+    "Step 9: Prepare supervision segments for decoding (/workspace/egs/yesno/ASR/tdnn/pretrained.py:185-189)",
+    "Step 10: Use the HLG graph and k2 library to decode the output probabilities into a lattice (/workspace/egs/yesno/ASR/tdnn/pretrained.py:191-199)",
+    "Step 11: Perform one-best decoding on the lattice (/workspace/egs/yesno/ASR/tdnn/pretrained.py:201-203)",
+    "Step 12: Convert the decoded IDs to words using the words file (/workspace/egs/yesno/ASR/tdnn/pretrained.py:205-207)",
+    "Final Step: Print the transcription results for each input audio file (/workspace/egs/yesno/ASR/tdnn/pretrained.py:209-213)"
+  ],
+  "agent_instructions": "Create a speech recognition inference script that can transcribe audio files containing 'yes' and 'no' utterances using a pre-trained TDNN (Time Delay Neural Network) model. The script should:\n\n1. Accept command-line arguments for:\n   - Path to a pre-trained model checkpoint\n   - Path to an HLG graph file (for decoding)\n   - Path to a words file (for mapping IDs to words)\n   - One or more input audio files to transcribe\n\n2. Load the pre-trained TDNN model, which should have:\n   - Input dimension matching the feature dimension (23 for Fbank features)\n   - Output dimension matching the number of classes (4 for blank, 'no', silence, and 'yes')\n   - A structure with convolutional layers followed by a linear output layer\n\n3. Process audio files by:\n   - Reading audio files using torchaudio\n   - Resampling to 8kHz if necessary\n   - Extracting Fbank features using kaldifeat\n   - Padding features appropriately for batch processing\n\n4. Perform inference and decoding by:\n   - Running the model on the extracted features to get log probabilities\n   - Using the HLG graph with k2 library functions to decode the output\n   - Converting the decoded IDs to words using the provided words file\n\n5. Output the transcription results for each input audio file\n\nThe script should handle multiple input files in a batch and print the transcription for each file. For example, given an audio file with the sequence 'no no no yes no no no yes', the script should output exactly that text."
+}

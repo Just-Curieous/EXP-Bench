@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Create necessary directories for benchmark data and results (/workspace/scripts/infinitebench.sh:3-3)",
+    "Step 2: Download the InfiniteBench datasets by running the download script, which creates data directories and downloads dataset files from HuggingFace (/workspace/scripts/download.sh:1-12)",
+    "Step 3: Run the InfLLM evaluation using the Mistral-7B-Instruct-v0.2 model with the configuration specified in mistral-inf-llm.yaml, which includes parameters like block_size=128, n_init=128, n_local=4096, topk=16 (/workspace/scripts/infinitebench.sh:1-8, /workspace/config/mistral-inf-llm.yaml:1-17)",
+    "Step 4: Evaluate the model on multiple InfiniteBench tasks including kv_retrieval, passkey, number_string, code_debug, math_find, and longbook_choice_eng (/workspace/scripts/infinitebench.sh:5-8)",
+    "Step 5: Generate predictions for each task by processing the input prompts through the model and saving the results to the benchmark/infinite-bench-result directory (/workspace/benchmark/pred.py:282-341)",
+    "Step 6: Run the evaluation script to compute accuracy scores for each task based on the model's predictions (/workspace/scripts/infinitebench.sh:10-10, /workspace/benchmark/eval.py:123-160)",
+    "Step 7: Modify the infinitebench.sh script to use the LM-Infinite configuration (mistral-infinite-lm.yaml) instead of the default InfLLM configuration (/workspace/scripts/infinitebench.sh:1-1, /workspace/config/mistral-infinite-lm.yaml:1-12)",
+    "Step 8: Run the modified script to evaluate the LM-Infinite approach using the same model and benchmark tasks (/workspace/scripts/infinitebench.sh:5-10)",
+    "Step 9: Compare the results between InfLLM and LM-Infinite approaches in the benchmark/infinite-bench-result directory, focusing on the passkey task accuracy across different sequence lengths (/workspace/benchmark/eval.py:87-103)"
+  ],
+  "agent_instructions": "Your task is to evaluate two different long-context language model approaches (InfLLM and LM-Infinite) on the InfiniteBench benchmark using the Mistral-7B-Instruct-v0.2 model. First, download the InfiniteBench datasets. Then run the InfLLM evaluation using the default configuration in mistral-inf-llm.yaml. Next, modify the script to use the LM-Infinite configuration in mistral-infinite-lm.yaml and run it again. Finally, compare the results between the two approaches, focusing on the passkey task accuracy across different sequence lengths. The evaluation scripts and configuration files are provided in the repository.",
+  "masked_source": [
+    "/workspace/scripts/infinitebench.sh",
+    "/workspace/config/mistral-inf-llm.yaml",
+    "/workspace/config/mistral-infinite-lm.yaml"
+  ]
+}

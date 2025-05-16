@@ -1,0 +1,148 @@
+{
+  "questions": [
+    {
+      "question": "Will conditioning on the dynamics of the flanking residues enable the MDGEN model to accurately inpaint the masked inner residues, yielding a higher recovery rate of the ground-truth peptide compared to inverse folding baselines such as DYNMPNN and S-MPNN?",
+      "method": "#### Problem Setup\n\nEvaluate whether MDGEN, when conditioned on the dynamics of the flanking residues during a transition, can inpaint missing inner residue identities more accurately than baseline inverse folding models.\n\n#### Independent Variables\n\n- **Model Used**:\n  - MDGEN (conditioned on dynamics of flanking residues)\n  - DYNMPNN (conditioned on terminal frames only)\n  - S-MPNN (conditioned on a single frame)\n- **Transition Type**:\n  - High-flux transition\n  - Random transition\n\n#### Dependent Variables (Evaluation Metrics)\n\n- Sequence Recovery Rate: Fraction of cases where the inpainted inner residues exactly match the ground-truth sequence during the transition.\n\n#### Experiment Setup\n\n- **Trajectory Preparation**:\n  - Use tetrapeptide MD simulations.\n  - Identify two well-connected Markov states (highest flux) via MSM analysis.\n  - Extract **100-ps transition windows** between these states.\n- **Masking Setup**:\n  - Mask the inner residue identities and dynamics across intermediate frames.\n  - Retain terminal frames (flanking residues).\n- **Model Execution**:\n  - MDGEN: Condition on terminal dynamics and inpaint inner residues.\n  - DYNMPNN: Given only two terminal frames.\n  - S-MPNN: Conditioned on a single frame.\n- **Evaluation**:\n  - Compare generated trajectories to the original.\n  - Compute **exact match** recovery of inner residues.\n  - Repeat for both **high-flux** and **random** transition paths.",
+      "expected_outcome": "MDGEN is expected to achieve significantly **higher sequence recovery** rates, **52\u201362%** for high-flux transitions (vs. 17\u201324% for DYNMPNN, and ~13\u201314% for S-MPNN).\n\nThese results validate that **dynamics scaffolding**\u2014conditioning on flanking dynamics\u2014provides meaningful temporal and spatial context for successful inpainting.",
+      "design_complexity": {
+        "constant_variables": {
+          "trajectory_preparation": "Tetrapeptide MD simulations with a fixed 100-ps transition window and consistent MSM analysis for identifying well\u2010connected Markov states",
+          "masking_setup": "Inner residue identities and dynamics are systematically masked while retaining the terminal (flanking) residue information",
+          "evaluation_protocol": "Exact sequence matching is used to compute the sequence recovery rate"
+        },
+        "independent_variables": {
+          "Model Used": [
+            "MDGEN (conditioned on dynamics of flanking residues)",
+            "DYNMPNN (conditioned on terminal frames only)",
+            "S-MPNN (conditioned on a single frame)"
+          ],
+          "Transition Type": [
+            "High-flux transition",
+            "Random transition"
+          ]
+        },
+        "dependent_variables": {
+          "Sequence Recovery Rate": "Fraction of cases where the inpainted inner residues exactly match the ground-truth sequence from the original MD simulation"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "Transition Type": "The criteria for selecting a 'random transition' are not explicitly specified; it is unclear how a transition is categorized as random versus high-flux aside from the mention of high-flux transitions being determined via MSM analysis.",
+          "Baseline Model Details": "While the models DYNMPNN and S-MPNN are defined by the frames they condition on, other potential hyperparameters or architectural differences are not detailed, which could impact reproducibility or comparison."
+        },
+        "possible_modifications": {
+          "modification_X": [
+            "Introduce additional transition types (e.g., low-flux transitions) to explore spectrum effects on inpainting performance",
+            "Mask or vary the amount of flanking residue information to test sensitivity in the MDGEN model",
+            "Include variations in simulation parameters (e.g., different peptide lengths or transition durations) to assess robustness"
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Tetrapeptide MD simulation system",
+          "MSM analysis tool for identifying well-connected Markov states",
+          "Masking module for inner residue identities and dynamics",
+          "MDGEN model (conditioning on flanking dynamics)",
+          "Baseline models: DYNMPNN and S-MPNN",
+          "Evaluation module for computing sequence recovery rate"
+        ],
+        "setup_steps": [
+          "Run tetrapeptide MD simulations",
+          "Perform MSM analysis to identify two well-connected Markov states with high flux",
+          "Extract 100-ps transition windows between selected states",
+          "Apply masking to inner residues (identities and dynamics) while retaining terminal frames",
+          "Execute model inference using MDGEN (conditioned on terminal dynamics), DYNMPNN (using terminal frames only), and S-MPNN (using a single frame)",
+          "Evaluate the exact match of the inpainted inner residues compared to the ground-truth sequence",
+          "Repeat experiments for both high-flux and random transition types"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Pipeline integration",
+            "description": "Integrating simulation outputs, MSM analysis, masking, and model execution introduces multiple interconnected components that must communicate correctly."
+          },
+          {
+            "source": "Multiple independent variables",
+            "description": "Handling different models and transition types (high-flux vs. random) creates a combinatorial setup complexity."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Transition Type definition",
+          "Baseline model (DYNMPNN and S-MPNN) hyperparameter details"
+        ],
+        "ambiguous_setup_steps": [
+          "The criteria for selecting a 'random transition' are not explicitly detailed beyond distinguishing from high-flux transitions identified via MSM analysis",
+          "Baseline models lack clear details on hyperparameters and architectural configurations beyond the number of frames they condition on"
+        ],
+        "possible_modifications": {
+          "modification_X": [
+            "Introduce additional transition types (e.g., low-flux transitions) to study a broader spectrum of dynamics",
+            "Mask or vary the amount of flanking residue information to test sensitivity in the MDGEN model",
+            "Include variations in simulation parameters (e.g., different peptide lengths or transition durations) to assess the robustness of the approach"
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "constraint_type": {
+            "modifications": [
+              "Introduce additional transition types (e.g., low-flux transitions) to study a broader spectrum of dynamics, which may tighten the experimental setup.",
+              "Mask or vary the amount of flanking residue information to test the sensitivity of the MDGEN model, thereby enforcing stricter input conditions.",
+              "Include variations in simulation parameters (e.g., different peptide lengths or transition durations) to assess the robustness of the approach, effectively tightening the experimental constraints."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "source": "Random Transition Selection and Masking Variability",
+        "description": "The experiment includes 'random transitions' as an independent variable. However, the criteria for selecting a random transition are not explicitly detailed, leading to stochastic variability in the input conditions. In addition, the masking approach that randomly affects inner residue identities introduces an element of unpredictability in the gradient updates and inpainted sequence outcomes.",
+        "impact": "This random variability can lead to inconsistent sequence recovery rates and may destabilize gradient updates, complicating the assessment of the true performance gains of conditioning on flanking dynamics.",
+        "possible_modifications": [
+          "Introduce additional transition types (such as low-flux transitions) to broaden the spectrum of dynamic conditions, capturing a wider range of uncertainty.",
+          "Vary the amount or exact positioning of the retained flanking residue information to simulate different levels of random input corruption.",
+          "Repeat the experiments with multiple random seeds for transition selection and masking to better characterize the variability in performance."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Ambiguities in Baseline Configurations and Fixed Simulation Setup",
+        "description": "The experimental design relies on a fixed tetrapeptide MD simulation with a fixed 100-ps transition window and baseline models (DYNMPNN and S-MPNN) whose hyperparameters or architectural details are not fully specified. This, combined with the ambiguous definition of 'random transitions', introduces a systematic uncertainty that may bias the comparison in favor of the MDGEN model.",
+        "impact": "Such systematic biases could consistently skew the sequence recovery metrics, potentially overstating the benefits of including dynamics of the flanking residues compared to the inverse folding baselines.",
+        "possible_modifications": [
+          "Standardize and fully document the hyperparameters and configurations of the baseline models to ensure a fair comparison.",
+          "Retrieve and utilize a clean, well-defined simulation dataset or vary simulation parameters (e.g., peptide lengths, transition durations) to assess the robustness of the results.",
+          "Refine and clearly define the criteria for both high-flux and random transitions to eliminate biases in transition selection."
+        ]
+      },
+      "source": [
+        "/workspace/design_inference.py",
+        "/workspace/scripts/analyze_peptide_design.py"
+      ],
+      "usage_instructions": "1. First, run the design_inference.py script to perform inpainting with MDGEN on high-flux transitions: `python design_inference.py --sim_ckpt inpainting.ckpt --split splits/4AA_test.csv --data_dir data/4AA_data/ --num_frames 100 --mddir data/4AA_sims --random_start_idx --out_dir high_flux_results`\n2. Then, run the same script for random transitions (without the --random_start_idx flag): `python design_inference.py --sim_ckpt inpainting.ckpt --split splits/4AA_test.csv --data_dir data/4AA_data/ --num_frames 100 --mddir data/4AA_sims --out_dir random_transitions_results`\n3. Finally, analyze the results using the analyze_peptide_design.py script for both experiments: `python -m scripts.analyze_peptide_design --mddir data/4AA_sims --data_dir data/4AA_data --pdbdir high_flux_results` and `python -m scripts.analyze_peptide_design --mddir data/4AA_sims --data_dir data/4AA_data --pdbdir random_transitions_results`\n\nNote: This repository only contains the MDGEN implementation. The baseline models (DYNMPNN and S-MPNN) mentioned in the experiment question are not included in this repository and would need to be run separately for comparison. The analyze_peptide_design.py script will output sequence recovery metrics for MDGEN that can be compared with the baseline results mentioned in the expected outcome.",
+      "requirements": [
+        "Step 1: Load a pre-trained MDGEN model from a checkpoint (/workspace/design_inference.py:157-158)",
+        "Step 2: Load the dataset split from a CSV file (/workspace/design_inference.py:159-163)",
+        "Step 3: For each peptide in the dataset, analyze molecular dynamics simulations to identify metastable states (/workspace/design_inference.py:82-99)",
+        "Step 4: Calculate the flux matrix between metastable states and identify the highest flux transition (/workspace/design_inference.py:101-103)",
+        "Step 5: Find trajectory segments that transition between the identified states (/workspace/design_inference.py:104-118)",
+        "Step 6: For each batch, extract samples from the trajectory segments and prepare them for inference (/workspace/design_inference.py:122-129)",
+        "Step 7: Run the MDGEN model to perform inpainting on the trajectory segments (/workspace/design_inference.py:133)",
+        "Step 8: Convert the model outputs to PDB files and save them along with metadata (/workspace/design_inference.py:134-152)",
+        "Step 9: Load the generated peptide designs and their metadata (/workspace/scripts/analyze_peptide_design.py:17-20)",
+        "Step 10: Extract the amino acid sequences from the generated designs (/workspace/scripts/analyze_peptide_design.py:22-25)",
+        "Step 11: Calculate sequence recovery metrics by comparing designed sequences with original sequences (/workspace/scripts/analyze_peptide_design.py:31-62)",
+        "Step 12: Identify the most frequently designed sequence for each peptide (/workspace/scripts/analyze_peptide_design.py:42-47)",
+        "Step 13: Calculate and print various recovery metrics for evaluation (/workspace/scripts/analyze_peptide_design.py:80-96)"
+      ],
+      "agent_instructions": "Create a system to perform peptide design using the MDGEN model and evaluate the results. The system should consist of two main components:\n\n1. A peptide design script that:\n   - Takes a pre-trained MDGEN model checkpoint as input\n   - Analyzes molecular dynamics simulations to identify metastable states and transitions\n   - Identifies high-flux transitions between metastable states\n   - Extracts trajectory segments that transition between these states\n   - Uses the MDGEN model to perform inpainting on these trajectory segments\n   - Saves the generated peptide designs as PDB files along with metadata\n   - Supports two modes: high-flux transitions (using a random start index) and random transitions\n\n2. An analysis script that:\n   - Loads the generated peptide designs and their metadata\n   - Calculates sequence recovery metrics by comparing designed sequences with original sequences\n   - Identifies the most frequently designed sequence for each peptide\n   - Computes and outputs various recovery metrics including:\n     * Conditional recovery (for terminal residues)\n     * Design recovery (for middle residues)\n     * Maximum conditional and design recovery\n     * Final design recovery\n     * Most frequent middle recovery\n\nThe system should be run in two configurations:\n1. First with high-flux transitions (using a random start index)\n2. Then with random transitions (without the random start index)\n\nThe analysis script should be run on both sets of results to compare the performance.",
+      "masked_source": [
+        "/workspace/design_inference.py",
+        "/workspace/scripts/analyze_peptide_design.py"
+      ]
+    }
+  ]
+}

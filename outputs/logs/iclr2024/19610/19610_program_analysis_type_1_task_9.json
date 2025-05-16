@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Set up the base configuration for the TopoMLP model with ResNet-50 backbone (/workspace/topomlp_setA_r50_baseline.py:1-7, /workspace/topomlp_setA_r50_w_otransform.py:1-9, /workspace/topomlp_setA_r50_wonly_box.py:1-14)",
+    "Step 2: Configure the baseline experiment by disabling the view transformation matrix in the lane-traffic topology head (/workspace/topomlp_setA_r50_baseline.py:3-7)",
+    "Step 3: Configure the view transformation experiment by enabling the view transformation matrix with a 9-dimensional position encoding (/workspace/topomlp_setA_r50_w_otransform.py:3-9)",
+    "Step 4: Configure the simplified traffic features experiment by enabling the view transformation matrix and setting simplified_features to true in the traffic element head (/workspace/topomlp_setA_r50_wonly_box.py:3-14)",
+    "Step 5: Create a script to run all three experiments sequentially using the distributed testing tool (/workspace/run_ablation_study.sh:1-18)",
+    "Step 6: For each experiment configuration, execute the distributed testing script with the appropriate configuration file, checkpoint path, and GPU count (/workspace/run_ablation_study.sh:7-16)",
+    "Step 7: Evaluate the results by comparing the TOPlt, DETl, DETt, and TOPll metrics across the three configurations (/workspace/run_ablation_study.sh:18)"
+  ],
+  "agent_instructions": "Create a system to run an ablation study for lane-traffic topology reasoning with three different configurations of the TopoMLP model. The ablation study should compare the following configurations:\n\n1. Baseline: A configuration that uses full lane and traffic features but disables the view transformation matrix in the lane-traffic topology head (set add_pos=False).\n\n2. With View Transformation: A configuration that enables the view transformation matrix (set add_pos=True with pos_dimension=9) while using full lane and traffic features.\n\n3. Simplified Traffic Features: A configuration that enables the view transformation matrix (same as #2) but simplifies the traffic element features to only use bounding boxes (set simplified_features=True in the traffic element head).\n\nAll configurations should extend a base TopoMLP configuration with a ResNet-50 backbone. Create a script that runs all three experiments sequentially using a distributed testing tool, passing the appropriate configuration file, checkpoint path, and GPU count to each run. The script should output evaluation metrics including TOPlt, DETl, DETt, and TOPll for each configuration to allow comparison of performance trade-offs between detailed traffic representation and computational simplicity.",
+  "masked_source": [
+    "/workspace/topomlp_setA_r50_baseline.py",
+    "/workspace/topomlp_setA_r50_w_otransform.py",
+    "/workspace/topomlp_setA_r50_wonly_box.py",
+    "/workspace/run_ablation_study.sh"
+  ]
+}

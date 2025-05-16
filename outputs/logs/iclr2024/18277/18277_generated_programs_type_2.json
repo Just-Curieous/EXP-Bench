@@ -1,0 +1,42 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you use LLaMA-Adapter to generate responses to various instructions?",
+    "method": "Use the LLaMA-Adapter framework to load a pre-trained model and generate responses to a set of instructions.",
+    "expected_outcome": "The program should output responses to various instructions such as 'Tell me about alpacas.', 'Tell me about the president of Mexico in 2019.', etc.",
+    "source": ["/workspace/example.py"],
+    "usage_instructions": "1. Load the LLaMA-Adapter model using the provided checkpoint paths.\n2. Define a set of instructions to test the model's capabilities.\n3. Format the instructions using the provided prompt template.\n4. Generate responses using the model's generate method.\n5. Print the generated responses."
+  },
+  {
+    "mode": "A",
+    "question": "How can you create a multimodal system that processes both images and text using LLaMA-Adapter V2?",
+    "method": "Use the LLaMA-Adapter V2 framework to load a multimodal model that can process both images and text inputs to generate responses.",
+    "expected_outcome": "The program should take an image input and a text prompt, then generate a descriptive response about the image based on the prompt.",
+    "source": ["/workspace/llama_adapter_v2_multimodal7b/demo.py"],
+    "usage_instructions": "1. Load the LLaMA-Adapter V2 multimodal model using the provided checkpoint paths.\n2. Preprocess an image using the model's preprocessing function.\n3. Format a text prompt that asks about the image.\n4. Generate a response by passing both the image and prompt to the model.\n5. Print the generated response that describes or answers questions about the image."
+  },
+  {
+    "mode": "A",
+    "question": "How can you build an interactive chat interface with LLaMA-Adapter V2?",
+    "method": "Use the LLaMA-Adapter V2 framework to create an interactive chat interface that maintains conversation history.",
+    "expected_outcome": "The program should provide an interactive command-line interface where users can have a conversation with the LLaMA-Adapter V2 model, with the model maintaining context across multiple turns.",
+    "source": ["/workspace/llama_adapter_v2_chat65b/chat_demo.py"],
+    "usage_instructions": "1. Load the LLaMA-Adapter V2 model using the provided checkpoint paths.\n2. Set up a conversation template to format the chat history.\n3. Create an input loop that takes user input and appends it to the conversation history.\n4. Generate responses using the model and the formatted conversation prompt.\n5. Append the model's responses to the conversation history.\n6. Continue the loop to allow for multi-turn conversations."
+  },
+  {
+    "mode": "A",
+    "question": "How can you integrate LLaMA-Adapter with LangChain to build a conversational agent?",
+    "method": "Create a custom LLM class that wraps LLaMA-Adapter to make it compatible with LangChain's interfaces.",
+    "expected_outcome": "A working integration between LLaMA-Adapter and LangChain that allows using LLaMA-Adapter in LangChain's conversation chains and agents.",
+    "source": ["/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb", "/workspace/docs/langchain_integration.md"],
+    "usage_instructions": "1. Create a custom LLM class that inherits from LangChain's LLM base class.\n2. Implement the _call method to use LLaMA-Adapter's generate functionality.\n3. Handle the formatting of prompts and processing of responses.\n4. Create a ConversationChain with the custom LLM and a ConversationBufferMemory.\n5. Implement a function to handle conversation turns, maintaining history between interactions.\n6. For multimodal capabilities, modify the _call method to handle image paths embedded in the prompt."
+  },
+  {
+    "mode": "A",
+    "question": "How can you build a multimodal system that processes multiple input types (image, audio, video, text, point cloud) using ImageBind-LLM?",
+    "method": "Use the ImageBind-LLM framework to create a system that can process and reason about multiple modalities simultaneously.",
+    "expected_outcome": "A program that can take inputs from different modalities (image, audio, text, video, point cloud) and generate text responses or images based on these inputs.",
+    "source": ["/workspace/imagebind_LLM/demo.py", "/workspace/imagebind_LLM/demo_3d.py", "/workspace/imagebind_LLM/gradio_app.py"],
+    "usage_instructions": "1. Load the ImageBind-LLM model using the provided checkpoint paths.\n2. Create a dictionary to store inputs from different modalities.\n3. Load and preprocess inputs from selected modalities (image, audio, text, video, point cloud).\n4. Format a prompt that asks a question about the multimodal inputs.\n5. Generate a response by passing both the multimodal inputs and the prompt to the model.\n6. Process and display the generated output (text or image)."
+  }
+]

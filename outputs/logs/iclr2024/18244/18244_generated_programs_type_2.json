@@ -1,0 +1,36 @@
+[
+  {
+    "mode": "A",
+    "question": "How does the Periodicity Decoupling Framework (PDF) model perform on the ETTh2 dataset with different prediction lengths?",
+    "method": "Train and evaluate the PDF model on the ETTh2 dataset with varying prediction lengths (96, 192, 336, 720) while keeping the input sequence length fixed at 720.",
+    "expected_outcome": "Performance metrics (MSE, MAE, RSE) for each prediction length, with visualizations showing the predicted vs. actual values. The model should achieve better performance on shorter prediction lengths, with metrics degrading as prediction length increases.",
+    "source": [
+      "/workspace/scripts/PDF/720/etth2.sh",
+      "/workspace/run_longExp.py"
+    ],
+    "usage_instructions": "1. Set up the environment with the required datasets in the ./dataset/ directory.\n2. Configure the PDF model with parameters from the etth2.sh script (seq_len=720, kernel_list=[3,7,11], period=[24,180,720], etc.).\n3. Run the model for each prediction length (96, 192, 336, 720) using the run_longExp.py script.\n4. For each prediction length, train the model for 100 epochs with early stopping (patience=10).\n5. Evaluate the model on the test set and collect performance metrics (MSE, MAE, RSE).\n6. Generate visualizations comparing predicted vs. actual values for each prediction length.\n7. Compare the performance across different prediction lengths and analyze the trade-offs."
+  },
+  {
+    "mode": "A",
+    "question": "How does the PDF model compare to the PatchTST model on the electricity dataset for long-term forecasting?",
+    "method": "Train and evaluate both the PDF and PatchTST models on the electricity dataset with the same configuration (seq_len=336, pred_len=720) and compare their performance.",
+    "expected_outcome": "Performance comparison showing that PDF outperforms PatchTST on the electricity dataset for long-term forecasting (pred_len=720), with lower MSE and MAE values as claimed in the paper.",
+    "source": [
+      "/workspace/scripts/PDF/336/electricity.sh",
+      "/workspace/scripts/PatchTST/electricity.sh",
+      "/workspace/run_longExp.py"
+    ],
+    "usage_instructions": "1. Set up the environment with the electricity dataset in the ./dataset/ directory.\n2. Configure the PDF model using parameters from the PDF/336/electricity.sh script.\n3. Configure the PatchTST model using parameters from the PatchTST/electricity.sh script.\n4. For both models, set seq_len=336 and pred_len=720 to focus on long-term forecasting.\n5. Train each model for 100 epochs with early stopping (patience=10).\n6. Evaluate both models on the test set and collect performance metrics (MSE, MAE, RSE).\n7. Generate visualizations comparing predicted vs. actual values for both models.\n8. Compare the performance metrics between PDF and PatchTST and analyze the differences."
+  },
+  {
+    "mode": "A",
+    "question": "How do different period settings affect the performance of the PDF model on the ETTm1 dataset?",
+    "method": "Train and evaluate the PDF model on the ETTm1 dataset with different period settings while keeping other parameters fixed.",
+    "expected_outcome": "Performance metrics showing how different period settings impact the model's forecasting accuracy. The optimal period settings should align with the natural periodicities in the ETTm1 dataset.",
+    "source": [
+      "/workspace/scripts/PDF/720/ettm1.sh",
+      "/workspace/run_longExp.py"
+    ],
+    "usage_instructions": "1. Set up the environment with the ETTm1 dataset in the ./dataset/ directory.\n2. Configure the base PDF model using parameters from the ettm1.sh script (seq_len=720, pred_len=96).\n3. Create multiple variants of the model with different period settings:\n   - Default: period=[24, 180, 720] (from the script)\n   - Variant 1: period=[12, 96, 360]\n   - Variant 2: period=[48, 360, 1440]\n   - Variant 3: period=[24]\n4. Train each variant for 100 epochs with early stopping (patience=10).\n5. Evaluate all variants on the test set and collect performance metrics (MSE, MAE, RSE).\n6. Generate visualizations comparing predicted vs. actual values for each variant.\n7. Analyze how different period settings affect the model's ability to capture temporal patterns in the data."
+  }
+]

@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/womd/tools/scripts/dist_train.sh",
+        "/workspace/womd/tools/scripts/dist_test.sh"
+    ],
+    "usage_instructions": "For the prediction part of the experiment question, the repository provides scripts to train and evaluate BeTop integrated with existing SOTA predictors (MTR and Wayformer). First, train the baseline models using: `cd womd/tools && bash scripts/dist_train.sh N_GPUS --cfg_file cfg/MTR_PlusPlus.yaml --epoch 30 --batch_size BATCH --extra_tag baseline`. Then train the BeTop-enhanced versions using: `cd womd/tools && bash scripts/dist_train.sh N_GPUS --cfg_file cfg/BeTopNet_full_64.yaml --epoch 30 --batch_size BATCH --extra_tag betop`. Finally, evaluate both models using: `cd womd/tools && bash scripts/dist_test.sh N_GPUS --cfg_file cfg/MTR_PlusPlus.yaml --batch_size BATCH --ckpt PATH_TO_BASELINE_CKPT` and `cd womd/tools && bash scripts/dist_test.sh N_GPUS --cfg_file cfg/BeTopNet_full_64.yaml --batch_size BATCH --ckpt PATH_TO_BETOP_CKPT`. Compare the metrics (minADE, minFDE, Miss Rate, and mAP) between the baseline and BeTop-enhanced models. Note that the planning part of the experiment (nuPlan dataset with PDM and PlanTF planners) is not yet implemented in this repository as indicated in the README.md's TODO list."
+}

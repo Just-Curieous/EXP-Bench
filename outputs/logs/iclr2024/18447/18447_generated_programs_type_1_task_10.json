@@ -1,0 +1,3 @@
+{
+    "no_answer": "After thoroughly examining the repository, I could not find specific scripts or configurations designed for conducting the ablation experiments described in the question. The model architecture (MogaNet) does include both spatial aggregation (MultiOrderGatedAggregation) and channel aggregation (ChannelAggregationFFN) modules as part of the MogaBlock, but there are no ready-made scripts to disable one or the other for ablation studies. While it would be possible to modify the model implementation to create such ablation variants, this would require more extensive code changes than what would be considered 'minor modifications' to existing scripts."
+}

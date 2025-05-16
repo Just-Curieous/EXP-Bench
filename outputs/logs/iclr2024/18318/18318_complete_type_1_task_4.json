@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Does combining local and global context optimization in the object-agnostic prompt learning module yield better anomaly detection performance than using only one of the context modes?",
+      "method": "Design an experiment on the MVTec AD and VisA datasets with four configurations: (1) without any context optimization (neither local nor global), (2) with only global context optimization, (3) with only local context optimization, and (4) with both local and global context optimization enabled. For each configuration, run the AnomalyCLIP model and record both the pixel-level and image-level AUROC scores. Follow the protocol outlined in Table 5 to ensure consistent training conditions. In addition to AUROC scores, separately log the contributions of the global and local losses to assess their individual impacts. Analyze the results to evaluate not only the overall improvements in anomaly detection performance but also to determine whether global optimization improves image-level detection and local optimization enhances pixel-level accuracy. Include comparisons to the detailed ablation study results provided in Table 7 and Figure 9, which highlight performance declines when each module is removed.",
+      "expected_outcome": "It is expected that the configuration employing both local and global context optimization will yield the highest anomaly detection performance across both pixel-level and image-level metrics. Specifically, global optimization is anticipated to enhance image-level AUROC by more effectively capturing global anomaly semantics, while local optimization is expected to boost pixel-level AUROC through improved sensitivity to fine-grained, local anomalies. The combined strategy should reflect synergistic benefits, leading to the highest overall accuracy and validating the necessity of integrating both optimization strategies in the object-agnostic prompt learning module.",
+      "subsection_source": "4.3 A BLATION STUDY",
+      "source": [
+        "/workspace/train_ablation.py",
+        "/workspace/test_ablation.py",
+        "/workspace/run_ablation_study.sh"
+      ],
+      "usage_instructions": "1. First, update the data paths in run_ablation_study.sh to point to your MVTec AD and VisA datasets. 2. Make the script executable with 'chmod +x run_ablation_study.sh'. 3. Execute the script with './run_ablation_study.sh'. This will train and evaluate four configurations of the AnomalyCLIP model: (1) without any context optimization, (2) with only global context optimization, (3) with only local context optimization, and (4) with both local and global context optimization. The script will automatically save checkpoints and results for each configuration, and will output both pixel-level and image-level AUROC scores for comparison. The results will show whether combining local and global context optimization yields better performance than using only one context mode.",
+      "requirements": [
+        "Step 1: Set up the environment by creating directories for checkpoints and results (/workspace/run_ablation_study.sh:16-18)",
+        "Step 2: Define datasets (MVTec AD and VisA) and their paths (/workspace/run_ablation_study.sh:20-22)",
+        "Step 3: For each dataset, train the AnomalyCLIP model with four different context optimization configurations: (1) no context optimization, (2) only global context optimization, (3) only local context optimization, and (4) both local and global context optimization (/workspace/run_ablation_study.sh:25-94, /workspace/train_ablation.py:23-151)",
+        "Step 4: During training, implement global context optimization by computing image-level loss between image features and text features (/workspace/train_ablation.py:84-93)",
+        "Step 5: During training, implement local context optimization by computing pixel-level loss using similarity maps between patch features and text features (/workspace/train_ablation.py:96-112)",
+        "Step 6: Save model checkpoints for each configuration with appropriate naming (/workspace/train_ablation.py:137-150)",
+        "Step 7: For each dataset and configuration, evaluate the trained model on test data (/workspace/run_ablation_study.sh:96-117, /workspace/test_ablation.py:31-158)",
+        "Step 8: Calculate both pixel-level metrics (AUROC, AUPRO) and image-level metrics (AUROC, AP) for each configuration (/workspace/test_ablation.py:132-146)",
+        "Step 9: Generate and display a results table comparing the performance of each configuration across all object classes (/workspace/test_ablation.py:151-158)",
+        "Final Step: Compare the results to determine whether combining local and global context optimization yields better performance than using only one context mode or none (/workspace/test_ablation.py:157-158)"
+      ],
+      "agent_instructions": "Create a system to conduct an ablation study on the AnomalyCLIP model for anomaly detection. The study should compare four different configurations of context optimization: (1) no context optimization, (2) only global context optimization, (3) only local context optimization, and (4) both local and global context optimization.\n\nYour implementation should:\n\n1. Create a training script that can train the AnomalyCLIP model with configurable context optimization settings:\n   - Global context optimization should focus on image-level features and classification\n   - Local context optimization should focus on pixel-level features and segmentation\n   - The script should accept command-line arguments to enable/disable each type of optimization\n   - Save checkpoints for each configuration with appropriate naming\n\n2. Create an evaluation script that:\n   - Loads trained models and evaluates them on test data\n   - Calculates both pixel-level metrics (AUROC, AUPRO) and image-level metrics (AUROC, AP)\n   - Outputs a formatted table with results for each object class and the mean across classes\n\n3. Create a shell script that orchestrates the entire study:\n   - Runs training for all four configurations on both MVTec AD and VisA datasets\n   - Evaluates each trained model\n   - Organizes results in a structured directory\n\nThe goal is to determine whether combining local and global context optimization yields better anomaly detection performance than using only one context mode or none at all.",
+      "masked_source": [
+        "/workspace/train_ablation.py",
+        "/workspace/test_ablation.py",
+        "/workspace/run_ablation_study.sh"
+      ]
+    }
+  ]
+}

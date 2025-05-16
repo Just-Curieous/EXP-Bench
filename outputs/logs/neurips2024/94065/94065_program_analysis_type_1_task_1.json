@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Set up the training script that handles model configuration, initialization, and training loop (/workspace/scripts/train.py:32-259)",
+    "Step 2: Implement the NeuRodin model with configurable components for explicit bias correction and TUVR modeling (/workspace/nerfstudio/models/neurodin.py:57-180)",
+    "Step 3: Implement the explicit bias correction mechanism that forces SDF to be negative behind surface points (/workspace/nerfstudio/models/neurodin.py:828-846)",
+    "Step 4: Implement the NeuRodin field with configurable TUVR modeling (/workspace/nerfstudio/fields/neurodin_field.py:213-313)",
+    "Step 5: Implement the TUVR modeling mechanism that scales SDF by the dot product of gradient and view direction (/workspace/nerfstudio/fields/neurodin_field.py:1018-1030)",
+    "Step 6: Create a surface extraction script that loads trained models and extracts meshes (/workspace/zoo/extract_surface.py:1-17)",
+    "Step 7: Implement model loading functionality to retrieve trained checkpoints (/workspace/zoo/extract_surface.py:18-60)",
+    "Step 8: Implement mesh extraction using marching cubes algorithm (/workspace/zoo/mesh_utils.py:23-41)",
+    "Step 9: Handle post-processing for fair comparison with baseline methods (/workspace/zoo/extract_surface.py:113-176)",
+    "Final Step: Save the extracted mesh to disk for evaluation (/workspace/zoo/extract_surface.py:180-184)"
+  ],
+  "agent_instructions": "Your task is to implement a two-stage neural surface reconstruction framework that can be used to evaluate the contribution of two key components: explicit bias correction in Stage 1 and TUVR modeling in Stage 2.\n\nThe framework should include:\n\n1. A training script that supports configuring and training models with different components enabled/disabled\n\n2. A model implementation with the following key components:\n   - Stage 1: Explicit bias correction that forces the SDF to be negative behind surface points\n   - Stage 2: TUVR modeling that scales the SDF by the dot product of the gradient and view direction\n\n3. A surface extraction script that:\n   - Loads trained models\n   - Extracts meshes using marching cubes at a specified resolution\n   - Handles post-processing for fair comparison with baseline methods\n   - Saves the extracted mesh to disk\n\nThe implementation should support the following experiment configurations:\n- Full pipeline (both components enabled)\n- Without explicit bias correction (disable in Stage 1)\n- Without TUVR modeling (disable in Stage 2)\n- Without both components\n- Neuralangelo baseline\n\nThe framework should be compatible with the Tanks and Temples dataset and support evaluation using the official evaluation server.",
+  "masked_source": [
+    "/workspace/scripts/train.py",
+    "/workspace/zoo/extract_surface.py",
+    "/workspace/zoo/mesh_utils.py",
+    "/workspace/nerfstudio/models/neurodin.py",
+    "/workspace/nerfstudio/fields/neurodin_field.py"
+  ]
+}

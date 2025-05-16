@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Check for required libraries (libibverbs) to ensure proper networking support (/workspace/examples/test_all_schedules.sh:3-8)",
+    "Step 2: Define the pipeline scheduling strategies to be tested, including 1F1B and Zero Bubble variants (/workspace/examples/test_all_schedules.sh:10-20)",
+    "Step 3: Set up distributed training environment variables (world size, rank, master address, port) (/workspace/examples/test_all_schedules.sh:22-34)",
+    "Step 4: Wait until GPUs are available for use by checking memory usage (/workspace/examples/test_all_schedules.sh:38-59)",
+    "Step 5: Configure common training parameters (CUDA settings, logging intervals) (/workspace/examples/test_all_schedules.sh:61-65)",
+    "Step 6: For each scheduling strategy, set up specific environment variables (/workspace/examples/test_all_schedules.sh:71-102)",
+    "Step 7: Configure model architecture parameters (layers, hidden size, attention heads) based on pipeline size (/workspace/examples/test_all_schedules.sh:78-86)",
+    "Step 8: For Zero Bubble (ZB) strategy, enable zero bubble and set memory limit to 2x pipeline size (/workspace/examples/test_all_schedules.sh:105-107)",
+    "Step 9: For 1F1B strategy, ensure zero bubble is disabled (/workspace/examples/test_all_schedules.sh:124-125)",
+    "Step 10: Download and prepare the training dataset if not already available (/workspace/examples/pretrain_zero_bubble.sh:17-20)",
+    "Step 11: Configure model training parameters including sequence length, batch sizes, and learning rates (/workspace/examples/pretrain_zero_bubble.sh:72-114)",
+    "Step 12: Set up model architecture options (transformer implementation, flash attention, etc.) (/workspace/examples/pretrain_zero_bubble.sh:115-114)",
+    "Step 13: Launch distributed training using torchrun with the configured parameters (/workspace/examples/pretrain_zero_bubble.sh:151-155)",
+    "Step 14: Collect and log training metrics for comparison between scheduling strategies (/workspace/examples/test_all_schedules.sh:152-153)",
+    "Final Step: Compare the throughput and memory usage between different scheduling strategies from the logs (/workspace/examples/test_all_schedules.sh:173-174)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for comparing different pipeline parallelism scheduling strategies for large language model training, specifically focusing on Zero Bubble (ZB-2p) and 1F1B (one-forward-one-backward) under identical memory constraints.\n\nYou need to create:\n\n1. A main script that tests multiple scheduling strategies by:\n   - Setting up distributed training environment variables\n   - Configuring model parameters based on available GPUs\n   - Running each strategy sequentially and logging results\n   - Ensuring proper cleanup between runs\n\n2. A training script that:\n   - Downloads a sample dataset if not available\n   - Configures model architecture (layers, hidden size, attention heads)\n   - Sets up appropriate batch sizes and learning rates\n   - Launches distributed training with the specified scheduling strategy\n\nThe key scheduling strategies to implement are:\n- Zero Bubble (ZB-2p): Uses memory-aware scheduling with a memory limit of 2x pipeline size\n- 1F1B: Standard one-forward-one-backward pipeline scheduling\n\nFor fair comparison, when using ZB-2p, set MICRO_BATCH_SIZE=1, and when using 1F1B, set MICRO_BATCH_SIZE=2 to maintain equivalent memory usage.\n\nThe scripts should automatically detect the number of available GPUs, configure the pipeline size accordingly, and scale the number of model layers based on pipeline size.\n\nEnsure the output logs contain throughput metrics (samples per second) for comparing the efficiency of different scheduling strategies.",
+  "masked_source": [
+    "/workspace/examples/test_all_schedules.sh",
+    "/workspace/examples/pretrain_zero_bubble.sh"
+  ]
+}

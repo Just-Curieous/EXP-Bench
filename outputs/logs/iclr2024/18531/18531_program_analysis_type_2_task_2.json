@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Import necessary modules from civrealm and gymnasium (/workspace/src/civrealm/random_game.py:17-22)",
+    "Step 2: Create a FreecivBase-v0 environment using gymnasium.make() (/workspace/src/civrealm/random_game.py:26)",
+    "Step 3: Create a RandomAgent instance (/workspace/src/civrealm/random_game.py:28)",
+    "Step 4: Reset the environment to get initial observations and info (/workspace/src/civrealm/random_game.py:30)",
+    "Step 5: Initialize game state variables (done flag and step counter) (/workspace/src/civrealm/random_game.py:31-32)",
+    "Step 6: Implement a game loop that continues until the game is done (terminated or truncated) (/workspace/src/civrealm/random_game.py:33-45)",
+    "Step 7: Within the game loop, get an action from the agent using current observations and info (/workspace/src/civrealm/random_game.py:35)",
+    "Step 8: Step the environment with the action to get new observations, reward, termination status, and info (/workspace/src/civrealm/random_game.py:36-37)",
+    "Step 9: Print information about the current step (step number, turn, reward, termination status, action) (/workspace/src/civrealm/random_game.py:38-40)",
+    "Step 10: Update step counter and check if the game is done (/workspace/src/civrealm/random_game.py:41-42)",
+    "Step 11: Handle exceptions that may occur during the game loop (/workspace/src/civrealm/random_game.py:43-45)",
+    "Step 12: Close the environment when the game is done (/workspace/src/civrealm/random_game.py:46)",
+    "Step 13: Plot the game scores using env.plot_game_scores() (/workspace/src/civrealm/random_game.py:51)",
+    "Final Step: Get and print the game results using env.get_game_results() (/workspace/src/civrealm/random_game.py:52-53)"
+  ],
+  "agent_instructions": "Create a script that runs a basic game in CivRealm with a random agent and visualizes the results. Your script should:\n\n1. Import the necessary modules from civrealm and gymnasium\n2. Create a CivRealm environment using the 'FreecivBase-v0' environment ID\n3. Initialize a random agent that will make decisions in the game\n4. Reset the environment to get the initial game state\n5. Implement a game loop that:\n   - Gets actions from the random agent based on current observations\n   - Steps the environment with these actions\n   - Tracks and displays information about each step (including turn number, rewards, and actions taken)\n   - Continues until the game terminates or is truncated\n6. Handle any exceptions that might occur during gameplay\n7. Properly close the environment when the game ends\n8. Visualize the game results by plotting game scores\n9. Retrieve and display the final game results\n\nThe script should run as a standalone program and demonstrate how the random agent performs in the CivRealm environment."
+}

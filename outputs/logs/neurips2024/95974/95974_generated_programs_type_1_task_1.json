@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/womd/tools/test.py",
+        "/workspace/womd/tools/submission.py"
+    ],
+    "usage_instructions": "To reproduce the marginal and joint motion prediction experiments on the WOMD dataset as described in Tables 4 and 5 of the paper:\n\n1. First, prepare the data following the instructions in /workspace/docs/womd/DataPrep_pred.md\n\n2. For marginal prediction evaluation (Table 4 metrics including minADE, minFDE, Miss Rate, mAP, and Soft mAP):\n   ```bash\n   cd /workspace/womd/tools\n   bash scripts/dist_test.sh [N_GPUS] --cfg_file cfg/BeTopNet_full_64.yaml --batch_size [BATCH_SIZE] --ckpt [PATH_TO_CHECKPOINT]\n   ```\n\n3. For joint prediction evaluation (Table 5 metrics with focus on mAP and Soft mAP):\n   ```bash\n   cd /workspace/womd/tools\n   python submission.py --cfg_file cfg/BeTopNet_full_64.yaml --batch_size [BATCH_SIZE] --ckpt [PATH_TO_CHECKPOINT] --output_dir [OUTPUT_DIR] --interactive\n   ```\n\n4. To compare with baseline methods (TestReCoAt, HDGT, MTR/MTR++, MGTR), you can run the same commands with different configuration files:\n   - For MTR++: `--cfg_file cfg/MTR_PlusPlus.yaml`\n   - For Wayformer: `--cfg_file cfg/Wayformer.yaml`\n\nThe evaluation results will be saved in the specified output directory, showing the performance metrics mentioned in Tables 4 and 5 of the paper, including the percentage improvements of BeTopNet over baseline methods."
+}

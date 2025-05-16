@@ -1,0 +1,78 @@
+[
+  {
+    "mode": "B",
+    "question": "Implement a Time Delay Neural Network (TDNN) model for speech recognition on the yesno dataset that achieves a Word Error Rate (WER) of less than 1%.",
+    "method": "Create a TDNN model that processes audio features and outputs log probabilities for phoneme classes. The model should be trained using CTC loss on the yesno dataset, which consists of recordings of someone saying 'yes' or 'no' in various combinations.",
+    "expected_outcome": "A trained model that achieves a WER of less than 1% on the test set. The expected output should be similar to: [test_set] %WER 0.42% [1 / 240, 0 ins, 1 del, 0 sub]",
+    "source": [
+      "/workspace/egs/yesno/ASR/tdnn/model.py",
+      "/workspace/egs/yesno/ASR/tdnn/train.py",
+      "/workspace/egs/yesno/ASR/tdnn/decode.py",
+      "/workspace/egs/yesno/ASR/tdnn/asr_datamodule.py"
+    ],
+    "usage_instructions": "1. Implement a TDNN model with a structure similar to the one in model.py, consisting of three Conv1d layers with ReLU activations and BatchNorm, followed by a linear output layer.\n2. Set up the training process using CTC loss as shown in train.py, with appropriate hyperparameters (learning rate, batch size, etc.).\n3. Create a data module to load and preprocess the yesno dataset, extracting fbank features from the audio.\n4. Train the model for a sufficient number of epochs (around 15) to achieve convergence.\n5. Implement a decoding function that converts the model's output probabilities to word sequences.\n6. Evaluate the model on the test set and report the Word Error Rate (WER).",
+    "requirements": [
+      "Step 1: Create a TDNN model class with three Conv1d layers, each followed by ReLU activation and BatchNorm, and a final linear layer that outputs log probabilities for phoneme classes (/workspace/egs/yesno/ASR/tdnn/model.py:10-62)",
+      "Step 2: Set up data loading for the yesno dataset, extracting 23-dimensional fbank features from audio (/workspace/egs/yesno/ASR/tdnn/asr_datamodule.py:38-261)",
+      "Step 3: Initialize the TDNN model with appropriate input and output dimensions based on feature size and number of phoneme classes (/workspace/egs/yesno/ASR/tdnn/train.py:499-502)",
+      "Step 4: Set up CTC loss for training using a graph compiler from the k2 library (/workspace/egs/yesno/ASR/tdnn/train.py:497-497, 253-323)",
+      "Step 5: Train the model using SGD optimizer with appropriate learning rate and weight decay for multiple epochs (/workspace/egs/yesno/ASR/tdnn/train.py:510-553)",
+      "Step 6: Save checkpoints during training and track the best model based on validation loss (/workspace/egs/yesno/ASR/tdnn/train.py:217-250)",
+      "Step 7: Implement decoding functionality to convert model outputs to word sequences using k2's one_best_decoding (/workspace/egs/yesno/ASR/tdnn/decode.py:79-140)",
+      "Step 8: Evaluate the model on the test set and calculate Word Error Rate (WER) (/workspace/egs/yesno/ASR/tdnn/decode.py:143-204, 305-313)",
+      "Final Step: Report the WER and verify it is less than 1% (/workspace/egs/yesno/ASR/tdnn/decode.py:207-248)"
+    ],
+    "agent_instructions": "Your task is to implement a Time Delay Neural Network (TDNN) model for speech recognition on the yesno dataset that achieves a Word Error Rate (WER) of less than 1%. Follow these steps:\n\n1. Create a TDNN model architecture:\n   - Implement a PyTorch model with three Conv1d layers\n   - Each Conv1d layer should be followed by ReLU activation and BatchNorm\n   - Add a final linear layer that outputs log probabilities for phoneme classes\n   - The model should take audio features as input and output log probabilities\n\n2. Set up data processing for the yesno dataset:\n   - Create a data module to load and preprocess the yesno dataset\n   - Extract 23-dimensional fbank features from the audio files\n   - Split the data into training and testing sets\n\n3. Implement the training process:\n   - Use CTC loss for training the model\n   - Set up an SGD optimizer with appropriate learning rate (around 1e-2)\n   - Train the model for sufficient epochs (around 15) to achieve convergence\n   - Save checkpoints and track the best model based on validation loss\n\n4. Implement decoding and evaluation:\n   - Create a decoding function that converts model outputs to word sequences\n   - Use k2's one_best_decoding for finding the best path\n   - Evaluate the model on the test set and calculate Word Error Rate (WER)\n   - Report the WER and verify it is less than 1%\n\nThe yesno dataset consists of recordings of someone saying 'yes' or 'no' in various combinations. Your goal is to train a model that can accurately recognize these words with a WER of less than 1%."
+  },
+  {
+    "mode": "B",
+    "question": "Create a speech recognition inference script that can transcribe audio files containing 'yes' and 'no' utterances using a pre-trained model.",
+    "method": "Develop a script that loads a pre-trained TDNN model, processes input audio files to extract features, runs inference to get log probabilities, and decodes the output to produce transcriptions of 'yes' and 'no' sequences.",
+    "expected_outcome": "A script that can take audio files as input and output the transcribed text. For example, given an audio file with the sequence 'no no no yes no no no yes', the script should output exactly that text.",
+    "source": [
+      "/workspace/egs/yesno/ASR/tdnn/pretrained.py",
+      "/workspace/egs/yesno/ASR/tdnn/model.py"
+    ],
+    "usage_instructions": "1. Create a script that accepts command-line arguments for the checkpoint path, HLG graph, words file, and input audio files.\n2. Load the pre-trained TDNN model from the checkpoint.\n3. Implement audio processing to convert input audio files to features (using kaldifeat for Fbank extraction).\n4. Run the model on the extracted features to get log probabilities.\n5. Use the HLG graph and k2 library functions to decode the output probabilities into word sequences.\n6. Print the transcription results for each input audio file.",
+    "requirements": [
+      "Step 1: Parse command-line arguments for checkpoint path, HLG graph, words file, and input audio files (/workspace/egs/yesno/ASR/tdnn/pretrained.py:50-83)",
+      "Step 2: Define parameters for feature extraction and decoding (feature dimension, number of classes, sample rate, beam sizes) (/workspace/egs/yesno/ASR/tdnn/pretrained.py:86-99)",
+      "Step 3: Load the pre-trained TDNN model from checkpoint (/workspace/egs/yesno/ASR/tdnn/pretrained.py:146-154)",
+      "Step 4: Load the HLG graph for decoding (/workspace/egs/yesno/ASR/tdnn/pretrained.py:156-158)",
+      "Step 5: Set up the Fbank feature extractor with appropriate parameters (frame rate, number of bins) (/workspace/egs/yesno/ASR/tdnn/pretrained.py:160-169)",
+      "Step 6: Read and process input audio files, resampling if necessary (/workspace/egs/yesno/ASR/tdnn/pretrained.py:102-126, 171-175)",
+      "Step 7: Extract features from audio using the Fbank computer (/workspace/egs/yesno/ASR/tdnn/pretrained.py:178-180)",
+      "Step 8: Run the model on the features to get log probabilities (/workspace/egs/yesno/ASR/tdnn/pretrained.py:183)",
+      "Step 9: Prepare supervision segments for decoding (/workspace/egs/yesno/ASR/tdnn/pretrained.py:185-189)",
+      "Step 10: Use the HLG graph and k2 library to decode the output probabilities into a lattice (/workspace/egs/yesno/ASR/tdnn/pretrained.py:191-199)",
+      "Step 11: Perform one-best decoding on the lattice (/workspace/egs/yesno/ASR/tdnn/pretrained.py:201-203)",
+      "Step 12: Convert the decoded IDs to words using the words file (/workspace/egs/yesno/ASR/tdnn/pretrained.py:205-207)",
+      "Final Step: Print the transcription results for each input audio file (/workspace/egs/yesno/ASR/tdnn/pretrained.py:209-213)"
+    ],
+    "agent_instructions": "Create a speech recognition inference script that can transcribe audio files containing 'yes' and 'no' utterances using a pre-trained TDNN (Time Delay Neural Network) model. The script should:\n\n1. Accept command-line arguments for:\n   - Path to a pre-trained model checkpoint\n   - Path to an HLG graph file (for decoding)\n   - Path to a words file (for mapping IDs to words)\n   - One or more input audio files to transcribe\n\n2. Load the pre-trained TDNN model, which should have:\n   - Input dimension matching the feature dimension (23 for Fbank features)\n   - Output dimension matching the number of classes (4 for blank, 'no', silence, and 'yes')\n   - A structure with convolutional layers followed by a linear output layer\n\n3. Process audio files by:\n   - Reading audio files using torchaudio\n   - Resampling to 8kHz if necessary\n   - Extracting Fbank features using kaldifeat\n   - Padding features appropriately for batch processing\n\n4. Perform inference and decoding by:\n   - Running the model on the extracted features to get log probabilities\n   - Using the HLG graph with k2 library functions to decode the output\n   - Converting the decoded IDs to words using the provided words file\n\n5. Output the transcription results for each input audio file\n\nThe script should handle multiple input files in a batch and print the transcription for each file. For example, given an audio file with the sequence 'no no no yes no no no yes', the script should output exactly that text."
+  },
+  {
+    "mode": "A",
+    "question": "Implement a speech recognition system using the Transducer architecture on the yesno dataset and compare its performance with the TDNN-CTC model.",
+    "method": "Use the existing Transducer framework in icefall to build a speech recognition system for the yesno dataset. The system should consist of an encoder network, a decoder (prediction) network, and a joiner network. Train the model using the RNN-T loss function and evaluate its performance.",
+    "expected_outcome": "A trained Transducer model that achieves comparable or better performance than the TDNN-CTC model on the yesno dataset. The evaluation should include WER metrics and a comparison with the TDNN-CTC approach.",
+    "source": [
+      "/workspace/egs/yesno/ASR/transducer/train.py",
+      "/workspace/egs/yesno/ASR/transducer/decode.py",
+      "/workspace/egs/yesno/ASR/transducer/model.py"
+    ],
+    "usage_instructions": "1. Use the existing Transducer class from model.py which combines an encoder, decoder, and joiner.\n2. Configure the training process with appropriate hyperparameters for the Transducer model.\n3. Train the model on the yesno dataset using the RNN-T loss function from torchaudio.\n4. Implement beam search decoding for the Transducer model to convert its outputs to word sequences.\n5. Evaluate the model on the test set and calculate the WER.\n6. Compare the results with the TDNN-CTC model in terms of accuracy and efficiency.",
+    "requirements": [
+      "Step 1: Set up the Transducer model architecture with three components: an encoder network (TDNN-based), a decoder (prediction) network (LSTM-based), and a joiner network (/workspace/egs/yesno/ASR/transducer/model.py:35-66, /workspace/egs/yesno/ASR/transducer/encoder.py:21-62, /workspace/egs/yesno/ASR/transducer/decoder.py:23-66, /workspace/egs/yesno/ASR/transducer/joiner.py:22-27)",
+      "Step 2: Implement the forward pass for the Transducer model that computes the RNN-T loss using torchaudio's rnnt_loss function (/workspace/egs/yesno/ASR/transducer/model.py:67-120)",
+      "Step 3: Create a data loading mechanism for the yesno dataset with appropriate preprocessing (/workspace/egs/yesno/ASR/transducer/train.py:531-537)",
+      "Step 4: Implement the training loop with gradient clipping and validation (/workspace/egs/yesno/ASR/transducer/train.py:368-457)",
+      "Step 5: Implement a function to compute loss for both training and validation (/workspace/egs/yesno/ASR/transducer/train.py:287-329)",
+      "Step 6: Implement greedy search decoding for the Transducer model to convert outputs to word sequences (/workspace/egs/yesno/ASR/transducer/beam_search.py:23-69)",
+      "Step 7: Implement a function to decode the entire dataset and calculate metrics (/workspace/egs/yesno/ASR/transducer/decode.py:135-188)",
+      "Step 8: Save and evaluate the model, calculating Word Error Rate (WER) (/workspace/egs/yesno/ASR/transducer/decode.py:191-232)",
+      "Step 9: Compare the performance of the Transducer model with the TDNN-CTC model in terms of accuracy (WER) and efficiency (/workspace/egs/yesno/ASR/transducer/decode.py:254-304)"
+    ],
+    "agent_instructions": "Your task is to implement a speech recognition system using the Transducer architecture on the yesno dataset and compare its performance with the TDNN-CTC model. Follow these steps:\n\n1. Create a Transducer model architecture with three components:\n   - Encoder: A TDNN (Time Delay Neural Network) that processes input audio features\n   - Decoder: An LSTM-based network that processes prediction history\n   - Joiner: A network that combines encoder and decoder outputs\n\n2. The model should use the RNN-T loss function from torchaudio for training.\n\n3. For the yesno dataset:\n   - It's a simple dataset with only \"YES\" and \"NO\" words\n   - The vocabulary consists of 3 tokens: blank, YES, and NO\n   - Use appropriate data loading and preprocessing\n\n4. Implement the training process:\n   - Set up appropriate hyperparameters\n   - Include validation during training\n   - Use gradient clipping to stabilize training\n   - Save checkpoints of the model\n\n5. Implement decoding using greedy search to convert model outputs to word sequences.\n\n6. Evaluate the model on the test set:\n   - Calculate Word Error Rate (WER)\n   - Save the transcription results\n   - Generate detailed error statistics\n\n7. Compare the performance of your Transducer model with the TDNN-CTC model:\n   - Compare accuracy (WER)\n   - Compare efficiency (training time, inference time)\n   - Analyze the strengths and weaknesses of each approach\n\nThe goal is to achieve comparable or better performance than the TDNN-CTC model on this dataset."
+  }
+]

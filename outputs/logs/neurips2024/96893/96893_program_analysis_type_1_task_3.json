@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Set up command line arguments for training, including dataset codes parameter that controls which datasets to use (train.py:15-48)",
+    "Step 2: Create a data loader that combines multiple datasets based on the dataset_codes parameter (data_utils.py:205-265)",
+    "Step 3: Initialize the SegVol model with image encoder, mask decoder, prompt encoder, and text encoder components (network/model.py:12-31)",
+    "Step 4: Implement the training loop with supervised and unsupervised loss components (train.py:50-117)",
+    "Step 5: Set up distributed training across multiple GPUs using PyTorch's DistributedDataParallel (train.py:119-202)",
+    "Step 6: Implement the main training function that initializes the model, optimizer, scheduler, and calls the training loop (train.py:203-219)",
+    "Step 7: Create command line arguments for inference, including parameters for the model checkpoint and demo configuration (inference_demo.py:13-26)",
+    "Step 8: Implement a function to calculate Dice score for evaluating segmentation performance (inference_demo.py:28-45)",
+    "Step 9: Create a zoom-in-zoom-out inference strategy for handling 3D medical images (inference_demo.py:47-155)",
+    "Step 10: Process CT and ground truth data for inference, including normalization and transformations (data_process/demo_data_process.py:49-106)",
+    "Step 11: Implement the main inference function that loads the model, processes data, and runs inference (inference_demo.py:157-214)"
+  ],
+  "agent_instructions": "Your task is to implement a medical image segmentation system for an ablation study on scaling up training dataset size with the BTCV dataset. The system should include:\n\n1. A training script that:\n   - Accepts command line arguments for dataset selection, allowing training with different numbers of datasets (1, 2, 8, or all 25)\n   - Loads and processes 3D medical imaging data\n   - Implements a segmentation model that combines image encoding, text prompts, and mask decoding\n   - Supports both supervised and semi-supervised learning with pseudo-labels\n   - Enables distributed training across multiple GPUs\n   - Saves model checkpoints periodically\n\n2. An inference script that:\n   - Loads a trained model checkpoint\n   - Processes test CT scans and ground truth segmentations\n   - Supports different types of prompts (text, box, point) for segmentation\n   - Implements a zoom-in-zoom-out inference strategy for handling 3D volumes\n   - Calculates and reports Dice scores for evaluation\n   - Optionally visualizes the segmentation results\n\nThe system should be configurable to run the ablation study described in the paper, where models are trained with increasing numbers of datasets and evaluated on the BTCV test split to observe how performance scales with training data size.",
+  "masked_source": [
+    "/workspace/train.py",
+    "/workspace/inference_demo.py",
+    "/workspace/network/model.py",
+    "/workspace/data_utils.py",
+    "/workspace/data_process/demo_data_process.py"
+  ]
+}

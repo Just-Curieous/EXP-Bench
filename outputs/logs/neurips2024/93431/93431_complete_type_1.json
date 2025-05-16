@@ -1,0 +1,307 @@
+{
+  "questions": [
+    {
+      "question": "Does OptoPrime (Trace) match or outperform Adam in classical differentiable optimization problems? Do this for Trace (Optoprime), and a variant that does not see the computational graph (Trace Masked).",
+      "method": "1. **Optimization Problem:** The experiment evaluates OptoPrime (Trace) on a **synthetic numerical optimization task**, solving  \n   \\[\n   \\min_x |h(x) - y^*|\n   \\]\n   for a randomly generated target \\( y^* \\).  \n2. **Randomized Trials:**  \n   - **30 trials** are conducted with **different randomly generated problems**.  \n   - The computational graph of \\( h(x) \\) contains **arbitrarily complex numerical connections**.  \n3. **Comparative Evaluation:**  \n   - OptoPrime (Trace) is compared to:  \n     - **Trace Masked** (a variant without graph access).  \n     - **Adam optimizer** (a gradient-based baseline).  \n4. **Feedback Mechanism:**  \n   - Optimizers receive feedback in the form of **\u201cThe output should be <larger/smaller>\u201d**, which represents gradient information w.r.t. \\( h(x) \\).",
+      "expected_outcome": "- **Trace (OptoPrime) should match Adam\u2019s best-in-class performance** in finding \\( x^* \\).  \n- **Trace Masked (feedback-only optimizer) should struggle** to find \\( x^* \\) due to the lack of access to the computational graph.  \n- **All methods should exhibit similar levels of randomness**, ensuring fair comparison.",
+      "no_answer": "After thoroughly searching the repository, I could not find any script or set of scripts that specifically answer the experiment question about comparing OptoPrime (Trace) with Adam in classical differentiable optimization problems, including a variant that does not see the computational graph (Trace Masked). While the repository contains various examples and tutorials demonstrating the use of OptoPrime and other optimizers, none directly address the specific synthetic numerical optimization task described in the question with the 30 randomized trials and comparative evaluation against Adam and a masked variant."
+    },
+    {
+      "question": "- **Does Trace NoMem (OptoPrime without memory) perform worse than Trace, highlighting the importance of memory for optimization in complex system orchestration?**",
+      "method": "1. **Problem Setup:**  \n   - **Task:** Optimize **traffic light durations** at a **four-way intersection** to minimize vehicle delay.  \n   - **Simulator:** UXSim [26] is used to simulate traffic flow.  \n   - **Trainable Parameters:** Two integer values in the range **[15, 90]**, representing the green light duration for each direction.  \n   - **Feedback Signal:** The **estimated delay** experienced by vehicles due to intersection control.  \n   - **Objective:** Minimize vehicle delay **using the fewest number of traffic simulations**.  \n\n2. **Comparative Evaluation:**  \n   - **Trace (OptoPrime with memory)**\n   - **Trace NoMem (OptoPrime without memory)**\n   - **SCATS**: A state-of-the-art heuristic from traffic control literature.  \n   - **Gaussian Process Minimization (GP)**: A black-box optimization technique.  \n   - **Particle Swarm Optimization (PSO)**: Another black-box optimization technique.  \n\n3. **Performance Metric:**  \n   - The methods are evaluated based on **how quickly they find an effective traffic light schedule**.  \n   - All methods start from **the same initial conditions** to ensure fair comparison.",
+      "expected_outcome": "- **Trace (OptoPrime with memory) should quickly achieve competitive performance with SCATS**, while OPRO struggles.  \n- **Trace NoMem should perform worse than Trace**, demonstrating that **memory is crucial for optimization in this setting**.  \n- **GP and PSO should initially perform poorly because 50 iterations are insufficient for convergence**, though they would improve with more iterations.  \n- **Trace incurs extra computational overhead** due to storing the computation graph and querying an LLM with longer prompts.",
+      "no_answer": "While the repository contains a notebook (/workspace/docs/examples/numerical/numerical_optimization.ipynb) that implements traffic light optimization using Trace and includes functionality to run with or without memory (via the trace_memory parameter), it does not contain a complete script or set of scripts that directly compares all the methods mentioned in the experiment question (Trace with memory, Trace without memory, SCATS, GP, and PSO). The notebook demonstrates how to use Trace for traffic optimization but doesn't include the comparative evaluation with all these methods. The paper mentions this experiment, but the corresponding comprehensive comparison code doesn't appear to be included in the repository."
+    },
+    {
+      "question": "- **Does Trace NoMem (OptoPrime without memory) perform worse than Trace, highlighting the importance of memory for optimization in complex system orchestration?**",
+      "method": "1. **Problem Setup:**  \n   - **Task:** Optimize **traffic light durations** at a **four-way intersection** to minimize vehicle delay.  \n   - **Simulator:** UXSim [26] is used to simulate traffic flow.  \n   - **Trainable Parameters:** Two integer values in the range **[15, 90]**, representing the green light duration for each direction.  \n   - **Feedback Signal:** The **estimated delay** experienced by vehicles due to intersection control.  \n   - **Objective:** Minimize vehicle delay **using the fewest number of traffic simulations**.  \n\n2. **Comparative Evaluation:**  \n   - **Trace (OptoPrime with memory)**\n   - **Trace NoMem (OptoPrime without memory)**\n\n3. **Performance Metric:**  \n   - The methods are evaluated based on **how quickly they find an effective traffic light schedule**.  \n   - All methods start from **the same initial conditions** to ensure fair comparison.",
+      "expected_outcome": "- **Trace NoMem should perform worse than Trace**, demonstrating that **memory is crucial for optimization in this setting**.",
+      "no_answer": "While the repository contains a traffic light optimization example in `/workspace/docs/examples/numerical/numerical_optimization.ipynb` that uses UXSim to optimize traffic light durations at a four-way intersection, it doesn't explicitly compare Trace with memory vs. Trace NoMem (OptoPrime without memory). The notebook includes functionality to set memory size via the `trace_memory` parameter in the `run_approach` function, but it only demonstrates a single run with `trace_memory=0` (no memory). To answer the experiment question, one would need to modify the notebook to run the comparison with different memory settings (e.g., run once with `trace_memory=0` and once with a positive value like `trace_memory=5`), which goes beyond simply executing existing scripts."
+    },
+    {
+      "question": "- **Can Trace optimize both prompts and functions in an LLM agent workflow more effectively than DSPy\u2019s COPRO, leading to better output correctness and formatting, on the Big-Bench Hard dataset, with 15 examples in the training set, 5 examples in the validation set, and the remaining in the test set?**",
+      "method": "1. **Task Setup:**  \n   - **Goal:** Optimize a DSPy-based **LLM agent** by tuning both **prompts and functions**.  \n   - **Optimized Components:**  \n     - **`prompt_template`**: The **meta-prompt** guiding LLM responses.  \n     - **`create_prompt`**: A function that **modifies the prompt** based on the current query.  \n     - **`extract_answer`**: A function that **post-processes** the LLM output into a structured format.  \n   - **Pipeline:** The experiment evaluates an **end-to-end prompt-and-code optimization system**, where the LLM agent must generate both **correct answers and properly formatted responses**.  \n\n2. **Dataset:**  \n   - **Big-Bench Hard dataset** [21].  \n   - **Training set:** 15 examples.  \n   - **Validation set:** 5 examples.  \n   - **Test set:** Remaining data from the dataset.  \n\n3. **Comparative Evaluation:**  \n   - **Trace**: Optimizes the **full agent workflow** (prompt + functions).  \n   - **DSPy\u2019s COPRO**: Optimizes **only the meta-prompt**.  \n\n4. **Evaluation Metric:**  \n   - An **automatic evaluation function** compares LLM-generated outputs with the ground truth.  \n   - The outputs must be **both correct in content and follow a specified format**.",
+      "expected_outcome": "- **Trace should achieve superior optimization** by jointly tuning prompts and functions, surpassing DSPy\u2019s COPRO.  \n- **DSPy\u2019s COPRO should be limited in its improvements** since it only optimizes the meta-prompt and not the full agent pipeline.",
+      "source": [
+        "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+        "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+      ],
+      "usage_instructions": "1. First, ensure you have the required dependencies installed (autogen, datasets, etc.). 2. Run the Trace optimization script with: `python /workspace/examples/bbh/run_prompt_bigbench_trace.py --task <task_name> --train`. 3. Run the DSPy COPRO optimization script with: `python /workspace/examples/bbh/run_prompt_bigbench_dspy.py --task <task_name> --copro`. 4. Compare the results from both approaches to see which one achieves better performance. The scripts will output accuracy metrics and save detailed results to the specified save paths.",
+      "requirements": [
+        "Step 1: Import necessary libraries including autogen, dspy, datasets, and optimization frameworks (opto.trace for Trace optimization and dspy.teleprompt for DSPy optimization) (/workspace/examples/bbh/run_prompt_bigbench_trace.py:1-17, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:1-11)",
+        "Step 2: Define evaluation metric function that compares model predictions with ground truth answers, handling different answer formats (multiple choice or direct answers) (/workspace/examples/bbh/run_prompt_bigbench_trace.py:20-31, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:13-26)",
+        "Step 3: For Trace optimization: Implement LLMCallable base class that handles LLM API calls with appropriate prompting and response handling (/workspace/examples/bbh/run_prompt_bigbench_trace.py:34-64)",
+        "Step 4: For Trace optimization: Implement Predict model class that defines the standard prediction flow with customizable prompt templates and answer extraction logic (/workspace/examples/bbh/run_prompt_bigbench_trace.py:67-132)",
+        "Step 5: For Trace optimization: Implement PredictCoT model class that extends the standard prediction with chain-of-thought reasoning (/workspace/examples/bbh/run_prompt_bigbench_trace.py:135-198)",
+        "Step 6: For DSPy optimization: Implement BasicQA and CoT model classes using DSPy's module system (/workspace/examples/bbh/run_prompt_bigbench_dspy.py:29-44)",
+        "Step 7: Implement evaluation function to assess model performance on test examples (/workspace/examples/bbh/run_prompt_bigbench_trace.py:287-300, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:46-58)",
+        "Step 8: For Trace optimization: Implement learning function that optimizes the model using training examples and validates on validation examples (/workspace/examples/bbh/run_prompt_bigbench_trace.py:201-284)",
+        "Step 9: Set up command-line argument parsing to control task selection, optimization methods, and other parameters (/workspace/examples/bbh/run_prompt_bigbench_trace.py:303-314, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:61-72)",
+        "Step 10: Define the list of available BigBench Hard tasks (/workspace/examples/bbh/run_prompt_bigbench_trace.py:321-328, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:79-86)",
+        "Step 11: Load dataset for the selected task from 'maveriq/bigbenchhard' (/workspace/examples/bbh/run_prompt_bigbench_trace.py:348, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:111-112)",
+        "Step 12: Split dataset into training, validation, and test sets (/workspace/examples/bbh/run_prompt_bigbench_trace.py:352-354, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:115-116)",
+        "Step 13: For Trace optimization: Initialize model (Predict or PredictCoT) and optimizer (OptoPrime), then train the model on training examples (/workspace/examples/bbh/run_prompt_bigbench_trace.py:358-369)",
+        "Step 14: For DSPy optimization: Initialize model (BasicQA or CoT) and optimizer (BootstrapFewShotWithRandomSearch or COPRO), then compile the optimized model (/workspace/examples/bbh/run_prompt_bigbench_dspy.py:120-139)",
+        "Step 15: Evaluate the optimized model on test examples and calculate accuracy (/workspace/examples/bbh/run_prompt_bigbench_trace.py:379-381, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:146-149)",
+        "Step 16: Save results including accuracy, model responses, and optimized prompts to a pickle file (/workspace/examples/bbh/run_prompt_bigbench_trace.py:383-386, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:161-173)"
+      ],
+      "agent_instructions": "Create two scripts for optimizing prompts on BigBench Hard (BBH) tasks using different optimization frameworks: Trace and DSPy. The scripts should allow comparing the performance of these frameworks on various reasoning tasks.\n\nFor the Trace optimization script:\n1. Implement a system that can optimize prompts and answer extraction logic using the Trace framework\n2. Create two model variants: a standard prediction model and a chain-of-thought (CoT) model\n3. Include functionality to train the model on examples, save checkpoints, and evaluate performance\n4. Support command-line arguments for task selection, model type, and other parameters\n\nFor the DSPy optimization script:\n1. Implement a system that can optimize prompts using DSPy's optimization techniques (particularly COPRO)\n2. Create two model variants: a basic QA model and a chain-of-thought model\n3. Include functionality to evaluate model performance on test examples\n4. Support similar command-line arguments as the Trace script for consistency\n\nBoth scripts should:\n- Load datasets from the 'maveriq/bigbenchhard' collection\n- Support various BBH reasoning tasks\n- Implement the same evaluation metric for fair comparison\n- Save results in a structured format for later analysis\n- Allow for different optimization strategies (standard, few-shot, chain-of-thought)\n\nThe goal is to compare the effectiveness of Trace and DSPy optimization frameworks on improving language model performance on complex reasoning tasks.",
+      "masked_source": [
+        "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+        "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+      ]
+    },
+    {
+      "question": "- **Can Trace optimize both prompts and functions in an LLM agent workflow more effectively than DSPy\u2019s COPRO, leading to better output correctness and formatting, on the Big-Bench Hard dataset, with 15 examples in the training set, 5 examples in the validation set, and the remaining in the test set? Analyze the results only for the algorithmic tasks within this dataset (there should be 11 tasks)**",
+      "method": "1. **Task Setup:**  \n   - **Goal:** Optimize a DSPy-based **LLM agent** by tuning both **prompts and functions**.  \n   - **Optimized Components:**  \n     - **`prompt_template`**: The **meta-prompt** guiding LLM responses.  \n     - **`create_prompt`**: A function that **modifies the prompt** based on the current query.  \n     - **`extract_answer`**: A function that **post-processes** the LLM output into a structured format.  \n   - **Pipeline:** The experiment evaluates an **end-to-end prompt-and-code optimization system**, where the LLM agent must generate both **correct answers and properly formatted responses**.  \n\n2. **Dataset:**  \n   - **Big-Bench Hard dataset** [21].  \n   - **Training set:** 15 examples.  \n   - **Validation set:** 5 examples.  \n   - **Test set:** Remaining data from the dataset.  \n\n3. **Comparative Evaluation:**  \n   - **Trace**: Optimizes the **full agent workflow** (prompt + functions).  \n   - **DSPy\u2019s COPRO**: Optimizes **only the meta-prompt**.  \n\n4. **Evaluation Metric:**  \n   - An **automatic evaluation function** compares LLM-generated outputs with the ground truth.  \n   - The outputs must be **both correct in content and follow a specified format**.",
+      "expected_outcome": "- **Trace should achieve superior optimization** by jointly tuning prompts and functions, surpassing DSPy\u2019s COPRO.  \n- **DSPy\u2019s COPRO should be limited in its improvements** since it only optimizes the meta-prompt and not the full agent pipeline.",
+      "source": [
+        "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+        "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+      ],
+      "usage_instructions": "1. Run the DSPy COPRO script with: `python /workspace/examples/bbh/run_prompt_bigbench_dspy.py --copro --task_start 0 --task_end 27 --save_path results/bigbench_dspy`\n2. Run the Trace script with: `python /workspace/examples/bbh/run_prompt_bigbench_trace.py --task_start 0 --task_end 27 --save_path results/bigbench_trace`\n3. The scripts will automatically split the dataset into 15 examples for training, 5 for validation, and the rest for testing. They will run on all 27 tasks in the Big-Bench Hard dataset, which includes the 11 algorithmic tasks. The results will be saved in the specified directories and can be compared to analyze the performance difference between Trace and DSPy's COPRO.",
+      "requirements": [
+        "Step 1: Import necessary libraries for language model interaction, dataset loading, and evaluation (run_prompt_bigbench_trace.py:1-17, run_prompt_bigbench_dspy.py:1-11)",
+        "Step 2: Define an evaluation metric function that compares predicted answers with ground truth, handling different answer formats like multiple choice or direct answers (run_prompt_bigbench_trace.py:20-31, run_prompt_bigbench_dspy.py:13-26)",
+        "Step 3: Create a base class for language model interaction that handles prompt construction and response processing (run_prompt_bigbench_trace.py:34-64)",
+        "Step 4: Implement a basic prediction module that formats questions and extracts answers from model responses (run_prompt_bigbench_trace.py:67-132, run_prompt_bigbench_dspy.py:29-36)",
+        "Step 5: Implement a chain-of-thought prediction module that encourages step-by-step reasoning before answering (run_prompt_bigbench_trace.py:135-198, run_prompt_bigbench_dspy.py:38-44)",
+        "Step 6: Create a function to evaluate model performance on a set of examples, calculating accuracy and collecting responses (run_prompt_bigbench_trace.py:287-300, run_prompt_bigbench_dspy.py:46-58)",
+        "Step 7: For the Trace approach, implement a learning function that optimizes prompts based on feedback from evaluation results (run_prompt_bigbench_trace.py:201-284)",
+        "Step 8: Set up command-line argument parsing to control task selection, optimization methods, and output paths (run_prompt_bigbench_trace.py:303-314, run_prompt_bigbench_dspy.py:61-72)",
+        "Step 9: Define the list of BigBenchHard tasks to be evaluated (run_prompt_bigbench_trace.py:321-328, run_prompt_bigbench_dspy.py:79-86)",
+        "Step 10: Load the dataset for each task and split into training (15 examples), validation (5 examples), and test sets (run_prompt_bigbench_trace.py:348-354, run_prompt_bigbench_dspy.py:111-116)",
+        "Step 11: Initialize the appropriate model (basic or chain-of-thought) based on command-line arguments (run_prompt_bigbench_trace.py:358-365, run_prompt_bigbench_dspy.py:123-126)",
+        "Step 12: For the DSPy approach, configure optimization using either BootstrapFewShotWithRandomSearch or COPRO based on command-line arguments (run_prompt_bigbench_dspy.py:128-141)",
+        "Step 13: Run the optimization process on the training data (run_prompt_bigbench_trace.py:367-369, run_prompt_bigbench_dspy.py:145-147)",
+        "Step 14: Evaluate the optimized model on the test/validation set (run_prompt_bigbench_trace.py:379-381, run_prompt_bigbench_dspy.py:146-149)",
+        "Step 15: Save the results including accuracy, responses, and optimized prompts (run_prompt_bigbench_trace.py:383-386, run_prompt_bigbench_dspy.py:161-173)"
+      ],
+      "agent_instructions": "Create two scripts to evaluate and optimize language model prompts on the BigBenchHard dataset using different frameworks:\n\n1. First script using the Trace framework:\n   - Load the BigBenchHard dataset from 'maveriq/bigbenchhard'\n   - Implement an evaluation metric that can handle multiple-choice and direct answer formats\n   - Create a base class for language model interaction using autogen\n   - Implement both standard and chain-of-thought prediction modules\n   - Create a learning function that optimizes prompts based on evaluation feedback\n   - Split the dataset into training (15 examples), validation (5 examples), and test sets\n   - Support command-line arguments for task selection and optimization methods\n   - Save results including accuracy, responses, and optimized prompts\n\n2. Second script using the DSPy framework:\n   - Load the same BigBenchHard dataset\n   - Implement the same evaluation metric for consistency\n   - Create basic and chain-of-thought modules using DSPy\n   - Support prompt optimization using either BootstrapFewShotWithRandomSearch or COPRO\n   - Split the dataset into training and validation sets\n   - Support similar command-line arguments for task selection and optimization methods\n   - Save results in the same format for comparison\n\nBoth scripts should be able to run on all 27 tasks in the BigBenchHard dataset and produce comparable results for analysis.",
+      "masked_source": [
+        "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+        "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+      ]
+    },
+    {
+      "question": "- **Can Trace optimize both prompts and functions in an LLM agent workflow more effectively than DSPy\u2019s COPRO, leading to better output correctness and formatting, on the Big-Bench Hard dataset, with 15 examples in the training set, 5 examples in the validation set, and the remaining in the test set? Analyze the results only for the NLP tasks within this dataset (there should be 12 tasks)**",
+      "method": "1. **Task Setup:**  \n   - **Goal:** Optimize a DSPy-based **LLM agent** by tuning both **prompts and functions**.  \n   - **Optimized Components:**  \n     - **`prompt_template`**: The **meta-prompt** guiding LLM responses.  \n     - **`create_prompt`**: A function that **modifies the prompt** based on the current query.  \n     - **`extract_answer`**: A function that **post-processes** the LLM output into a structured format.  \n   - **Pipeline:** The experiment evaluates an **end-to-end prompt-and-code optimization system**, where the LLM agent must generate both **correct answers and properly formatted responses**.  \n\n2. **Dataset:**  \n   - **Big-Bench Hard dataset** [21].  \n   - **Training set:** 15 examples.  \n   - **Validation set:** 5 examples.  \n   - **Test set:** Remaining data from the dataset.  \n\n3. **Comparative Evaluation:**  \n   - **Trace**: Optimizes the **full agent workflow** (prompt + functions).  \n   - **DSPy\u2019s COPRO**: Optimizes **only the meta-prompt**.  \n\n4. **Evaluation Metric:**  \n   - An **automatic evaluation function** compares LLM-generated outputs with the ground truth.  \n   - The outputs must be **both correct in content and follow a specified format**.",
+      "expected_outcome": "- **Trace should achieve superior optimization** by jointly tuning prompts and functions, surpassing DSPy\u2019s COPRO.  \n- **DSPy\u2019s COPRO should be limited in its improvements** since it only optimizes the meta-prompt and not the full agent pipeline.",
+      "source": [
+        "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+        "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+      ],
+      "usage_instructions": "1. First, run the DSPy COPRO optimization script with: `python /workspace/examples/bbh/run_prompt_bigbench_dspy.py --copro --task_start 0 --task_end 12 --save_path results/bigbench_dspy` to optimize only the meta-prompt on the 12 NLP tasks from the Big-Bench Hard dataset.\n2. Then, run the Trace optimization script with: `python /workspace/examples/bbh/run_prompt_bigbench_trace.py --task_start 0 --task_end 12 --save_path results/bigbench_trace` to optimize both prompts and functions on the same 12 NLP tasks.\n3. Both scripts use 15 examples for training, 5 examples for validation, and the remaining examples for testing, as specified in the experiment question. The results will be saved in the respective directories for comparison.",
+      "requirements": [
+        "Step 1: Load the Big-Bench Hard dataset for the specified NLP tasks (/workspace/examples/bbh/run_prompt_bigbench_trace.py:348-349, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:111-112)",
+        "Step 2: Split the dataset into training (first 15 examples), validation (next 5 examples), and testing (remaining examples) sets (/workspace/examples/bbh/run_prompt_bigbench_trace.py:352-354, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:115-116, 134-135)",
+        "Step 3: Define evaluation metrics that handle different answer formats (multiple choice, numerical, string) (/workspace/examples/bbh/run_prompt_bigbench_trace.py:20-31, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:13-26)",
+        "Step 4: For DSPy implementation: Create basic QA and Chain-of-Thought modules that take questions and produce answers (/workspace/examples/bbh/run_prompt_bigbench_dspy.py:29-44)",
+        "Step 5: For DSPy implementation: Set up COPRO optimization to improve the meta-prompt template using training examples (/workspace/examples/bbh/run_prompt_bigbench_dspy.py:136-139)",
+        "Step 6: For Trace implementation: Define model classes with trainable prompt templates and functions for creating prompts and extracting answers (/workspace/examples/bbh/run_prompt_bigbench_trace.py:67-198)",
+        "Step 7: For Trace implementation: Implement optimization loop that iteratively improves both prompt templates and functions based on feedback (/workspace/examples/bbh/run_prompt_bigbench_trace.py:201-284)",
+        "Step 8: Evaluate model performance on test/validation sets using the defined evaluation metric (/workspace/examples/bbh/run_prompt_bigbench_trace.py:287-300, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:46-58, 141)",
+        "Step 9: Save optimization results, including accuracy metrics and optimized prompts/functions (/workspace/examples/bbh/run_prompt_bigbench_trace.py:373-386, /workspace/examples/bbh/run_prompt_bigbench_dspy.py:151-173)"
+      ],
+      "agent_instructions": "Create two scripts for optimizing language model performance on NLP tasks from the Big-Bench Hard dataset:\n\n1. First script: Implement a DSPy-based solution that uses COPRO to optimize meta-prompts for question-answering tasks.\n   - Load the Big-Bench Hard dataset for specified tasks\n   - Create basic QA and Chain-of-Thought modules\n   - Implement COPRO optimization to improve prompt templates\n   - Use 15 examples for training, 5 for validation\n   - Evaluate performance and save results\n\n2. Second script: Implement a Trace-based solution that optimizes both prompts and functions.\n   - Load the same Big-Bench Hard dataset\n   - Define model classes with trainable prompt templates\n   - Create functions for prompt generation and answer extraction\n   - Implement an optimization loop that improves both prompts and functions based on feedback\n   - Use 15 examples for training, 5 for validation, remaining for testing\n   - Evaluate performance and save results\n\nBoth scripts should:\n- Support multiple NLP tasks from the Big-Bench Hard dataset\n- Include evaluation metrics that handle different answer formats (multiple choice, numerical, string)\n- Allow for command-line arguments to specify tasks, optimization methods, and save paths\n- Save optimization results including accuracy metrics",
+      "masked_source": [
+        "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+        "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+      ]
+    },
+    {
+      "question": "- **Can Trace (OptoPrime with memory) effectively optimize long-horizon robotic control tasks, outperforming OPRO and OptoPrime without memory? There are 3 tasks to be evaluated: Reach, Pick-place, and Push. These all belong to the Meta-World environment from LLF-Bench.**",
+      "method": "1. **Task Setup:**  \n   - **Goal:** Optimize long-horizon control for a **simulated Sawyer robot manipulator** in Meta-World (LLF-Bench).  \n   - **Tasks Considered:**  \n     - **Reach**: Move the robot\u2019s end-effector to a target position.  \n     - **Pick-place**: Pick up an object and place it at a designated position.  \n     - **Push**: Push an object to a goal location.  \n   - **Observation Space:** A dictionary of vectors representing:  \n     - End-effector position  \n     - Goal position  \n     - Gripper status  \n   - **Action Space:** A **4D vector** controlling:  \n     - The relative position of the end-effector  \n     - The gripper state  \n\n2. **Training Setup:**  \n   - **Episodic training**: The robot either **completes the task or times out**.  \n   - **Fixed initial conditions**: All training iterations start with the **same conditions**.  \n   - **Task horizon:** **10 steps per episode**, ensuring tasks can be fully executed.  \n\n3. **Comparative Evaluation:**  \n   - **Trace (OptoPrime with memory)**  \n   - **Trace NoMem (OptoPrime without memory)**  \n   - **OPRO** (proposes one candidate per iteration and receives feedback).  \n\n4. **Feedback Mechanism:**  \n   - OPTO provides **textual feedback** on task success.  \n   - The execution trace records **step-by-step rollout** for better optimization.  \n   - Ablation study: An experiment where **execution traces are masked**, testing their impact on stability and performance.",
+      "expected_outcome": "- **Trace (OptoPrime with memory) should be the top-performing optimizer**, particularly in long-horizon tasks requiring multiple steps.  \n- **Trace NoMem (without execution traces) should see a significant drop in performance and stability**, validating the importance of execution traces.  \n- **OPRO should initially perform well in the Reach task but degrade over iterations**, as mentioned in prior studies.  \n- **Trace should generalize well to held-out test conditions**, proving its ability to learn robust control logic.",
+      "source": [
+        "/workspace/docs/examples/robotics/metaworld.ipynb"
+      ],
+      "usage_instructions": "1. Install the required dependencies: `pip install trace-opt` and `pip install -e LLF-Bench/.[metaworld]` (after cloning the LLF-Bench repository).\n2. Set up your OpenAI API key in the notebook.\n3. Modify the `optimize_policy` function to compare the three optimizers:\n   - For Trace (OptoPrime with memory): Use `optimizer = OptoPrime(controller.parameters(), config_list=config_list, memory_size=5)`\n   - For Trace NoMem (OptoPrime without memory): Use `optimizer = OptoPrime(controller.parameters(), config_list=config_list, memory_size=0)`\n   - For OPRO: Use `optimizer = OPRO(controller.parameters(), config_list=config_list)`\n4. Run the notebook with each of the three Meta-World tasks by changing the `env_name` parameter in the `optimize_policy` call:\n   - For Reach: `env_name=\"llf-metaworld-reach-v2\"`\n   - For Pick-place: `env_name=\"llf-metaworld-pick-place-v2\"`\n   - For Push: `env_name=\"llf-metaworld-push-v2\"`\n5. Compare the performance metrics (success rate and returns) across the three optimizers and three tasks.",
+      "requirements": [
+        "Step 1: Import necessary libraries including trace-opt, llfbench, and other required packages (/workspace/docs/examples/robotics/metaworld.ipynb:31-48)",
+        "Step 2: Set up a mechanism to configure the OpenAI API key for LLM-based optimization (/workspace/docs/examples/robotics/metaworld.ipynb:57-101)",
+        "Step 3: Create a function to parse observations from the environment into a dictionary of float lists (/workspace/docs/examples/robotics/metaworld.ipynb:119-127)",
+        "Step 4: Implement a TracedEnv class that wraps the environment and handles resets and steps with proper tracing (/workspace/docs/examples/robotics/metaworld.ipynb:129-178)",
+        "Step 5: Implement a rollout function that executes a controller in the environment for a specified horizon (/workspace/docs/examples/robotics/metaworld.ipynb:196-223)",
+        "Step 6: Create a trainable controller function that computes actions based on observations (/workspace/docs/examples/robotics/metaworld.ipynb:252-262)",
+        "Step 7: Implement the optimize_policy function that uses the Trace package to optimize the controller (/workspace/docs/examples/robotics/metaworld.ipynb:241-316)",
+        "Step 8: Configure the optimizer to use different settings (memory_size=5 for Trace, memory_size=0 for Trace NoMem, or OPRO) (/workspace/docs/examples/robotics/metaworld.ipynb:266)",
+        "Step 9: Run the optimization process with different environment tasks (reach, pick-place, push) (/workspace/docs/examples/robotics/metaworld.ipynb:1465-1474)",
+        "Step 10: Track and compare success rates and returns across different optimizers and tasks (/workspace/docs/examples/robotics/metaworld.ipynb:270-315)"
+      ],
+      "agent_instructions": "Your task is to implement a notebook that uses the trace-opt package to optimize policies for robotic manipulation tasks in Meta-World environments. The notebook should demonstrate how different optimization approaches affect performance across various tasks.\n\nFirst, set up the environment by importing necessary libraries (trace-opt, llfbench) and configuring the OpenAI API key. Then, create a wrapper for the Meta-World environment that integrates with the trace package for optimization.\n\nImplement a rollout function to evaluate controllers and an optimize_policy function that uses language models to improve a controller's performance. The controller should be a trainable function that maps observations to actions for the robot.\n\nThe core of your implementation should compare three different optimizers:\n1. Trace (OptoPrime with memory_size=5)\n2. Trace NoMem (OptoPrime with memory_size=0)\n3. OPRO\n\nRun experiments with each optimizer on three Meta-World tasks:\n1. Reach task (\"llf-metaworld-reach-v2\")\n2. Pick-place task (\"llf-metaworld-pick-place-v2\")\n3. Push task (\"llf-metaworld-push-v2\")\n\nTrack and compare the success rates and returns across different optimizers and tasks. Your implementation should handle observation parsing, environment interactions, and proper tracing of the optimization process.",
+      "masked_source": [
+        "/workspace/docs/examples/robotics/metaworld.ipynb"
+      ]
+    },
+    {
+      "question": "- **Does Trace or TextGrad optimize AI workflows more flexibly and efficiently?**",
+      "method": "1. **Task Setup:**  \n   - **Goal:** Compare Trace and TextGrad for AI workflow optimization.  \n   - **Key Difference Between Methods:**  \n     - **Trace propagates minimal subgraphs** to separate tracing infrastructure from optimization algorithms.  \n     - **TextGrad propagates text feedback**, tightly coupling infrastructure and optimization.   \n\n2. **Experimental Design for Fair Comparison:**  \n   - Applied **Trace directly to the evaluation code released with the TextGrad library**.  \n   - Both frameworks used the **same LLM APIs at around the same time** to ensure fairness.  \n   - **Optimization Tasks Compared:**  \n     - **Solution Optimization** (TextGrad Table 2).  \n     - **Prompt Optimization** (TextGrad Table 3).  \n\n3. **Comparative Evaluation:**  \n   - **OptoPrime (Trace\u2019s optimizer)**  \n   - **TextGrad (original implementation)**",
+      "expected_outcome": "- **All optimization methods should achieve similar success rates**, indicating comparable effectiveness in solution and prompt optimization.   \n- **The results should highlight the architectural advantage of Trace**, showcasing its ability to optimize any computational workflow more flexibly.",
+      "source": [
+        "/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py",
+        "/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py"
+      ],
+      "usage_instructions": "1. First, install TextGrad library: `pip install textgrad`\n2. For solution optimization comparison (TextGrad Table 2): Run `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo trace` to evaluate Trace's OptoPrime optimizer, and `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo textgrad` to evaluate TextGrad. You can also try `--algo opto_multi` for Trace's OptoPrimeMulti optimizer.\n3. For prompt optimization comparison (TextGrad Table 3): Run `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo trace` to evaluate Trace's OptoPrime optimizer, and `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo textgrad` to evaluate TextGrad.\n4. Results will be saved in the `textgrad_figures` directory, showing that both optimization methods achieve similar success rates while highlighting Trace's architectural advantage for flexible workflow optimization.",
+      "requirements": [
+        "Step 1: Set up the environment by importing necessary libraries including textgrad, opto, numpy, argparse, concurrent.futures, and tqdm (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:3-17, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:3-17)",
+        "Step 2: Define command-line arguments for configuring the experiment, including algorithm selection, task selection, model engines, and optimization parameters (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:32-41, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:23-35)",
+        "Step 3: Initialize the language model engines for evaluation and optimization (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:226-227, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:89-92)",
+        "Step 4: Load the task dataset (training, validation, and test sets) (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:228, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:95-96)",
+        "Step 5: For solution optimization: Implement a function to get zero-shot answers from the LLM (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:60-71)",
+        "Step 6: For solution optimization: Implement a majority voting ensemble method to combine multiple predictions (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:44-57)",
+        "Step 7: For solution optimization: Implement the test-time training function that optimizes the solution using either TextGrad or Trace's optimizers (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:74-120, /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:142-210)",
+        "Step 8: For prompt optimization: Implement functions to evaluate samples and datasets (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:39-72)",
+        "Step 9: For prompt optimization: Set up the system prompt as a trainable node and initialize the optimizer based on the selected algorithm (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:103-122)",
+        "Step 10: For prompt optimization: Implement the training loop that optimizes the system prompt over multiple epochs (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:156-209)",
+        "Step 11: Process results by calculating mean performance, standard errors, and execution times (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:253-260, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:212-213)",
+        "Final Step: Save the results to JSON files in the textgrad_figures directory (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:265-274, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:216-220)"
+      ],
+      "agent_instructions": "Your task is to implement two scripts that compare different optimization methods from the TextGrad paper:\n\n1. Solution Optimization Script:\n   - Create a script that optimizes solutions for multiple-choice questions using different optimization algorithms.\n   - The script should compare TextGrad and Trace's optimization methods (OptoPrime and OptoPrimeMulti).\n   - Implement a workflow that:\n     - Loads a task dataset (default: MMLU_machine_learning)\n     - Gets zero-shot answers from an LLM\n     - Applies optimization algorithms to improve the answers\n     - Uses majority voting for ensemble predictions\n     - Evaluates and compares performance\n     - Saves results to JSON files\n\n2. Prompt Optimization Script:\n   - Create a script that optimizes prompts for tasks rather than solutions.\n   - The script should compare TextGrad and Trace's OptoPrime optimizer.\n   - Implement a workflow that:\n     - Loads a task dataset (default: BBH_object_counting)\n     - Evaluates zero-shot performance\n     - Optimizes the system prompt over multiple epochs\n     - Evaluates on validation and test sets\n     - Saves results to JSON files\n\nBoth scripts should:\n- Accept command-line arguments for algorithm selection, task selection, and model engines\n- Use concurrent execution for efficient evaluation\n- Calculate and report performance metrics\n- Save results in a 'textgrad_figures' directory\n\nThe TextGrad library should be installed using 'pip install textgrad' before running the scripts.",
+      "masked_source": [
+        "/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py",
+        "/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py"
+      ]
+    },
+    {
+      "question": "- **Does OptoPrime (within Trace) or TextGrad achieve faster optimization?**",
+      "method": "1. **Task Setup:**  \n   - **Goal:** Compare Trace and TextGrad for AI workflow optimization.  \n   - **Key Difference Between Methods:**  \n     - **Trace propagates minimal subgraphs** to separate tracing infrastructure from optimization algorithms.  \n     - **TextGrad propagates text feedback**, tightly coupling infrastructure and optimization.   \n\n2. **Experimental Design for Fair Comparison:**  \n   - Applied **Trace directly to the evaluation code released with the TextGrad library**.  \n   - Both frameworks used the **same LLM APIs at around the same time** to ensure fairness.  \n   - **Optimization Tasks Compared:**  \n     - **Solution Optimization** (TextGrad Table 2).  \n     - **Prompt Optimization** (TextGrad Table 3).  \n\n3. **Comparative Evaluation:**  \n   - **OptoPrime (Trace\u2019s optimizer)**  \n   - **TextGrad (original implementation)**",
+      "expected_outcome": "- **OptoPrime should be approximately 3x faster than TextGrad**, since:  \n  - OptoPrime makes **one LLM call per optimization step**.  \n  - TextGrad makes **a number of LLM calls proportional to the graph\u2019s size**.",
+      "experiment_design_complexity": {
+        "constant_variables": {
+          "api_call_timing": "same_time"
+        },
+        "independent_variables": {
+          "optimization_method": [
+            "OptoPrime",
+            "TextGrad"
+          ],
+          "optimization_task": [
+            "Solution Optimization",
+            "Prompt Optimization"
+          ],
+          "llm_model": [
+            "The optimizer is GPT-4o-2024-08-06",
+            "The student model is GPT-35-turbo-1106"
+          ]
+        },
+        "dependent_variables": {
+          "time_in_minutes": "Measured as the total time taken for optimization"
+        }
+      },
+      "experiment_design_ambiguity": {
+        "ambiguous_variables": {
+          "optimization_method": "It is unclear what these methods represent, the agent needs to refer to another paper.",
+          "llm_model": "It is unclear what an optimizer, or a student model means."
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Trace framework (OptoPrime optimizer)",
+            "TextGrad framework",
+            "LLM APIs (GPT-4o-2024-08-06, GPT-35-turbo-1106)",
+            "Optimization tasks (Solution Optimization, Prompt Optimization)",
+            "Evaluation function (automatic comparison of outputs to ground truth)",
+            "Performance metric (time in minutes)",
+            "Hardware setup (We run the experiments on a standard PC with 16 GB RAM)"
+          ],
+          "setup_steps": [
+            "Configure and initialize the Trace framework",
+            "Integrate TextGrad as an optimizer within Trace",
+            "Ensure LLM API access for both frameworks",
+            "Load dataset for Solution Optimization and Prompt Optimization tasks",
+            "Run optimization trials for OptoPrime and TextGrad using identical conditions",
+            "Collect results: execution time and LLM calls per optimization step",
+            "Compare and analyze results to evaluate efficiency and effectiveness"
+          ],
+          "possible_modifications": {
+            "increase_interconnected_components": [
+              "Introduce additional optimization tasks beyond Solution and Prompt Optimization",
+              "Evaluate optimization performance across multiple LLMs (e.g., GPT-4o, Claude, Gemini)",
+              "Incorporate an additional evaluation metric, such as optimization success rate"
+            ],
+            "add setup dependencies": [
+              "Require integration with external logging frameworks for tracking optimization steps",
+              "Introduce constraints on LLM API usage to evaluate optimization efficiency under token limits"
+            ]
+          }
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Optimization tasks (Solution Optimization, Prompt Optimization): Unclear what this is"
+          ],
+          "ambiguous_setup_steps": [
+            "Integration of TextGrad into Trace: The process is described but lacks implementation details",
+            "Preprocessing of dataset: No explicit mention of data cleaning or transformations before use",
+            "Dataset source: Unclear how to obtain Solution Optimization and Prompt Optimization tasks"
+          ],
+          "possible_modifications": {
+            "mask_existing_instructions": [
+              "Remove details on integrating TextGrad into Trace, requiring inference from users",
+              "Omit preprocessing instructions for dataset preparation",
+              "Mask LLM API configurations, requiring users to determine the optimal settings"
+            ],
+            "imply need for new setup steps": [
+              "Introduce explicit documentation requirements for hardware specifications",
+              "Require a structured process for hyperparameter tuning and optimization constraints"
+            ]
+          }
+        }
+      },
+      "experiment_uncertainty": {
+        "random_uncertainty": {
+          "source": "Variability in LLM API response times",
+          "description": "LLM API responses may have fluctuations in latency, leading to inconsistent time measurements across optimization trials.",
+          "impact": "Results in variations in recorded optimization time, affecting performance comparisons.",
+          "possible_modifications": [
+            "Introduce artificial delays in API response times to test optimizer robustness.",
+            "Randomly drop tokens from API responses to simulate noise in optimization feedback.",
+            "Vary the temperature parameter for LLM calls, injecting randomness into text outputs."
+          ]
+        },
+        "systematic_uncertainty": {}
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "tightening_existing constraints": [
+            "Restrict LLM API usage further by enforcing a stricter token budget.",
+            "Reduce the allowed optimization iterations for all methods to amplify differences in efficiency.",
+            "Enforce model size constraints by requiring performance parity with a smaller model (e.g., using GPT-4o-mini instead of GPT-4o)."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py",
+        "/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py"
+      ],
+      "usage_instructions": "1. First, ensure TextGrad is installed: `pip install textgrad`\n2. For solution optimization comparison, run: `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo trace` for OptoPrime and `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo ttextgrad` for TextGrad's original implementation\n3. For prompt optimization comparison, run: `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo trace` for OptoPrime and `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo textgrad` for TextGrad\n4. The scripts will output timing information in the results JSON files in the 'textgrad_figures' directory, which can be compared to verify that OptoPrime is approximately 3x faster than TextGrad",
+      "requirements": [
+        "Step 1: Set up the environment by importing necessary libraries and loading environment variables (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:3-17, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:3-18)",
+        "Step 2: Define utility functions for setting random seeds and parsing command line arguments (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:27-41, /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:19-35)",
+        "Step 3: For solution optimization: Implement a majority voting ensemble method to combine multiple predictions (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:44-57)",
+        "Step 4: For solution optimization: Implement a function to get zero-shot answers from an LLM without optimization (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:60-71)",
+        "Step 5: For solution optimization: Implement the original TextGrad test-time training function that optimizes LLM responses through iterative feedback (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:74-120)",
+        "Step 6: For solution optimization: Implement the Trace-based test-time training function that uses OptoPrime or TextGrad optimizers (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:142-210)",
+        "Step 7: For solution optimization: Set up concurrent execution to process multiple test samples in parallel (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:231-249)",
+        "Step 8: For solution optimization: Calculate and save performance metrics and timing information (/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py:251-274)",
+        "Step 9: For prompt optimization: Implement functions to evaluate individual samples and entire datasets (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:39-72)",
+        "Step 10: For prompt optimization: Implement validation logic to revert to previous prompts if performance decreases (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:74-87)",
+        "Step 11: For prompt optimization: Set up the optimization environment with appropriate models and optimizers (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:89-122)",
+        "Step 12: For prompt optimization: Define Trace operations by wrapping TextGrad code in trace bundles (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:132-153)",
+        "Step 13: For prompt optimization: Implement the training loop that optimizes system prompts through iterative feedback (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:156-209)",
+        "Final Step: For prompt optimization: Calculate and save final performance metrics and timing information (/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py:212-220)"
+      ],
+      "agent_instructions": "Create two scripts to compare the performance and speed of TextGrad and OptoPrime optimization algorithms for large language models:\n\n1. Solution Optimization Script:\n   - Create a script that optimizes LLM responses to multiple-choice questions at test time\n   - Implement two approaches: the original TextGrad implementation and the OptoPrime implementation\n   - The script should:\n     - Load a task (default: MMLU_machine_learning)\n     - Get initial zero-shot responses from an LLM\n     - Apply iterative optimization to improve responses\n     - Use majority voting to ensemble multiple predictions\n     - Run optimization in parallel using multiple threads\n     - Track and report performance metrics and timing information\n     - Save results to JSON files in a 'textgrad_figures' directory\n   - Support command-line arguments to select the algorithm, task, engine, etc.\n\n2. Prompt Optimization Script:\n   - Create a script that optimizes system prompts for improved LLM performance\n   - Implement TextGrad and OptoPrime approaches for prompt optimization\n   - The script should:\n     - Load a task (default: BBH_object_counting)\n     - Train a system prompt over multiple epochs\n     - Evaluate performance on validation and test sets\n     - Optionally revert to previous prompts if validation performance decreases\n     - Track and report performance metrics and timing information\n     - Save results to JSON files in a 'textgrad_figures' directory\n   - Support command-line arguments to select the algorithm, task, engines, etc.\n\nBoth scripts should be designed to demonstrate that OptoPrime is approximately 3x faster than TextGrad while achieving similar performance. The scripts should use the TextGrad and Opto libraries.",
+      "masked_source": [
+        "/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py",
+        "/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py"
+      ]
+    }
+  ]
+}

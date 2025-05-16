@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, mediapy, numpy, tyro, and nerfstudio components (/workspace/scripts/render.py:7-33)",
+    "Step 2: Define a function to render trajectory videos that takes a pipeline, cameras, output path, and rendering parameters (/workspace/scripts/render.py:38-100)",
+    "Step 3: Create a data class to handle command-line arguments including config path, output names, trajectory type, and output settings (/workspace/scripts/render.py:103-124)",
+    "Step 4: Load the trained model from the checkpoint specified in the config file (/workspace/scripts/render.py:128-132)",
+    "Step 5: Generate a camera path, either a spiral path or from a JSON file based on user selection (/workspace/scripts/render.py:139-149)",
+    "Step 6: Render the trajectory by generating rays for each camera position and evaluating the model (/workspace/scripts/render.py:75-77)",
+    "Step 7: Process the rendered outputs (e.g., RGB, depth) and concatenate them if multiple outputs are requested (/workspace/scripts/render.py:78-87)",
+    "Step 8: Save the resulting frames as a video file or as individual images based on the specified output format (/workspace/scripts/render.py:88-98)",
+    "Final Step: Set up the command-line interface using tyro and provide an entrypoint for the script (/workspace/scripts/render.py:162-169)"
+  ],
+  "agent_instructions": "Create a script that renders a trajectory video from a trained NeuRodin model. The script should:\n\n1. Accept command-line arguments for:\n   - Path to a config file containing the model checkpoint\n   - Output path for the rendered video\n   - Trajectory type (spiral or from a JSON file)\n   - Output format (video or individual images)\n   - Rendering quality parameters (like downscaling factor)\n   - Which outputs to render (RGB, depth, etc.)\n\n2. Load the trained model from the specified checkpoint\n\n3. Generate a camera path based on the selected trajectory type:\n   - For spiral trajectories: create a spiral path around the scene\n   - For custom trajectories: load camera positions from a JSON file\n\n4. Render the scene by:\n   - Generating camera rays for each position in the trajectory\n   - Using the model to render the scene from those rays\n   - Processing the outputs (RGB, depth, etc.) as requested\n\n5. Save the results either as:\n   - A video file with configurable duration\n   - A sequence of image files\n\nThe script should provide progress feedback during rendering and handle errors gracefully. It should leverage the nerfstudio library for camera path generation and model evaluation."
+}

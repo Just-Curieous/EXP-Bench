@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/scripts/7_trick_target_system_autodan.sh",
+        "/workspace/scripts/7_trick_target_system_pair.sh"
+    ],
+    "usage_instructions": "1. Execute the AutoDAN script to test token-level attacks with and without SSP: `bash /workspace/scripts/7_trick_target_system_autodan.sh`\n2. Execute the PAIR script to test prompt-level attacks with and without SSP: `bash /workspace/scripts/7_trick_target_system_pair.sh`\n3. The scripts will run experiments on Llama-2-7B, Llama-3-8B, and Vicuna-7B models, testing each with both null system prompts (no SSP) and safe system prompts (with SSP) against the harmful_bench_50.csv dataset.\n4. Results will be saved to ./exp_results/trick_target_system_autodan/ and ./exp_results/trick_target_system_pair/ directories.\n5. The Attack Success Rate (ASR) metrics will be calculated automatically, showing how SSP influences model robustness against both token-level (AutoDAN) and prompt-level (PAIR) attacks."
+}

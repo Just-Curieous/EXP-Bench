@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including demo_config path, resume checkpoint path, and work directory (/workspace/inference_demo.py:13-26)",
+    "Step 2: Define a function to calculate Dice score between predictions and ground truth labels (/workspace/inference_demo.py:28-45)",
+    "Step 3: Load the pre-trained SegVol model that combines SAM architecture with volumetric capabilities (/workspace/inference_demo.py:178-197)",
+    "Step 4: Load the demo configuration file containing CT path, ground truth path, and organ categories (/workspace/inference_demo.py:199-202)",
+    "Step 5: Process the CT and ground truth data, including normalization and spatial transformations (/workspace/inference_demo.py:204-205, /workspace/data_process/demo_data_process.py:49-106)",
+    "Step 6: Configure the prompt settings (text, box, point) based on the experiment requirements (/workspace/inference_demo.py:207-212)",
+    "Step 7: For each organ category, generate appropriate prompts based on the configuration (/workspace/inference_demo.py:52-72)",
+    "Step 8: Perform zoom-out inference using the selected prompts to get initial segmentation (/workspace/inference_demo.py:73-105)",
+    "Step 9: If zoom-in is enabled, identify region of interest from initial segmentation (/workspace/inference_demo.py:110-115)",
+    "Step 10: Perform zoom-in inference on the region of interest for refined segmentation (/workspace/inference_demo.py:117-146)",
+    "Step 11: Calculate Dice scores for each configuration to evaluate performance (/workspace/inference_demo.py:97, 146)",
+    "Step 12: Visualize the segmentation results if visualization is enabled (/workspace/inference_demo.py:168-173, /workspace/utils/visualize.py:8-73)",
+    "Final Step: Execute the inference script with appropriate parameters (/workspace/script/inference_demo.sh:5-8)"
+  ],
+  "agent_instructions": "Create a system to evaluate medical image segmentation performance using different types of prompts on CT scans. The system should support three types of prompts: semantic (text), spatial (box or point), and combinations of these. \n\nYour task is to implement:\n\n1. A main Python script that can load a pre-trained segmentation model and process CT data\n2. Logic to configure different prompt combinations (text-only, point-only, box-only, text+point, text+box)\n3. A two-stage inference approach (zoom-out for initial segmentation, zoom-in for refinement)\n4. Calculation of Dice scores to evaluate segmentation performance for each prompt configuration\n5. Optional visualization of the segmentation results\n6. A shell script to run the evaluation with appropriate parameters\n\nThe system should be configurable through a JSON file that specifies the CT scan path, ground truth path, and organ categories to segment (like liver, kidney, spleen, pancreas). The goal is to compare how different prompt types affect segmentation accuracy, with the hypothesis that combining semantic and spatial prompts will yield better results than using either type alone.",
+  "masked_source": [
+    "/workspace/inference_demo.py",
+    "/workspace/script/inference_demo.sh",
+    "/workspace/data_process/demo_data_process.py",
+    "/workspace/utils/monai_inferers_utils.py",
+    "/workspace/utils/visualize.py"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, argparse, numpy, and Docta modules (diagnose_tabular.py:1-11)",
+    "Step 2: Set up multiprocessing sharing strategy for torch (diagnose_tabular.py:13)",
+    "Step 3: Parse command-line arguments to specify the configuration file path (diagnose_tabular.py:15-19)",
+    "Step 4: Load the configuration from the specified file using Config.fromfile() (diagnose_tabular.py:23-24)",
+    "Step 5: Set the device to use (CPU or CUDA if available) (diagnose_tabular.py:26)",
+    "Step 6: Load the tabular dataset using TabularDataset class with the specified root path (diagnose_tabular.py:30)",
+    "Step 7: Set the number of classes based on the unique labels in the dataset (diagnose_tabular.py:31)",
+    "Step 8: Initialize a Report object to store diagnosis results (diagnose_tabular.py:37-38)",
+    "Step 9: Create a DetectLabel object with the configuration, dataset, and report (diagnose_tabular.py:39)",
+    "Step 10: Call the detect() method to identify label errors in the dataset (diagnose_tabular.py:40)",
+    "Step 11: Create the output directory if it doesn't exist (diagnose_tabular.py:42)",
+    "Step 12: Save the diagnosis report to a file in the specified save path (diagnose_tabular.py:43-44)",
+    "Step 13: Print a message confirming that the report has been saved (diagnose_tabular.py:45)"
+  ],
+  "agent_instructions": "Create a script that uses Docta to detect label errors in a tabular dataset. The script should:\n\n1. Import necessary libraries including torch, argparse, numpy, and Docta modules (especially Config, TabularDataset, DetectLabel, and Report).\n\n2. Accept a command-line argument for specifying a configuration file path, with a default path to a configuration file.\n\n3. Load the configuration from the specified file and set up the device (CPU or CUDA if available).\n\n4. Load a tabular dataset using Docta's TabularDataset class, pointing to a CSV file containing potentially mislabeled data.\n\n5. Determine the number of classes from the unique labels in the dataset.\n\n6. Initialize a Report object to store the diagnosis results.\n\n7. Create a DetectLabel object with the configuration, dataset, and report.\n\n8. Call the detect() method to identify label errors in the dataset.\n\n9. Save the diagnosis report to a file in a specified directory.\n\n10. Also create a configuration file that includes:\n   - Dataset settings (path to the tabular data, save paths)\n   - Detection configuration parameters (like number of epochs, sample size, k-value)\n   - Higher-order consistency configuration parameters\n\nThe expected outcome is a report showing approximately 43 corrupted instances out of 150 total instances in the provided tabular dataset."
+}

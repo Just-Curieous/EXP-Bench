@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Initialize the environment by setting up necessary imports for PyTorch, DeepSpeed, pandas, and other required libraries (/workspace/MolGen/generate_ds.py:1-24)",
+    "Step 2: Create a Runner class that handles model initialization, data loading, and molecule generation (/workspace/MolGen/generate_ds.py:26-42)",
+    "Step 3: Initialize the BART tokenizer and model, load the pre-trained or fine-tuned checkpoint (/workspace/MolGen/generate_ds.py:44-56)",
+    "Step 4: Configure model parameters and prefix-tuning components (/workspace/MolGen/generate_ds.py:58-95)",
+    "Step 5: Load input data from CSV file, convert SMILES to SELFIES format if needed (/workspace/MolGen/generate_ds.py:98-114)",
+    "Step 6: Implement prompt generation for prefix-tuning (/workspace/MolGen/generate_ds.py:116-191)",
+    "Step 7: Initialize DeepSpeed for distributed training/inference (/workspace/MolGen/generate_ds.py:194-196)",
+    "Step 8: Generate molecules using either beam search or top-k sampling based on configuration (/workspace/MolGen/generate_ds.py:197-237)",
+    "Step 9: Convert generated SELFIES to SMILES format (/workspace/MolGen/generate_ds.py:234-236)",
+    "Step 10: Save generated molecules to output CSV file (/workspace/MolGen/generate_ds.py:238-251)",
+    "Step 11: Calculate property scores (plogp or qed) for generated molecules (/workspace/MolGen/generate_ds.py:256-269)",
+    "Step 12: Compute statistics comparing property scores between input and generated molecules (/workspace/MolGen/generate_ds.py:272-332)",
+    "Step 13: Create a shell script to run the molecule generation with appropriate parameters (/workspace/MolGen/generate.sh:1-19)",
+    "Final Step: Execute the main function to run the molecule generation process based on command-line arguments (/workspace/MolGen/generate_ds.py:401-424)"
+  ],
+  "agent_instructions": "Your task is to implement a molecule generation system that compares the performance of models with and without chemical feedback. You need to create two scripts:\n\n1. A Python script for molecule generation that:\n   - Uses a BART-based model for generating molecules\n   - Loads either a pre-trained model (without chemical feedback) or a fine-tuned model (with chemical feedback)\n   - Takes input molecules in SMILES/SELFIES format\n   - Generates new molecules using either beam search or top-k sampling\n   - Calculates property scores (plogp or qed) for both input and generated molecules\n   - Computes statistics comparing the property scores\n   - Outputs the results to a CSV file\n\n2. A shell script that:\n   - Runs the Python script with appropriate parameters\n   - Configures the model path, input/output paths, and property type\n   - Sets generation parameters like batch size, sampling method, etc.\n\nThe system should be able to run in two configurations:\n- Without chemical feedback: using a pre-trained model\n- With chemical feedback: using a fine-tuned model\n\nThe goal is to compare how chemical feedback affects the quality of generated molecules in terms of their properties (plogp or qed).",
+  "masked_source": [
+    "/workspace/MolGen/generate_ds.py",
+    "/workspace/MolGen/generate.sh"
+  ]
+}

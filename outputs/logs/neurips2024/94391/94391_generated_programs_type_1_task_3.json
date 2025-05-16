@@ -1,0 +1,3 @@
+{
+    "no_answer": "While the repository contains scripts to run CycleNet with both MLP and Linear backbones on the Electricity dataset with the required forecast horizons (96, 192, 336, 720), there are no scripts or model implementations for Crossformer in this repository. The repository only contains CycleNet and other models like Autoformer, Informer, Transformer, etc., but not Crossformer. Therefore, it's not possible to directly compare CycleNet with Crossformer using the scripts in this repository without adding Crossformer implementation and creating new scripts for it. The experiment question specifically asks to compare CycleNet with Crossformer, but the repository doesn't have the necessary components to make this comparison."
+}

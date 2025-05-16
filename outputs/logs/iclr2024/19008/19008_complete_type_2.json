@@ -1,0 +1,79 @@
+[
+  {
+    "mode": "A",
+    "question": "How does GPT-3.5-turbo score on the Empathy questionnaire compared to human responses?",
+    "method": "Use the PsychoBench framework to run the Empathy questionnaire with GPT-3.5-turbo and analyze the results to compare with human baseline data.",
+    "expected_outcome": "A comparison of GPT-3.5-turbo's empathy scores against human baseline data, showing whether the model scores higher, lower, or similar to humans on empathy measures.",
+    "source": [
+      "/workspace/run_psychobench.py",
+      "/workspace/example_generator.py"
+    ],
+    "usage_instructions": "1. Run the PsychoBench framework with the Empathy questionnaire and GPT-3.5-turbo model.\n2. Set appropriate parameters for shuffle-count and test-count to ensure statistical significance.\n3. Provide an OpenAI API key for accessing the GPT-3.5-turbo model.\n4. Execute the generation, testing, and analysis phases of the framework.\n5. Interpret the results by comparing the model's empathy scores with the human baseline data provided in the questionnaires.json file.",
+    "requirements": [
+      "Step 1: Parse command-line arguments including model name, questionnaire, shuffle-count, test-count, and OpenAI API key (run_psychobench.py:6-26)",
+      "Step 2: Create directories for storing results, prompts, and responses (utils.py:491-492, example_generator.py:132-133)",
+      "Step 3: Load the questionnaire data from questionnaires.json file (utils.py:13-29)",
+      "Step 4: Generate test files with questions in original and shuffled orders based on shuffle-count parameter (utils.py:61-88)",
+      "Step 5: Set up OpenAI API with the provided key (example_generator.py:78)",
+      "Step 6: For each order of questions, split them into manageable chunks if needed (example_generator.py:97-99)",
+      "Step 7: Send questions to the GPT-3.5-turbo model using appropriate API calls (example_generator.py:114-125)",
+      "Step 8: Process model responses and extract numerical scores (example_generator.py:62-70, 142)",
+      "Step 9: Save responses to the testing file (example_generator.py:145-155)",
+      "Step 10: Convert the raw response data into a structured format for analysis (utils.py:92-137)",
+      "Step 11: Compute statistics (mean, standard deviation) for each category in the questionnaire (utils.py:141-164)",
+      "Step 12: Perform hypothesis testing to compare model scores with human baseline data (utils.py:168-239)",
+      "Step 13: Generate visualizations comparing model scores with human baseline data (utils.py:33-57)",
+      "Step 14: Save analysis results and figures to output files (utils.py:469-474)"
+    ],
+    "agent_instructions": "Your task is to create a script that evaluates how GPT-3.5-turbo scores on the Empathy questionnaire compared to human responses using the PsychoBench framework. The script should:\n\n1. Accept command-line arguments for:\n   - The model name (gpt-3.5-turbo)\n   - The questionnaire name (Empathy)\n   - Number of different question orders to test (shuffle-count)\n   - Number of test runs per order (test-count)\n   - OpenAI API key\n\n2. Implement a workflow that:\n   - Loads the Empathy questionnaire data from a JSON file\n   - Creates test files with questions in original and shuffled orders\n   - Sends the questions to the GPT-3.5-turbo model via the OpenAI API\n   - Processes the model's responses to extract numerical scores\n   - Computes statistics on the scores\n   - Performs hypothesis testing to compare the model's scores with human baseline data\n   - Generates visualizations of the results\n   - Saves the analysis results and figures to output files\n\n3. The Empathy questionnaire:\n   - Contains 10 questions about empathy\n   - Uses a 7-point scale (1='very inaccurately' to 7='very accurately')\n   - Some questions are reverse-scored\n   - Results should be compared with human baseline data\n\n4. The output should include:\n   - Statistical analysis comparing GPT-3.5-turbo's empathy scores with human baseline data\n   - Visualizations showing the comparison\n   - Conclusions about whether the model scores higher, lower, or similar to humans on empathy measures\n\nMake sure to handle API requests properly with appropriate error handling and rate limiting."
+  },
+  {
+    "mode": "A",
+    "question": "Can you customize PsychoBench to use a different LLM by modifying the example generator?",
+    "method": "Modify the example_generator.py file to support a custom LLM API instead of OpenAI's API, while maintaining compatibility with the PsychoBench framework.",
+    "expected_outcome": "A working custom generator function that can be used with the PsychoBench framework to evaluate a different LLM on psychological questionnaires.",
+    "source": [
+      "/workspace/example_generator.py",
+      "/workspace/run_psychobench.py"
+    ],
+    "usage_instructions": "1. Study the existing example_generator.py file to understand how it interfaces with the PsychoBench framework.\n2. Identify the key components that need to be modified to support a different LLM API.\n3. Create a new generator function that follows the same interface as the example_generator function.\n4. Implement the API calls to the custom LLM within this function.\n5. Ensure the function properly formats questions from the questionnaire and parses responses from the LLM.\n6. Test the custom generator with the PsychoBench framework by passing it to the run_psychobench function.",
+    "requirements": [
+      "Step 1: Create API client functions for a custom LLM that can handle both chat-style and completion-style requests (example_generator.py:13-59)",
+      "Step 2: Ensure the custom API functions include retry logic for handling potential API failures (example_generator.py:13-13, 35-35)",
+      "Step 3: Implement proper response parsing to extract text content from the custom LLM API responses (example_generator.py:30-33, 54-59)",
+      "Step 4: Modify the example_generator function to initialize the custom LLM API client with appropriate credentials (example_generator.py:78-78)",
+      "Step 5: Update the model selection logic in example_generator to support the custom LLM API (example_generator.py:114-127)",
+      "Step 6: Maintain the existing input formatting for different model types to ensure compatibility with the questionnaire format (example_generator.py:115-125)",
+      "Step 7: Preserve the result processing and storage functionality to maintain compatibility with the PsychoBench framework (example_generator.py:129-155)",
+      "Step 8: Ensure the convert_results function can properly parse responses from the custom LLM (example_generator.py:62-70)"
+    ],
+    "agent_instructions": "Your task is to modify the PsychoBench framework to use a custom LLM API instead of OpenAI's API. The framework is used to evaluate LLMs on psychological questionnaires.\n\nYou need to:\n\n1. Create a new generator function that follows the same interface as the existing example_generator function, which takes a questionnaire and args parameters.\n\n2. Implement API client functions for your custom LLM that can handle both chat-style interactions (similar to GPT models) and completion-style requests. These functions should include retry logic to handle potential API failures.\n\n3. The generator function should:\n   - Initialize your custom LLM API client with appropriate credentials\n   - Process questionnaires by formatting them according to your LLM's requirements\n   - Send requests to your LLM API\n   - Parse the responses\n   - Save prompts and responses to files\n   - Update the testing CSV file with the results\n\n4. Ensure your implementation maintains compatibility with the PsychoBench framework by:\n   - Preserving the expected input/output format\n   - Handling the questionnaire format correctly\n   - Processing and storing results in the same format\n\n5. Test your custom generator with the PsychoBench framework by passing it to the run_psychobench function.\n\nThe goal is to create a working custom generator that can be used with the PsychoBench framework to evaluate a different LLM on psychological questionnaires while maintaining all the functionality of the original implementation."
+  },
+  {
+    "mode": "A",
+    "question": "How do different LLMs compare on the Big Five Inventory (BFI) personality assessment?",
+    "method": "Use the PsychoBench framework to evaluate multiple LLMs on the BFI questionnaire and compare their personality profiles.",
+    "expected_outcome": "A comparative analysis of different LLMs' personality profiles based on the Big Five traits (Extraversion, Agreeableness, Conscientiousness, Neuroticism, and Openness), showing similarities and differences between models.",
+    "source": [
+      "/workspace/run_psychobench.py",
+      "/workspace/example_generator.py"
+    ],
+    "usage_instructions": "1. Run the PsychoBench framework multiple times, once for each LLM you want to evaluate.\n2. Use the BFI questionnaire for all runs to ensure comparable results.\n3. Set consistent parameters (shuffle-count and test-count) across all runs.\n4. Collect the results from each run, which will be saved in the results directory.\n5. Compare the scores for each personality trait (Extraversion, Agreeableness, Conscientiousness, Neuroticism, and Openness) across the different LLMs.\n6. Analyze whether certain LLMs exhibit specific personality tendencies compared to others and to human baseline data.",
+    "requirements": [
+      "Step 1: Parse command line arguments including model name, questionnaire type (BFI), shuffle-count, test-count, and other parameters (run_psychobench.py:7-21)",
+      "Step 2: Set up OpenAI API key for model access (example_generator.py:78)",
+      "Step 3: Load the BFI questionnaire data from questionnaires.json, which contains questions, scoring rules, and human baseline data (utils.py:13-29)",
+      "Step 4: Create a test file with the BFI questions in original and shuffled orders based on shuffle-count parameter (utils.py:61-88)",
+      "Step 5: For each question set, send the questions to the specified LLM using appropriate API call (chat or completion based on model type) (example_generator.py:113-127)",
+      "Step 6: Process LLM responses by extracting numerical answers (1-5 scale for BFI) (example_generator.py:62-70, 142)",
+      "Step 7: Save prompts and responses to files for later analysis (example_generator.py:132-138)",
+      "Step 8: Convert raw responses into structured data, applying reverse scoring where needed (utils.py:92-137)",
+      "Step 9: Compute statistics (mean and standard deviation) for each personality trait category (Extraversion, Agreeableness, Conscientiousness, Neuroticism, Openness) (utils.py:141-164)",
+      "Step 10: Compare LLM results with human baseline data using statistical tests (t-tests) (utils.py:168-239)",
+      "Step 11: Generate visualizations showing personality trait scores across different models and human baselines (utils.py:33-57)",
+      "Step 12: Save analysis results to files including statistical comparisons and visualizations (utils.py:469-474)",
+      "Final Step: Repeat the process for each LLM to be evaluated, then manually compare the results across models (utils.py:484-507)"
+    ],
+    "agent_instructions": "Your task is to create a system that evaluates and compares the personality profiles of different Large Language Models (LLMs) using the Big Five Inventory (BFI) personality assessment. The BFI measures five personality traits: Extraversion, Agreeableness, Conscientiousness, Neuroticism, and Openness.\n\nYou'll need to:\n\n1. Create a framework that can administer the BFI questionnaire to different LLMs. The BFI consists of 44 questions rated on a 5-point scale (1=strongly disagree to 5=strongly agree).\n\n2. Implement functionality to:\n   - Load the BFI questionnaire data (questions, scoring rules, human baseline data)\n   - Present the questionnaire to LLMs in a consistent format\n   - Process LLM responses and calculate scores for each personality trait\n   - Apply proper scoring rules (some questions are reverse-scored)\n   - Generate statistical analyses comparing LLM results with human baseline data\n   - Create visualizations of personality profiles\n\n3. Design the system to work with different types of LLMs:\n   - Support both chat-based models (like GPT-3.5/4) and completion-based models\n   - Handle appropriate API calls for each model type\n\n4. Include parameters for experimental rigor:\n   - Allow for multiple runs with the same questions (test-count)\n   - Support question order randomization (shuffle-count) to control for order effects\n   - Save all prompts and responses for transparency\n\n5. Generate comprehensive results that:\n   - Show mean scores and standard deviations for each personality trait\n   - Compare results with human baseline data using statistical tests\n   - Visualize differences between models and human data\n\nThe goal is to run this framework multiple times with different LLMs, then compare how their personality profiles differ across the Big Five traits and in relation to human baseline data."
+  }
+]

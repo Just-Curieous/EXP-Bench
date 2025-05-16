@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/scripts/reward-model.sh",
+        "/workspace/scripts/cost-model.sh",
+        "/workspace/scripts/ppo-lag.sh"
+    ],
+    "usage_instructions": "The experiment can be conducted using the Safe RLHF pipeline through three iterative cycles with a dynamically adjusted prompt mix. First, train the Reward Model using `scripts/reward-model.sh --model_name_or_path <your-model-name-or-path> --output_dir output/rm` to model helpfulness preferences. Then, train the Cost Model using `scripts/cost-model.sh --model_name_or_path <your-model-name-or-path> --output_dir output/cm` to model safety preferences across the 14 safety categories. Finally, run the Safe RLHF training using `scripts/ppo-lag.sh --actor_model_name_or_path <your-model-name-or-path> --reward_model_name_or_path output/rm --cost_model_name_or_path output/cm --output_dir output/ppo-lag`. The scripts use the PKU-SafeRLHF dataset which contains the dynamically adjusted mix of prompt types (safety-unrelated, resolved safety-related, unresolved safety-related, and red-teaming prompts) as described in the paper section 5.1. The pipeline automatically handles the balancing between helpfulness and safety through the Lagrangian method implemented in the PPO-LAG algorithm."
+}

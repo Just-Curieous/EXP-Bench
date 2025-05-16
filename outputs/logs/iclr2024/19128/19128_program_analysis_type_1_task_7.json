@@ -1,0 +1,43 @@
+{
+  "requirements": [
+    "Step 1: Initialize a distributed training environment using PyTorch's distributed data parallel functionality (/workspace/src/training/main.py:67-67)",
+    "Step 2: Set up random seed for reproducibility across all processes (/workspace/src/training/main.py:118-118)",
+    "Step 3: Create the EVA02-CLIP-B-16 model and its associated image transforms for training and validation (/workspace/src/training/main.py:119-137)",
+    "Step 4: Initialize the CLIPSelf method for grid-based distillation (/workspace/src/training/main.py:140-140)",
+    "Step 5: Create a distillation model using the same architecture as the main model (/workspace/src/training/main.py:150-157)",
+    "Step 6: Lock the image tower of the model except for the specified number of unlocked groups to follow the LiT approach (/workspace/src/training/main.py:161-166)",
+    "Step 7: Create an AdamW optimizer with different weight decay settings for different parameter groups (/workspace/src/training/main.py:205-213)",
+    "Step 8: Set up gradient scaler for mixed precision training if specified (/workspace/src/training/main.py:214-214)",
+    "Step 9: Load the dataset based on the specified dataset type (grid_distill) with the provided COCO annotations (/workspace/src/training/main.py:238-238)",
+    "Step 10: Create a learning rate scheduler based on the specified scheduler type (/workspace/src/training/main.py:245-259)",
+    "Step 11: Create a GridDistillDataset that divides images into grid cells based on the max_split parameter (M value) (/workspace/src/training/data.py:135-281)",
+    "Step 12: Initialize grid templates for different M×N combinations up to the specified max_split value (/workspace/src/training/data.py:200-224)",
+    "Step 13: For each training iteration, load images and create image crops based on the grid cells (/workspace/src/training/data.py:247-281)",
+    "Step 14: Run initial evaluation before training begins (/workspace/src/training/main.py:269-269)",
+    "Step 15: For each epoch, train the model by processing batches of images and their grid-based crops (/workspace/src/training/main.py:273-277)",
+    "Step 16: In each training step, encode both the original image regions and the cropped image patches (/workspace/src/training/clipself.py:39-40)",
+    "Step 17: Calculate the cosine similarity loss between the features extracted from image regions and the features from corresponding image crops (/workspace/src/training/clipself.py:45-47)",
+    "Step 18: Update model parameters using the calculated loss and optimizer (/workspace/src/training/train.py:96-115)",
+    "Step 19: After each epoch, create an ensemble of student and teacher models based on the alpha parameter (/workspace/src/training/main.py:282-296)",
+    "Step 20: Save model checkpoints at specified frequency (/workspace/src/training/main.py:301-317)",
+    "Step 21: Periodically evaluate the model using zero-shot classification on the validation set (/workspace/src/training/main.py:330-341)",
+    "Step 22: For evaluation, load the trained model checkpoint (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:1-7)",
+    "Step 23: Run zero-shot evaluation on the COCO panoptic dataset (/workspace/src/training/zero_shot.py:177-193)",
+    "Step 24: Extract features from image regions using the trained model (/workspace/src/training/zero_shot.py:72-73)",
+    "Step 25: Extract features from image masks using the trained model (/workspace/src/training/zero_shot.py:74-76)",
+    "Step 26: Extract features from image crops using the trained model (/workspace/src/training/zero_shot.py:78-83)",
+    "Step 27: Calculate similarity between extracted features and class embeddings (/workspace/src/training/zero_shot.py:90-92)",
+    "Step 28: Compute Top-1 and Top-5 mean accuracy (mAcc) for both 'thing' and 'stuff' categories (/workspace/src/training/zero_shot.py:189-191)",
+    "Step 29: Compare the evaluation results across models trained with different max-split values (M=4, M=6, M=8, M=10) to determine the optimal patch configuration (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:1-9, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:1-8)",
+    "Final Step: Select the optimal patch configuration based on the highest Top-1 and Top-5 mean accuracy metrics (/workspace/src/training/zero_shot.py:189-191)"
+  ],
+  "masked_source": [
+    "/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh",
+    "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh",
+    "/workspace/src/training/main.py",
+    "/workspace/src/training/clipself.py",
+    "/workspace/src/training/train.py",
+    "/workspace/src/training/data.py",
+    "/workspace/src/training/zero_shot.py"
+  ]
+}

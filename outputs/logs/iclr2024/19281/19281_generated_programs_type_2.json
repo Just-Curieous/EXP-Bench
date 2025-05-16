@@ -1,0 +1,26 @@
+[
+  {
+    "mode": "B",
+    "question": "How can you optimize molecules for drug-likeness (QED) using the MolGen framework?",
+    "method": "Create a program that loads a dataset of molecules, calculates their QED (Quantitative Estimation of Drug-likeness) scores, and identifies molecules with the highest drug-likeness properties.",
+    "expected_outcome": "A list of top molecules with high QED scores (>0.8), along with their molecular properties such as molecular weight, logP, and Lipinski's Rule of Five violations.",
+    "source": ["/workspace/molecule_optimization.py"],
+    "usage_instructions": "1. Load a dataset of molecules from the ZINC dataset.\n2. Calculate QED scores for each molecule using RDKit's QED module.\n3. Sort molecules by QED score in descending order.\n4. Select the top molecules with highest QED scores.\n5. Calculate additional properties for these molecules (molecular weight, logP, hydrogen bond donors/acceptors, rotatable bonds).\n6. Check Lipinski's Rule of Five violations for each molecule.\n7. Generate 2D visualizations of the top molecules.\n8. Display the results with all calculated properties.\n9. Save the results to a CSV file for further analysis."
+  },
+  {
+    "mode": "B",
+    "question": "How can you generate molecules with specific property constraints using the MolGen framework?",
+    "method": "Create a program that filters molecules based on drug-like property constraints and identifies similar molecules with improved properties.",
+    "expected_outcome": "A set of seed molecules and generated molecules that meet specific property constraints (QED > 0.7, MW < 500, logP between 1-5) with visualizations and property calculations.",
+    "source": ["/workspace/constrained_generation.py"],
+    "usage_instructions": "1. Load a dataset of molecules from the ZINC dataset.\n2. Filter molecules based on drug-like properties (QED > 0.6, MW < 450, logP between 1-4.5, no Lipinski violations).\n3. Select seed molecules from the filtered set.\n4. For each seed molecule, find similar molecules with better properties (higher QED).\n5. Calculate molecular similarity using Morgan fingerprints and Tanimoto similarity.\n6. Calculate additional properties for the generated molecules (MW, logP, Lipinski violations).\n7. Generate 2D visualizations of both seed and generated molecules.\n8. Display the results with all calculated properties and similarity scores.\n9. Save the results to CSV files for further analysis."
+  },
+  {
+    "mode": "B",
+    "question": "How can you extract and analyze basic molecular properties from a chemical dataset?",
+    "method": "Create a program that loads molecules from the ZINC dataset, converts between SMILES and SELFIES representations, and calculates basic molecular properties.",
+    "expected_outcome": "A sample of molecules from the ZINC dataset with their SMILES notation, SELFIES representation, and calculated QED values.",
+    "source": ["/workspace/simple_generate.py"],
+    "usage_instructions": "1. Load a sample of molecules from the ZINC dataset.\n2. Convert SMILES strings to SELFIES representation using the selfies library.\n3. Calculate QED (Quantitative Estimation of Drug-likeness) for each molecule using RDKit.\n4. Display information about each molecule including SMILES, SELFIES, and QED score.\n5. Save the processed molecules to a CSV file for further analysis."
+  }
+]

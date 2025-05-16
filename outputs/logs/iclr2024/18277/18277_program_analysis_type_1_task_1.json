@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Download the MME benchmark dataset and evaluation tool from the MME repository (https://github.com/BradyFU/Awesome-Multimodal-Large-Language-Models/tree/Evaluation) (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:13-13)",
+    "Step 2: Ensure you have access to a pre-trained LLaMA-Adapter V2 model checkpoint (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:108-111)",
+    "Step 3: Ensure you have access to the base LLaMA model files, including the tokenizer (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:103-106)",
+    "Step 4: Set up the environment with required dependencies: PyTorch, PIL, OpenCV, tqdm, sentencepiece, and CLIP (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:1-11)",
+    "Step 5: Run the evaluation script with appropriate parameters: pretrained_path (path to LLaMA-Adapter checkpoint), llama_path (directory containing LLaMA model files), and output_path (where to save results) (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:86-95)",
+    "Step 6: The script will load the LLaMA-Adapter model with the specified configuration, including CLIP visual encoder (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:117-136)",
+    "Step 7: The script will evaluate the model on multiple MME benchmark datasets, including perception tasks (artwork, celebrity, color, count, existence, landmark, OCR, position, posters, scene) and cognition tasks (code_reasoning, commonsense_reasoning, numerical_calculation, text_translation) (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:163-184)",
+    "Step 8: For each dataset, the script processes images and questions, generates responses using the model, and saves the results to the specified output directory (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:168-184)",
+    "Step 9: After the evaluation script completes, use the MME evaluation tool to calculate the final scores: run python MME_Benchmark_release_version/eval_tool/calculation.py --results_dir [RESULT_FILE_PATH] (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:1-184)",
+    "Final Step: Compare the results with LLaVA's scores from the MME leaderboard to analyze the model's performance in Perception and Cognition tasks (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:1-184)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment that evaluates the LLaMA-Adapter V2 multimodal model on the MME (Multimodal Evaluation) benchmark. You need to understand how to set up the environment, download the necessary datasets and models, run the evaluation script, and interpret the results. The experiment compares the performance of LLaMA-Adapter V2.1 with LLaVA on perception and cognition tasks. You should follow the usage instructions and analyze the provided script to determine the exact steps needed to reproduce the experiment from scratch.",
+  "masked_source": [
+    "/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py"
+  ]
+}

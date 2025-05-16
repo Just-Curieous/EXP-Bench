@@ -1,0 +1,42 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you run a 3D object detection demo using the Voxel Mamba model on a point cloud file?",
+    "method": "Use the demo.py script to run inference with a pre-trained Voxel Mamba model on a point cloud file and visualize the detection results.",
+    "expected_outcome": "Visualization of the point cloud with 3D bounding boxes showing detected objects (vehicles, pedestrians, cyclists) with their confidence scores and class labels.",
+    "source": [
+      "/workspace/tools/demo.py"
+    ],
+    "usage_instructions": "1. Prepare a point cloud file in .bin or .npy format.\n2. Download a pre-trained Voxel Mamba checkpoint.\n3. Run the demo.py script with the following arguments:\n   - --cfg_file: Path to the Voxel Mamba configuration file (e.g., tools/cfgs/voxel_mamba_models/voxel_mamba_waymo.yaml)\n   - --ckpt: Path to the pre-trained model checkpoint\n   - --data_path: Path to the point cloud file or directory containing point cloud files\n   - --ext: File extension of the point cloud files (.bin or .npy)\n4. The script will load the model, process each point cloud file, and visualize the detection results with 3D bounding boxes."
+  },
+  {
+    "mode": "A",
+    "question": "How can you evaluate the performance of a pre-trained Voxel Mamba model on the Waymo validation dataset?",
+    "method": "Use the test.py script to evaluate a pre-trained Voxel Mamba model on the Waymo validation dataset and report performance metrics.",
+    "expected_outcome": "Evaluation results showing mAPH_L1 and mAPH_L2 metrics for vehicle, pedestrian, and cyclist classes, similar to the results reported in the README (e.g., 79.6 mAPH_L1, 73.6 mAPH_L2).",
+    "source": [
+      "/workspace/tools/test.py"
+    ],
+    "usage_instructions": "1. Ensure the Waymo dataset is prepared according to the instructions in GETTING_STARTED.md.\n2. Generate the Hilbert curve template files as described in the README.\n3. Download a pre-trained Voxel Mamba checkpoint.\n4. Run the test.py script with the following arguments:\n   - --cfg_file: Path to the Voxel Mamba configuration file (tools/cfgs/voxel_mamba_models/voxel_mamba_waymo.yaml)\n   - --batch_size: Batch size for testing (e.g., 4)\n   - --ckpt: Path to the pre-trained model checkpoint\n5. For multi-GPU testing, use the dist_test.sh script:\n   bash scripts/dist_test.sh [NUM_GPUS] --cfg_file [CONFIG_FILE] --batch_size [BATCH_SIZE] --ckpt [CHECKPOINT_FILE]\n6. The script will evaluate the model on the validation set and report performance metrics."
+  },
+  {
+    "mode": "A",
+    "question": "How can you train a Voxel Mamba model from scratch on the Waymo dataset?",
+    "method": "Use the train.py script to train a Voxel Mamba model on the Waymo dataset with the specified configuration.",
+    "expected_outcome": "A trained Voxel Mamba model with checkpoint files saved periodically during training, and final evaluation results showing performance metrics comparable to those reported in the paper.",
+    "source": [
+      "/workspace/tools/train.py"
+    ],
+    "usage_instructions": "1. Ensure the Waymo dataset is prepared according to the instructions in GETTING_STARTED.md.\n2. Generate the Hilbert curve template files as described in the README:\n   cd data\n   mkdir hilbert\n   python ./tools/hilbert_curves/create_hilbert_curve_template.py\n3. Run the train.py script with the following arguments:\n   - --cfg_file: Path to the Voxel Mamba configuration file (tools/cfgs/voxel_mamba_models/voxel_mamba_waymo.yaml)\n   - --batch_size: Batch size for training (e.g., 3 per GPU as specified in the config)\n   - --epochs: Number of training epochs (default is 24 as specified in the config)\n4. For multi-GPU training, use the dist_train.sh script:\n   bash scripts/dist_train.sh [NUM_GPUS] --cfg_file [CONFIG_FILE]\n5. The script will train the model, save checkpoints periodically, and evaluate the model on the validation set after training."
+  },
+  {
+    "mode": "A",
+    "question": "How can you generate the Hilbert curve templates required for the Voxel Mamba model?",
+    "method": "Use the create_hilbert_curve_template.py script to generate the Hilbert curve templates needed for the Voxel Mamba model's spatial serialization.",
+    "expected_outcome": "Three Hilbert curve template files saved in the data/hilbert directory: curve_template_3d_rank_9.pth, curve_template_3d_rank_8.pth, and curve_template_3d_rank_7.pth.",
+    "source": [
+      "/workspace/tools/hilbert_curves/create_hilbert_curve_template.py"
+    ],
+    "usage_instructions": "1. Create a directory to store the Hilbert curve templates:\n   cd data\n   mkdir hilbert\n2. Run the create_hilbert_curve_template.py script:\n   python ./tools/hilbert_curves/create_hilbert_curve_template.py\n3. The script will generate three Hilbert curve template files with different ranks (9, 8, and 7) corresponding to different resolutions.\n4. These template files will be saved in the data/hilbert directory and are required for the Voxel Mamba model to properly serialize the voxel data."
+  }
+]

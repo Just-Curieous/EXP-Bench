@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, torch.nn, torch.nn.functional, and torch.distributed (/workspace/opencls/open_clip/loss.py:7-22)",
+    "Step 2: Implement the ClsLoss class that inherits from nn.Module (/workspace/opencls/open_clip/loss.py:424-430)",
+    "Step 3: Initialize the ClsLoss with world_size and pad_id parameters (/workspace/opencls/open_clip/loss.py:425-434)",
+    "Step 4: Implement the loss method that calculates the normalized cross-entropy loss between logits and targets (/workspace/opencls/open_clip/loss.py:436-439)",
+    "Step 5: Implement the reweight_targets method that applies IDF (Inverse Document Frequency) weighting to the targets (/workspace/opencls/open_clip/loss.py:441-448)",
+    "Step 6: Implement the forward method that processes inputs, creates one-hot target vectors, applies IDF weighting via reweight_targets, and calculates the final loss (/workspace/opencls/open_clip/loss.py:450-463)"
+  ],
+  "agent_instructions": "Create a classification loss module for a SuperClass model that implements IDF (Inverse Document Frequency) class weighting. The module should:\n\n1. Inherit from nn.Module and handle distributed training scenarios\n2. Calculate a normalized cross-entropy loss between model predictions and targets\n3. Implement an IDF weighting mechanism that adjusts the importance of each class based on its frequency in the batch\n4. The IDF weighting should:\n   - Accumulate class frequencies across distributed processes\n   - Apply a logarithmic scaling to emphasize less frequent classes\n   - Be implemented in a way that can be easily disabled for ablation studies\n5. The forward method should:\n   - Convert label indices to one-hot vectors\n   - Apply the IDF weighting to the targets\n   - Calculate and return the weighted loss\n\nThis loss function is critical for comparing model performance with and without IDF weighting in classification tasks.",
+  "masked_source": [
+    "/workspace/opencls/open_clip/loss.py"
+  ]
+}

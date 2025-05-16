@@ -1,0 +1,6 @@
+{
+    "source": [
+        "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh"
+    ],
+    "usage_instructions": "To compare ViT-B/16 with CLIPSelf to the ViT-B/16 baseline, follow these steps:\n\n1. First, evaluate the baseline ViT-B/16 model (EVA-CLIP without CLIPSelf):\n   ```bash\n   bash scripts/test_eva_vitb16_macc_boxes_masks.sh baseline_test checkpoints/EVA02_CLIP_B_psz16_s8B.pt\n   ```\n\n2. Then, evaluate the ViT-B/16 model with CLIPSelf:\n   ```bash\n   bash scripts/test_eva_vitb16_macc_boxes_masks.sh clipself_test checkpoints/eva_vitb16_coco_clipself_patches.pt\n   ```\n\nThe script will output Top1 and Top5 accuracy metrics for Boxes (referred to as 'rois' in the output), Thing Masks, and Stuff Masks. By comparing these metrics between the two runs, you can determine if CLIPSelf improves the performance over the baseline.\n\nNote: Make sure the checkpoint files exist at the specified paths. If not, you may need to download them from the provided Google Drive links in the README."
+}

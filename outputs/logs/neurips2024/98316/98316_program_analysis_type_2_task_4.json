@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including numpy and the GES algorithm from causallearn.search.ScoreBased.GES (/workspace/tests/TestGES.py:1-9)",
+    "Step 2: Define a known causal structure as a set of directed edges between nodes (/workspace/tests/TestGES.py:72-74)",
+    "Step 3: Generate or load data with a known causal structure (/workspace/tests/TestGES.py:95)",
+    "Step 4: Apply the GES algorithm with the BIC score function to the data (/workspace/tests/TestGES.py:98)",
+    "Step 5: Extract the resulting causal graph from the returned dictionary (/workspace/tests/TestGES.py:100)",
+    "Step 6: Interpret the adjacency matrix where G.graph[j,i]=1 and G.graph[i,j]=-1 indicate i->j, and G.graph[i,j]=G.graph[j,i]=-1 indicate i---j (/workspace/tests/TestGES.py:100)",
+    "Step 7: Compare the discovered causal structure with the true structure (/workspace/tests/TestGES.py:100)",
+    "Final Step: Optionally, calculate structural hamming distance (SHD) between the true CPDAG and the discovered graph to evaluate performance (/workspace/tests/TestGES.py:63-64)"
+  ],
+  "agent_instructions": "Your task is to implement a script that demonstrates how to use the Greedy Equivalence Search (GES) algorithm with BIC score to discover causal relationships in data. Follow these steps:\n\n1. Import the necessary libraries, including numpy and the GES algorithm from causallearn.search.ScoreBased.GES\n\n2. Create a demonstration that shows how to:\n   - Define a known causal structure (for validation purposes)\n   - Either generate synthetic data with this known structure or load existing data\n   - Apply the GES algorithm with the BIC score function to the data\n   - Extract and interpret the resulting causal graph from the returned dictionary\n\n3. Interpret the adjacency matrix of the resulting graph where:\n   - G.graph[j,i]=1 and G.graph[i,j]=-1 indicate a directed edge i->j\n   - G.graph[i,j]=G.graph[j,i]=-1 indicate an undirected edge i---j\n\n4. Compare the discovered causal structure with the true structure to evaluate the algorithm's performance\n\n5. Optionally, visualize the causal graph using visualization methods from causallearn\n\nThe script should demonstrate the complete workflow from data preparation to causal discovery and evaluation, focusing on how the GES algorithm with BIC score can identify both directed and undirected causal relationships in the data."
+}

@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including JAX, Flax, Optax, and environment wrappers (/workspace/baselines/QLearning/vdn_rnn.py:1-29)",
+    "Step 2: Implement a recurrent neural network module (ScannedRNN) using GRU cells for temporal dependencies (/workspace/baselines/QLearning/vdn_rnn.py:31-59)",
+    "Step 3: Create a Q-network architecture (RNNQNetwork) that processes observations through an embedding layer and RNN to output Q-values (/workspace/baselines/QLearning/vdn_rnn.py:62-86)",
+    "Step 4: Define data structures for storing experience transitions and training state (/workspace/baselines/QLearning/vdn_rnn.py:89-103)",
+    "Step 5: Initialize the environment with the CTRolloutManager wrapper for centralized training (/workspace/baselines/QLearning/vdn_rnn.py:161-164)",
+    "Step 6: Create the network and optimizer with appropriate hyperparameters (/workspace/baselines/QLearning/vdn_rnn.py:167-206)",
+    "Step 7: Set up a replay buffer for storing agent experiences (/workspace/baselines/QLearning/vdn_rnn.py:210-247)",
+    "Step 8: Implement environment interaction loop to collect experiences using epsilon-greedy exploration (/workspace/baselines/QLearning/vdn_rnn.py:255-328)",
+    "Step 9: Sample batches from the replay buffer for training (/workspace/baselines/QLearning/vdn_rnn.py:334-341)",
+    "Step 10: Implement the VDN loss function that sums individual agent Q-values to get joint Q-values (/workspace/baselines/QLearning/vdn_rnn.py:363-402)",
+    "Step 11: Update network parameters using gradient descent (/workspace/baselines/QLearning/vdn_rnn.py:404-410)",
+    "Step 12: Periodically update the target network parameters (/workspace/baselines/QLearning/vdn_rnn.py:436-447)",
+    "Step 13: Implement evaluation function to test the greedy policy during training (/workspace/baselines/QLearning/vdn_rnn.py:489-547)",
+    "Final Step: Run the training loop for the specified number of updates and save the trained model (/workspace/baselines/QLearning/vdn_rnn.py:556-637)"
+  ],
+  "agent_instructions": "Your task is to implement a Value Decomposition Network (VDN) with Recurrent Neural Networks (RNNs) for cooperative multi-agent reinforcement learning. This implementation should enable training agents that can solve cooperative tasks with improved sample efficiency compared to independent learners.\n\nHere's what you need to implement:\n\n1. Create a recurrent neural network architecture:\n   - Implement a GRU-based RNN module that can process sequential observations\n   - Build a Q-network that uses this RNN to handle temporal dependencies in the environment\n\n2. Set up the training environment:\n   - Use a multi-agent environment (like MPE, SMAX, or Overcooked)\n   - Wrap the environment with a centralized training wrapper that allows for team rewards\n\n3. Implement the core VDN algorithm:\n   - Create a replay buffer to store experience transitions\n   - Implement epsilon-greedy exploration with a decaying schedule\n   - Sample batches from the replay buffer for training\n   - Calculate Q-values for each agent using the RNN architecture\n   - Implement the VDN mechanism by summing individual agent Q-values to get a joint Q-value\n   - Use this joint Q-value for training (the key insight of VDN)\n   - Implement double Q-learning with a target network that is periodically updated\n\n4. Training and evaluation:\n   - Implement the main training loop that collects experiences and updates the network\n   - Create an evaluation function to test the performance of the greedy policy\n   - Track relevant metrics like episode returns, loss values, and Q-values\n\nThe implementation should be able to handle partially observable environments where agents have limited information, which is why the RNN component is crucial. The VDN approach allows agents to learn cooperative behavior while maintaining decentralized execution during testing."
+}

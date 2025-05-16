@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/benchmarks/test_objectives_benchmarks.py",
+        "/workspace/benchmarks/ecosystem/gym_env_throughput.py"
+    ],
+    "usage_instructions": "To benchmark GAE computation efficiency, run 'pytest /workspace/benchmarks/test_objectives_benchmarks.py::test_gae_speed -v' which compares TorchRL's vectorized GAE implementation (vec_generalized_advantage_estimate) with the non-vectorized version (generalized_advantage_estimate) on datasets with varying batch sizes and timesteps. To benchmark data collection speed across environments, run 'python /workspace/benchmarks/ecosystem/gym_env_throughput.py' which tests throughput on common environments including HalfCheetah-v4 and Breakout-v5 with different numbers of workers (including 32 as specified in the question). The script measures frames per second (fps) for various configurations and saves the results to text files."
+}

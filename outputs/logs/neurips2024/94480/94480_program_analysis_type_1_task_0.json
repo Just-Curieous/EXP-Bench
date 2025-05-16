@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Create the necessary directory structure for storing benchmark results (/workspace/scripts/infinitebench.sh:3-3)",
+    "Step 2: Download the required datasets by running the download script, which creates data directories and downloads both LongBench datasets from Hugging Face and InfiniteBench datasets from Hugging Face (/workspace/scripts/download.sh:1-12)",
+    "Step 3: Load the Mistral-7B-Instruct-v0.2 model with the InfLLM configuration, which includes specific parameters for block size, local context size, and other InfLLM-specific settings (/workspace/config/mistral-inf-llm.yaml:1-17)",
+    "Step 4: Run the prediction script with the InfLLM configuration to evaluate the model on six ∞-Bench tasks: key-value retrieval, passkey retrieval, number string retrieval, code debugging, mathematical finding, and long book choice questions (/workspace/scripts/infinitebench.sh:5-8)",
+    "Step 5: For each dataset, load the appropriate data, generate prompts according to predefined templates, and run inference with the model to produce predictions (/workspace/benchmark/pred.py:282-340)",
+    "Step 6: Save the prediction results for each dataset in the output directory (/workspace/benchmark/pred.py:336-340)",
+    "Step 7: Repeat steps 3-6 with the Infinite configuration (mistral-infinite-lm.yaml), which uses a different approach with n_local=6144 and fattn=true (/workspace/config/mistral-infinite-lm.yaml:1-12)",
+    "Step 8: Repeat steps 3-6 with the StreamingLLM configuration (mistral-stream-llm.yaml), which uses a similar approach to Infinite but with a different model type (/workspace/config/mistral-stream-llm.yaml:1-12)",
+    "Step 9: Repeat steps 3-6 with the baseline Mistral configuration (mistral-origin.yaml), which uses a standard approach with a limited context window of 32768 tokens and suffix truncation (/workspace/config/mistral-origin.yaml:1-11)",
+    "Step 10: Run the evaluation script to compute scores for all model predictions across all datasets using task-specific evaluation metrics (/workspace/scripts/infinitebench.sh:10-10)",
+    "Final Step: Compare the performance of all four model configurations (InfLLM, Infinite, StreamingLLM, and baseline Mistral) on the ∞-Bench tasks based on the evaluation results stored in the benchmark/infinite-bench-result directory (/workspace/benchmark/eval.py:157-160)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment that compares InfLLM with sliding window baselines on ∞-Bench tasks using Mistral-7B. You need to download the necessary datasets, run the evaluation script with different model configurations, and analyze the results. First, download the datasets using the provided script. Then, run the infinitebench.sh script with four different configuration files: one for InfLLM, one for Infinite, one for StreamingLLM, and one for baseline Mistral. The script will evaluate each model on several ∞-Bench tasks and output results in a designated directory. You should follow the usage instructions carefully and make sure all prerequisites are met before running the experiments.",
+  "masked_source": [
+    "/workspace/scripts/infinitebench.sh"
+  ]
+}

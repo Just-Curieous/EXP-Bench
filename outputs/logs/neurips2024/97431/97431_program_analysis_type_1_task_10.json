@@ -1,0 +1,28 @@
+{
+  "requirements": [
+    "Step 1: Create scripts to evaluate prompt-level attacks (PAIR method) against 11 different attack intention categories (/workspace/scripts/4_trick_atk_intension_pair.sh:1-142)",
+    "Step 2: Create scripts to evaluate token-level attacks (AutoDAN method) against the same 11 categories (/workspace/scripts/4_trick_atk_intension_autodan.sh:1-120)",
+    "Step 3: For each category, load the corresponding prompts from CSV files containing 'goal' and 'target' columns (/workspace/utils/string_utils.py:9-17)",
+    "Step 4: For PAIR attacks, implement a system that uses an attack model (Vicuna-13B) to generate adversarial prompts targeting a victim model (Llama-2-7B) (/workspace/baseline/PAIR/PAIR_single_main.py:17-114)",
+    "Step 5: For AutoDAN attacks, implement a genetic algorithm-based approach to generate adversarial prompts targeting the same victim model (/workspace/baseline/AutoDAN/AutoDAN_single_main.py:106-242)",
+    "Step 6: For both attack methods, evaluate success by checking if the target model's response contains any safety refusal phrases (/workspace/baseline/AutoDAN/AutoDAN_single_main.py:41-58, /workspace/baseline/PAIR/PAIR_single_main.py:108-111)",
+    "Step 7: Save attack results including the adversarial prompt, model output, and attack success status for each category (/workspace/main.py:254-266)",
+    "Step 8: Implement agent-based evaluation to provide an additional measure of attack success (/workspace/main.py:376-399)",
+    "Final Step: Calculate and report Attack Success Rate (ASR) across all categories for both attack methods (/workspace/analysis/report_trick.py:94-116)"
+  ],
+  "agent_instructions": "Your task is to implement an experiment that evaluates how different attack intentions impact the Attack Success Rate (ASR) across 11 categories from the HEx-PHI taxonomy. You'll need to create two main scripts:\n\n1. A script for prompt-level attacks using the PAIR method\n2. A script for token-level attacks using the AutoDAN method\n\nBoth scripts should:\n- Process 11 different categories of harmful prompts (categories 1-11)\n- Use Vicuna-13B as the attack model and Llama-2-7B as the target model\n- Run attacks against each category and save results in an organized directory structure\n\nFor the PAIR method (prompt-level attacks):\n- Implement an iterative approach where an attack model generates adversarial prompts\n- Use a judge model to evaluate and score the attack success\n- Implement early stopping when a successful jailbreak is found\n\nFor the AutoDAN method (token-level attacks):\n- Implement a genetic algorithm approach to generate adversarial prompts\n- Use mutation, crossover, and selection operations to evolve prompts\n- Check for attack success by verifying the target model's response doesn't contain safety refusals\n\nThe experiment should:\n- Load prompts from CSV files for each category\n- Run attacks with appropriate parameters (iterations, batch size, etc.)\n- Save results in a structured format for later analysis\n- Include an agent-based evaluation component to verify attack success\n\nAfter running the experiments, implement a reporting mechanism to calculate and display the Attack Success Rate (ASR) for each category and attack method.",
+  "masked_source": [
+    "/workspace/scripts/4_trick_atk_intension_pair.sh",
+    "/workspace/scripts/4_trick_atk_intension_autodan.sh",
+    "/workspace/baseline/PAIR/PAIR_single_main.py",
+    "/workspace/baseline/AutoDAN/AutoDAN_single_main.py",
+    "/workspace/baseline/PAIR/system_prompts.py",
+    "/workspace/baseline/PAIR/judges_pair.py",
+    "/workspace/baseline/PAIR/conversers_pair.py",
+    "/workspace/baseline/PAIR/common.py",
+    "/workspace/baseline/AutoDAN/utils/opt_utils.py",
+    "/workspace/baseline/AutoDAN/utils/string_utils.py",
+    "/workspace/utils/string_utils.py",
+    "/workspace/utils/test_utils.py"
+  ]
+}

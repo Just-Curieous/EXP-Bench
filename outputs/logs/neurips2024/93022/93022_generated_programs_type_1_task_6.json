@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/train.py",
+        "/workspace/sim_inference.py",
+        "/workspace/scripts/analyze_peptide_sim.py"
+    ],
+    "usage_instructions": "1. Train the SiT model with the Hyena operator by running: `python train.py --sim_condition --train_split splits/4AA_train.csv --val_split splits/4AA_val.csv --data_dir data/4AA_data/ --num_frames 1000 --prepend_ipa --abs_pos_emb --crop 4 --ckpt_freq 40 --val_repeat 25 --suffix _i100 --epochs 10000 --hyena --wandb --run_name [NAME]` (note the added `--hyena` flag to replace time attention with the non-causal Hyena operator).\n2. Generate a long trajectory using the trained model: `python sim_inference.py --sim_ckpt [PATH_TO_HYENA_MODEL_CHECKPOINT] --data_dir data/4AA_data --split splits/4AA_test.csv --num_rollouts 1 --num_frames 1000 --xtc --out_dir [OUTPUT_DIR]`.\n3. Analyze the trajectory to compute torsional autocorrelation functions and compare with ground truth: `python -m scripts.analyze_peptide_sim --mddir data/4AA_sims --pdbdir [OUTPUT_DIR] --plot --save --num_workers 1`.\n4. The analysis script will generate plots showing torsional autocorrelation functions over multiple timescales (100 fs to 100 ps) and save the results in a pickle file. The dynamical content can be derived from these autocorrelation functions by computing the negative derivative with respect to log-timescale."
+}

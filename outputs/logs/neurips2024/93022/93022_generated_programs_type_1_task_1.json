@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/sim_inference.py",
+        "/workspace/scripts/analyze_peptide_sim.py"
+    ],
+    "usage_instructions": "1. First, generate model trajectories using sim_inference.py with the forward simulation model: `python sim_inference.py --sim_ckpt forward_sim.ckpt --data_dir data/4AA_sims --split splits/4AA_test.csv --num_rollouts 10 --num_frames 1000 --xtc --out_dir [OUTPUT_DIRECTORY]`\n\n2. Then analyze both the ground-truth MD and model-generated trajectories using analyze_peptide_sim.py: `python -m scripts.analyze_peptide_sim --mddir data/4AA_sims --pdbdir [OUTPUT_DIRECTORY] --plot --save --num_workers 1`\n\n3. The script will produce a pickle file in the output directory containing all the analysis results, including:\n   - Torsion angle autocorrelation functions for both backbone and sidechain torsions\n   - Relaxation times (derived from when autocorrelation drops below 1/e)\n   - MSM flux matrices and their correlation between ground-truth and generated trajectories\n\nThe analysis script automatically separates backbone and sidechain torsions, computes autocorrelation functions over lag times from sub-picosecond to longer timescales (using log scale), and builds MSMs to analyze state transition fluxes."
+}

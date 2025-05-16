@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Import the DirectLiNGAM class from the causallearn library (/workspace/causallearn/search/FCMBased/lingam/direct_lingam.py:13-47)",
+    "Step 2: Generate synthetic data with a clear causal structure (X0->X1->X2) using non-Gaussian distributions (e.g., uniform) (/workspace/tests/TestDirectLiNGAM.py:17-24)",
+    "Step 3: Create an instance of the DirectLiNGAM class with appropriate parameters (/workspace/tests/TestDirectLiNGAM.py:26)",
+    "Step 4: Fit the model to the generated data using the fit method (/workspace/causallearn/search/FCMBased/lingam/direct_lingam.py:57-101)",
+    "Step 5: Extract the causal order from the model's causal_order_ attribute (/workspace/causallearn/search/FCMBased/lingam/base.py:157-167)",
+    "Step 6: Extract the adjacency matrix from the model's adjacency_matrix_ attribute (/workspace/causallearn/search/FCMBased/lingam/base.py:169-179)",
+    "Step 7: Verify that the discovered causal order matches the expected order [0,1,2] (/workspace/tests/TestDirectLiNGAM.py:29)",
+    "Step 8: Verify that the adjacency matrix correctly represents the causal structure with appropriate edge weights (/workspace/tests/TestDirectLiNGAM.py:30)"
+  ],
+  "agent_instructions": "Your task is to implement a script that demonstrates how to identify causal structure in a linear non-Gaussian system using the DirectLiNGAM algorithm.\n\nThe DirectLiNGAM algorithm is designed to discover causal relationships between variables in a system where:\n1. The relationships between variables are linear\n2. The error terms follow non-Gaussian distributions\n3. The causal structure forms a directed acyclic graph (DAG)\n\nFollow these steps to complete the task:\n\n1. Generate synthetic data with a clear causal structure where X0 causes X1, which in turn causes X2. Use non-Gaussian distributions (such as uniform) for the error terms to ensure the algorithm works correctly.\n\n2. Apply the DirectLiNGAM algorithm to discover the causal structure:\n   - Import the DirectLiNGAM class from the causallearn library\n   - Create an instance of the DirectLiNGAM class\n   - Fit the model to your generated data\n\n3. Extract and interpret the results:\n   - Get the causal order from the model's causal_order_ attribute\n   - Get the adjacency matrix from the model's adjacency_matrix_ attribute\n   - Verify that the discovered causal order matches the expected order [0,1,2]\n   - Examine the adjacency matrix to confirm it correctly represents the causal structure with appropriate edge weights\n\nThe expected outcome is that the DirectLiNGAM algorithm correctly identifies the causal order [0,1,2] and produces an adjacency matrix showing the connections 0->1->2 with appropriate edge weights."
+}

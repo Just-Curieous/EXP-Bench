@@ -1,0 +1,170 @@
+{
+  "questions": [
+    {
+      "question": "Can InfLLM successfully extend the 4K context window of Vicuna to 128K tokens and improve its performance on long-context retrieval tasks such as Retrieve.PassKey and Retrieve.Number?",
+      "method": "#### Experiment Components\n\n- **Base Model**:\n  - **Vicuna (Chiang et al., 2023)** \u2014 originally supports a maximum context of 4K tokens\n- **InfLLM Extension**:\n  - Context window extended to **128K tokens**\n  - Dynamic context memory applied to Vicuna via external memory architecture\n  - **Local window**: 4K\n  - **Memory unit size**: 128 tokens\n  - **# Representative tokens**: 4\n  - **# Selected memory units**: 96\n  - **Chunk size**: 512\n  - **Initial tokens**: 128\n- **Tasks & Dataset**:\n  - From \u221e-Bench, focused on:\n    - **Retrieve.PassKey (R.PK)**: locate 5-digit sequence\n    - **Retrieve.Number (R.Num)**: retrieve numerical content\n    - **Retrieve.KV (R.KV)**: retrieve structured key-value data\n    - **Math.Find (Math.F)**: mathematical reasoning over long context\n- **Evaluation Metric**:\n  - Accuracy (%) on each task\n- **Compute Setup**:\n  - Half-precision (fp16), single A100/A800 GPU\n  - FlashAttention and CPU/GPU memory offloading enabled\n\n#### Reproduction Steps\n\n1. **Set Up Vicuna**:\n   - Load Vicuna-7B base model (4K max context)\n   - Wrap with InfLLM adapter to expand input capacity to 128K\n2. **Prepare Evaluation Tasks**:\n   - Generate or reuse \u221e-Bench instances with 128K input length\n   - Ensure all input formats match previous InfLLM tasks\n3. **Inference**:\n   - Evaluate base **Vicuna** and **InfLLM-enhanced Vicuna**\n   - Use identical input instances for both variants\n4. **Compare Performance**:\n   - Measure retrieval and reasoning accuracy for all four tasks",
+      "expected_outcome": "InfLLM enables Vicuna to scale to long input lengths (128K), resulting in drastic gains in retrieval tasks (R.PK and R.Num), while struggling to improve R.KV and Math.F due to Vicuna's weaker hidden representation capabilities in long-text settings.\n\n| Model             | R.PK  | R.Num | R.KV | Math.F |\n| ----------------- | ----- | ----- | ---- | ------ |\n| **Vicuna**        | 5.08  | 4.41  | 1.40 | 11.71  |\n| **InfLLM-Vicuna** | 99.15 | 81.69 | 0.60 | 11.14  |\n\n- InfLLM vastly enhances Vicuna's recall and retrieval ability for simpler long-sequence tasks (PassKey, Number).\n- However, due to Vicuna's limited expressiveness, context memory cannot fully compensate in more complex tasks like R.KV and Math.F.\n- Suggests that InfLLM\u2019s effectiveness depends not only on memory but also on the base model\u2019s representational strength.",
+      "design_complexity": {
+        "constant_variables": {
+          "base_model": "Vicuna (Chiang et al., 2023) with a fixed original 4K context window",
+          "evaluation_metric": "Accuracy (%) measured across retrieval and reasoning tasks",
+          "compute_setup": "Single A100/A800 GPU with half-precision (fp16), FlashAttention and CPU/GPU offloading enabled"
+        },
+        "independent_variables": {
+          "infllm_extension_parameters": [
+            "Context window size (extended to 128K tokens)",
+            "Local window size (4K)",
+            "Memory unit size (128 tokens)",
+            "Number of representative tokens (4)",
+            "Number of selected memory units (96)",
+            "Chunk size (512)",
+            "Initial tokens (128)"
+          ],
+          "task_type": [
+            "Retrieve.PassKey (R.PK)",
+            "Retrieve.Number (R.Num)",
+            "Retrieve.KV (R.KV)",
+            "Math.Find (Math.F)"
+          ]
+        },
+        "dependent_variables": {
+          "accuracy": [
+            "Accuracy (%) on each of the four tasks (R.PK, R.Num, R.KV, Math.F)"
+          ]
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "infllm_extension_parameters": "The rationale for choosing specific parameter values (e.g., chunk size of 512 tokens, memory unit size of 128 tokens, 4 representative tokens, 96 selected memory units) is not fully explained.",
+          "local_window": "While set to 4K, it is not explicit how its size interacts with the extended context length and the retrieval quality.",
+          "task_selection": "The paper mentions tasks like Retrieve.KV and Math.F, but it is ambiguous why these tasks, which handle more complex information retrieval or reasoning, do not see improvement, and what aspects of the tasks are driving these performance differences."
+        },
+        "possible_modifications": {
+          "modify_extension_parameters": [
+            "Test alternative values for chunk size, memory unit size, number of representative tokens, or selected memory units to optimize retrieval performance."
+          ],
+          "introduce_new_task_variables": [
+            "Explore additional retrieval or reasoning tasks to further understand the impact of the extended context memory on different performance facets."
+          ],
+          "mask_existing_parameters": [
+            "In extended experimental designs, some key parameters (e.g., specific memory unit configurations) could be masked to assess robustness and identify the most critical hyperparameters."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Base Model: Vicuna-7B (original 4K context limit)",
+          "InfLLM Extension Adapter (for extending context to 128K tokens)",
+          "Dynamic Context Memory Architecture (with parameters such as memory unit size, number of representative tokens, and selected memory units)",
+          "Evaluation Tasks: Retrieve.PassKey, Retrieve.Number, Retrieve.KV, Math.Find from \u221e-Bench",
+          "Compute Setup: Single A100/A800 GPU using half-precision (fp16), FlashAttention, and CPU/GPU offloading"
+        ],
+        "setup_steps": [
+          "Load and configure the Vicuna-7B base model",
+          "Wrap Vicuna with the InfLLM adapter to extend its input capacity from 4K to 128K tokens",
+          "Set InfLLM extension parameters (local window size of 4K, memory unit size of 128 tokens, 4 representative tokens, 96 selected memory units, chunk size of 512, initial tokens of 128)",
+          "Prepare evaluation instances by generating or reusing \u221e-Bench datasets with properly formatted 128K token inputs",
+          "Run inference using both the base model (Vicuna) and InfLLM-enhanced Vicuna on identical input instances",
+          "Evaluate and compare accuracy across the specified retrieval and reasoning tasks"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Hyperparameter Selection",
+            "description": "Multiple parameters for InfLLM, such as chunk size and memory unit configurations, increase the setup complexity due to their potential interactions and undocumented tuning rationale."
+          },
+          {
+            "source": "Task-Specific Requirements",
+            "description": "Different retrieval and reasoning tasks (R.PK, R.Num, R.KV, Math.F) add complexity by requiring distinct input preparation and evaluation criteria."
+          },
+          {
+            "source": "Compute Configuration",
+            "description": "The need for specific GPU settings (half-precision, FlashAttention, memory offloading) and use of high-end GPUs (A100/A800) further complicate the replication of the experiments."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "InfLLM Extension Parameters: The rationale for choosing specific values (e.g., chunk size of 512, memory unit size of 128, 4 representative tokens, 96 selected units) is not fully explained.",
+          "Local Window: Although set to 4K, its interaction with the extended 128K context and its effect on retrieval quality is not detailed."
+        ],
+        "ambiguous_setup_steps": [
+          "Preparation of Evaluation Tasks: It is not clear whether the \u221e-Bench instances need further preprocessing or formatting adjustments to match the extended context input requirements.",
+          "Inference Procedure: While both model variants are evaluated on identical instances, details on how to ensure consistency in input formatting and task setup are not exhaustively described."
+        ],
+        "possible_modifications": {
+          "modify_extension_parameters": [
+            "Test alternative values for chunk size, memory unit size, number of representative tokens, and selected memory units to optimize performance."
+          ],
+          "introduce_new_task_variables": [
+            "Include additional retrieval or reasoning tasks to search for the most sensitive aspects of the extended context memory in terms of performance variability."
+          ],
+          "mask_existing_parameters": [
+            "In extended experimental designs, some key parameters (e.g., specific memory unit configurations) could be intentionally masked to assess the robustness and criticality of each hyperparameter."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "modify_extension_parameters": [
+            "Test alternative values for chunk size, memory unit size, number of representative tokens, and number of selected memory units to optimize performance."
+          ],
+          "introduce_new_task_variables": [
+            "Include additional retrieval or reasoning tasks to further explore the impact of extended context memory on different performance facets."
+          ],
+          "mask_existing_parameters": [
+            "Intentionally mask key InfLLM configuration parameters (e.g., specific memory unit setups) to evaluate robustness and determine the most critical hyperparameters."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Dynamic Memory Operations and Hardware-Level Variability",
+        "description": "Although the evaluation is performed in inference mode with fixed input instances, certain aspects of the dynamic context memory mechanism\u2014including potential stochasticity in memory unit selection if randomized procedures are used, as well as variability introduced by fp16 precision, FlashAttention, and GPU offloading\u2014can generate random fluctuations in performance. These random elements may not be evident in every run but could impact the retrieval accuracy in tasks such as Retrieve.PassKey and Retrieve.Number.",
+        "impact": "Random fluctuations may lead to inconsistent retrieval performance across experimental runs, resulting in unstable accuracy measurements and making it difficult to precisely quantify performance improvements solely due to the InfLLM extension.",
+        "possible_modifications": [
+          "Introduce explicit random token selection in the memory unit construction to simulate the effect of random uncertainty and assess robustness.",
+          "Vary GPU settings (e.g., precision or offloading strategies) deliberately to quantify their impact on performance variability.",
+          "Incorporate stochastic noise in the dynamic memory retrieval process to evaluate the sensitivity of the extended model."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Base Model Limitations and Dataset Configuration",
+        "description": "The systematic uncertainty stems from the inherent limitations of the base model (Vicuna) in handling complex long-context tasks and possible biases in the \u221e-Bench dataset formatting for 128K token inputs. As observed in the performance differences (e.g., Table 1 shows drastic gains in simple retrieval tasks like R.PK and R.Num but little improvement in complex tasks like R.KV and Math.F), these issues are systemic and not due to random fluctuations.",
+        "impact": "This bias causes consistently lower performance on complex tasks regardless of the dynamic memory enhancements. It reflects that the InfLLM extension is limited by the expressiveness of the underlying base model, leading to predictable underperformance on tasks requiring richer representations.",
+        "possible_modifications": [
+          "Introduce a one-time systematic modification of the dataset to simulate bias (e.g., altering formatting or labeling criteria) and then compare outcomes with a clean dataset.",
+          "Test alternative base models or upgrade the hidden representation capabilities to mitigate systematic biases.",
+          "Experiment with different preprocessing procedures for the \u221e-Bench dataset to minimize systematic formatting issues that affect long-context understanding."
+        ]
+      },
+      "source": [
+        "/workspace/scripts/vicuna-baseline-experiment.sh",
+        "/workspace/scripts/vicuna-infllm-experiment.sh"
+      ],
+      "usage_instructions": "First run 'bash scripts/download.sh' to download the required datasets. Then execute 'bash scripts/vicuna-baseline-experiment.sh' to evaluate the original Vicuna model (4K context) on the specified tasks. Finally, run 'bash scripts/vicuna-infllm-experiment.sh' to evaluate the InfLLM-enhanced Vicuna model (128K context) on the same tasks. Compare the results in the output JSON files to see the performance difference.",
+      "requirements": [
+        "Step 1: Install the required dependencies by running 'pip install -r requirements.txt' to set up the environment (/workspace/requirements.txt:1-10)",
+        "Step 2: Download the benchmark datasets by running 'bash scripts/download.sh', which creates data directories and downloads LongBench and InfiniteBench datasets (/workspace/scripts/download.sh:1-13)",
+        "Step 3: Create a directory to store the evaluation results for the baseline Vicuna model (/workspace/scripts/infinitebench.sh:3-3)",
+        "Step 4: Evaluate the original Vicuna model (4K context window) on the InfiniteBench tasks by running the prediction script with the vicuna-origin.yaml configuration (/workspace/config/vicuna-origin.yaml:1-11)",
+        "Step 5: Run the evaluation script on the baseline results to calculate performance metrics and generate a result.json file (/workspace/benchmark/eval.py:123-160)",
+        "Step 6: Create a directory to store the evaluation results for the InfLLM-enhanced Vicuna model (/workspace/scripts/infinitebench.sh:3-3)",
+        "Step 7: Evaluate the InfLLM-enhanced Vicuna model (128K context window) on the same InfiniteBench tasks by running the prediction script with the vicuna-inf-llm.yaml configuration (/workspace/config/vicuna-inf-llm.yaml:1-18)",
+        "Step 8: Run the evaluation script on the InfLLM results to calculate performance metrics and generate a result.json file (/workspace/benchmark/eval.py:123-160)",
+        "Step 9: Compare the result.json files from both experiments to analyze the performance difference between the original Vicuna model (4K context) and the InfLLM-enhanced Vicuna model (128K context) (/workspace/benchmark/eval.py:157-160)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment that compares the performance of the original Vicuna model (4K context window) with an InfLLM-enhanced Vicuna model (128K context window) on long-context tasks. First, download the required datasets using the download script. Then evaluate the original Vicuna model on the specified tasks. Next, evaluate the InfLLM-enhanced Vicuna model on the same tasks. Finally, compare the results to see the performance difference between the two models. The experiment involves running prediction scripts with different model configurations and analyzing the evaluation metrics in the output JSON files.",
+      "masked_source": [
+        "/workspace/scripts/download.sh",
+        "/workspace/config/vicuna-origin.yaml",
+        "/workspace/config/vicuna-inf-llm.yaml",
+        "/workspace/benchmark/eval.py",
+        "/workspace/benchmark/pred.py",
+        "/workspace/benchmark/download.py",
+        "/workspace/scripts/infinitebench.sh"
+      ]
+    }
+  ]
+}

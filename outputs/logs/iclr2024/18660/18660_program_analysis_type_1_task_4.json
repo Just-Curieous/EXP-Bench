@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Set up the benchmark environment for GAE computation efficiency test with varying batch sizes and timesteps (/workspace/benchmarks/test_objectives_benchmarks.py:131-154)",
+    "Step 2: Create tensors for state values, next state values, rewards, and done flags with specified dimensions (/workspace/benchmarks/test_objectives_benchmarks.py:134-139)",
+    "Step 3: Configure gamma parameter (optionally as tensor) and lambda parameter for GAE computation (/workspace/benchmarks/test_objectives_benchmarks.py:141-144)",
+    "Step 4: Execute and benchmark both vectorized and non-vectorized GAE implementations (/workspace/benchmarks/test_objectives_benchmarks.py:146-154)",
+    "Step 5: Set up environment throughput benchmarking for various gym environments with different worker counts (/workspace/benchmarks/ecosystem/gym_env_throughput.py:37-44)",
+    "Step 6: Benchmark pure gym AsyncVectorEnv implementation (/workspace/benchmarks/ecosystem/gym_env_throughput.py:54-73)",
+    "Step 7: Benchmark TorchRL's ParallelEnv implementation across different devices (/workspace/benchmarks/ecosystem/gym_env_throughput.py:76-101)",
+    "Step 8: Benchmark SyncDataCollector with ParallelEnv (/workspace/benchmarks/ecosystem/gym_env_throughput.py:103-133)",
+    "Step 9: Benchmark GymEnv with native parallelization (/workspace/benchmarks/ecosystem/gym_env_throughput.py:135-160)",
+    "Step 10: Benchmark MultiaSyncDataCollector with ParallelEnv (/workspace/benchmarks/ecosystem/gym_env_throughput.py:162-197)",
+    "Step 11: Benchmark MultiaSyncDataCollector with GymEnv (/workspace/benchmarks/ecosystem/gym_env_throughput.py:199-240)",
+    "Step 12: Benchmark MultiSyncDataCollector with ParallelEnv (/workspace/benchmarks/ecosystem/gym_env_throughput.py:242-277)",
+    "Step 13: Benchmark MultiSyncDataCollector with GymEnv (/workspace/benchmarks/ecosystem/gym_env_throughput.py:279-320)",
+    "Step 14: Record and compare frames per second (fps) metrics across all implementations (/workspace/benchmarks/ecosystem/gym_env_throughput.py:70-317)"
+  ],
+  "agent_instructions": "Your task is to create two benchmark scripts for evaluating the performance of TorchRL components:\n\n1. First, create a script to benchmark Generalized Advantage Estimation (GAE) computation efficiency. This script should:\n   - Compare the performance of vectorized GAE implementation (vec_generalized_advantage_estimate) with the non-vectorized version (generalized_advantage_estimate)\n   - Test with varying batch sizes and timesteps (including at least batch sizes of 1 and 32 with 512 timesteps)\n   - Use PyTest's benchmark functionality to measure execution time\n   - Handle both scalar and tensor gamma parameters\n   - Create appropriate tensors for state values, next state values, rewards, and done flags\n\n2. Second, create a script to benchmark data collection speed across environments. This script should:\n   - Test throughput on common environments including HalfCheetah-v4 and Breakout-v5\n   - Test with different numbers of workers (including 32 workers)\n   - Compare multiple implementation approaches:\n     * Pure gym AsyncVectorEnv\n     * TorchRL's ParallelEnv\n     * Various data collectors (SyncDataCollector, MultiaSyncDataCollector, MultiSyncDataCollector)\n     * Different device configurations (CPU and GPU if available)\n   - Measure frames per second (fps) for each configuration\n   - Save results to text files named after the environment and worker count\n\nBoth scripts should be well-structured and include appropriate imports from TorchRL's modules.",
+  "masked_source": [
+    "/workspace/benchmarks/test_objectives_benchmarks.py",
+    "/workspace/benchmarks/ecosystem/gym_env_throughput.py",
+    "/workspace/torchrl/objectives/value/functional.py",
+    "/workspace/torchrl/objectives/value/utils.py"
+  ]
+}

@@ -1,0 +1,69 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you implement an agent that interacts with the OS environment in AgentBench to count the number of files in a directory?",
+    "method": "Create an agent that can interact with the OS environment in AgentBench by following the protocol for OS interaction tasks. The agent should be able to think about what commands to execute, run bash commands, and provide answers.",
+    "expected_outcome": "A successful agent implementation that can correctly count files in a directory and respond with the count in the format 'Act: answer(count)'.",
+    "source": [
+      "/workspace/src/client/agent_test.py",
+      "/workspace/src/server/tasks/os_interaction/task.py"
+    ],
+    "usage_instructions": "1. Understand the AgentBench agent protocol for OS interaction tasks from the example in task.py.\n2. Implement an agent that follows the protocol: first think about what to do, then take one of three actions (bash, finish, or answer).\n3. For bash actions, format the command inside ```bash``` code blocks.\n4. For answer actions, use the format 'Act: answer(your_answer)'.\n5. Handle truncated outputs by using commands that directly count files.\n6. Follow the example interaction pattern shown in the ONE_SHOT constant in task.py.",
+    "requirements": [
+      "Step 1: Parse the user's request to identify the directory path for which files need to be counted (src/server/tasks/os_interaction/task.py:163-164)",
+      "Step 2: Formulate a thought process about how to count files in the specified directory (src/server/tasks/os_interaction/task.py:166)",
+      "Step 3: Execute a bash command to list files in the directory (src/server/tasks/os_interaction/task.py:168-172)",
+      "Step 4: Handle truncated output by recognizing when the output is too long (src/server/tasks/os_interaction/task.py:177-181)",
+      "Step 5: Execute a more direct bash command that counts files without listing them all (src/server/tasks/os_interaction/task.py:183-187)",
+      "Step 6: Extract the count from the command output (src/server/tasks/os_interaction/task.py:189-192)",
+      "Step 7: Return the answer in the correct format using 'Act: answer(count)' (src/server/tasks/os_interaction/task.py:194)"
+    ],
+    "agent_instructions": "Implement an agent that can interact with the OS environment in AgentBench to count files in a directory. The agent should follow this protocol:\n\n1. For each interaction, the agent must first think about what to do (prefixed with 'Think:') and then take exactly one of three actions (prefixed with 'Act:'):\n   - bash: Execute a bash command (enclosed in ```bash ... ```)\n   - finish: Indicate task completion\n   - answer: Provide an answer to a question in the format answer(value)\n\n2. When asked to count files in a directory:\n   - First attempt to list the files using a command like 'ls'\n   - If the output is truncated (too long), use a command that directly counts files without listing them all, such as 'ls -1 | wc -l'\n   - Extract the count from the command output\n   - Return the answer using the format 'Act: answer(count)'\n\n3. Handle potential issues:\n   - Be aware that outputs may be truncated if they are too long\n   - Use efficient commands that provide direct answers rather than verbose output\n   - Ensure the answer is provided in the exact format required\n\nThe agent should be able to understand the user's request, execute appropriate bash commands, process the output, and return the count in the specified format."
+  },
+  {
+    "mode": "A",
+    "question": "How can you implement an agent that interacts with a MySQL database in AgentBench to solve SQL query tasks?",
+    "method": "Create an agent that can interact with the DBBench environment in AgentBench by following the protocol for database interaction tasks. The agent should be able to explain its reasoning, execute SQL queries, and provide final answers.",
+    "expected_outcome": "A successful agent implementation that can correctly analyze database problems, execute appropriate SQL queries, and provide answers in the format 'Action: Answer\\nFinal Answer: [\"answer\"]'.",
+    "source": [
+      "/workspace/src/client/agent_test.py",
+      "/workspace/src/server/tasks/dbbench/__init__.py"
+    ],
+    "usage_instructions": "1. Understand the AgentBench agent protocol for database interaction tasks from the big_prompt in dbbench/__init__.py.\n2. Implement an agent that follows the protocol: explain the problem and solution, then choose to operate or answer.\n3. For operation actions, format SQL queries as 'Action: Operation\\n```sql\\nYOUR_SQL_QUERY;\\n```'.\n4. For answer actions, use the format 'Action: Answer\\nFinal Answer: [\"your_answer\"]'.\n5. Handle raw MySQL responses appropriately.\n6. Ensure SQL queries are in one line and in markdown format without additional comments.",
+    "requirements": [
+      "Step 1: Parse and understand the database problem presented in the user's query (/workspace/src/server/tasks/dbbench/__init__.py:93-96)",
+      "Step 2: Analyze the database structure and requirements to formulate a solution strategy (/workspace/src/server/tasks/dbbench/__init__.py:9-28)",
+      "Step 3: Explain the problem and solution approach with clear reasoning (/workspace/src/server/tasks/dbbench/__init__.py:10-12)",
+      "Step 4: Formulate SQL queries in the correct format: 'Action: Operation\\n```sql\\nYOUR_SQL_QUERY;\\n```' (/workspace/src/server/tasks/dbbench/__init__.py:13-18)",
+      "Step 5: Process and interpret the raw MySQL responses returned from executed queries (/workspace/src/server/tasks/dbbench/__init__.py:27, 110-112)",
+      "Step 6: Determine when sufficient information has been gathered to provide a final answer (/workspace/src/server/tasks/dbbench/__init__.py:20-24)",
+      "Step 7: Format the final answer correctly as 'Action: Answer\\nFinal Answer: [\"answer1\", \"answer2\", ...]' (/workspace/src/server/tasks/dbbench/__init__.py:20-22)",
+      "Final Step: Ensure all SQL queries are in one line, in markdown format, without additional comments (/workspace/src/server/tasks/dbbench/__init__.py:18-19)"
+    ],
+    "agent_instructions": "Your task is to implement an agent that can interact with a MySQL database to solve SQL query tasks in the AgentBench environment. The agent should follow this protocol:\n\n1. When presented with a database problem, first analyze and explain the problem and your solution approach with clear reasoning.\n\n2. For each interaction round, you can choose to either:\n   - Execute a SQL query using the format:\n     ```\n     Action: Operation\n     ```sql\n     YOUR_SQL_QUERY;\n     ```\n     \n   - Provide your final answer using the format:\n     ```\n     Action: Answer\n     Final Answer: [\"answer1\", \"answer2\", ...]\n     ```\n\n3. Important requirements for SQL queries:\n   - SQL must be in markdown format\n   - SQL should be in one line\n   - Only one SQL statement can be executed at a time\n   - Do not include any comments in the SQL code block\n\n4. The system will execute your SQL query and return the raw MySQL response, which you must interpret.\n\n5. Continue the operation-interpretation cycle until you have gathered enough information to answer the question.\n\n6. When you're confident in your answer, provide it in the exact format specified above. For questions about modifying the database (INSERT, UPDATE, DELETE), any answer text is acceptable after completing the operations.\n\n7. Your answer must be accurate and match the expected answer format exactly.\n\nThe agent will be evaluated on its ability to correctly analyze database problems, execute appropriate SQL queries, interpret the results, and provide accurate final answers."
+  },
+  {
+    "mode": "A",
+    "question": "How can you create a custom HTTP-based agent in AgentBench that can be used with different LLM APIs?",
+    "method": "Implement a custom HTTP-based agent in AgentBench that can connect to different LLM APIs by configuring the appropriate URL, headers, and request format. The agent should be able to process conversation history and handle API responses.",
+    "expected_outcome": "A functional HTTP-based agent implementation that can be configured to work with different LLM APIs (like OpenAI, Claude, etc.) and properly handle conversation history and API responses.",
+    "source": [
+      "/workspace/src/client/agents/http_agent.py",
+      "/workspace/configs/agents/openai-chat.yaml",
+      "/workspace/configs/agents/api_agents.yaml"
+    ],
+    "usage_instructions": "1. Create a configuration file for your agent similar to openai-chat.yaml with appropriate URL, headers, and body parameters.\n2. Implement the agent using the HTTPAgent class from http_agent.py.\n3. Configure the prompter to format conversation history according to the API's requirements.\n4. Set up proper error handling for API responses.\n5. Configure the return_format to extract the model's response from the API response.\n6. Register your agent in a configuration file similar to api_agents.yaml.\n7. Test your agent using the agent_test.py script.",
+    "requirements": [
+      "Step 1: Create a custom HTTP agent class that inherits from the AgentClient base class (/workspace/src/client/agents/http_agent.py:164-184)",
+      "Step 2: Initialize the agent with necessary parameters including URL, headers, body, return format, and prompter (/workspace/src/client/agents/http_agent.py:165-183)",
+      "Step 3: Implement a method to handle conversation history using the prompter (/workspace/src/client/agents/http_agent.py:185-186)",
+      "Step 4: Implement the inference method that sends requests to the LLM API with proper error handling and retries (/workspace/src/client/agents/http_agent.py:188-215)",
+      "Step 5: Create a prompter class or use existing prompters to format conversation history according to the API's requirements (/workspace/src/client/agents/http_agent.py:46-136)",
+      "Step 6: Implement context limit detection to handle API limitations (/workspace/src/client/agents/http_agent.py:138-161)",
+      "Step 7: Create a configuration file for the agent with URL, headers, body parameters, prompter settings, and return format (/workspace/configs/agents/openai-chat.yaml:1-13)",
+      "Step 8: Register the agent in a configuration file with specific model parameters (/workspace/configs/agents/api_agents.yaml:1-23)",
+      "Final Step: Test the agent using the agent_test.py script to verify it can process conversation history and generate responses (/workspace/src/client/agent_test.py:15-32)"
+    ],
+    "agent_instructions": "Your task is to implement a custom HTTP-based agent in AgentBench that can connect to different LLM APIs. This agent should be able to process conversation history and handle API responses appropriately. Follow these steps:\n\n1. Create an HTTP agent class that inherits from the AgentClient base class. This class should:\n   - Accept parameters for API configuration (URL, headers, body parameters)\n   - Handle formatting of conversation history\n   - Process API responses\n   - Implement error handling and retries\n\n2. Implement a prompter system that can format conversation history according to different API requirements. The prompter should:\n   - Convert conversation history into the format expected by the API\n   - Support different message formats (role-content dictionaries, prompt strings, etc.)\n   - Be configurable for different LLM APIs\n\n3. Create a configuration system for the agent that includes:\n   - API endpoint URL\n   - Authentication headers\n   - Request body parameters\n   - Response parsing format\n   - Prompter configuration\n\n4. Implement error handling for common API issues:\n   - Context length limitations\n   - Network errors\n   - API-specific error responses\n   - Implement a retry mechanism for transient errors\n\n5. Create a registration system for different LLM API configurations that allows:\n   - Defining model-specific parameters\n   - Inheriting from base configurations\n   - Overriding specific parameters\n\n6. Test your implementation with different LLM APIs to ensure it can properly:\n   - Format conversation history according to each API's requirements\n   - Send requests with proper authentication\n   - Parse responses correctly\n   - Handle errors gracefully\n\nYour implementation should be flexible enough to work with various LLM APIs (like OpenAI, Claude, etc.) by simply changing the configuration without modifying the core code."
+  }
+]

@@ -1,0 +1,3 @@
+{
+    "no_answer": "After a thorough search of the repository, I couldn't find any specific scripts or configuration files that directly compare WindowAttn vs GlobalAttn with CLIPSelf as described in the experiment question. While the codebase does have window attention implementation in the eva_vit_model.py file, there are no dedicated scripts or configurations that specifically set up the experiment to compare WindowAttn with GlobalAttn using CLIPSelf with 4x4 windows. The repository contains scripts for training and evaluating CLIPSelf with different models and datasets, but none that explicitly address the window attention vs global attention comparison described in the experiment question."
+}

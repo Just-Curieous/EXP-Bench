@@ -1,0 +1,12 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, torch.nn.functional, and open_clip (/workspace/example_clipself.py:1-3)",
+    "Step 2: Create a SimpleCLIPSelf class that initializes and loads a pre-trained CLIP model (/workspace/example_clipself.py:6-10)",
+    "Step 3: Implement a method to encode images into feature vectors using the CLIP model (/workspace/example_clipself.py:224-226)",
+    "Step 4: Implement a method to encode text prompts into feature vectors using the CLIP model (/workspace/example_clipself.py:269-281)",
+    "Step 5: Implement a method to compute cosine similarity between image and text features (/workspace/example_clipself.py:42-46)",
+    "Step 6: Create a main function that initializes the model, loads or generates a sample image, and computes similarity with various text prompts (/workspace/example_clipself.py:283-295)",
+    "Step 7: Visualize the similarity scores using matplotlib (/workspace/example_clipself.py:47-47)"
+  ],
+  "agent_instructions": "Create a Python program that demonstrates how to use the CLIP (Contrastive Language-Image Pre-training) model to compute similarity between images and text prompts. Your program should:\n\n1. Import the necessary libraries including PyTorch, functional modules, and open_clip.\n\n2. Create a class called SimpleCLIPSelf that:\n   - Initializes a pre-trained CLIP model (you can use any available CLIP model variant)\n   - Provides methods to encode images and text into feature vectors\n   - Includes a method to compute similarity scores between image and text features using cosine similarity\n\n3. In the main function:\n   - Initialize the CLIP model\n   - Load or generate a sample image (you can use a random tensor or load an actual image)\n   - Define a list of text prompts to compare with the image\n   - Compute similarity scores between the image and each text prompt\n   - Normalize the similarity scores appropriately\n\n4. Visualize the results:\n   - Create a bar chart or another appropriate visualization showing the similarity scores for each text prompt\n   - Display the image alongside the similarity scores if possible\n\nThe program should demonstrate how CLIP can be used to determine how well different text descriptions match a given image based on their feature representations in the shared embedding space."
+}

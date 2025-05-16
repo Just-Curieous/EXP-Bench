@@ -1,0 +1,163 @@
+{
+  "questions": [
+    {
+      "question": "How does 4-bit QuaRot quantization affect the zero-shot task accuracy of LLAMA-3 models (8B and 70B)? Can QuaRot preserve competitive accuracy despite aggressive weight compression?",
+      "method": "#### Models\n\n- **LLAMA3-8B**\n- **LLAMA3-70B**\n\n#### Quantization Details\n\n- **QuaRot**:\n  - Weight quantization: GPTQ (4-bit)\n  - Activation + KV cache: FP16 (not quantized)\n- **Baseline**:\n  - Fully FP16 model\n- **Sequence Length**: 2048\n- **Precision**: 4-bit weights (GPTQ), all else FP16\n\n#### Zero-Shot Evaluation\n\nUse [LM Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness) to benchmark six tasks:\n\n| Task       | LM Eval Task Name |\n| ---------- | ----------------- |\n| PIQA       | `piqa`            |\n| WinoGrande | `winogrande`      |\n| HellaSwag  | `hellaswag`       |\n| Arc-Easy   | `arc_easy`        |\n| Arc-Chall. | `arc_challenge`   |\n| LAMBADA    | `lambada_openai`  |\n\n- Metric: **accuracy (%)**\n- Final column: **Average accuracy** across all six tasks\n\n#### Experiment Steps\n\n1. **Environment Setup**\n\n   - Install dependencies: PyTorch, CUDA 12.1, QuaRot codebase, LM Evaluation Harness\n   - Prepare LLAMA3-8B and LLAMA3-70B FP16 weights\n   - Apply QuaRot GPTQ (4-bit) on weights (no outliers, no group-wise)\n\n2. **Prepare Evaluation Pipeline**\n\n   - Use LM Evaluation Harness with `--model hf-causal` pointing to quantized checkpoints\n\n   - Set common config flags:\n\n     ```python\n     --batch_size 8 --max_length 2048 --use_cache\n     ```\n   \n3. **Run Each Task**\n\n   - For each model (8B, 70B), evaluate on the six tasks above\n   - Log accuracy scores per task and average across all tasks\n\n4. **Repeat for Baseline**\n\n   - Use original FP16 weights to evaluate all tasks using the same procedure",
+      "expected_outcome": "Result should look similar to table 12 in the paper appendix.\n\n| Model      | Method | PQ    | WG    | HS    | A-e   | A-c   | LA    | Avg.  |\n| ---------- | ------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- |\n| LLAMA3-8B  | FP16   | 80.74 | 72.77 | 79.06 | 77.82 | 53.33 | 75.63 | 73.22 |\n|            | QuaRot | 75.14 | 65.82 | 72.94 | 68.01 | 43.34 | 65.81 | 65.18 |\n| LLAMA3-70B | FP16   | 84.66 | 80.51 | 84.89 | 85.86 | 64.25 | 79.47 | 79.94 |\n|            | QuaRot | 78.07 | 69.30 | 77.33 | 73.44 | 47.53 | 69.57 | 69.21 |\n\n- QuaRot preserves **acceptable performance** under aggressive 4-bit quantization:\n  - LLAMA3-8B sees **~8 point drop** in average zero-shot accuracy\n  - LLAMA3-70B sees **~10.7 point drop**, but still performs near 70%\n- Trade-off is expected due to:\n  - No outliers retained\n  - No activation/KV quantization",
+      "design_complexity": {
+        "constant_variables": {
+          "environment_setup": "CUDA 12.1, PyTorch, LM Evaluation Harness, QuaRot codebase, fixed batch size 8, max_length 2048, use_cache",
+          "sequence_length": "2048",
+          "evaluation_tasks": [
+            "PIQA",
+            "WinoGrande",
+            "HellaSwag",
+            "Arc-Easy",
+            "Arc-Challenge",
+            "LAMBADA"
+          ]
+        },
+        "independent_variables": {
+          "llm_model": [
+            "LLAMA3-8B",
+            "LLAMA3-70B"
+          ],
+          "quantization_method": [
+            "FP16 baseline",
+            "QuaRot GPTQ 4-bit for weights (with activations and KV caches kept at FP16)"
+          ]
+        },
+        "dependent_variables": {
+          "task_accuracy_metrics": [
+            "accuracy (%) on each of the six tasks",
+            "average accuracy across the tasks"
+          ]
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "activation_KV_quantization": "The experiment description specifies that only weights are quantized (using GPTQ 4-bit) while activations and KV caches remain in FP16. It is ambiguous whether alternative choices (e.g., quantizing activations or using different bit precision for caches) were considered.",
+          "outlier_handling": "It is stated that no outliers are retained and no group\u2010wise quantization is applied, but it is not explicitly clear if these factors are experimental controls or variables that could be modified.",
+          "aggregation_method": "The process for averaging accuracy across tasks (e.g., arithmetic mean, weighted mean) is not explicitly detailed, leading to some ambiguity in how the final average accuracy is computed."
+        },
+        "possible_modifications": {
+          "experiment_extension": [
+            "Introduce additional quantization bit levels (e.g., 6-bit or 8-bit weights) to compare against the 4-bit case.",
+            "Include experiments where activations and/or KV caches are also quantized to assess full-model quantization trade-offs.",
+            "Test alternative outlier handling strategies or group-wise quantization (e.g., group size 128) as experimental variables.",
+            "Mask or vary the aggregation method for averaging the task accuracies to study its effects on reported performance."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "LLAMA3-8B and LLAMA3-70B FP16 weights",
+          "QuaRot codebase implementing GPTQ 4-bit weight quantization",
+          "Baseline FP16 model",
+          "LM Evaluation Harness for zero-shot task evaluation",
+          "Dependencies: PyTorch and CUDA 12.1"
+        ],
+        "setup_steps": [
+          "Environment Setup: Install dependencies (PyTorch, CUDA 12.1), acquire QuaRot codebase, LM Evaluation Harness, and prepare LLAMA3 model weights",
+          "Apply QuaRot GPTQ 4-bit quantization to the FP16 weights (without outlier retention or group-wise quantization)",
+          "Prepare Evaluation Pipeline: Configure LM Evaluation Harness with flags (batch_size 8, max_length 2048, use_cache) pointing to the quantized checkpoints",
+          "Run evaluation on six zero-shot tasks (PIQA, WinoGrande, HellaSwag, Arc-Easy, Arc-Challenge, LAMBADA) for both quantized and baseline models",
+          "Log individual task accuracy scores and compute the average accuracy across tasks"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Quantization Details",
+            "description": "The experiment uses aggressive 4-bit quantization for weights while keeping activations and KV caches in FP16, adding complexity in maintaining performance levels."
+          },
+          {
+            "source": "Data and Metric Aggregation",
+            "description": "Handling and averaging accuracy across multiple tasks introduces additional complexity to the evaluation process."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Activation and KV cache precision: It is stated that these remain FP16, but there is ambiguity regarding whether alternative quantization settings were considered or how they might have affected performance.",
+          "Outlier Handling: The description specifies that no outliers are retained and no group\u2010wise quantization is applied, yet it is unclear if these parameters were chosen as fixed controls or if variations were explored."
+        ],
+        "ambiguous_setup_steps": [
+          "Aggregation Method: The method of averaging accuracy scores across tasks (e.g., arithmetic mean vs. weighted mean) is not explicitly detailed.",
+          "Quantization Parameter Choices: The exact configuration choices for quantization (beyond 4-bit weights) and their potential alternatives remain vague."
+        ],
+        "possible_modifications": {
+          "experiment_extension": [
+            "Introduce additional quantization bit levels (e.g., 6-bit or 8-bit weights) for broader comparisons.",
+            "Include experiments where activations and KV caches are quantized to evaluate full-model compression trade-offs.",
+            "Test alternative outlier handling strategies or incorporate group-wise quantization (e.g., with different group sizes) as experimental variables.",
+            "Vary or mask the method for aggregating per-task accuracies to assess its influence on the final reported average."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "experiment_extension": {
+            "modifications": [
+              "Introduce additional quantization bit levels (e.g., 6-bit or 8-bit weights) to extend comparisons beyond the aggressive 4-bit setting.",
+              "Include experiments where activations and/or KV caches are also quantized (e.g., to 4-bit or 6-bit) to evaluate full-model quantization trade-offs.",
+              "Test alternative outlier handling strategies or group\u2010wise quantization settings (e.g., with a group size of 128) to investigate their impact on performance.",
+              "Vary the method for aggregating per-task accuracies (e.g., using an arithmetic mean versus a weighted mean) to assess its influence on the final average accuracy."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "source": "Variability in evaluation pipeline and quantization process",
+        "description": "Random uncertainty arises from factors such as the influence of random seeds in the evaluation pipeline, minor numerical variations during the GPTQ-based 4\u2010bit quantization process, and potential stochasticity in task evaluation (e.g., any randomness in prompt handling or sequence processing). These factors, while small due to the large model sizes, can still introduce slight variations in accuracy metrics.",
+        "impact": "This uncertainty may cause small run-to-run fluctuations in reported task accuracy and average accuracy, impacting the repeatability of the experimental results.",
+        "possible_modifications": [
+          "Run multiple evaluation iterations with varying random seeds to capture a distribution of accuracy results.",
+          "Report error bars or confidence intervals (e.g., 1-sigma or 2-sigma error bars) computed over several independent runs to quantify the random variability.",
+          "Introduce controlled random perturbations (for example, random token dropping during evaluation) in a separate experiment to assess the model's robustness to randomness."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Fixed methodological and experimental design choices",
+        "description": "Systematic uncertainty stems from deliberate design choices such as quantizing only the weights using GPTQ 4-bit (while keeping activations and KV caches at FP16), the decision to not retain outliers or apply group\u2010wise quantization, and the specific method of aggregating task accuracies (e.g., arithmetic mean across tasks). These choices can consistently bias the results, affecting the generalizability of the performance drop observed in the quantized models.",
+        "impact": "This type of uncertainty consistently influences all runs, potentially leading to a systematic underestimation or overestimation of the model's accuracy under aggressive quantization. It might also affect the fairness of comparisons between the FP16 baseline and the 4-bit QuaRot quantized models.",
+        "possible_modifications": [
+          "Experiment with additional quantization setups, such as quantizing activations and KV caches or using different bit precisions (e.g., 6-bit or 8-bit), to understand sensitivity to these factors.",
+          "Test alternative strategies for outlier handling (for example, retaining some outliers or applying group\u2010wise quantization with different group sizes) to evaluate their impact on overall model performance.",
+          "Vary the aggregation method for computing average accuracy (e.g., using weighted means instead of arithmetic averages) to assess if the reported performance differences are robust across different aggregation approaches."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "To run the experiment comparing 4-bit QuaRot quantization with FP16 baseline for LLAMA-3 models (8B and 70B), execute the following commands:\n\n1. For LLAMA-3-8B FP16 baseline:\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-8B --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada_openai --lm_eval_batch_size 8 --max_length 2048 --use_cache\n   ```\n\n2. For LLAMA-3-8B with QuaRot 4-bit quantization:\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-8B --rotate --w_bits 4 --w_clip --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada_openai --lm_eval_batch_size 8 --max_length 2048 --use_cache\n   ```\n\n3. For LLAMA-3-70B FP16 baseline:\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-70B --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada_openai --lm_eval_batch_size 8 --max_length 2048 --use_cache\n   ```\n\n4. For LLAMA-3-70B with QuaRot 4-bit quantization:\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Meta-Llama-3-70B --rotate --w_bits 4 --w_clip --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada_openai --lm_eval_batch_size 8 --max_length 2048 --use_cache\n   ```\n\nThese commands will run the zero-shot evaluation on the six tasks specified in the experiment question (PIQA, WinoGrande, HellaSwag, Arc-Easy, Arc-Challenge, and LAMBADA) and report the accuracy for each task as well as the average accuracy across all tasks.",
+      "requirements": [
+        "Step 1: Set up the environment with necessary libraries including transformers, torch, and lm_eval (main.py:1-10)",
+        "Step 2: Load the specified LLAMA-3 model (8B or 70B) from HuggingFace using the model_utils.get_model function (main.py:20-21)",
+        "Step 3: If using QuaRot quantization (--rotate flag), fuse layer normalization into adjacent linear blocks to prepare for rotation (main.py:25-26)",
+        "Step 4: If using QuaRot quantization, apply Hadamard rotation to the model weights using rotation_utils.rotate_model (main.py:27)",
+        "Step 5: Add activation quantization wrappers to the model using quant_utils.add_actquant (main.py:30-47)",
+        "Step 6: If weight quantization is enabled (w_bits < 16), either load a pre-quantized model or apply quantization (main.py:50-75)",
+        "Step 7: For GPTQ weight quantization, load calibration data from the specified dataset and apply GPTQ quantization (main.py:59-68)",
+        "Step 8: For RTN weight quantization, apply RTN quantization directly (main.py:69-71)",
+        "Step 9: If activation quantization is enabled (a_bits < 16), configure the activation quantizers with the specified parameters (main.py:79-109)",
+        "Step 10: If KV-cache quantization is enabled (k_bits < 16), add quantization wrappers to the key cache (main.py:111-124)",
+        "Step 11: Load the evaluation dataset for perplexity measurement (main.py:127-134)",
+        "Step 12: Evaluate the model's perplexity on the evaluation dataset (main.py:137-139)",
+        "Step 13: If lm_eval is enabled, load the lm_eval library and prepare for task evaluation (main.py:141-147)",
+        "Step 14: Distribute the model across available GPUs if specified (main.py:152-155)",
+        "Step 15: Load the tokenizer for the model (main.py:157)",
+        "Step 16: Create an HFLM wrapper for the model to use with lm_eval (main.py:158)",
+        "Step 17: Match the specified tasks with available tasks in lm_eval (main.py:160)",
+        "Step 18: Evaluate the model on the specified tasks using lm_eval.simple_evaluate (main.py:161)",
+        "Step 19: Extract accuracy metrics for each task and calculate the average accuracy (main.py:163-164)",
+        "Step 20: Print the accuracy metrics (main.py:165)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment comparing 4-bit QuaRot quantization with FP16 baseline for LLAMA-3 models (8B and 70B). You need to run evaluations on six tasks (PIQA, WinoGrande, HellaSwag, Arc-Easy, Arc-Challenge, and LAMBADA) for both the baseline and quantized versions of the models. The experiment involves loading the models, applying quantization techniques when specified, and evaluating their performance using the lm_eval harness. You'll need to understand how to use the provided script with the appropriate command-line arguments to run the different configurations and compare their results.",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

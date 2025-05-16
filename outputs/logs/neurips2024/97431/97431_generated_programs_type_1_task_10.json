@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/scripts/4_trick_atk_intension_pair.sh",
+        "/workspace/scripts/4_trick_atk_intension_autodan.sh"
+    ],
+    "usage_instructions": "These scripts evaluate how different attack intentions impact Attack Success Rate (ASR) across 11 categories from the HEx-PHI taxonomy. To run the experiment:\n\n1. First, ensure the category data files (category_1.csv through category_11.csv) are available in the /workspace/data/ directory. Each file should contain prompts for a specific attack intention category.\n\n2. Execute the scripts based on which attack type you want to evaluate:\n   - For prompt-level attacks: `bash /workspace/scripts/4_trick_atk_intension_pair.sh`\n   - For token-level attacks: `bash /workspace/scripts/4_trick_atk_intension_autodan.sh`\n\n3. The scripts will run the attacks against each category and save results in the exp_results directory.\n\n4. After completion, you can analyze the results using the analysis script: `python /workspace/analysis/report_trick.py --exp a`\n\nNote: The scripts use Vicuna-13B as the attack model and Llama-2-7B as the target model. The PAIR method is used for prompt-level attacks and AutoDAN for token-level attacks. While the repository doesn't include a GCG-specific script for intention categories (which would be the exact token-level attack mentioned in the experiment question), the AutoDAN script serves the same purpose as a token-level attack."
+}

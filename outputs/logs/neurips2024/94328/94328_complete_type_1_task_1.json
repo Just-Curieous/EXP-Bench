@@ -1,0 +1,173 @@
+{
+  "questions": [
+    {
+      "question": "How does the choice of group size in group-wise quantization affect the perplexity of QuaRot-quantized LLAMA-2 models? Does decreasing the group size (i.e., increasing granularity) improve model accuracy, and what is the trade-off in terms of kernel complexity and scale storage?",
+      "method": "#### Models\n\n- LLAMA2-7B\n- LLAMA2-13B\n- LLAMA2-70B\n\n#### Quantization Setup\n\n- **Quantized Components**:\n  - Weights\n  - Activations\n  - KV caches\n- **Quantization Method**:\n  - GPTQ (for weights)\n  - Group-wise quantization for weights and activations\n  - KV cache group size fixed to 128 (same as head dim)\n- **Group Sizes Evaluated**:\n  - 256G\n  - 128G\n  - 64G\n- **Precision**:\n  - 4-bit (A4W4KV4)\n  - INT4 for all quantized components\n- **Baseline**: FP16 model without quantization\n\n#### Dataset\n\n- **WikiText-2**\n- **Sequence Length**: 2048 tokens\n- **Evaluation Metric**: Perplexity (PPL)\n\n#### Experiment Steps\n\n1. **Setup Environment**\n\n   - Install PyTorch and set up CUDA/CUTLASS backend via QuaRot\n   - Clone [QuaRot GitHub](https://github.com/spcl/QuaRot) and configure custom kernels for group-wise quantization\n\n2. **Prepare Models**\n\n   - Load LLAMA2-7B, 13B, and 70B weights (FP16)\n   - Apply GPTQ quantization to weights\n   - Apply group-wise quantization to:\n     - Weights (group size: 64 / 128 / 256)\n     - Activations (same group sizes)\n     - KV cache (fixed at 128 group size)\n\n3. **Run Perplexity Evaluation**\n\n   - Use 2048-token sequences from WikiText-2 test set\n\n   - Disable dropout, use evaluation mode\n\n   - Compute perplexity:\n\n     ```python\n     import evaluate\n     metric = evaluate.load(\"perplexity\")\n     result = metric.compute(model=quantized_model, dataset=wikitext2, max_length=2048)\n     ```\n   \n4. **Compare PPL Across Group Sizes**\n\n   - Log results for all three model sizes across all group sizes\n   - Include FP16 baseline and QuaRot default (non-grouped)",
+      "expected_outcome": "Result should look similar to table 4 in the paper.\n\n| Method                     | LLAMA2-7B | LLAMA2-13B | LLAMA2-70B |\n| -------------------------- | --------- | ---------- | ---------- |\n| Baseline (FP16)            | 5.47      | 4.88       | 3.32       |\n| QuaRot (default, no group) | 6.10      | 5.40       | 3.79       |\n| QuaRot-256G                | 5.98      | 5.28       | 3.63       |\n| QuaRot-128G                | 5.93      | 5.26       | 3.61       |\n| QuaRot-64G                 | **5.88**  | **5.25**   | **3.58**   |\n\nSmaller group sizes (e.g., 64) improve accuracy but:\n- Require more scale values (i.e., higher memory)\n- Introduce kernel complexity due to more group-level computation\n\nBest accuracy\u2013efficiency tradeoff is often found at **128G**.\n\nGroup-wise quantization is crucial for scaling to large models while maintaining accuracy.",
+      "design_complexity": {
+        "constant_variables": {
+          "dataset": "WikiText-2 with 2048-token sequences",
+          "quantization_precision": "4-bit (A4W4KV4) for weights, activations, and KV caches",
+          "kv_cache_group_size": "Fixed at 128 (same as head dimension)",
+          "quantization_method": "GPTQ for weights and group-wise quantization for weights and activations",
+          "baseline": "FP16 model without quantization"
+        },
+        "independent_variables": {
+          "llama_model": [
+            "LLAMA2-7B",
+            "LLAMA2-13B",
+            "LLAMA2-70B"
+          ],
+          "group_size": [
+            "256G",
+            "128G",
+            "64G"
+          ]
+        },
+        "dependent_variables": {
+          "perplexity": "Measured on WikiText-2 (lower perplexity indicates better model accuracy)",
+          "kernel_complexity": "Qualitative measure indicating increased computation with smaller group sizes",
+          "scale_storage": "Memory usage due to increased number of scale values with smaller groups"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "kernel_complexity": "The experiment does not define a quantitative metric for the kernel complexity; it is discussed qualitatively.",
+          "scale_storage": "The exact memory overhead associated with storing more scale values at smaller group sizes is not explicitly quantified.",
+          "quantization_overhead": "The additional runtime or computational cost due to group-wise computations is not detailed."
+        },
+        "possible_modifications": {
+          "modification_1": [
+            "Introduce a quantitative metric for kernel complexity, e.g., runtime (ms) or flop count per inference."
+          ],
+          "modification_2": [
+            "Measure and report precise memory usage for scale storage instead of a qualitative description."
+          ],
+          "modification_3": [
+            "Mask or imply the need for additional independent variables such as varying the precision settings (e.g., INT8 vs. INT4) for further trade-off analysis."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "LLAMA2 models (7B, 13B, 70B)",
+          "Quantization components (weights, activations, KV caches)",
+          "Quantization methods (GPTQ and group-wise quantization)",
+          "Environment setup (PyTorch installation, CUDA/CUTLASS backend via QuaRot)",
+          "Custom quantization kernels from the QuaRot GitHub repository",
+          "Dataset (WikiText-2 with 2048-token sequences)",
+          "Evaluation metric (Perplexity via the evaluate package)"
+        ],
+        "setup_steps": [
+          "Install PyTorch and configure CUDA/CUTLASS backend via QuaRot",
+          "Clone the QuaRot GitHub repository and configure custom group-wise quantization kernels",
+          "Load FP16 weights for LLAMA2-7B, 13B, and 70B and apply GPTQ quantization for weights",
+          "Apply group-wise quantization to weights and activations using group sizes (256G, 128G, 64G); set KV cache group size fixed at 128",
+          "Prepare the WikiText-2 dataset to generate 2048-token sequences",
+          "Run perplexity evaluations using evaluation mode with dropout disabled",
+          "Log and compare the perplexity results against the FP16 baseline and QuaRot default (non-grouped)"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Group-wise quantization parameter tuning",
+            "description": "The experiment involves multiple independent variables (LLAMA model size and group size), which interact with the quantization methods, potentially increasing complexity in reproducing results."
+          },
+          {
+            "source": "Integration of custom kernels",
+            "description": "Configuring and ensuring proper function of custom kernels from QuaRot may present additional complexity, especially in ensuring compatibility with CUDA/CUTLASS setups."
+          },
+          {
+            "source": "Qualitative measures",
+            "description": "Kernel complexity and scale storage are discussed qualitatively, with no quantitative breakdown provided, adding to the overall experimental complexity in interpretation and reproduction."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Kernel complexity",
+          "Scale storage overhead",
+          "Quantization overhead (runtime or computational cost)"
+        ],
+        "ambiguous_setup_steps": [
+          "Configuration of custom kernels from the QuaRot GitHub repo: Specific configuration steps and parameter settings are not fully detailed.",
+          "The process for measuring and quantifying kernel complexity is not explicitly defined, leaving ambiguity in interpretation.",
+          "Exact memory usage related to increased scale storage at smaller group sizes is not provided, making it unclear how to assess the trade-off quantitatively."
+        ],
+        "possible_modifications": {
+          "modification_1": [
+            "Introduce a quantitative metric for kernel complexity (e.g., recording runtime in milliseconds or counting floating point operations) to replace the current qualitative description."
+          ],
+          "modification_2": [
+            "Measure and report exact memory usage for scale storage for different group sizes, rather than relying on a qualitative statement."
+          ],
+          "modification_3": [
+            "Provide more detailed instructions for configuring and validating the custom kernels to remove ambiguity from the environment setup step."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {
+          "explicit_constraint": "The experiments are run on large LLAMA-2 models (7B, 13B, 70B) with custom kernels, and repeating runs is not feasible due to high compute (and associated hardware) requirements."
+        },
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Consider using a smaller model variant (e.g., a reduced-parameter version) to allow for repeated experiments and easier GPU resource management.",
+            "Introduce a quantitative metric for kernel complexity (e.g., recording runtime in milliseconds or FLOP counts) to better quantify and manage GPU resource utilization."
+          ],
+          "time_constraints": [
+            "Streamline the configuration and initialization of custom quantization kernels to reduce setup time and overall experiment runtime."
+          ],
+          "money_constraints": [
+            "Explore running experiments on lower-cost hardware configurations or cloud instances to mitigate the high financial cost of using large models."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Data sampling and run-to-run variability",
+        "description": "Even though the large LLAMA-2 models tend to produce stable outputs, randomness is still introduced by the sampling of 2048-token sequences from WikiText-2 and any inherent non-determinism in GPU floating-point computations. The quantization process (GPTQ and group-wise quantization) may also have small stochastic elements even if they are not repeatedly run.",
+        "impact": "Minor fluctuations in computed perplexity may occur from one run to another, which can affect the statistical significance of small differences in accuracy across different group sizes.",
+        "possible_modifications": [
+          "Repeat the experiments with different random seeds to capture variability by computing average perplexity and error bars (e.g., standard deviation or standard error).",
+          "Run multiple evaluations on different random splits of the WikiText-2 dataset to assess consistency."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Fixed experimental design choices and dataset bias",
+        "description": "The experiment uses a fixed setting for various components: a constant WikiText-2 dataset with 2048-token sequences, a fixed KV cache group size of 128, and predefined group sizes (256G, 128G, 64G) for weights and activations quantization. These fixed configurations, including the one-time application of GPTQ quantization and group-wise quantization, may introduce systematic biases in both the measured perplexity and the qualitative notions of kernel complexity and scale storage usage.",
+        "impact": "The systematic design may bias the observed trade-off between improved accuracy and increased computational or memory cost. It might not generalize to other datasets or different quantization configurations, thus skewing the interpretation of the best accuracy-efficiency tradeoff.",
+        "possible_modifications": [
+          "Test the approach on additional datasets to ensure results are not uniquely tied to the characteristics of WikiText-2.",
+          "Introduce quantitative measurements for kernel complexity (e.g., runtime or FLOP counts) and memory usage related to scale storage to replace qualitative descriptions.",
+          "Vary other factors such as KV cache group size to analyze their systematic impact on performance and trade-offs."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "To run the experiment comparing different group sizes in QuaRot quantization for LLAMA-2 models, execute the main.py script with different group size settings. For each model size (7B, 13B, 70B) and each group size (64, 128, 256), run:\n\n1. For LLAMA2-7B with different group sizes:\n   ```bash\n   # For 256G group size\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --a_groupsize 256 --w_groupsize 256 --v_groupsize 128 --k_groupsize 128 --eval_dataset wikitext2\n   \n   # For 128G group size\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --a_groupsize 128 --w_groupsize 128 --v_groupsize 128 --k_groupsize 128 --eval_dataset wikitext2\n   \n   # For 64G group size\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --a_groupsize 64 --w_groupsize 64 --v_groupsize 128 --k_groupsize 128 --eval_dataset wikitext2\n   ```\n\n2. Repeat the same commands for LLAMA2-13B by changing the model parameter:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --a_groupsize [64/128/256] --w_groupsize [64/128/256] --v_groupsize 128 --k_groupsize 128 --eval_dataset wikitext2\n   ```\n\n3. Repeat the same commands for LLAMA2-70B by changing the model parameter:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --a_groupsize [64/128/256] --w_groupsize [64/128/256] --v_groupsize 128 --k_groupsize 128 --eval_dataset wikitext2\n   ```\n\n4. For the baseline (FP16 model without quantization), run:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --eval_dataset wikitext2\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --eval_dataset wikitext2\n   ```\n\n5. For the QuaRot default (non-grouped), run:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --eval_dataset wikitext2\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --eval_dataset wikitext2\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --eval_dataset wikitext2\n   ```\n\nThe script will output the perplexity (PPL) for each configuration, which can be compared to understand how group size affects model accuracy.",
+      "requirements": [
+        "Step 1: Set up the Python environment with required libraries including PyTorch, transformers, datasets, and other dependencies (/workspace/fake_quant/main.py:1-10)",
+        "Step 2: Obtain access to the Hugging Face API token for downloading LLAMA-2 models, which are gated models requiring authentication (/workspace/fake_quant/utils.py:80)",
+        "Step 3: Prepare the evaluation dataset (wikitext2) which will be automatically downloaded through the datasets library (/workspace/fake_quant/data_utils.py:5-28)",
+        "Step 4: Load the specified LLAMA-2 model (7B, 13B, or 70B) from Hugging Face using the transformers library (/workspace/fake_quant/main.py:20)",
+        "Step 5: If using rotation (QuaRot), apply Hadamard rotation to the model weights by fusing layer norms and rotating the model (/workspace/fake_quant/main.py:25-27)",
+        "Step 6: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30)",
+        "Step 7: Apply Hadamard transformation to specific layers (down_proj and o_proj) to prepare for quantization (/workspace/fake_quant/main.py:31-45)",
+        "Step 8: If weight quantization is enabled (w_bits < 16), either load a pre-quantized model or apply GPTQ/RTN quantization (/workspace/fake_quant/main.py:50-75)",
+        "Step 9: Configure activation quantization with the specified bit precision (a_bits) and group size (a_groupsize) (/workspace/fake_quant/main.py:79-109)",
+        "Step 10: Configure key cache quantization if enabled (k_bits < 16) (/workspace/fake_quant/main.py:111-124)",
+        "Step 11: Load the evaluation dataset (wikitext2) for perplexity measurement (/workspace/fake_quant/main.py:127-134)",
+        "Step 12: Evaluate the quantized model on the dataset to calculate perplexity (/workspace/fake_quant/main.py:137)",
+        "Step 13: Log and display the perplexity results (/workspace/fake_quant/main.py:138-139)",
+        "Step 14: Run the experiment multiple times with different configurations as specified in the usage instructions, varying the group sizes (64, 128, 256) and model sizes (7B, 13B, 70B) (/workspace/fake_quant/utils.py:71-222)",
+        "Step 15: Compare the perplexity results across different configurations to understand how group size affects model accuracy (/workspace/fake_quant/eval_utils.py:147-150)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment that compares different group sizes in QuaRot quantization for LLAMA-2 models. You need to run a series of experiments using the provided script to evaluate how different group sizes (64, 128, 256) affect model accuracy across different LLAMA-2 model sizes (7B, 13B, 70B). The experiment measures perplexity on the wikitext2 dataset.\n\nYou'll need to:\n1. Understand how to use the main.py script with appropriate parameters\n2. Ensure you have access to the LLAMA-2 models (which require Hugging Face authentication)\n3. Run the script with different configurations:\n   - Different group sizes (64, 128, 256)\n   - Different model sizes (7B, 13B, 70B)\n   - Baseline (FP16 model without quantization)\n   - Default QuaRot (non-grouped)\n4. Compare the perplexity results to understand the impact of group size on model accuracy\n\nThe script handles model loading, rotation, quantization, and evaluation automatically based on the parameters you provide.",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

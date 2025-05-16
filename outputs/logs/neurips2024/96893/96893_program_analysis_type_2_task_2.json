@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Configure the experiment by loading parameters from command line arguments and a JSON configuration file (/workspace/inference_demo.py:13-26, /workspace/inference_demo.py:199-202)",
+    "Step 2: Load the pretrained SegVol model which combines SAM with volumetric capabilities (/workspace/inference_demo.py:178-189)",
+    "Step 3: Load the model checkpoint from the specified path (/workspace/inference_demo.py:191-197)",
+    "Step 4: Process the CT scan and ground truth data for the specified abdominal organs (/workspace/inference_demo.py:205)",
+    "Step 5: Configure the segmentation to use only text prompts by setting use_text_prompt=True, use_box_prompt=False, use_point_prompt=False (/workspace/inference_demo.py:207-212)",
+    "Step 6: For each organ category (liver, kidney, spleen, pancreas), perform segmentation using only text prompts (/workspace/inference_demo.py:52-62)",
+    "Step 7: Calculate Dice score for each organ segmentation to evaluate accuracy (/workspace/inference_demo.py:97-105)",
+    "Step 8: Visualize the segmentation results for each organ with their corresponding Dice scores (/workspace/inference_demo.py:169-173)",
+    "Step 9: Record and report the Dice scores for each abdominal organ (/workspace/inference_demo.py:98-105, /workspace/inference_demo.py:172)"
+  ],
+  "agent_instructions": "Your task is to implement a script that evaluates the effectiveness of SegVol at segmenting different abdominal organs using text prompts alone. The experiment should:\n\n1. Create a script that loads a pretrained SegVol model (which combines SAM with volumetric capabilities) and applies it to segment abdominal CT scans.\n\n2. Configure the experiment to use ONLY text prompts for segmentation by setting:\n   - use_text_prompt=True\n   - use_box_prompt=False\n   - use_point_prompt=False\n\n3. Test the model on four abdominal organs: liver, kidney, spleen, and pancreas.\n\n4. For each organ:\n   - Generate a text prompt with the organ name\n   - Perform segmentation using only this text prompt\n   - Calculate the Dice score between the predicted segmentation and ground truth\n   - Visualize the segmentation results\n\n5. Create a report that includes:\n   - Dice scores for each organ\n   - Visualizations of the segmentation results\n   - Analysis of which organs are segmented more accurately with text prompts alone\n\n6. The script should accept command line arguments for:\n   - Path to the SegVol model checkpoint\n   - Path to a configuration file with CT scan and ground truth paths\n   - Output directory for results\n\n7. Implement a configuration file format that specifies:\n   - Dataset name\n   - Categories of organs to segment\n   - Paths to CT scan and ground truth segmentation\n\nThis experiment will help understand the capabilities and limitations of using only text prompts for medical image segmentation with SegVol."
+}

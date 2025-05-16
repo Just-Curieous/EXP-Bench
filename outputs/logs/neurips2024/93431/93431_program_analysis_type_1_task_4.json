@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries for language model interaction, dataset loading, and evaluation (run_prompt_bigbench_trace.py:1-17, run_prompt_bigbench_dspy.py:1-11)",
+    "Step 2: Define an evaluation metric function that compares predicted answers with ground truth, handling different answer formats like multiple choice or direct answers (run_prompt_bigbench_trace.py:20-31, run_prompt_bigbench_dspy.py:13-26)",
+    "Step 3: Create a base class for language model interaction that handles prompt construction and response processing (run_prompt_bigbench_trace.py:34-64)",
+    "Step 4: Implement a basic prediction module that formats questions and extracts answers from model responses (run_prompt_bigbench_trace.py:67-132, run_prompt_bigbench_dspy.py:29-36)",
+    "Step 5: Implement a chain-of-thought prediction module that encourages step-by-step reasoning before answering (run_prompt_bigbench_trace.py:135-198, run_prompt_bigbench_dspy.py:38-44)",
+    "Step 6: Create a function to evaluate model performance on a set of examples, calculating accuracy and collecting responses (run_prompt_bigbench_trace.py:287-300, run_prompt_bigbench_dspy.py:46-58)",
+    "Step 7: For the Trace approach, implement a learning function that optimizes prompts based on feedback from evaluation results (run_prompt_bigbench_trace.py:201-284)",
+    "Step 8: Set up command-line argument parsing to control task selection, optimization methods, and output paths (run_prompt_bigbench_trace.py:303-314, run_prompt_bigbench_dspy.py:61-72)",
+    "Step 9: Define the list of BigBenchHard tasks to be evaluated (run_prompt_bigbench_trace.py:321-328, run_prompt_bigbench_dspy.py:79-86)",
+    "Step 10: Load the dataset for each task and split into training (15 examples), validation (5 examples), and test sets (run_prompt_bigbench_trace.py:348-354, run_prompt_bigbench_dspy.py:111-116)",
+    "Step 11: Initialize the appropriate model (basic or chain-of-thought) based on command-line arguments (run_prompt_bigbench_trace.py:358-365, run_prompt_bigbench_dspy.py:123-126)",
+    "Step 12: For the DSPy approach, configure optimization using either BootstrapFewShotWithRandomSearch or COPRO based on command-line arguments (run_prompt_bigbench_dspy.py:128-141)",
+    "Step 13: Run the optimization process on the training data (run_prompt_bigbench_trace.py:367-369, run_prompt_bigbench_dspy.py:145-147)",
+    "Step 14: Evaluate the optimized model on the test/validation set (run_prompt_bigbench_trace.py:379-381, run_prompt_bigbench_dspy.py:146-149)",
+    "Step 15: Save the results including accuracy, responses, and optimized prompts (run_prompt_bigbench_trace.py:383-386, run_prompt_bigbench_dspy.py:161-173)"
+  ],
+  "agent_instructions": "Create two scripts to evaluate and optimize language model prompts on the BigBenchHard dataset using different frameworks:\n\n1. First script using the Trace framework:\n   - Load the BigBenchHard dataset from 'maveriq/bigbenchhard'\n   - Implement an evaluation metric that can handle multiple-choice and direct answer formats\n   - Create a base class for language model interaction using autogen\n   - Implement both standard and chain-of-thought prediction modules\n   - Create a learning function that optimizes prompts based on evaluation feedback\n   - Split the dataset into training (15 examples), validation (5 examples), and test sets\n   - Support command-line arguments for task selection and optimization methods\n   - Save results including accuracy, responses, and optimized prompts\n\n2. Second script using the DSPy framework:\n   - Load the same BigBenchHard dataset\n   - Implement the same evaluation metric for consistency\n   - Create basic and chain-of-thought modules using DSPy\n   - Support prompt optimization using either BootstrapFewShotWithRandomSearch or COPRO\n   - Split the dataset into training and validation sets\n   - Support similar command-line arguments for task selection and optimization methods\n   - Save results in the same format for comparison\n\nBoth scripts should be able to run on all 27 tasks in the BigBenchHard dataset and produce comparable results for analysis.",
+  "masked_source": [
+    "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+    "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "questions": [
+    {
+      "hypothesis": "BaDExpert generalizes well and scales effectively to larger datasets such as ImageNet and across multiple model architectures, maintaining near-perfect detection performance with negligible CA drop.",
+      "method": "Replicate the experimental setup on ImageNet by evaluating BaDExpert on various model architectures including ResNet18, ResNet101, and ViT-B/16 (with the possibility of additional architectures like VGG and MobileNetV2 for broader validation). For each configuration, implement different types of backdoor attacks including poisoning attacks (e.g., BadNet and Blend), trojaning attacks (e.g., TrojanNN), subnet-replacement attacks (SRA), and finetuning-based attacks. Reserve a small portion of clean samples (approximately 0.5% of ImageNet\u2019s training dataset) to create a noise-augmented validation set, following prior work (e.g., Guo et al., 2023) to avoid overfitting when calculating AUROC. Evaluate the defense performance comprehensively using metrics such as AUROC, ASR, and Clean Accuracy (CA). Average the results over three runs and report the standard deviations. Consolidate the detailed experimental results in tables\u2014comparable to the document\u2019s Table 1, Table 2, and Table 6\u2014and include corresponding figures for visual analysis.",
+      "expected_outcome": "The expectation is that BaDExpert will achieve nearly 100% AUROC in detecting backdoor inputs, maintain an ASR of less than 5%, and only incur a minimal drop in CA (around 0.1%), thereby confirming its scalability and robust performance across different large-scale models and various types of adaptive backdoor attacks.",
+      "subsection_source": "4.1 SETUP",
+      "source": [
+        "/workspace/create_poisoned_set_imagenet.py",
+        "/workspace/other_defense.py"
+      ],
+      "usage_instructions": "To evaluate BaDExpert's generalization on ImageNet across multiple model architectures (ResNet18, ResNet101, ViT-B/16), follow these steps:\n\n1. First, create a poisoned ImageNet dataset for each attack type you want to evaluate:\n   ```bash\n   # Create poisoned datasets for different attack types\n   python create_poisoned_set_imagenet.py -poison_type badnet -poison_rate 0.003\n   python create_poisoned_set_imagenet.py -poison_type blend -poison_rate 0.003\n   python create_poisoned_set_imagenet.py -poison_type trojan -poison_rate 0.003\n   ```\n\n2. For each model architecture and poisoned dataset, modify the architecture in config.py by changing line 93 to the desired model:\n   - For ResNet18 (default): `'imagenet' : torchvision.models.resnet18,`\n   - For ResNet101: `'imagenet' : torchvision.models.resnet101,`\n   - For ViT-B/16: `'imagenet' : torchvision.models.vit_b_16,`\n\n3. Run BaDExpert defense on each poisoned dataset and model architecture:\n   ```bash\n   # Example for ResNet18 with BadNet attack\n   python other_defense.py -dataset imagenet -poison_type badnet -poison_rate 0.003 -defense BaDExpert\n   \n   # Example for ResNet18 with Blend attack\n   python other_defense.py -dataset imagenet -poison_type blend -poison_rate 0.003 -defense BaDExpert\n   \n   # Example for ResNet18 with TrojanNN attack\n   python other_defense.py -dataset imagenet -poison_type trojan -poison_rate 0.003 -defense BaDExpert\n   ```\n\n4. Repeat step 3 for each model architecture by modifying config.py between runs.\n\nThe output will include comprehensive metrics such as AUROC, ASR, and Clean Accuracy (CA) for each configuration. The results can be found in the logs directory and can be consolidated into tables similar to those in the paper.",
+      "requirements": [
+        "Step 1: Parse command line arguments including poison_type (badnet, blend, trojan), poison_rate, alpha, and trigger parameters (/workspace/create_poisoned_set_imagenet.py:11-23)",
+        "Step 2: Set up the dataset name as 'imagenet' and initialize random seed (/workspace/create_poisoned_set_imagenet.py:23-24)",
+        "Step 3: Use default trigger if none is specified (/workspace/create_poisoned_set_imagenet.py:26-27)",
+        "Step 4: Validate that the poison_type is supported for ImageNet (badnet, trojan, blend) (/workspace/create_poisoned_set_imagenet.py:35-36)",
+        "Step 5: Create necessary directories for storing poisoned dataset (/workspace/create_poisoned_set_imagenet.py:41-51)",
+        "Step 6: Randomly select a subset of images to poison based on poison_rate (/workspace/create_poisoned_set_imagenet.py:56-61)",
+        "Step 7: Load ImageNet dataset structure (classes, paths) (/workspace/create_poisoned_set_imagenet.py:66-69)",
+        "Step 8: Define image transformation to resize images to 256x256 and convert to tensor (/workspace/create_poisoned_set_imagenet.py:71-74)",
+        "Step 9: Get the appropriate poison transform based on poison_type (/workspace/create_poisoned_set_imagenet.py:77-81)",
+        "Step 10: Apply poison transform to selected images and save them to the poisoned dataset directory (/workspace/create_poisoned_set_imagenet.py:84-98)",
+        "Step 11: Save the indices of poisoned samples for future reference (/workspace/create_poisoned_set_imagenet.py:102-104)",
+        "Step 12: Parse command line arguments for defense evaluation including dataset, poison_type, poison_rate, and defense method (/workspace/other_defense.py:6-33)",
+        "Step 13: Set up environment (GPU devices, logging) (/workspace/other_defense.py:40-70)",
+        "Step 14: Initialize timing for performance measurement (/workspace/other_defense.py:72)",
+        "Step 15: Initialize and run the BaDExpert defense method on the poisoned dataset (/workspace/other_defense.py:257-260)",
+        "Step 16: Record and report elapsed time (/workspace/other_defense.py:264-265)"
+      ],
+      "agent_instructions": "Your task is to implement a system to evaluate the BaDExpert defense against backdoor attacks on ImageNet across multiple model architectures. You need to create two main scripts:\n\n1. A script to create poisoned ImageNet datasets with the following capabilities:\n   - Support for different backdoor attack types: BadNet, Blend, and TrojanNN\n   - Configurable poison rate (percentage of training images to poison)\n   - Proper handling of ImageNet's directory structure and image transformations\n   - The script should resize images to 256x256, apply the appropriate trigger based on attack type, and save the poisoned images\n   - Track and save the indices of poisoned samples\n\n2. A script to evaluate the BaDExpert defense method with the following capabilities:\n   - Take parameters for dataset (ImageNet), poison type, poison rate, and defense method\n   - Set up proper logging to record results\n   - Initialize and run the BaDExpert defense on the poisoned dataset\n   - Measure and report performance metrics (time, AUROC, ASR, Clean Accuracy)\n\nThe system should work with different model architectures (ResNet18, ResNet101, ViT-B/16) as specified in the configuration. The evaluation should be performed on each combination of model architecture and attack type.",
+      "masked_source": [
+        "/workspace/create_poisoned_set_imagenet.py",
+        "/workspace/other_defense.py"
+      ]
+    }
+  ]
+}

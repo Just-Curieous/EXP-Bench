@@ -1,0 +1,32 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including PyTorch, NumPy, MMCV, and other dependencies for deep learning model implementation.",
+    "Step 2: Define a Multi-Layer Perceptron (MLP) class that takes input dimension, hidden dimension, output dimension, and number of layers as parameters.",
+    "Step 3: Implement the forward method for the MLP class that applies ReLU activation to all layers except the final one.",
+    "Step 4: Create a TopoLLHead class that inherits from nn.Module to handle lane-lane topology reasoning.",
+    "Step 5: Initialize the TopoLLHead with parameters for input channels, shared parameters option, loss functions, and lane prediction options.",
+    "Step 6: Create two MLP networks within TopoLLHead - one for processing features from the first lane and another for the second lane (or share parameters if specified).",
+    "Step 7: Add a classifier MLP that takes concatenated lane features and outputs relationship predictions.",
+    "Step 8: Implement optional lane prediction MLPs if add_lane_pred is enabled to incorporate lane position information.",
+    "Step 9: Create a forward method that processes lane features and positions, detaches them if specified, and passes them through the MLPs.",
+    "Step 10: Enhance lane features with position information if add_lane_pred is enabled.",
+    "Step 11: Create relationship tensors by repeating and concatenating lane embeddings to form pairs of all possible lane combinations.",
+    "Step 12: Pass the relationship tensor through the classifier to predict lane-lane connections.",
+    "Step 13: Implement a get_topology method that applies sigmoid to the predictions to get probability scores for lane connections.",
+    "Step 14: Create a loss calculation function that compares predicted relationships with ground truth adjacency matrices.",
+    "Step 15: Implement an optional L1 loss function for lane endpoints that converts control points to lane points and calculates distance between connected lane endpoints.",
+    "Step 16: Create a helper function to convert Bezier control points to actual lane points using the Bernstein polynomial basis.",
+    "Step 17: Configure the model with a ResNet-50 backbone and Feature Pyramid Network (FPN) for feature extraction from images.",
+    "Step 18: Set up data processing pipelines for training and testing that handle multi-view images and prepare lane annotations.",
+    "Step 19: Configure the OpenLaneV2 dataset with appropriate paths and collection names.",
+    "Step 20: Set up the optimizer with AdamW and learning rate settings, including a lower learning rate for the backbone.",
+    "Step 21: Configure the learning rate schedule with cosine annealing and warmup.",
+    "Step 22: Create a test script that loads the model configuration and checkpoint.",
+    "Step 23: Build the dataset and dataloader for evaluation.",
+    "Step 24: Load the pre-trained model weights from the checkpoint.",
+    "Step 25: Run inference on the test dataset to get lane detection and topology predictions.",
+    "Step 26: Evaluate the model performance using the TOP_ll metric for lane-lane topology reasoning.",
+    "Step 27: Create a distributed testing script that enables multi-GPU evaluation.",
+    "Step 28: Compare results with and without lane position information by toggling the add_lane_pred parameter to understand its impact on topology prediction accuracy."
+  ]
+}

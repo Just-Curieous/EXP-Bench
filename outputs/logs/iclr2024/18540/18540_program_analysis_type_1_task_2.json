@@ -1,0 +1,27 @@
+{
+  "requirements": [
+    "Step 1: Parse command-line arguments for model paths (red corner model, blue corner model, reward model, cost model), output directory, and other configuration parameters (/workspace/scripts/arena-evaluation.sh:29-102)",
+    "Step 2: Set up the environment for distributed evaluation using DeepSpeed (/workspace/scripts/arena-evaluation.sh:112-126)",
+    "Step 3: Execute the arena evaluation module with the specified parameters (/workspace/scripts/arena-evaluation.sh:129-139)",
+    "Step 4: Load the specified models (red corner, blue corner, reward, cost) and their tokenizers (/workspace/safe_rlhf/evaluate/arena.py:319-346)",
+    "Step 5: Load the evaluation dataset containing potentially harmful prompts (/workspace/safe_rlhf/evaluate/arena.py:367-374)",
+    "Step 6: Generate responses from both models for each prompt in the dataset (/workspace/safe_rlhf/evaluate/arena.py:389-417)",
+    "Step 7: Score the generated responses using reward and cost models (/workspace/safe_rlhf/evaluate/arena.py:248-256)",
+    "Step 8: Calculate and display metrics comparing the models (win rates, safety rates) (/workspace/safe_rlhf/evaluate/arena.py:470-556)",
+    "Step 9: Save the evaluation results to CSV files (/workspace/safe_rlhf/evaluate/arena.py:457-467)",
+    "Step 10: For GPT-4 evaluation, parse command-line arguments for model paths (/workspace/safe_rlhf/evaluate/gpt4/eval.py:57-84)",
+    "Step 11: Load test prompts from a predefined set of potentially harmful queries (/workspace/safe_rlhf/evaluate/gpt4/eval.py:138-139)",
+    "Step 12: Generate responses from both models for each prompt (/workspace/safe_rlhf/evaluate/gpt4/eval.py:141-142)",
+    "Step 13: Use GPT-4 to evaluate and compare the responses based on helpfulness and harmlessness (/workspace/safe_rlhf/evaluate/gpt4/eval.py:144-157)",
+    "Step 14: Parse GPT-4's evaluation scores for each model (/workspace/safe_rlhf/evaluate/gpt4/eval.py:158-161)",
+    "Step 15: Save the evaluation results to a JSON file (/workspace/safe_rlhf/evaluate/gpt4/eval.py:174-177)"
+  ],
+  "agent_instructions": "Your task is to create a system for evaluating language models on both helpfulness and harmlessness. You'll need to implement two evaluation methods:\n\n1. An arena evaluation that compares two language models using reward and cost models:\n   - Create a script that takes command-line arguments for model paths (two models to compare, plus reward and cost models)\n   - Set up distributed evaluation using DeepSpeed\n   - Generate responses from both models for a set of challenging prompts\n   - Score the responses using the reward model (for helpfulness) and cost model (for harmlessness)\n   - Calculate metrics like win rates and safety rates\n   - Display and save the results\n\n2. A GPT-4 based evaluation:\n   - Create a script that takes command-line arguments for model paths (two models to compare)\n   - Load a set of challenging prompts covering topics like social bias, harmful content, privacy violations, etc.\n   - Generate responses from both models\n   - Use GPT-4 to evaluate the responses based on helpfulness and harmlessness\n   - Parse the evaluation scores and save the results\n\nThe evaluation should focus on testing how well the models handle potentially harmful requests while remaining helpful for legitimate queries. The system should be designed to work with models from the Hugging Face ecosystem.",
+  "masked_source": [
+    "/workspace/scripts/arena-evaluation.sh",
+    "/workspace/safe_rlhf/evaluate/gpt4/__main__.py",
+    "/workspace/safe_rlhf/evaluate/gpt4/eval.py",
+    "/workspace/safe_rlhf/evaluate/arena.py",
+    "/workspace/safe_rlhf/evaluate/gpt4/problem.json"
+  ]
+}

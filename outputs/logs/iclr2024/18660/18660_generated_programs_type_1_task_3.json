@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/benchmarks/ecosystem/vmas_rllib_vs_torchrl_sampling_performance.py"],
+    "usage_instructions": "To run the experiment, execute the script with the following steps:\n1. Install the required dependencies: `pip install matplotlib \"ray[rllib]\"==2.1.0 torchrl vmas numpy==1.23.5`\n2. Run the script: `python /workspace/benchmarks/ecosystem/vmas_rllib_vs_torchrl_sampling_performance.py`\n\nThe script is already configured to run the 'simple_spread' task in VMAS and compare TorchRL vs RLlib performance. It systematically varies the number of vectorized environments (from 1 to 30000 with 10 steps) and measures frames per second (fps) for both libraries. The script runs each configuration for 100 simulation steps, measures the throughput, and generates a plot showing fps versus the number of vectorized environments for each library. The results are saved as a PDF file in the same directory as the script."
+}

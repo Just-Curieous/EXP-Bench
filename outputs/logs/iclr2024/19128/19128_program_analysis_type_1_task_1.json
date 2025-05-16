@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments (NAME and CHECKPOINT) from the script parameters (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:1-2)",
+    "Step 2: Initialize distributed training environment with 8 processes per node (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:3)",
+    "Step 3: Load the EVA02-CLIP-B-16 model with the specified checkpoint (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:4-7, /workspace/src/training/main.py:119-137)",
+    "Step 4: Load COCO panoptic segmentation validation dataset (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:5-6, /workspace/src/training/main.py:238)",
+    "Step 5: Load pre-computed text embeddings for COCO panoptic classes (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:6, /workspace/src/training/zero_shot.py:12-18)",
+    "Step 6: Extract region features from images using three methods: bounding boxes (rois), crops, and mask pooling (/workspace/src/training/zero_shot.py:66-83)",
+    "Step 7: Compute similarity between region features and class embeddings (/workspace/src/training/zero_shot.py:90-92)",
+    "Step 8: Calculate Top-1 and Top-5 accuracy for each feature extraction method (/workspace/src/training/zero_shot.py:94-99)",
+    "Step 9: Separate evaluation metrics for 'thing' and 'stuff' categories (/workspace/src/training/zero_shot.py:140-173)",
+    "Step 10: Report final accuracy metrics for boxes (rois), crops, and masks (/workspace/src/training/zero_shot.py:189-191)"
+  ],
+  "agent_instructions": "Your task is to create a script that evaluates the performance of EVA-CLIP models on the COCO panoptic segmentation dataset. The script should:\n\n1. Take two command-line arguments: a name for the experiment and the path to a model checkpoint.\n2. Set up distributed evaluation using PyTorch's torchrun with 8 processes.\n3. Load the EVA02-CLIP-B-16 model architecture with the provided checkpoint.\n4. Evaluate the model on the COCO panoptic segmentation validation dataset.\n5. Use pre-computed text embeddings for COCO panoptic classes.\n6. Extract visual features from images using three different methods:\n   - Bounding box regions (referred to as 'rois')\n   - Image crops\n   - Mask-pooled features\n7. Compute the similarity between these visual features and the text embeddings.\n8. Calculate and report Top-1 and Top-5 accuracy metrics for each feature extraction method.\n9. Separate the evaluation metrics for 'thing' categories (objects) and 'stuff' categories (materials, backgrounds).\n10. Output the accuracy metrics in a clear format.\n\nThe script should be designed to compare the performance of different models (baseline vs. CLIPSelf) on the same task by running it with different checkpoints. The evaluation should use a 1024px image size and a downsampling factor of 16.",
+  "masked_source": [
+    "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Install the required Python packages including transformers, torch, datasets, and wandb (if using wandb for logging) (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Set up access to the Hugging Face model repository by obtaining a Hugging Face token for accessing the meta-llama/Llama-2-7b-hf model (/workspace/fake_quant/model_utils.py:40-49)",
+    "Step 3: Prepare the evaluation environment by setting random seeds for reproducibility and disabling TensorFloat-32 tensor cores to avoid numerical issues (/workspace/fake_quant/utils.py:24-27)",
+    "Step 4: Load the meta-llama/Llama-2-7b-hf model using the Hugging Face transformers library with appropriate dtype settings (/workspace/fake_quant/model_utils.py:40-49)",
+    "Step 5: Set up the quantization configuration for input activations by specifying the number of bits (a_bits=4) and clipping ratio (a_clip_ratio varying from 0.85 to 1.0) (/workspace/fake_quant/main.py:78-109)",
+    "Step 6: Apply activation quantization wrappers to the model's linear layers to enable input quantization (/workspace/fake_quant/quant_utils.py:367-393)",
+    "Step 7: Configure the quantization parameters for each layer based on the specified bits and clipping ratio (/workspace/fake_quant/quant_utils.py:113-119)",
+    "Step 8: Load the WikiText-2 dataset for evaluation using the Hugging Face datasets library (/workspace/fake_quant/data_utils.py:5-28)",
+    "Step 9: Process the dataset by tokenizing it with the model's tokenizer and preparing it for evaluation (/workspace/fake_quant/data_utils.py:97-105)",
+    "Step 10: Run the evaluation loop to calculate perplexity on the WikiText-2 dataset with the quantized model (/workspace/fake_quant/eval_utils.py:10-150)",
+    "Step 11: Repeat the experiment with different clipping ratios (1.0, 0.95, 0.9, 0.85) for symmetric input quantization to analyze the impact on perplexity (/workspace/fake_quant/main.py:78-109)",
+    "Step 12: Set up the quantization configuration for KV cache by specifying the number of bits (k_bits=4, v_bits=4) and enabling asymmetric quantization (k_asym, v_asym) (/workspace/fake_quant/main.py:111-124)",
+    "Step 13: Apply KV cache quantization to the model by adding quantization wrappers after the RoPE function call in the attention mechanism (/workspace/fake_quant/main.py:111-124)",
+    "Step 14: Repeat the experiment with different clipping ratios (1.0, 0.95, 0.9, 0.85) for asymmetric KV cache quantization to analyze the impact on perplexity (/workspace/fake_quant/main.py:111-124)",
+    "Final Step: Compare the perplexity results across different quantization approaches and clipping ratios to determine the optimal configuration (/workspace/fake_quant/main.py:137-139)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment that evaluates how different clipping ratios affect perplexity when quantizing the LLAMA2-7B model. You need to run experiments with two different quantization approaches: (1) symmetric input quantization and (2) asymmetric KV cache quantization, each with varying clipping ratios (1.0, 0.95, 0.9, 0.85). The experiment uses the WikiText-2 dataset for evaluation.\n\nYou'll need to:\n1. Set up the environment with necessary libraries\n2. Obtain access to the meta-llama/Llama-2-7b-hf model\n3. Run the provided script with different parameter configurations\n4. For symmetric input quantization: vary a_bits=4 and a_clip_ratio (1.0, 0.95, 0.9, 0.85) while keeping w_bits=16\n5. For asymmetric KV cache quantization: set k_bits=4, v_bits=4, enable k_asym and v_asym flags, and vary k_clip_ratio and v_clip_ratio (1.0, 0.95, 0.9, 0.85) while keeping w_bits=16\n\nThe goal is to understand how different clipping ratios affect model performance under these quantization approaches.",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

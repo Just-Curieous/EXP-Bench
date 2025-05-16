@@ -1,0 +1,3 @@
+{
+    "no_answer": "After thoroughly examining the repository, I could not find any existing scripts that specifically implement or compare the different DPAM strategies (V-V, Q-Q, and K-K self-attention) as described in the experiment question. The current implementation in AnomalyCLIP_lib/AnomalyCLIP.py only uses the V-V self-attention variant by default (lines 81-83 of the Attention class). While the repository contains training and testing scripts (train.py, test.py), there are no scripts that automatically run experiments with different DPAM variants. To conduct this experiment, one would need to modify the Attention class implementation in AnomalyCLIP.py to create each variant and then run the training and testing scripts for each variant separately."
+}

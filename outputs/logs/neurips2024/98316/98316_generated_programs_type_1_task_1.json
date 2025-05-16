@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/tests/test_custom_ci.py"],
+    "usage_instructions": "Execute the script with 'python /workspace/tests/test_custom_ci.py'. This script demonstrates how to create a custom conditional independence test (CustomFisherZ) and compare it with the built-in Fisher-Z test in causal-learn. The script includes two main functions: run_test() which compares p-values from both tests, and run_pc_algorithm_test() which runs the PC algorithm with both tests on synthetic data with a known causal structure. The script evaluates and compares the performance of both tests by measuring the match percentage between the recovered causal graphs, which directly addresses the hypothesis about whether built-in tests improve accuracy. The script already includes synthetic data generation with known ground truth, so no additional data preparation is needed."
+}

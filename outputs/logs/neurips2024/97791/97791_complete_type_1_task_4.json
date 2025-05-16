@@ -1,0 +1,52 @@
+{
+  "questions": [
+    {
+      "question": "Does the multimodal dataset approach, which integrates diverse astrophysical data (images from Legacy Surveys, spectra from DESI, and hyperspectral cubes from MaNGA), generalize effectively across tasks such as morphology classification, photometric classification, and physical parameter imaging?",
+      "method": "Conduct a set of experiments where the multimodal dataset is used to pretrain a model via a contrastive image\u2010spectrum strategy (AstroCLIP) and then evaluated on several downstream astrophysical tasks. In this design, the training involves cross-modal alignment between images (from the Legacy Surveys), spectra (from DESI), and hyperspectral cubes (e.g., from MaNGA) to learn unified representations.\n\nDetailed experiment setup:\n(1) Pretraining: Assemble a large cross-matched dataset by pairing images with their corresponding spectra and hyperspectral cubes using the Multimodal Universe dataset, which is accessible via the Hugging Face datasets library and offers preformatted multimodal astronomical data. Implement a contrastive learning framework (inspired by AstroCLIP) to learn modality-aligned embeddings.\n(2) Task-specific evaluation:\na. Morphology Classification \u2013 Use the Galaxy10 DECaLS dataset and evaluate model performance via standard classification metrics, comparing against a supervised baseline (e.g., using Random Forest as detailed in the associated appendix).\nb. Photometric Classification \u2013 Test on datasets such as PLAsTiCC and YSE, where photometric data is used to perform classification and redshift estimation.\nc. Physical Parameter Imaging \u2013 Employ hyperspectral cube data from MaNGA to predict spatially resolved physical parameters using the learned embeddings.\n(3) Evaluation Metrics: Use metrics such as classification accuracy (for morphology and photometric tasks) and R2 scores (for redshift and galaxy property prediction) to compare both zero-shot (k-Nearest Neighbour regression) and finetuned performance against established supervised baselines. The experimental design includes cross-validation and detailed recording of performance metrics across tasks.",
+      "expected_outcome": "Experimental evaluations across various tasks indicate that the multimodal framework is robust and generalizes well, leading to consistent performance improvements in tasks ranging from galaxy morphology classification to hyperspectral physical parameter estimation.",
+      "source": [
+        "/workspace/experimental_benchmark/cross_match.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/embed.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb",
+        "/workspace/experimental_benchmark/galaxy10_decals/trainer.py",
+        "/workspace/experimental_benchmark/galaxy_properties/trainer.py"
+      ],
+      "usage_instructions": "1. First, use cross_match.py to create multimodal datasets by cross-matching data from different sources (Legacy Surveys, DESI, MaNGA): `python /workspace/experimental_benchmark/cross_match.py [left_dataset_path] [right_dataset_path] [cache_dir] --matching_radius 1.0`. 2. Use embed.py to generate embeddings from the multimodal dataset using AstroCLIP: `python /workspace/experimental_benchmark/astroclip/property_estimation/embed.py [astroclip_model_path] [desi_decals_path] [provabgs_path] [save_path]`. 3. For morphology classification evaluation, run the Galaxy10 DECaLS trainer: `python /workspace/experimental_benchmark/galaxy10_decals/trainer.py fit --config /workspace/experimental_benchmark/galaxy10_decals/config.yaml`. 4. For physical parameter estimation, run the galaxy properties trainer: `python /workspace/experimental_benchmark/galaxy_properties/trainer.py fit --config /workspace/experimental_benchmark/galaxy_properties/configs/spectrum.yaml`. 5. Finally, use the property_estimation.ipynb notebook to evaluate the performance of the embeddings on galaxy property estimation using k-Nearest Neighbors regression.",
+      "requirements": [
+        "Step 1: Create a function to cross-match astronomical datasets using sky coordinates with a specified matching radius in arcseconds (/workspace/experimental_benchmark/cross_match.py:7-34)",
+        "Step 2: Implement a command-line interface for the cross-matching function that accepts paths to two datasets, a cache directory, and optional parameters (/workspace/experimental_benchmark/cross_match.py:37-48)",
+        "Step 3: Create a data loader class for handling astronomical data that can load image and spectrum data from disk (/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py:13-50)",
+        "Step 4: Implement a collator class that processes astronomical images by converting them to RGB and applying center cropping (/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py:53-80)",
+        "Step 5: Create a function to generate embeddings from astronomical images and spectra using a pre-trained AstroCLIP model (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:15-105)",
+        "Step 6: Implement a command-line interface for the embedding function that accepts paths to the model, datasets, and output directory (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:108-137)",
+        "Step 7: Create a notebook that loads the generated embeddings and evaluates them using k-Nearest Neighbors regression for galaxy property estimation (/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb:4-118)",
+        "Step 8: Implement a dataset class for Galaxy10 DECaLS data that loads and preprocesses galaxy images and labels (/workspace/experimental_benchmark/galaxy10_decals/dataset.py:8-59)",
+        "Step 9: Create a base model class for galaxy morphology classification with training and validation steps (/workspace/experimental_benchmark/galaxy10_decals/model.py:12-68)",
+        "Step 10: Implement specific model architectures (ResNet18, EfficientNetB0, DenseNet121, SmallConvModel) for galaxy morphology classification (/workspace/experimental_benchmark/galaxy10_decals/model.py:71-240)",
+        "Step 11: Create a command-line interface for training the galaxy morphology classification models (/workspace/experimental_benchmark/galaxy10_decals/trainer.py:1-10)",
+        "Step 12: Implement a dataset class for galaxy property estimation that handles different data modalities (image, spectrum, photometry) (/workspace/experimental_benchmark/galaxy_properties/dataset.py:8-103)",
+        "Step 13: Create a base model class for galaxy property estimation with training and validation steps (/workspace/experimental_benchmark/galaxy_properties/model.py:15-40)",
+        "Step 14: Implement specific model architectures for image-based galaxy property estimation (/workspace/experimental_benchmark/galaxy_properties/model.py:43-137)",
+        "Step 15: Implement specific model architectures for photometry and spectrum-based galaxy property estimation (/workspace/experimental_benchmark/galaxy_properties/model.py:140-287)",
+        "Step 16: Create utility functions for 1D convolutional neural networks for spectrum analysis (/workspace/experimental_benchmark/galaxy_properties/modules.py:19-316)",
+        "Step 17: Implement a callback to calculate and log R\u00b2 scores for galaxy property estimation (/workspace/experimental_benchmark/galaxy_properties/utils.py:8-37)",
+        "Step 18: Create a command-line interface for training the galaxy property estimation models (/workspace/experimental_benchmark/galaxy_properties/trainer.py:1-10)"
+      ],
+      "agent_instructions": "Your task is to implement a pipeline for multimodal astronomical data analysis and machine learning. The pipeline consists of several components:\n\n1. A cross-matching utility that combines data from different astronomical surveys by matching objects based on their sky coordinates (RA and DEC) within a specified radius (in arcseconds).\n\n2. An embedding generation system that uses a pre-trained AstroCLIP model to create embeddings from both galaxy images and spectra. The system should:\n   - Load the AstroCLIP model\n   - Process galaxy images and spectra from the DESI-DECaLS dataset\n   - Generate embeddings for both modalities\n   - Join these embeddings with physical properties from the PROVABGS dataset\n   - Save the combined data for training and testing\n\n3. A galaxy morphology classification system that:\n   - Loads the Galaxy10 DECaLS dataset\n   - Implements deep learning models (like ResNet, DenseNet, or EfficientNet) for galaxy classification\n   - Provides data preprocessing and augmentation\n   - Includes training and evaluation functionality\n\n4. A galaxy property estimation system that:\n   - Supports different input modalities (images, spectra, or photometry)\n   - Implements various neural network architectures for regression\n   - Predicts physical properties like stellar mass, star formation rate, metallicity, and age\n   - Evaluates performance using R\u00b2 scores\n\n5. An evaluation notebook that uses k-Nearest Neighbors regression to assess how well the generated embeddings capture galaxy properties.\n\nThe implementation should use PyTorch Lightning for the training pipeline and the Hugging Face datasets library for data handling. The system should be configurable through command-line arguments and YAML configuration files.",
+      "masked_source": [
+        "/workspace/experimental_benchmark/cross_match.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/embed.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb",
+        "/workspace/experimental_benchmark/galaxy10_decals/trainer.py",
+        "/workspace/experimental_benchmark/galaxy_properties/trainer.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py",
+        "/workspace/experimental_benchmark/galaxy10_decals/model.py",
+        "/workspace/experimental_benchmark/galaxy10_decals/dataset.py",
+        "/workspace/experimental_benchmark/galaxy_properties/model.py",
+        "/workspace/experimental_benchmark/galaxy_properties/dataset.py",
+        "/workspace/experimental_benchmark/galaxy_properties/utils.py",
+        "/workspace/experimental_benchmark/galaxy_properties/modules.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+    "source": [
+        "/workspace/experimental_benchmark/cross_match.py",
+        "/workspace/experimental_benchmark/galaxy_properties/trainer.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/embed.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb"
+    ],
+    "usage_instructions": "First, use cross_match.py to create a cross-matched dataset between DESI spectra and Legacy Surveys images: `python /workspace/experimental_benchmark/cross_match.py MultimodalUniverse/desi MultimodalUniverse/legacysurvey /path/to/output --matching_radius 1.0`. Then, for the traditional supervised approach, train models using: `python /workspace/experimental_benchmark/galaxy_properties/trainer.py fit --config /workspace/experimental_benchmark/galaxy_properties/configs/image.yaml` and `python /workspace/experimental_benchmark/galaxy_properties/trainer.py fit --config /workspace/experimental_benchmark/galaxy_properties/configs/spectrum.yaml` (you may need to update the dataset paths in the config files). For the AstroCLIP approach, first generate embeddings using: `python /workspace/experimental_benchmark/astroclip/property_estimation/embed.py /path/to/astroclip_model /path/to/cross_matched_dataset /path/to/provabgs /path/to/output`. Finally, evaluate both approaches using the property_estimation.ipynb notebook, which implements k-NN regression (k=16) for zero-shot property estimation and compares the results."
+}

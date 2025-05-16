@@ -1,0 +1,35 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including JAX, Flax, Optax, NumPy, and DistrAX for both algorithms (/workspace/baselines/MAPPO/mappo_rnn_smax.py:5-19, /workspace/baselines/QLearning/qmix_rnn.py:1-18)",
+    "Step 2: Create a wrapper for SMAX environments that provides a world state observation for the centralized critic (/workspace/baselines/MAPPO/mappo_rnn_smax.py:24-79)",
+    "Step 3: Implement a recurrent neural network (GRU) module for both algorithms to handle sequential data (/workspace/baselines/MAPPO/mappo_rnn_smax.py:81-107, /workspace/baselines/QLearning/qmix_rnn.py:31-59)",
+    "Step 4: For PPO, implement actor network with RNN that outputs action distributions (/workspace/baselines/MAPPO/mappo_rnn_smax.py:110-137)",
+    "Step 5: For PPO, implement critic network with RNN that outputs state value estimates (/workspace/baselines/MAPPO/mappo_rnn_smax.py:140-162)",
+    "Step 6: For QMIX, implement Q-network with RNN that outputs Q-values for each action (/workspace/baselines/QLearning/qmix_rnn.py:62-86)",
+    "Step 7: For QMIX, implement mixing network that combines individual agent Q-values into a team value (/workspace/baselines/QLearning/qmix_rnn.py:89-157)",
+    "Step 8: Define data structures to store transitions for both algorithms (/workspace/baselines/MAPPO/mappo_rnn_smax.py:164-174, /workspace/baselines/QLearning/qmix_rnn.py:160-166)",
+    "Step 9: Implement utility functions to convert between batched and unbatched data formats (/workspace/baselines/MAPPO/mappo_rnn_smax.py:177-185, /workspace/baselines/QLearning/qmix_rnn.py:220-224)",
+    "Step 10: For PPO, implement environment setup with appropriate wrappers (/workspace/baselines/MAPPO/mappo_rnn_smax.py:188-205)",
+    "Step 11: For QMIX, implement epsilon-greedy exploration strategy (/workspace/baselines/QLearning/qmix_rnn.py:187-218)",
+    "Step 12: For PPO, initialize actor and critic networks with appropriate parameters (/workspace/baselines/MAPPO/mappo_rnn_smax.py:216-261)",
+    "Step 13: For QMIX, initialize Q-network and mixing network with appropriate parameters (/workspace/baselines/QLearning/qmix_rnn.py:268-324)",
+    "Step 14: For QMIX, implement experience replay buffer for storing and sampling transitions (/workspace/baselines/QLearning/qmix_rnn.py:327-335)",
+    "Step 15: For PPO, implement trajectory collection by stepping through the environment (/workspace/baselines/MAPPO/mappo_rnn_smax.py:275-332)",
+    "Step 16: For PPO, calculate advantages using Generalized Advantage Estimation (GAE) (/workspace/baselines/MAPPO/mappo_rnn_smax.py:352-376)",
+    "Step 17: For PPO, implement actor loss with clipped objective function (/workspace/baselines/MAPPO/mappo_rnn_smax.py:384-414)",
+    "Step 18: For PPO, implement critic loss with value function clipping (/workspace/baselines/MAPPO/mappo_rnn_smax.py:418-432)",
+    "Step 19: For QMIX, implement Q-learning update with target networks (/workspace/baselines/QLearning/qmix_rnn.py:444-495)",
+    "Step 20: For PPO, update networks using minibatch updates (/workspace/baselines/MAPPO/mappo_rnn_smax.py:459-502)",
+    "Step 21: For QMIX, implement target network updates with soft updates (/workspace/baselines/QLearning/qmix_rnn.py:524-536)",
+    "Step 22: For both algorithms, track and log metrics including returns and win rates (/workspace/baselines/MAPPO/mappo_rnn_smax.py:538-554, /workspace/baselines/QLearning/qmix_rnn.py:540-572)",
+    "Step 23: For QMIX, implement greedy evaluation during training (/workspace/baselines/QLearning/qmix_rnn.py:578-636)",
+    "Step 24: For both algorithms, implement the main training loop that runs for a specified number of updates (/workspace/baselines/MAPPO/mappo_rnn_smax.py:571-574, /workspace/baselines/QLearning/qmix_rnn.py:645-647)",
+    "Step 25: For both algorithms, implement command-line interface to run experiments with different maps (/workspace/baselines/MAPPO/mappo_rnn_smax.py:578-597, /workspace/baselines/QLearning/qmix_rnn.py:780-791)",
+    "Final Step: Compare the training time and normalized scores between PPO and Q-Learning across the 9 SMAX maps (/workspace/baselines/MAPPO/mappo_rnn_smax.py:538-554, /workspace/baselines/QLearning/qmix_rnn.py:540-572)"
+  ],
+  "agent_instructions": "Your task is to implement and compare two multi-agent reinforcement learning algorithms - Multi-Agent PPO (MAPPO) and QMIX (Q-Learning with mixing network) - on StarCraft Multi-Agent Challenge (SMAX) environments. The goal is to evaluate their performance in terms of training time and normalized scores.\n\nYou need to implement:\n\n1. A MAPPO algorithm with:\n   - Recurrent neural networks (GRU) for handling sequential data\n   - Actor network that outputs action distributions\n   - Centralized critic network that takes a global state\n   - PPO-specific clipped objective function\n   - Generalized Advantage Estimation (GAE)\n\n2. A QMIX algorithm with:\n   - Recurrent neural networks (GRU) for handling sequential data\n   - Q-network that outputs Q-values for each action\n   - Mixing network that combines individual agent Q-values into a team value\n   - Epsilon-greedy exploration strategy\n   - Experience replay buffer\n   - Target networks with soft updates\n\nBoth implementations should:\n- Work with SMAX environments\n- Track metrics including returns and win rates\n- Support running experiments on different SMAX maps\n- Log results for comparison\n\nThe experiment should compare these algorithms across 9 SMAX maps (excluding maps with more than 10 units): '2s3z', '3s5z', '5m_vs_6m', '3s5z_vs_3s6z', '3s_vs_5z', '6h_vs_8z', 'smacv2_5_units', 'smacv2_10_units', and one other map.\n\nThe comparison should focus on:\n1. Training time (MAPPO is expected to train approximately 6x faster)\n2. Normalized scores across the different scenarios",
+  "masked_source": [
+    "/workspace/baselines/MAPPO/mappo_rnn_smax.py",
+    "/workspace/baselines/QLearning/qmix_rnn.py"
+  ]
+}

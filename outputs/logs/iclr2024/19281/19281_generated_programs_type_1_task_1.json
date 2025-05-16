@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/MolGen/preprocess.sh",
+        "/workspace/MolGen/finetune.sh",
+        "/workspace/MolGen/generate.sh"
+    ],
+    "usage_instructions": "To reproduce the experiment results from the paper:\n\n1. First, run the preprocess.sh script to generate candidate molecules using the pre-trained model. Modify the script to specify the appropriate property (plogp, qed, or binding_affinity) and dataset paths:\n   ```bash\n   cd /workspace/MolGen\n   # Modify preprocess.sh to set --property to 'plogp', 'qed', or 'binding_affinity'\n   # For binding affinity tasks, you'll need to provide the protein file path with --protein_path\n   bash preprocess.sh\n   ```\n\n2. Next, run the finetune.sh script to apply the chemical feedback paradigm during molecule generation:\n   ```bash\n   # Modify finetune.sh to set the appropriate checkpoint_path and finetune_path\n   bash finetune.sh\n   ```\n\n3. Finally, run the generate.sh script to generate optimized molecules and evaluate their properties:\n   ```bash\n   # Modify generate.sh to set the appropriate property (plogp, qed, or binding_affinity)\n   # For binding affinity tasks with ESR1 and ACAA1 targets, set --property to 'binding_affinity' and provide the protein file path\n   bash generate.sh\n   ```\n\nThe scripts will automatically calculate and report the top-3 property scores for p-logP, QED, or binding affinity as shown in Tables 2 and 3 of the paper. For binding affinity tasks, the script uses AutoDockGPU to perform docking simulations against the specified protein targets."
+}

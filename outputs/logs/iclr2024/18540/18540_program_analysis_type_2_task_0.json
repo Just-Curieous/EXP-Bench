@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Import necessary modules from the Safe RLHF framework including CLI, Chatbot, ModelArgs, and other required components (/workspace/safe_rlhf/serve/arena.py:16-22, /workspace/safe_rlhf/serve/cli.py:16-37)",
+    "Step 2: Set up command-line argument parsing to accept two model paths (red_corner and blue_corner models), along with generation parameters like temperature, max_length, top_p, and precision settings (/workspace/safe_rlhf/serve/arena.py:25-102)",
+    "Step 3: Load the specified language models using the Safe RLHF model loading utilities, with one model trained with Safe RLHF and one without (/workspace/safe_rlhf/serve/chatbot.py:197-204)",
+    "Step 4: Configure generation parameters for both models including temperature, max_length, top_p, and repetition_penalty (/workspace/safe_rlhf/serve/chatbot.py:205-214)",
+    "Step 5: Initialize the dialogue context with appropriate prompts for both models (/workspace/safe_rlhf/serve/chatbot.py:215-220)",
+    "Step 6: Create a CLI interface that displays both models side by side with distinct styling (/workspace/safe_rlhf/serve/cli.py:40-57)",
+    "Step 7: Implement the interactive loop that accepts user input and displays responses from both models (/workspace/safe_rlhf/serve/cli.py:83-124)",
+    "Step 8: Process user input and generate responses from both models using the configured generation parameters (/workspace/safe_rlhf/serve/chatbot.py:253-300)",
+    "Step 9: Format and display the responses from both models side by side for direct comparison (/workspace/safe_rlhf/serve/cli.py:130-165)",
+    "Final Step: Run the arena with the two models and allow for interactive testing with potentially harmful prompts to compare safety alignment (/workspace/safe_rlhf/serve/arena.py:105-111)"
+  ],
+  "agent_instructions": "Create an interactive arena for comparing two language models side by side, with a focus on evaluating their safety alignment. The arena should allow users to input potentially harmful prompts and observe how differently the models respond.\n\nYour implementation should:\n\n1. Create a command-line interface that loads two language models - one trained with Safe RLHF (e.g., PKU-Alignment/beaver-7b-v1.0) and one without safety alignment (e.g., PKU-Alignment/alpaca-7b-reproduced).\n\n2. Allow configuration of generation parameters such as temperature, max_length, top_p, and repetition_penalty.\n\n3. Display both models' responses side by side with different colors for easy comparison.\n\n4. Implement an interactive loop where users can input prompts, including potentially harmful ones, to test how the models respond differently.\n\n5. Include special commands for clearing dialogue history, resetting the conversation, and exiting the arena.\n\n6. Format the output to clearly distinguish between the two models and highlight their different approaches to handling harmful requests.\n\nThe goal is to demonstrate how a model trained with Safe RLHF will refuse to provide harmful information while maintaining helpfulness for legitimate requests, in contrast to a standard model that might comply with harmful requests."
+}

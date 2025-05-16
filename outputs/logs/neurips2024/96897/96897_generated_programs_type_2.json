@@ -1,0 +1,34 @@
+[
+  {
+    "mode": "A",
+    "question": "How can we fine-tune a RoBERTa-large model on the SuperGLUE benchmark using BAdam optimizer to reduce memory usage?",
+    "method": "Implement a script that fine-tunes RoBERTa-large on a SuperGLUE task using the BAdam optimizer, which enables full parameter optimization with reduced memory footprint by sequentially updating different blocks of the model.",
+    "expected_outcome": "A fine-tuned RoBERTa-large model on a SuperGLUE task (e.g., BoolQ, WiC, WSC, RTE, MultiRC, or COPA) with evaluation metrics reported. The memory usage should be significantly lower than using standard Adam optimizer.",
+    "source": [
+      "/workspace/roberta-superglue/badam_ft.py"
+    ],
+    "usage_instructions": "1. First, download the SuperGLUE dataset for the chosen task (e.g., BoolQ) using the provided script.\n2. Set up the block partition for RoBERTa-large by defining the block_prefix_list that divides the model into transformer layers.\n3. Initialize the BlockOptimizer with the base optimizer, named parameters list, and block switching strategy.\n4. Configure the training arguments including task name, number of epochs, evaluation frequency, and batch size.\n5. Run the fine-tuning process with the BlockOptimizer, which will train different blocks of the model sequentially.\n6. Evaluate the model on the validation set and report the performance metrics."
+  },
+  {
+    "mode": "A",
+    "question": "How can we fine-tune a Llama 2-7B or Llama 3-8B model on the Alpaca-GPT4 dataset using BAdam optimizer with limited GPU memory?",
+    "method": "Implement a script that fine-tunes a large language model (Llama 2-7B or Llama 3-8B) on the Alpaca-GPT4 dataset using the BAdam optimizer to enable full parameter fine-tuning on a single consumer GPU with limited memory.",
+    "expected_outcome": "A fine-tuned Llama model that can be evaluated on benchmarks like MT-bench, showing improved performance over baseline models while using significantly less memory than standard Adam optimization.",
+    "source": [
+      "/workspace/llama-alpaca/src/train_bash.py",
+      "/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py"
+    ],
+    "usage_instructions": "1. Set up the training environment with the required dependencies.\n2. Configure the training arguments including model path, dataset, output directory, batch size, and learning rate.\n3. Specify the fine-tuning type as 'block' to use the BAdam optimizer.\n4. Set the block switching frequency (switch_block_every) and switching mode (random, ascending, or descending).\n5. Run the training script which will automatically create block partitions based on the model's transformer layers.\n6. The BAdam optimizer will sequentially update different blocks of parameters, allowing full parameter fine-tuning with reduced memory usage.\n7. After training, evaluate the model on benchmarks like MT-bench to measure performance improvements."
+  },
+  {
+    "mode": "B",
+    "question": "How can we implement a simple demonstration of the BAdam optimizer to show its memory efficiency compared to standard Adam optimization?",
+    "method": "Create a script that demonstrates the BAdam optimizer on a simple transformer model, comparing its memory usage and training performance against standard Adam optimization.",
+    "expected_outcome": "A comparison report showing the memory usage difference between BAdam and standard Adam optimization, along with training loss curves demonstrating that BAdam can achieve similar optimization results with significantly lower memory requirements.",
+    "source": [
+      "/workspace/src/badam/block_optim.py",
+      "/workspace/src/badam/__init__.py"
+    ],
+    "usage_instructions": "1. Import the necessary libraries including torch and the BAdam implementation.\n2. Define a simple transformer model with multiple layers for demonstration purposes.\n3. Create synthetic training data for the model.\n4. Implement a training loop function that can work with either standard Adam or BAdam optimizer.\n5. First train the model with standard Adam optimizer and record memory usage and loss values.\n6. Then train an identical model with BAdam optimizer, configuring it to update blocks of parameters sequentially.\n7. Compare and visualize the memory usage and training loss between the two approaches.\n8. Demonstrate how BAdam allows full parameter optimization with significantly reduced memory footprint by updating parameters block by block."
+  }
+]

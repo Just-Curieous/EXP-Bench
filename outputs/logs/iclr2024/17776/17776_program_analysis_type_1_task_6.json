@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries (argparse, os, json, tqdm, etc.) (/workspace/inference_repobench_p.py:1-10)",
+    "Step 2: Define argument parser to handle command-line arguments for language, mode, and model_name (/workspace/inference_repobench_p.py:12-20)",
+    "Step 3: Load the RepoBench-P dataset for the specified language (/workspace/inference_repobench_p.py:22-30)",
+    "Step 4: Set up the model (Codex/code-davinci-002) with appropriate parameters (/workspace/inference_repobench_p.py:32-40)",
+    "Step 5: Create a function to construct prompts with gold snippets at head or tail position based on the mode (/workspace/inference_repobench_p.py:42-70)",
+    "Step 6: Process each example in the dataset, constructing the cross-file context with gold snippets (/workspace/inference_repobench_p.py:72-90)",
+    "Step 7: Generate next-line predictions using the model (/workspace/inference_repobench_p.py:92-100)",
+    "Step 8: Extract the first non-comment line from the generated output (/workspace/inference_repobench_p.py:102-110)",
+    "Step 9: Save the predictions along with ground truth in the appropriate output directory structure (/workspace/inference_repobench_p.py:112-120)",
+    "Final Step: Execute the main function when the script is run directly (/workspace/inference_repobench_p.py:122-125)"
+  ],
+  "agent_instructions": "Create a script that performs next-line prediction on the RepoBench-P dataset using the Codex model (code-davinci-002). The script should:\n\n1. Accept command-line arguments for:\n   - language (python or java)\n   - mode (gold-filled-head or gold-filled-tail)\n   - model_name (codex)\n\n2. Load the RepoBench-P dataset for the specified language.\n\n3. Implement two different prompt construction strategies:\n   - gold-filled-head: Place the gold snippet (correct code) at the beginning of the context\n   - gold-filled-tail: Place the gold snippet (correct code) at the end of the context\n\n4. For each example in the dataset:\n   - Construct the cross-file context with the gold snippet positioned according to the specified mode\n   - Generate next-line predictions using the Codex model\n   - Extract the first non-comment line from the generated output\n   - Save the predictions along with ground truth for later evaluation\n\n5. Organize the output in a directory structure that can be used by the evaluation script, which will calculate Exact Match, Edit Similarity, and CodeBLEU metrics.\n\nThe script should handle both Python and Java code appropriately, including language-specific comment syntax.",
+  "masked_source": [
+    "/workspace/inference_repobench_p.py"
+  ]
+}

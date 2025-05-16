@@ -1,0 +1,34 @@
+[
+  {
+    "mode": "B",
+    "question": "How can you create a simple Multi-Particle Environment (MPE) simulation with random agent actions and visualize the results?",
+    "method": "Create a program that initializes the MPE simple_reference environment, runs it for a fixed number of steps with random actions, and visualizes the agent movements.",
+    "expected_outcome": "A visualization of the MPE environment showing agents moving randomly for 25 steps, with the final state displayed or saved as an animation.",
+    "source": ["/workspace/jaxmarl/tutorials/mpe_introduction.py"],
+    "usage_instructions": "1. Import the necessary libraries (jax and jaxmarl)\n2. Set up parameters including the number of steps and random keys\n3. Initialize the MPE environment using the make function with 'MPE_simple_reference_v3'\n4. Reset the environment to get initial observations and state\n5. Create a loop to run the environment for the specified number of steps:\n   - Store each state in a sequence\n   - Generate random actions for each agent\n   - Step the environment forward using the actions\n6. Create a visualizer using the MPEVisualizer class\n7. Generate and display an animation of the agent movements"
+  },
+  {
+    "mode": "B",
+    "question": "How can you create a STORM environment simulation with random agent actions and save the results as a GIF?",
+    "method": "Create a program that initializes the STORM environment with specific parameters, runs it for multiple steps with random actions, and saves the visualization as a GIF.",
+    "expected_outcome": "A GIF file showing the STORM environment simulation with agents taking random actions over multiple timesteps.",
+    "source": ["/workspace/jaxmarl/tutorials/storm_introduction.py"],
+    "usage_instructions": "1. Import necessary libraries (jax, PIL, os)\n2. Set up environment parameters (num_agents, num_inner_steps, num_outer_steps)\n3. Initialize the STORM environment with specific parameters including payoff matrix\n4. Reset the environment to get initial state\n5. Render and save the initial state as an image\n6. Create a loop to run the environment for multiple timesteps:\n   - Generate random actions for each agent with specific probabilities\n   - Step the environment forward\n   - Render and save each state as an image\n7. Compile all the saved images into a GIF animation\n8. Save the GIF to disk"
+  },
+  {
+    "mode": "A",
+    "question": "How can you train an Independent Proximal Policy Optimization (IPPO) agent on a Multi-Particle Environment?",
+    "method": "Use the IPPO implementation to train agents in the MPE_simple_spread_v3 environment and evaluate their performance.",
+    "expected_outcome": "A plot showing the training returns over time and trained agent parameters that can solve the MPE simple spread task.",
+    "source": ["/workspace/baselines/IPPO/ippo_ff_mpe.py", "/workspace/baselines/IPPO/config/ippo_ff_mpe.yaml"],
+    "usage_instructions": "1. Set up the configuration for the IPPO algorithm using the provided config file\n2. Initialize the MPE environment using the make function\n3. Create the actor-critic network architecture\n4. Set up the training loop with the following components:\n   - Environment reset and initialization\n   - Action selection based on policy\n   - Environment stepping and trajectory collection\n   - Advantage calculation using GAE\n   - Policy and value function updates using PPO loss\n   - Logging of metrics\n5. Run the training for the specified number of updates\n6. Plot and save the training returns\n7. Evaluate the trained policy"
+  },
+  {
+    "mode": "A",
+    "question": "How can you implement Value Decomposition Networks (VDN) with RNNs for cooperative multi-agent reinforcement learning?",
+    "method": "Use the VDN implementation to train agents in a cooperative multi-agent environment and evaluate their performance.",
+    "expected_outcome": "Trained VDN agents that can solve cooperative tasks with improved sample efficiency compared to independent learners.",
+    "source": ["/workspace/baselines/QLearning/vdn_rnn.py", "/workspace/baselines/QLearning/config/config.yaml"],
+    "usage_instructions": "1. Set up the configuration for the VDN algorithm using the provided config file\n2. Initialize the environment with the CTRolloutManager wrapper for centralized training\n3. Create the network architecture with RNN components for temporal dependencies\n4. Set up the replay buffer for experience storage\n5. Implement the VDN training loop with:\n   - Experience collection through environment interaction\n   - Storage of transitions in the replay buffer\n   - Batch sampling from the replay buffer\n   - Q-value calculation and target network updates\n   - Value decomposition for cooperative learning\n   - Periodic target network updates\n6. Run the training for the specified number of steps\n7. Evaluate the trained policy on test episodes"
+  }
+]

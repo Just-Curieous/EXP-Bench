@@ -1,0 +1,177 @@
+{
+  "questions": [
+    {
+      "question": "How much speedup does QuaRot\u2019s quantized CUDA kernel deliver over the FP16 baseline during the **prefill stage** of a single transformer block on LLAMA2-7B and LLAMA2-70B, across different batch sizes using 2048-token sequence lengths?",
+      "method": "#### Hardware\n\n- **GPU**: NVIDIA RTX 3090\n- **CUDA**: Version 12.1\n- **Compute Library**: [CUTLASS](https://github.com/NVIDIA/cutlass) (for INT4 GEMMs on Tensor Cores)\n\n#### Models\n\n- LLAMA2-7B\n- LLAMA2-70B\n- **Evaluation is done on a single transformer block**, not the entire model (due to memory limitations)\n\n#### Task\n\n- Measure **prefill time**: time to compute the forward pass for a 2048-token input sequence (before decoding begins)\n- Use batch sizes: **1, 4, 16, 64**\n- Compare:\n  - **Baseline**: FP16 (PyTorch default or hand-optimized)\n  - **QuaRot**: INT4 weights + activations with Hadamard, fused quantization-dequantization pipeline using CUTLASS\n\n#### Metric\n\n- Wall-clock runtime (in milliseconds)\n- Compute speedup: `Speedup = FP16_time / QuaRot_time`",
+      "experiment_steps": "1. **Setup Environment**\n\n   - Install PyTorch with CUDA 12.1 support:\n\n     ```bash\n     pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu121\n     ```\n\n   - Install [CUTLASS](https://github.com/NVIDIA/cutlass) or build QuaRot with CUTLASS backends.\n\n   - Clone and build QuaRot repo:\n\n     ```bash\n     git clone https://github.com/spcl/QuaRot\n     cd QuaRot\n     # Follow setup instructions for building CUDA kernels\n     ```\n\n2. **Model Preparation**\n\n   - Extract a **single transformer block** from LLAMA2-7B and LLAMA2-70B using HuggingFace or Meta weights.\n   - Implement FP16 forward pass baseline using standard PyTorch modules.\n   - Implement QuaRot block with:\n     - Quantized weight matrix (INT4)\n     - Optional online Hadamard transform on `W_down`\n     - CUTLASS INT4 GEMM kernel\n     - Save INT4 results in INT32 accumulator, dequantize to FP16\n\n3. **Inference Setup**\n\n   - Set `sequence_length = 2048`\n   - Vary `batch_size \u2208 {1, 4, 16, 64}`\n   - Disable dropout and gradient tracking\n   - Warm-up: run 20 iterations\n   - Measure and average runtime over 100 iterations\n\n4. **Log Speedup**\n\n   - Calculate and log:\n\n     ```ini\n     speedup = FP16_runtime / QuaRot_runtime\n     ```",
+      "expected_outcome": "Result should look similar to figure 4 left in the paper.\n\n| Batch Size | LLAMA2-7B Speedup | LLAMA2-70B Speedup |\n| ---------- | ----------------- | ------------------ |\n| 1          | 1.97\u00d7             | 3.16\u00d7              |\n| 4          | 2.06\u00d7             | 3.27\u00d7              |\n| 16         | 2.11\u00d7             | 3.32\u00d7              |\n| 64         | 2.16\u00d7             | 3.33\u00d7              |\n\n- Speedup increases with batch size\n- 70B model achieves higher gains due to greater compute-bound load in large matrices\n- Potential for further improvement by fusing quantization and matmul",
+      "design_complexity": {
+        "constant_variables": {
+          "hardware_configuration": "NVIDIA RTX 3090 GPU, CUDA 12.1, CUTLASS library for INT4 GEMMs",
+          "sequence_length": [
+            "2048 tokens"
+          ],
+          "evaluation_scope": [
+            "single transformer block"
+          ]
+        },
+        "independent_variables": {
+          "batch_size": [
+            "1",
+            "4",
+            "16",
+            "64"
+          ],
+          "model": [
+            "LLAMA2-7B",
+            "LLAMA2-70B"
+          ],
+          "implementation": [
+            "FP16 baseline",
+            "QuaRot INT4 approach"
+          ]
+        },
+        "dependent_variables": {
+          "speedup": "Calculated as FP16 runtime divided by QuaRot runtime (e.g., 1.97x for LLAMA2-7B at batch size 1)"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "FP16 baseline implementation": "It is not explicitly described whether the FP16 baseline is the default PyTorch implementation or a hand-optimized version.",
+          "quantization_parameters": "Details such as the specific approach to clipping, per-column quantization, or the chosen quantization algorithm (e.g., RTN vs. GPTQ) are not fully detailed.",
+          "timing_methodology": "The method for accounting warm-up iterations and averaging over 100 iterations is described, but details regarding variability in measurement (e.g., handling of cold caches) are ambiguous."
+        },
+        "possible_modifications": {
+          "additional_implementation_methods": [
+            "Include multiple FP16 baseline versions to compare different baseline optimizations",
+            "Test additional quantization schemes (RTN vs. GPTQ) as separate independent variables"
+          ],
+          "extended_hardware_tests": [
+            "Incorporate other GPU configurations beyond the NVIDIA RTX 3090"
+          ],
+          "expanded_metrics": [
+            "Measure individual components of runtime (e.g., dequantization overhead)",
+            "Record additional performance aspects such as energy efficiency or memory throughput"
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "GPU (NVIDIA RTX 3090)",
+          "CUDA 12.1",
+          "CUTLASS library for INT4 GEMMs",
+          "PyTorch with CUDA support",
+          "QuaRot repository (including custom CUDA kernels)",
+          "LLAMA2-7B and LLAMA2-70B model weights (single transformer block extraction)"
+        ],
+        "setup_steps": [
+          "Install PyTorch with CUDA 12.1 support and relevant dependencies",
+          "Install or build CUTLASS and set up the QuaRot repository following the provided instructions",
+          "Extract a single transformer block from LLAMA2-7B and LLAMA2-70B (using HuggingFace or Meta weights)",
+          "Implement the FP16 baseline forward pass using standard PyTorch modules",
+          "Implement the QuaRot block with INT4 weights, integrated Hadamard transform, and CUTLASS-based INT4 GEMM kernel",
+          "Configure inference setup: set sequence length to 2048 tokens, vary batch sizes (1, 4, 16, 64), disable dropout and gradient tracking",
+          "Perform warm-up runs for 20 iterations and measure the runtime by averaging 100 iterations",
+          "Calculate and log speedup by dividing FP16 runtime by QuaRot runtime"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Integration of CUTLASS with CUDA kernels",
+            "description": "Building and configuring the QuaRot repository with CUTLASS can be non-trivial due to hardware-specific dependencies and version requirements."
+          },
+          {
+            "source": "Model extraction",
+            "description": "Extracting a single transformer block from large models like LLAMA2-7B and LLAMA2-70B may involve additional processing steps and handling of model weights."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "FP16 baseline implementation: It is unclear whether the baseline uses the default PyTorch implementation or a hand-optimized version.",
+          "Quantization parameters: Specific details on clipping methods, per-column quantization, or the quantization algorithm (e.g., RTN vs. GPTQ) are not fully specified."
+        ],
+        "ambiguous_setup_steps": [
+          "Timing methodology: Although the warm-up and averaging over 100 iterations are described, details regarding variability in measurement (e.g., handling of cold caches) are ambiguous.",
+          "Integration of CUTLASS with the QuaRot build: The instructions mention installation and build steps, but lack detailed guidance on potential pitfalls or configuration nuances."
+        ],
+        "possible_modifications": {
+          "additional_implementation_methods": [
+            "Include multiple FP16 baseline implementations to compare default and hand-optimized versions.",
+            "Test additional quantization schemes (e.g., comparing RTN vs. GPTQ) as separate independent variables."
+          ],
+          "extended_hardware_tests": [
+            "Incorporate evaluations using other GPU configurations besides the NVIDIA RTX 3090 to assess performance variability."
+          ],
+          "expanded_metrics": [
+            "Measure runtime breakdowns, such as isolating dequantization overhead.",
+            "Capture further performance aspects like energy efficiency or memory throughput."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {
+          "constraints": [
+            "Due to memory limitations, the experiment is restricted to evaluating a single transformer block extracted from LLAMA2-7B and LLAMA2-70B, rather than the full model."
+          ]
+        },
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "If additional GPU memory or multiple GPUs become available, extend the evaluation to the full model rather than just a single transformer block.",
+            "Test on additional GPU configurations (beyond the NVIDIA RTX 3090) to explore hardware variability."
+          ],
+          "time_constraints": [
+            "Reduce the number of warm-up iterations or measurement iterations to simulate faster turnaround times, though this may trade off measurement robustness."
+          ],
+          "money_constraints": [
+            "Utilize more cost-effective or cloud-based GPU resources if budget restrictions make accessing high-end GPUs (or multiple GPUs) challenging."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Variability in runtime measurements due to GPU scheduling and measurement methodology",
+        "description": "Even with a fixed number of warm-up iterations (20) and averaging over 100 iterations, the wall-clock runtime can vary due to transient GPU load, clock fluctuations, handling of cold caches, and other environmental factors. These random fluctuations introduce uncertainty into the recorded timings for both the FP16 baseline and the QuaRot quantized implementation.",
+        "impact": "This variability may cause run-to-run differences in measured prefill time and computed speedup, potentially obscuring small performance differences between configurations or implementations.",
+        "possible_modifications": [
+          "Increase the number of measurement iterations or use bootstrapping to better characterize the distribution and establish confidence intervals.",
+          "Perform repeated measurements under controlled, isolated hardware conditions to minimize transient scheduling noise.",
+          "Introduce additional measurement metrics (e.g., recording variance or standard deviation) to quantify and report the random uncertainty in timing."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Design choices and implementation ambiguities in the experimental setup",
+        "description": "Systematic uncertainty may arise from ambiguities in the FP16 baseline implementation (default PyTorch vs. hand-optimized), specifics of the quantization parameters (e.g., clipping methods, per-column quantization details), and the decision to evaluate only a single transformer block due to memory limitations. These factors can introduce consistent biases in the measured speedup.",
+        "impact": "Such systematic biases could lead to either a consistent over- or underestimation of the speedup delivered by the QuaRot kernel, limiting the generalizability of the results across different model configurations or hardware.",
+        "possible_modifications": [
+          "Implement and compare multiple FP16 baseline versions (e.g., default PyTorch and hand-optimized) to assess systematic differences.",
+          "Clearly document and standardize the quantization parameters and methods used, or test alternative quantization schemes (such as RTN vs. GPTQ) as separate variables.",
+          "Extend the evaluation to include the full model or additional GPU configurations to determine if the observed speedup is consistent across different experimental conditions."
+        ]
+      },
+      "source": [
+        "/workspace/e2e/benchmark_layer.py",
+        "/workspace/run_prefill_benchmark.py"
+      ],
+      "usage_instructions": "Execute the run_prefill_benchmark.py script which will run benchmark_layer.py with different batch sizes (1, 4, 16, 64) and sequence length of 2048 tokens. The script will compare the prefill time of QuaRot's INT4 implementation against the FP16 baseline for both LLAMA2-7B and LLAMA2-70B models, and output the speedup results in a table format matching the expected outcome.",
+      "requirements": [
+        "Step 1: Clone the QuaRot repository and install the package with 'pip install -e .' to compile the QuaRot kernels (/workspace/README.md:15-21)",
+        "Step 2: Ensure CUDA is available as the benchmark requires GPU acceleration for running the models (/workspace/e2e/benchmark_layer.py:164)",
+        "Step 3: Ensure access to the Hugging Face models 'meta-llama/Llama-2-7b-hf' and 'meta-llama/Llama-2-70b-hf' which will be used for benchmarking (/workspace/e2e/benchmark_layer.py:14-17)",
+        "Step 4: Run the 'run_prefill_benchmark.py' script which executes the benchmark with different batch sizes (1, 4, 16, 64) and a fixed sequence length of 2048 tokens (/workspace/run_prefill_benchmark.py:7-9, 19-24)",
+        "Step 5: For each batch size, the script runs 'benchmark_layer.py' which loads both INT4 (QuaRot) and FP16 versions of the model layers (/workspace/e2e/benchmark_layer.py:182-196)",
+        "Step 6: The benchmark performs prefill operations on both implementations, with warmup steps followed by benchmark steps (/workspace/e2e/benchmark_layer.py:40-54)",
+        "Step 7: The benchmark measures and compares execution time between QuaRot's INT4 implementation and the FP16 baseline (/workspace/e2e/benchmark_layer.py:199-202)",
+        "Step 8: The benchmark also measures memory usage for both implementations and calculates memory savings (/workspace/e2e/benchmark_layer.py:217-220)",
+        "Step 9: The 'run_prefill_benchmark.py' script collects the speedup results from all batch sizes and formats them into a table (/workspace/run_prefill_benchmark.py:41-55)",
+        "Step 10: The final results are saved to a JSON file named 'prefill_benchmark_results.json' (/workspace/run_prefill_benchmark.py:57-61)",
+        "Final Step: Verify that the benchmark results show speedup values for QuaRot's INT4 implementation compared to the FP16 baseline for both LLAMA2-7B and LLAMA2-70B models across different batch sizes (/workspace/run_prefill_benchmark.py:42-55)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment that benchmarks QuaRot's INT4 implementation against the FP16 baseline for LLAMA2-7B and LLAMA2-70B models. You need to run the provided scripts to measure the prefill time speedup achieved by the 4-bit quantization technique.\n\nFirst, set up the environment by installing the QuaRot package. Then run the 'run_prefill_benchmark.py' script, which will execute benchmarks with different batch sizes (1, 4, 16, 64) and a fixed sequence length of 2048 tokens. The script will compare the execution time and memory usage between QuaRot's INT4 implementation and the FP16 baseline for both model sizes.\n\nThe benchmark will output speedup values and memory savings in a table format. The results will also be saved to a JSON file. Your goal is to successfully run the benchmark and report the speedup achieved by the INT4 implementation compared to the FP16 baseline.",
+      "masked_source": [
+        "/workspace/e2e/benchmark_layer.py",
+        "/workspace/run_prefill_benchmark.py"
+      ]
+    }
+  ]
+}

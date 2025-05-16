@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries (torch, torchopt, graphviz, and IPython.display) (/workspace/tutorials/2_Visualization.ipynb:52-58)",
+    "Step 2: Define a simple neural network model with parameters to optimize (/workspace/tutorials/2_Visualization.ipynb:149-155)",
+    "Step 3: Initialize the model and prepare input data (/workspace/tutorials/2_Visualization.ipynb:158-163)",
+    "Step 4: Create a differentiable optimizer using torchopt.MetaSGD (/workspace/tutorials/2_Visualization.ipynb:165)",
+    "Step 5: Define a meta-parameter with requires_grad=True (/workspace/tutorials/2_Visualization.ipynb:166)",
+    "Step 6: Extract the initial state of the model using torchopt.extract_state_dict with enable_visual=True (/workspace/tutorials/2_Visualization.ipynb:169)",
+    "Step 7: Perform a forward pass through the model (/workspace/tutorials/2_Visualization.ipynb:171)",
+    "Step 8: Compute a loss function (/workspace/tutorials/2_Visualization.ipynb:172)",
+    "Step 9: Update the model parameters using optimizer.step(loss) (/workspace/tutorials/2_Visualization.ipynb:173)",
+    "Step 10: Extract the updated state of the model with enable_visual=True (/workspace/tutorials/2_Visualization.ipynb:176)",
+    "Step 11: Perform another forward pass with the updated model (/workspace/tutorials/2_Visualization.ipynb:178)",
+    "Step 12: Compute an outer loss function (/workspace/tutorials/2_Visualization.ipynb:179)",
+    "Step 13: Generate and display the computation graph using torchopt.visual.make_dot, passing the extracted states (/workspace/tutorials/2_Visualization.ipynb:182-186)",
+    "Final Step: Explain the key components visible in the visualization (parameter nodes, gradient flow, optimizer operations) (/workspace/tutorials/2_Visualization.ipynb:70-71, 125-126)"
+  ],
+  "agent_instructions": "Create a program that demonstrates how to visualize the computation graph of a differentiable optimization process using TorchOpt. Your program should:\n\n1. Import the necessary libraries (torch, torchopt, and visualization dependencies)\n2. Define a simple neural network model with parameters that can be optimized\n3. Create a differentiable optimizer using TorchOpt (such as torchopt.MetaSGD)\n4. Extract the initial state of the model using torchopt.extract_state_dict with enable_visual=True\n5. Perform an optimization step by:\n   - Computing a loss function\n   - Updating the model parameters using the differentiable optimizer\n6. Extract the updated state of the model with enable_visual=True\n7. Compute an outer loss function (e.g., a loss that depends on the optimized model)\n8. Generate and display the computation graph using torchopt.visual.make_dot, passing the extracted states\n9. Include comments that explain the key components visible in the visualization, such as:\n   - Parameter nodes\n   - Gradient flow through the computation graph\n   - Optimizer operations\n\nThe goal is to create a clear visualization that shows how gradients flow through the entire optimization process, including parameter updates and loss calculations. Your implementation should demonstrate TorchOpt's ability to make the optimization process differentiable and visualizable."
+}

@@ -1,0 +1,28 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with necessary libraries including transformers, torch, and lm_eval (main.py:1-10)",
+    "Step 2: Load the specified LLAMA-3 model (8B or 70B) from HuggingFace using the model_utils.get_model function (main.py:20-21)",
+    "Step 3: If using QuaRot quantization (--rotate flag), fuse layer normalization into adjacent linear blocks to prepare for rotation (main.py:25-26)",
+    "Step 4: If using QuaRot quantization, apply Hadamard rotation to the model weights using rotation_utils.rotate_model (main.py:27)",
+    "Step 5: Add activation quantization wrappers to the model using quant_utils.add_actquant (main.py:30-47)",
+    "Step 6: If weight quantization is enabled (w_bits < 16), either load a pre-quantized model or apply quantization (main.py:50-75)",
+    "Step 7: For GPTQ weight quantization, load calibration data from the specified dataset and apply GPTQ quantization (main.py:59-68)",
+    "Step 8: For RTN weight quantization, apply RTN quantization directly (main.py:69-71)",
+    "Step 9: If activation quantization is enabled (a_bits < 16), configure the activation quantizers with the specified parameters (main.py:79-109)",
+    "Step 10: If KV-cache quantization is enabled (k_bits < 16), add quantization wrappers to the key cache (main.py:111-124)",
+    "Step 11: Load the evaluation dataset for perplexity measurement (main.py:127-134)",
+    "Step 12: Evaluate the model's perplexity on the evaluation dataset (main.py:137-139)",
+    "Step 13: If lm_eval is enabled, load the lm_eval library and prepare for task evaluation (main.py:141-147)",
+    "Step 14: Distribute the model across available GPUs if specified (main.py:152-155)",
+    "Step 15: Load the tokenizer for the model (main.py:157)",
+    "Step 16: Create an HFLM wrapper for the model to use with lm_eval (main.py:158)",
+    "Step 17: Match the specified tasks with available tasks in lm_eval (main.py:160)",
+    "Step 18: Evaluate the model on the specified tasks using lm_eval.simple_evaluate (main.py:161)",
+    "Step 19: Extract accuracy metrics for each task and calculate the average accuracy (main.py:163-164)",
+    "Step 20: Print the accuracy metrics (main.py:165)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment comparing 4-bit QuaRot quantization with FP16 baseline for LLAMA-3 models (8B and 70B). You need to run evaluations on six tasks (PIQA, WinoGrande, HellaSwag, Arc-Easy, Arc-Challenge, and LAMBADA) for both the baseline and quantized versions of the models. The experiment involves loading the models, applying quantization techniques when specified, and evaluating their performance using the lm_eval harness. You'll need to understand how to use the provided script with the appropriate command-line arguments to run the different configurations and compare their results.",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

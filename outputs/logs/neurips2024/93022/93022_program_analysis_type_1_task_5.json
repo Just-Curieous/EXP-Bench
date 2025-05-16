@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Load a pre-trained MDGEN model from a checkpoint (/workspace/design_inference.py:157-158)",
+    "Step 2: Load the dataset split from a CSV file (/workspace/design_inference.py:159-163)",
+    "Step 3: For each peptide in the dataset, analyze molecular dynamics simulations to identify metastable states (/workspace/design_inference.py:82-99)",
+    "Step 4: Calculate the flux matrix between metastable states and identify the highest flux transition (/workspace/design_inference.py:101-103)",
+    "Step 5: Find trajectory segments that transition between the identified states (/workspace/design_inference.py:104-118)",
+    "Step 6: For each batch, extract samples from the trajectory segments and prepare them for inference (/workspace/design_inference.py:122-129)",
+    "Step 7: Run the MDGEN model to perform inpainting on the trajectory segments (/workspace/design_inference.py:133)",
+    "Step 8: Convert the model outputs to PDB files and save them along with metadata (/workspace/design_inference.py:134-152)",
+    "Step 9: Load the generated peptide designs and their metadata (/workspace/scripts/analyze_peptide_design.py:17-20)",
+    "Step 10: Extract the amino acid sequences from the generated designs (/workspace/scripts/analyze_peptide_design.py:22-25)",
+    "Step 11: Calculate sequence recovery metrics by comparing designed sequences with original sequences (/workspace/scripts/analyze_peptide_design.py:31-62)",
+    "Step 12: Identify the most frequently designed sequence for each peptide (/workspace/scripts/analyze_peptide_design.py:42-47)",
+    "Step 13: Calculate and print various recovery metrics for evaluation (/workspace/scripts/analyze_peptide_design.py:80-96)"
+  ],
+  "agent_instructions": "Create a system to perform peptide design using the MDGEN model and evaluate the results. The system should consist of two main components:\n\n1. A peptide design script that:\n   - Takes a pre-trained MDGEN model checkpoint as input\n   - Analyzes molecular dynamics simulations to identify metastable states and transitions\n   - Identifies high-flux transitions between metastable states\n   - Extracts trajectory segments that transition between these states\n   - Uses the MDGEN model to perform inpainting on these trajectory segments\n   - Saves the generated peptide designs as PDB files along with metadata\n   - Supports two modes: high-flux transitions (using a random start index) and random transitions\n\n2. An analysis script that:\n   - Loads the generated peptide designs and their metadata\n   - Calculates sequence recovery metrics by comparing designed sequences with original sequences\n   - Identifies the most frequently designed sequence for each peptide\n   - Computes and outputs various recovery metrics including:\n     * Conditional recovery (for terminal residues)\n     * Design recovery (for middle residues)\n     * Maximum conditional and design recovery\n     * Final design recovery\n     * Most frequent middle recovery\n\nThe system should be run in two configurations:\n1. First with high-flux transitions (using a random start index)\n2. Then with random transitions (without the random start index)\n\nThe analysis script should be run on both sets of results to compare the performance.",
+  "masked_source": [
+    "/workspace/design_inference.py",
+    "/workspace/scripts/analyze_peptide_design.py"
+  ]
+}

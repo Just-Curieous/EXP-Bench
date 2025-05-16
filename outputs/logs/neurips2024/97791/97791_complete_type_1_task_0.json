@@ -1,0 +1,40 @@
+{
+  "questions": [
+    {
+      "question": "Will the inclusion of both image data (specifically, images from Legacy Surveys DR10 as provided in the Multimodal Universe dataset) and spectral data (from DESI) improve the performance of galaxy morphology classification compared to using only a single modality?",
+      "method": "We propose to use a contrastive learning approach based on the AstroCLIP framework to train joint embeddings from the two modalities. The experiment involves building a cross\u2010matched dataset by pairing galaxies with both image and spectral data (images from Legacy Surveys DR10 and spectra from DESI, as available in the Multimodal Universe dataset). Train the joint embedding network using the same hyperparameter settings and training suite as described in AstroCLIP. Three models will be trained: one using only the image data, one using only the spectral data, and one using the combined multimodal data. A k-Nearest Neighbor classifier (with k = 16) will be used on the learned embeddings to perform galaxy morphology classification, and the performance (e.g., accuracy, F1 score) on the held-out 20% test set will be compared across these models.",
+      "expected_outcome": "Based on the paper\u2019s experiments on the Galaxy10 DECaLS task, the integration of multimodal data is expected to yield higher classification accuracy, demonstrating a positive correlation between multimodal input and performance.",
+      "source": [
+        "/workspace/experimental_benchmark/cross_match.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/embed.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb"
+      ],
+      "usage_instructions": "1. First, use cross_match.py to create a cross-matched dataset between Legacy Surveys DR10 images and DESI spectra: `python /workspace/experimental_benchmark/cross_match.py /path/to/legacysurvey /path/to/desi /path/to/output_dir --matching_radius 1.0`. This will create a dataset with paired image and spectral data.\n2. Next, use embed.py to generate embeddings from both modalities using an AstroCLIP model: `python /workspace/experimental_benchmark/astroclip/property_estimation/embed.py /path/to/astroclip_model /path/to/cross_matched_dataset /path/to/provabgs /path/to/output_dir`. This will create train and test embeddings for both image and spectral data.\n3. Finally, run the property_estimation.ipynb notebook which demonstrates how to use k-Nearest Neighbors (k=16) on the embeddings to perform classification tasks. The notebook shows how to evaluate performance using only image embeddings, only spectral embeddings, and can be extended to use both modalities together. The paper results show that multimodal data yields higher classification accuracy compared to using a single modality.",
+      "requirements": [
+        "Step 1: Load two astronomical datasets (Legacy Surveys DR10 images and DESI spectra) using the datasets library (/workspace/experimental_benchmark/cross_match.py:20-22)",
+        "Step 2: Cross-match the datasets based on sky coordinates using a specified matching radius in arcseconds (/workspace/experimental_benchmark/cross_match.py:27-32, /workspace/mmu/utils.py:47-157)",
+        "Step 3: Save the cross-matched dataset to disk (/workspace/experimental_benchmark/cross_match.py:34)",
+        "Step 4: Load a pre-trained AstroCLIP model that can process both image and spectral data (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:26-28)",
+        "Step 5: Load the cross-matched dataset and set up a dataloader with appropriate collation function for processing images and spectra (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:54-61, /workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py:13-50)",
+        "Step 6: Generate embeddings for both image and spectral data using the AstroCLIP model (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:64-75)",
+        "Step 7: Load PROVABGS dataset containing galaxy properties (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:32-34)",
+        "Step 8: Process and filter the PROVABGS dataset to prepare it for joining with embeddings (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:37-51)",
+        "Step 9: Join the embeddings with the PROVABGS dataset to create paired datasets for training and testing (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:95-102)",
+        "Step 10: Save the paired datasets to disk (/workspace/experimental_benchmark/astroclip/property_estimation/embed.py:105-106)",
+        "Step 11: Load the saved paired datasets for property estimation (/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb:15-24)",
+        "Step 12: Set up feature matrices and target variables for machine learning (/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb:27-33)",
+        "Step 13: Create a k-Nearest Neighbors regressor with k=16 and distance weighting (/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb:36)",
+        "Step 14: Train the regressor on image embeddings and evaluate performance using R\u00b2 scores (/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb:67-76)",
+        "Step 15: Train the regressor on spectral embeddings and evaluate performance using R\u00b2 scores (/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb:109-118)"
+      ],
+      "agent_instructions": "Your task is to implement a multimodal astronomical data analysis pipeline that demonstrates how embeddings from different data modalities (images and spectra) can be used for galaxy property estimation. The pipeline consists of three main components:\n\n1. First, create a script to cross-match astronomical datasets. This script should:\n   - Take paths to two datasets (Legacy Surveys images and DESI spectra) as input\n   - Match objects between the datasets based on their sky coordinates using a configurable matching radius\n   - Save the resulting cross-matched dataset to a specified output directory\n\n2. Next, create a script to generate embeddings from the cross-matched dataset using a multimodal model. This script should:\n   - Load a pre-trained AstroCLIP model that can process both images and spectra\n   - Load the cross-matched dataset and set up appropriate data processing\n   - Generate embeddings for both image and spectral data\n   - Load a galaxy properties dataset (PROVABGS) containing physical properties like stellar mass and star formation rate\n   - Join the embeddings with the galaxy properties dataset\n   - Save the resulting paired datasets (train and test splits) to disk\n\n3. Finally, create a notebook that demonstrates property estimation using the embeddings. The notebook should:\n   - Load the paired datasets containing embeddings and galaxy properties\n   - Set up a k-Nearest Neighbors regressor with k=16 and distance weighting\n   - Train and evaluate the regressor using image embeddings only\n   - Train and evaluate the regressor using spectral embeddings only\n   - Report performance using R\u00b2 scores for various galaxy properties\n\nThe goal is to demonstrate that embeddings from multimodal astronomical data can be used for accurate estimation of galaxy properties, with the expectation that using both modalities together would yield better results than using either modality alone.",
+      "masked_source": [
+        "/workspace/experimental_benchmark/cross_match.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/embed.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/datamodule.py",
+        "/workspace/mmu/utils.py"
+      ]
+    }
+  ]
+}

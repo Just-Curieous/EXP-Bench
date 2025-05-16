@@ -1,0 +1,17 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including random and BaseAgent (/workspace/docs/getting_started/first_agent.md:8-9)",
+    "Step 2: Create a RandomAgent class that inherits from BaseAgent (/workspace/docs/getting_started/first_agent.md:11-13)",
+    "Step 3: Implement a method to find actions by name in the valid action dictionary (/workspace/docs/getting_started/first_agent.md:15-22)",
+    "Step 4: Implement the act method to get the next valid actor and its actions (/workspace/docs/getting_started/first_agent.md:24-27)",
+    "Step 5: Check if the actor can build a city, and if so, make it do so with 80% probability (/workspace/docs/getting_started/first_agent.md:31-34)",
+    "Step 6: Otherwise, make the unit move randomly (/workspace/docs/getting_started/first_agent.md:36-37)",
+    "Step 7: Create a main function that initializes the FreecivBase-v0 environment (/workspace/docs/getting_started/first_agent.md:57-59)",
+    "Step 8: Create an instance of the RandomAgent (/workspace/docs/getting_started/first_agent.md:59)",
+    "Step 9: Reset the environment and get initial observations (/workspace/docs/getting_started/first_agent.md:61)",
+    "Step 10: Implement a game loop that gets observations, calls the agent's act method, and steps the environment (/workspace/docs/getting_started/first_agent.md:63-73)",
+    "Step 11: Print information about each step, including step number, turn, reward, termination status, and action taken (/workspace/docs/getting_started/first_agent.md:69-71)",
+    "Step 12: Close the environment and plot the game scores when done (/workspace/random_game.py:46-51)"
+  ],
+  "agent_instructions": "Your task is to create a rule-based agent for the CivRealm environment that prioritizes city building. Follow these steps:\n\n1. Create a RandomAgent class that inherits from the BaseAgent class in the CivRealm framework.\n\n2. Implement a helper method that can find actions by name in a dictionary of valid actions. This method should take a valid action dictionary and a name string as input, then return a randomly selected action whose key contains that name string.\n\n3. Implement the act method that:\n   - Gets the next valid actor (unit) that hasn't acted in the current turn\n   - If a unit can build a city (has a 'build' action available), make it do so with 80% probability\n   - Otherwise, make the unit move randomly (using a 'goto' action)\n   - If there are no valid actors left, return None to end the turn\n\n4. Create a main function that:\n   - Initializes the FreecivBase-v0 environment\n   - Creates an instance of your RandomAgent\n   - Implements a game loop that:\n     * Gets observations from the environment\n     * Calls the agent's act method to get an action\n     * Steps the environment with the chosen action\n     * Prints information about each step (step number, turn, reward, termination status, action taken)\n     * Continues until the game terminates\n   - Closes the environment and plots the game scores when done\n\nThe agent should be able to play through multiple turns in the CivRealm environment, prioritizing city building when possible and otherwise moving units randomly."
+}

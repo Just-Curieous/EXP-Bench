@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including numpy, trimesh, mcubes, torch, and tqdm (/workspace/zoo/mesh_utils.py:13-19)",
+    "Step 2: Create a function that takes an SDF function, bounds, interval size, block resolution, and optional texture function and filtering flag (/workspace/zoo/mesh_utils.py:23-24)",
+    "Step 3: Create a LatticeGrid object to divide the 3D space into manageable blocks based on the provided bounds and interval (/workspace/zoo/mesh_utils.py:25)",
+    "Step 4: Create a data loader to process these blocks efficiently (/workspace/zoo/mesh_utils.py:26)",
+    "Step 5: Iterate through each block in the data loader (/workspace/zoo/mesh_utils.py:27-29)",
+    "Step 6: For each block, extract the 3D coordinates and move them to GPU (/workspace/zoo/mesh_utils.py:30-31)",
+    "Step 7: Evaluate the SDF function on the grid points to get SDF values (/workspace/zoo/mesh_utils.py:32-33)",
+    "Step 8: Apply marching cubes algorithm to extract the surface where SDF=0 (/workspace/zoo/mesh_utils.py:34-35)",
+    "Step 9: Gather all mesh blocks (/workspace/zoo/mesh_utils.py:36-39)",
+    "Step 10: Combine all mesh blocks into a single mesh (/workspace/zoo/mesh_utils.py:40)",
+    "Step 11: Implement the LatticeGrid class to divide 3D space into blocks and provide coordinates (/workspace/zoo/mesh_utils.py:60-92)",
+    "Step 12: Implement a function to create a data loader for the lattice grid (/workspace/zoo/mesh_utils.py:95-108)",
+    "Step 13: Implement the marching cubes function to extract surfaces from SDF values (/workspace/zoo/mesh_utils.py:111-125)",
+    "Step 14: Implement a function to filter points outside a bounding sphere (/workspace/zoo/mesh_utils.py:128-140)",
+    "Step 15: Implement a function to keep only the largest connected component if requested (/workspace/zoo/mesh_utils.py:143-150)",
+    "Final Step: Return the final mesh object (/workspace/zoo/mesh_utils.py:41)"
+  ],
+  "agent_instructions": "Your task is to implement a function that extracts a 3D mesh from a Signed Distance Function (SDF) neural network. The function should use the marching cubes algorithm to find the zero-level set of the SDF, which represents the surface of the object.\n\nImplement a function that:\n1. Takes as input:\n   - An SDF function that evaluates the signed distance at any 3D point\n   - Bounds defining the 3D region to extract the mesh from\n   - An interval size for sampling the space\n   - Optional parameters for block resolution and texture mapping\n\n2. The implementation should:\n   - Divide the 3D space into manageable blocks to process efficiently\n   - For each block, evaluate the SDF function on a grid of points\n   - Apply the marching cubes algorithm to extract the surface where SDF=0\n   - Combine all extracted mesh pieces into a single coherent mesh\n   - Optionally apply filtering to remove parts outside a unit sphere or keep only the largest connected component\n   - Return a trimesh object representing the extracted surface\n\nYou'll need to use libraries such as numpy, torch, trimesh, and mcubes. The implementation should be memory-efficient by processing the space in blocks rather than all at once, which allows for extracting high-resolution meshes even with limited GPU memory."
+}

@@ -1,0 +1,26 @@
+{
+  "questions": [
+    {
+      "question": "Does using vectorized simulators in TorchRL significantly increase data collection throughput compared to alternative libraries like RLlib?",
+      "method": "Design an experiment using the VMAS simulator to perform the 'simple spread' task. For both TorchRL and RLlib, systematically vary the number of vectorized environments (for instance, 1, 3334, 6667, 10000, 13333, 16667, 20000, 23333, 26666, and 30000). For each configuration, execute the simulator for a fixed number of simulation steps (e.g., 100 steps) and measure the frames per second (fps) collected by each library. Ensure that all other factors such as simulation steps, computing hardware (e.g., a node with 96 CPU cores and 1 A100 GPU), and simulator settings remain constant. Record the raw fps data and generate a plot of fps versus the number of vectorized environments for each library. Also, compare the scaling behavior by validating with previously reported results that indicate TorchRL's vectorization approach leads to markedly higher throughput relative to RLlib. In designing your experiment, take into account TorchRL\u2019s built-in support for efficient vectorized execution through its parallel and batched environment APIs.",
+      "expected_outcome": "The expected outcome is that TorchRL will demonstrate a significant increase in fps as the number of vectorized environments is increased, far exceeding the throughput of RLlib. Specifically, based on reported results, TorchRL should reach fps values in excess of 400,000 at high environment counts, while RLlib will record substantially lower fps numbers. This outcome will confirm that TorchRL is more efficient in leveraging vectorized simulators, thereby improving data collection throughput without sacrificing overall training performance.",
+      "subsection_source": "4 RESULTS (with details and benchmarking data provided in Table 3 and further supported by Figure 15)",
+      "source": [
+        "/workspace/benchmarks/ecosystem/vmas_rllib_vs_torchrl_sampling_performance.py"
+      ],
+      "usage_instructions": "To run the experiment, execute the script with the following steps:\n1. Install the required dependencies: `pip install matplotlib \"ray[rllib]\"==2.1.0 torchrl vmas numpy==1.23.5`\n2. Run the script: `python /workspace/benchmarks/ecosystem/vmas_rllib_vs_torchrl_sampling_performance.py`\n\nThe script is already configured to run the 'simple_spread' task in VMAS and compare TorchRL vs RLlib performance. It systematically varies the number of vectorized environments (from 1 to 30000 with 10 steps) and measures frames per second (fps) for both libraries. The script runs each configuration for 100 simulation steps, measures the throughput, and generates a plot showing fps versus the number of vectorized environments for each library. The results are saved as a PDF file in the same directory as the script.",
+      "requirements": [
+        "Step 1: Import necessary libraries for benchmarking, visualization, and environment interaction (lines 7-28)",
+        "Step 2: Create utility functions to store and load benchmark results using pickle (lines 31-46)",
+        "Step 3: Implement a function to run VMAS with TorchRL that creates a vectorized environment, sets up a data collector, measures execution time, and returns the time taken (lines 49-75)",
+        "Step 4: Implement a function to run VMAS with RLlib that creates a callback to measure time, registers the environment, configures and runs the trainer, and returns the time taken (lines 78-138)",
+        "Step 5: Create a comparison function that runs both implementations across different numbers of environments, calculates frames per second, stores results, and generates a plot (lines 141-216)",
+        "Step 6: Set up the main execution with the 'simple_spread' scenario, running for 100 steps, with up to 30000 environments in 10 steps (lines 219-232)"
+      ],
+      "agent_instructions": "Create a benchmarking script that compares the sampling performance (frames per second) between TorchRL and RLlib when running VMAS (Vectorized Multi-Agent Simulator) environments. The script should:\n\n1. Implement functions to run the same VMAS scenario using both TorchRL and RLlib frameworks\n2. Measure the execution time for each framework across varying numbers of vectorized environments (from a small number to a very large number)\n3. Calculate frames per second for each configuration\n4. Store the results for reproducibility\n5. Generate a plot comparing the performance of both frameworks\n\nThe benchmark should use the 'simple_spread' scenario, run for 100 simulation steps, and test with an increasing number of vectorized environments. The script should handle both CPU and GPU execution and properly configure both frameworks for a fair comparison.\n\nMake sure to include proper error handling and ensure that resources are cleaned up after benchmarking.",
+      "masked_source": [
+        "/workspace/benchmarks/ecosystem/vmas_rllib_vs_torchrl_sampling_performance.py"
+      ]
+    }
+  ]
+}

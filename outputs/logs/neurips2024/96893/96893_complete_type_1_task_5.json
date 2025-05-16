@@ -1,0 +1,41 @@
+{
+  "questions": [
+    {
+      "question": "Does the inclusion of semantic prompts effectively disambiguate the segmentation output when a single spatial prompt could correspond to multiple plausible anatomical structures, particularly given that SegVol is designed to accept point, box, and text prompts for volumetric segmentation?",
+      "method": "Collect a set of medical images where a single point or bounding box spatial prompt ambiguously corresponds to multiple targets (for instance, a prompt that might refer to a kidney tumor, left kidney, or the entire kidneys; or liver, liver tumor, or hepatic vessels). For each image, add an additional text prompt that explicitly specifies the intended anatomical structure (for example, 'kidney tumor' or 'liver'). Run the SegVol segmentation algorithm, which integrates multi-modal prompts including text, and then assess the output masks by comparing them to the intended targets. Verify that only one clear and accurate mask is generated per image, rather than multiple plausible outputs.",
+      "expected_outcome": "The experiment should demonstrate that when a clear semantic prompt is provided in addition to the ambiguous spatial prompt, SegV ol produces a single, unambiguous segmentation mask that accurately corresponds to the specified anatomical target, thereby resolving the ambiguity inherent in the spatial prompt alone.",
+      "subsection_source": "3.4 Case Studies",
+      "source": [
+        "/workspace/inference_demo.py",
+        "/workspace/script/inference_demo.sh",
+        "/workspace/config/config_demo.json"
+      ],
+      "usage_instructions": "1. First, modify the config_demo.json file to include ambiguous cases where a single point or box could correspond to multiple anatomical structures (e.g., kidney tumor vs. kidney vs. kidneys, or liver vs. liver tumor vs. hepatic vessels). Set the 'categories' field to include these structures and provide paths to the CT and ground truth files.\n2. In inference_demo.py, ensure that lines 209-211 are set as follows to test the impact of text prompts:\n   - args.use_text_prompt = True (to include semantic prompts)\n   - args.use_box_prompt = True (or args.use_point_prompt = True if using point prompts)\n   - args.visualize = True (to see the results)\n3. Run the script with 'bash script/inference_demo.sh' after setting the correct paths in the script for the SegVol checkpoint and work directory.\n4. To compare with and without text prompts, you can run the experiment twice by toggling args.use_text_prompt between True and False in inference_demo.py line 209.",
+      "requirements": [
+        "Step 1: Create a configuration file that defines categories for segmentation, including ambiguous anatomical structures (e.g., kidney tumor vs. kidney vs. kidneys, liver vs. liver tumor vs. hepatic vessels), and paths to CT and ground truth files (/workspace/config/config_demo.json:1-8)",
+        "Step 2: Load and preprocess the CT and ground truth data, including normalization, orientation correction, and preparing both full-resolution and downsampled versions for zoom-in-zoom-out inference (/workspace/data_process/demo_data_process.py:49-106)",
+        "Step 3: Initialize the SegVol model by loading the SAM image encoder, mask decoder, prompt encoder, and text encoder components (/workspace/network/model.py:12-32)",
+        "Step 4: Configure the inference parameters to enable text prompts, box prompts, and visualization (/workspace/inference_demo.py:208-212)",
+        "Step 5: For each anatomical category, generate appropriate prompts (text describing the anatomical structure, bounding box around the region of interest) (/workspace/inference_demo.py:52-71)",
+        "Step 6: Perform zoom-out inference using the generated prompts to get initial segmentation (/workspace/inference_demo.py:74-105)",
+        "Step 7: Calculate the Dice score between the initial segmentation and ground truth (/workspace/inference_demo.py:97-98)",
+        "Step 8: If zoom-in inference is enabled, identify the region of interest from the initial segmentation (/workspace/inference_demo.py:111-117)",
+        "Step 9: Perform zoom-in inference on the identified region using sliding window inference with the same prompts (/workspace/inference_demo.py:136-145)",
+        "Step 10: Calculate the Dice score for the refined segmentation (/workspace/inference_demo.py:146-147)",
+        "Step 11: Visualize the results by creating images showing the original CT slice, ground truth, and prediction with the calculated Dice score (/workspace/inference_demo.py:168-173, /workspace/utils/visualize.py:8-74)",
+        "Final Step: Compare the segmentation results with and without text prompts to evaluate the impact of semantic information on disambiguating similar anatomical structures (/workspace/inference_demo.py:209)"
+      ],
+      "agent_instructions": "Your task is to implement a medical image segmentation system that can disambiguate between similar anatomical structures in CT scans using text prompts. The system should be able to distinguish between closely related structures like kidney tumor vs. kidney vs. kidneys, or liver vs. liver tumor vs. hepatic vessels.\n\nYou need to:\n\n1. Create a configuration file that specifies the anatomical categories to segment and paths to CT and ground truth data.\n\n2. Implement an inference script that uses a combination of text prompts and spatial prompts (bounding boxes or points) to guide the segmentation.\n\n3. The system should use a two-stage zoom-out-zoom-in approach: first performing a coarse segmentation on a downsampled version of the image, then refining the segmentation in the region of interest at full resolution.\n\n4. Calculate Dice scores to evaluate segmentation accuracy and visualize the results.\n\n5. The system should allow toggling text prompts on/off to compare their impact on disambiguation between similar structures.\n\nThe implementation should leverage a pre-trained volumetric segmentation model (SegVol) that combines a vision transformer backbone with prompt encoders for spatial and text prompts.",
+      "masked_source": [
+        "/workspace/inference_demo.py",
+        "/workspace/script/inference_demo.sh",
+        "/workspace/config/config_demo.json",
+        "/workspace/data_process/demo_data_process.py",
+        "/workspace/network/model.py",
+        "/workspace/utils/visualize.py",
+        "/workspace/utils/monai_inferers_utils.py",
+        "/workspace/segment_anything_volumetric/build_sam.py"
+      ]
+    }
+  ]
+}

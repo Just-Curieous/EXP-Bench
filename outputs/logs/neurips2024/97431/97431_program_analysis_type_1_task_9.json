@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Load the harmful benchmark dataset containing harmful instructions and their target responses (/workspace/scripts/1_trick_atk_budget_gcg.sh:8-8, /workspace/scripts/1_trick_atk_budget_pair.sh:6-6)",
+    "Step 2: Set up the target model (Llama-2-7b-chat-hf) for evaluation (/workspace/scripts/1_trick_atk_budget_gcg.sh:5-5, /workspace/scripts/1_trick_atk_budget_pair.sh:2-2)",
+    "Step 3: For GCG attack, initialize the attack parameters including suffix length (60) and varying attack budgets [150, 300, 450, 600, 750] (/workspace/scripts/1_trick_atk_budget_gcg.sh:13-14, 26-27, 39-40, 52-53, 65-66)",
+    "Step 4: For GCG attack, implement the token-level optimization process that iteratively refines adversarial suffixes using gradient information (/workspace/baseline/GCG/GCG_single_main.py:69-173)",
+    "Step 5: For GCG attack, evaluate if the generated adversarial prompt successfully causes the model to respond to harmful instructions (/workspace/baseline/GCG/GCG_single_main.py:142-149)",
+    "Step 6: For PAIR attack, set up the attack model (Vicuna-13b) and evaluator model (/workspace/scripts/1_trick_atk_budget_pair.sh:5-5)",
+    "Step 7: For PAIR attack, implement the iterative prompt refinement process with varying iteration counts [4, 8, 12, 16, 20] (/workspace/scripts/1_trick_atk_budget_pair.sh:11-11, 24-24, 37-37, 50-50, 63-63)",
+    "Step 8: For PAIR attack, use the attack model to generate adversarial prompts and the evaluator to score their effectiveness (/workspace/baseline/PAIR/PAIR_single_main.py:61-76)",
+    "Step 9: Save the attack results including adversarial prompts, model outputs, and success metrics to the appropriate directories (/workspace/main.py:264-265)",
+    "Step 10: Implement agent-based evaluation to determine if the attacks successfully jailbroke the model (/workspace/main.py:377-398)",
+    "Final Step: Calculate and report the Attack Success Rate (ASR) metrics for both token-level and prompt-level attacks across different budgets (/workspace/analysis/report_trick.py:94-108)"
+  ],
+  "agent_instructions": "Your task is to implement a system for evaluating the effectiveness of two different types of adversarial attacks against language models with varying computational budgets.\n\n1. You need to implement a token-level attack (GCG - Greedy Coordinate Gradient) that uses gradient information to craft adversarial suffixes. This attack should be evaluated with 5 different computational budgets: 150, 300, 450, 600, and 750 optimization steps.\n\n2. You also need to implement a prompt-level attack (PAIR - Prompt Automatic Iterative Refinement) that uses an attack model to generate adversarial prompts. This attack should be evaluated with 5 different iteration counts: 4, 8, 12, 16, and 20.\n\n3. Both attacks should be evaluated against the Llama-2-7b-chat-hf model using a dataset of 50 harmful instructions from a benchmark.\n\n4. For the PAIR attack, you should use Vicuna-13b as the attack model.\n\n5. The system should save results to appropriate directories and include functionality to calculate the Attack Success Rate (ASR) for both attacks across the different budgets.\n\n6. Implement an agent-based evaluation component that determines if an attack successfully jailbroke the target model.\n\nThe goal is to analyze how attack effectiveness changes with varying computational budgets for both token-level and prompt-level attacks.",
+  "masked_source": [
+    "/workspace/scripts/1_trick_atk_budget_gcg.sh",
+    "/workspace/scripts/1_trick_atk_budget_pair.sh",
+    "/workspace/baseline/GCG/GCG_single_main.py",
+    "/workspace/baseline/PAIR/PAIR_single_main.py",
+    "/workspace/GPTEvaluatorAgent/agent_eval.py",
+    "/workspace/GPTEvaluatorAgent/main.py"
+  ]
+}

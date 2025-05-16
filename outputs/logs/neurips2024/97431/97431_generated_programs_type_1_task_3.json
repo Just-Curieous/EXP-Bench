@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/main.py",
+        "/workspace/analysis/report_trick.py"
+    ],
+    "usage_instructions": "To compare the effectiveness of jailbreak attack and defense methods using both ASRAgent and ASRPrefix metrics, run the main experiment scripts and then analyze the results. First, execute the main.py script with the --agent_evaluation flag to generate both metrics for each model, attack, and defense combination. For example:\n\npython -u main.py \\\n    --target_model_path lmsys/vicuna-13b-v1.5 \\\n    --defense_type None_defense \\\n    --attack AutoDAN \\\n    --instructions_path ./data/harmful_bench_50.csv \\\n    --save_result_path ./exp_results/main_vicuna/ \\\n    --agent_evaluation \\\n    --resume_exp \\\n    --exp_name main_vicuna_none_defense\n\nRepeat this for different models (e.g., Vicuna-13B, LLaMA-2-7B), defense strategies (e.g., None_defense, self_reminder, RPO, smoothLLM), and attack methods (e.g., AutoDAN, PAIR, GCG). The scripts in /workspace/scripts/main_vicuna/ provide examples for all these combinations.\n\nAfter running the experiments, analyze the results using the report_trick.py script to compare ASRAgent (GPT-4 based evaluation) and ASRPrefix (regex-based rejection phrase detection) metrics:\n\npython analysis/report_trick.py --exp mv\n\nThis will generate a table showing both metrics side by side for each experiment, allowing you to compare how they differ across model alignments, defense strategies, and attack methods."
+}

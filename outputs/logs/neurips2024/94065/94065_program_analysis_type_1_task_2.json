@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Set up a training function that initializes a neural radiance field model with configurable gradient estimation methods (analytical, progressive numerical, or stochastic-step numerical) (/workspace/scripts/train.py:78-90)",
+    "Step 2: Create a main training entry point that processes command-line arguments, loads configurations, and launches the training process (/workspace/scripts/train.py:220-243)",
+    "Step 3: Implement a function to load a trained model from a checkpoint, extracting model parameters from the saved state (/workspace/zoo/extract_surface.py:18-60)",
+    "Step 4: Create a mesh extraction function that uses marching cubes to convert the SDF representation to a mesh (/workspace/zoo/mesh_utils.py:24-41)",
+    "Step 5: Implement a lattice grid system to process the 3D volume in blocks for efficient mesh extraction (/workspace/zoo/mesh_utils.py:60-92)",
+    "Step 6: Add post-processing for the extracted mesh, including filtering to keep only the largest connected component if specified (/workspace/zoo/mesh_utils.py:111-150)",
+    "Step 7: Create a command-line interface for mesh extraction that accepts parameters like resolution and output path (/workspace/zoo/extract_surface.py:63-89)",
+    "Step 8: Implement scene-specific post-processing for TNT datasets, handling different scaling factors and bounding boxes (/workspace/zoo/extract_surface.py:116-178)",
+    "Step 9: Create an evaluation function that computes image metrics (PSNR, etc.) and saves rendered images for a trained model (/workspace/scripts/eval.py:37-62)",
+    "Step 10: Implement a command-line interface for the evaluation script that loads a model checkpoint and outputs metrics and images (/workspace/scripts/eval.py:65-68)"
+  ],
+  "agent_instructions": "Your task is to implement a system for comparing different gradient estimation methods for neural radiance fields on 3D scene reconstruction. The system should include three main components:\n\n1. A training script that can train neural radiance field models with different gradient estimation methods:\n   - Analytical gradients\n   - Progressive numerical gradients (Neuralangelo-style)\n   - Stochastic-step numerical gradients (NeuRodin innovation)\n\n2. A mesh extraction utility that can:\n   - Load a trained model from a checkpoint\n   - Extract a 3D mesh using marching cubes algorithm\n   - Process the volume in blocks for memory efficiency\n   - Apply post-processing like filtering to keep only the largest connected component\n   - Handle scene-specific scaling and transformations\n   - Save the resulting mesh to a specified output path\n\n3. An evaluation script that can:\n   - Load a trained model from a checkpoint\n   - Compute image quality metrics (like PSNR) on test views\n   - Save rendered images for visual comparison\n   - Output metrics in JSON format for further analysis\n\nThe system should be usable with the following workflow:\n1. Train three models with different gradient estimation methods on the Meetingroom scene\n2. Extract meshes from each model at iteration 7500\n3. Evaluate each model by computing metrics and saving rendered images\n4. Compare the results to determine which gradient estimation method produces better results\n\nImplement these components with appropriate command-line interfaces that allow specifying parameters like model configuration, output paths, and mesh resolution.",
+  "masked_source": [
+    "/workspace/scripts/train.py",
+    "/workspace/zoo/extract_surface.py",
+    "/workspace/scripts/eval.py",
+    "/workspace/zoo/mesh_utils.py"
+  ]
+}

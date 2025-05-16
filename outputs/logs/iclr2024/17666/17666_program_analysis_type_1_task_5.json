@@ -1,0 +1,30 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries and parse command line arguments for creating a poisoned dataset (/workspace/create_poisoned_set.py:1-28)",
+    "Step 2: Set up the dataset (CIFAR10, GTSRB, or Imagenette) with appropriate transformations (/workspace/create_poisoned_set.py:33-163)",
+    "Step 3: Load the trigger image and mask for the backdoor attack (/workspace/create_poisoned_set.py:183-210)",
+    "Step 4: Initialize the appropriate poison generator based on the poison_type parameter (adaptive_blend or adaptive_patch for the adaptive attacks) (/workspace/create_poisoned_set.py:214-326)",
+    "Step 5: Generate the poisoned training set by applying the backdoor trigger to a subset of images (/workspace/create_poisoned_set.py:406-412)",
+    "Step 6: Save the poisoned dataset, including images, labels, poison indices, and cover indices (/workspace/create_poisoned_set.py:419-429)",
+    "Step 7: Import libraries and parse command line arguments for training on the poisoned dataset (/workspace/train_on_poisoned_set.py:1-37)",
+    "Step 8: Set up model architecture, hyperparameters, and data loaders for the poisoned dataset (/workspace/train_on_poisoned_set.py:80-172)",
+    "Step 9: Initialize the model, loss function, optimizer, and scheduler (/workspace/train_on_poisoned_set.py:351-363)",
+    "Step 10: Train the model on the poisoned dataset for the specified number of epochs (/workspace/train_on_poisoned_set.py:381-418)",
+    "Step 11: Evaluate the model on clean and poisoned test data periodically during training (/workspace/train_on_poisoned_set.py:425-432)",
+    "Step 12: Save the final trained model (/workspace/train_on_poisoned_set.py:439)",
+    "Step 13: Import libraries and parse command line arguments for applying the BaDExpert defense (/workspace/other_defense.py:1-36)",
+    "Step 14: Initialize the BaDExpert defense with appropriate parameters (/workspace/other_defense.py:257-259)",
+    "Step 15: Create an unlearned model by training the original model to unlearn the backdoor (/workspace/other_defenses_tool_box/bad_expert_utils.py:679-744)",
+    "Step 16: Create a shadow model by finetuning the original model on clean data (/workspace/other_defenses_tool_box/bad_expert_utils.py:747-793)",
+    "Step 17: Evaluate the original, shadow, and unlearned models on test data (/workspace/other_defenses_tool_box/bad_expert_utils.py:186-191)",
+    "Step 18: Calculate decision thresholds for backdoor detection based on the models' behavior (/workspace/other_defenses_tool_box/bad_expert.py:195)",
+    "Step 19: Deploy the defense by comparing model outputs using the triangle metric and thresholds (/workspace/other_defenses_tool_box/bad_expert_utils.py:180-199)",
+    "Step 20: Calculate and report defense performance metrics including Attack Success Rate (ASR) and Area Under ROC Curve (AUROC) (/workspace/other_defenses_tool_box/bad_expert_utils.py:253-273)"
+  ],
+  "agent_instructions": "Your task is to implement a system to test the BaDExpert defense against adaptive backdoor attacks. The system consists of three main components:\n\n1. First, create a script to generate a poisoned dataset with adaptive backdoor attacks. The script should:\n   - Support different datasets (CIFAR10, GTSRB, Imagenette)\n   - Implement two types of adaptive attacks:\n     a) An adaptive blend attack with low-opacity triggers (using a reduced alpha value like 0.05)\n     b) An adaptive patch attack with optimized asymmetric triggers\n   - Allow configuration of poison rate, target class, and trigger parameters\n   - Save the poisoned dataset with appropriate metadata (images, labels, poison indices)\n\n2. Next, create a script to train a model on the poisoned dataset. The script should:\n   - Load the poisoned dataset created in step 1\n   - Set up a neural network model appropriate for the dataset\n   - Train the model using standard training procedures\n   - Evaluate the model on both clean and poisoned test data\n   - Save the trained model for later evaluation\n\n3. Finally, implement the BaDExpert defense and evaluation script. The defense should:\n   - Load the backdoored model from step 2\n   - Create two expert models:\n     a) An unlearned model: trained to give different predictions than the original model\n     b) A shadow model: finetuned on clean data to maintain normal behavior\n   - Implement a detection mechanism that compares the prediction patterns of the three models\n   - Use the \"triangle\" metric to identify backdoored inputs\n   - Evaluate and report defense performance using metrics like Attack Success Rate (ASR) and Area Under ROC Curve (AUROC)\n\nThe scripts should be designed to work together in sequence, with the output of each step serving as input to the next. Include appropriate command-line arguments to configure the experiments.",
+  "masked_source": [
+    "/workspace/create_poisoned_set.py",
+    "/workspace/train_on_poisoned_set.py",
+    "/workspace/other_defense.py"
+  ]
+}

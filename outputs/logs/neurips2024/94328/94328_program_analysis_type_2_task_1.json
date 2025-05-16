@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries: fast_hadamard_transform for the Hadamard transform implementation, torch for tensor operations, and time for performance measurement (/workspace/benchmarks/hadamard_benchmark.py:1-3)",
+    "Step 2: Define a list of matrix sizes to benchmark: 1024, 2048, 4096, 8192, and 12288 (/workspace/benchmarks/hadamard_benchmark.py:4)",
+    "Step 3: For each matrix size, create a random square matrix of that size on the GPU using CUDA, with FP16 precision (/workspace/benchmarks/hadamard_benchmark.py:5)",
+    "Step 4: Initialize timing variables for both FP32 and FP16 implementations (/workspace/benchmarks/hadamard_benchmark.py:6-8)",
+    "Step 5: Benchmark the FP32 implementation by running the Hadamard transform 10 times on the input matrix converted to float32 and then back to float16, measuring the execution time for each run and accumulating the total time (/workspace/benchmarks/hadamard_benchmark.py:10-15)",
+    "Step 6: Print the total execution time for the FP32 implementation (/workspace/benchmarks/hadamard_benchmark.py:16)",
+    "Step 7: Benchmark the FP16 implementation by running the Hadamard transform 10 times directly on the FP16 input matrix, measuring the execution time for each run and accumulating the total time (/workspace/benchmarks/hadamard_benchmark.py:18-23)",
+    "Step 8: Print the total execution time for the FP16 implementation (/workspace/benchmarks/hadamard_benchmark.py:24)",
+    "Step 9: Verify that the results from both implementations are numerically equivalent within a small tolerance (1e-7) and print the result of this verification (/workspace/benchmarks/hadamard_benchmark.py:25)"
+  ],
+  "agent_instructions": "\nYour task is to create a benchmark script to analyze how the Hadamard transform in QuaRot affects computational performance for different matrix sizes. \n\nYou need to:\n1. Create a script that benchmarks the performance of Hadamard transforms in both FP16 and FP32 precision\n2. Test with square matrices of sizes 1024, 2048, 4096, 8192, and 12288\n3. For each matrix size:\n   - Create a random matrix on GPU\n   - Run the transform 10 times in FP32 precision (converting from FP16 to FP32 and back)\n   - Run the transform 10 times in FP16 precision\n   - Measure and report the execution time for both implementations\n   - Verify that the results are numerically equivalent within a small tolerance\n4. The script should output the total execution time for both implementations and whether the results match\n\nYou'll need to use the fast_hadamard_transform module, PyTorch, and CUDA for GPU acceleration.\n"
+}

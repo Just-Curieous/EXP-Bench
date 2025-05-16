@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments for training configuration including config file path, batch size, epochs, number of workers, experiment tag, checkpoint path, etc. (/workspace/womd/tools/train.py:29-67)",
+    "Step 2: Set up distributed training environment if specified, determining the number of GPUs and initializing the distributed backend (/workspace/womd/tools/train.py:112-124)",
+    "Step 3: Configure batch size and number of epochs based on arguments or config file (/workspace/womd/tools/train.py:126-132)",
+    "Step 4: Create output directories for logs, checkpoints, and evaluation results (/workspace/womd/tools/train.py:137-140)",
+    "Step 5: Set up logging to track training progress (/workspace/womd/tools/train.py:142-157)",
+    "Step 6: Build training data loader with the Waymo Open Motion Dataset (/workspace/womd/tools/train.py:159-168)",
+    "Step 7: Build the BeTopNet model according to the configuration (/workspace/womd/tools/train.py:170-174)",
+    "Step 8: Create optimizer (Adam or AdamW) based on configuration (/workspace/womd/tools/train.py:176)",
+    "Step 9: Load checkpoint if resuming training or using pretrained model (/workspace/womd/tools/train.py:179-211)",
+    "Step 10: Build learning rate scheduler (cosine, lambdaLR, or linearLR) (/workspace/womd/tools/train.py:212-215)",
+    "Step 11: Set up distributed data parallel model if using multiple GPUs (/workspace/womd/tools/train.py:217-223)",
+    "Step 12: Build validation data loader for evaluation during training (/workspace/womd/tools/train.py:225-229)",
+    "Step 13: Train the model with the specified parameters, saving checkpoints at regular intervals (/workspace/womd/tools/train.py:234-259)",
+    "Step 14: Evaluate the final model on the validation set and report metrics including ADE and FDE (/workspace/womd/tools/train.py:265-287)"
+  ],
+  "agent_instructions": "Your task is to implement a training pipeline for the BeTopNet model on the Waymo Open Motion Dataset (WOMD) for autonomous vehicle trajectory prediction. The implementation should include the following components:\n\n1. A training script that:\n   - Loads and processes the Waymo Open Motion Dataset\n   - Builds the BeTopNet model architecture\n   - Implements a training loop with appropriate loss functions\n   - Supports distributed training across multiple GPUs\n   - Saves checkpoints and logs training progress\n   - Evaluates the model on a validation set\n\n2. A configuration file that specifies:\n   - Dataset parameters (paths, object types, sampling intervals)\n   - Model architecture (encoder/decoder structure, attention layers)\n   - Training hyperparameters (batch size, learning rate, optimizer)\n\n3. A shell script wrapper for launching distributed training\n\nThe BeTopNet model should be trained to predict future trajectories of vehicles, pedestrians, and cyclists. The model architecture consists of an encoder that processes agent and map features, and a decoder that generates multi-modal trajectory predictions.\n\nAfter training, the model should be evaluated on the validation set using metrics such as Average Displacement Error (ADE) and Final Displacement Error (FDE).\n\nEnsure that the training pipeline supports:\n- Loading pretrained models or resuming from checkpoints\n- TensorBoard logging for monitoring training progress\n- Configurable batch size and number of epochs\n- Learning rate scheduling\n\nThe training should be run with the appropriate configuration to achieve good performance on the trajectory prediction task."
+}

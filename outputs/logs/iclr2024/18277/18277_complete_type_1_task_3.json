@@ -1,0 +1,141 @@
+{
+  "questions": [
+    {
+      "question": "Will altering the number of layers (L) used for inserting adaptation prompts (try L = 10, 20, 30, 32) change the model performance?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Perform an ablation study to assess the impact of varying the number of layers (L) on model performance when inserting adaptation prompts in a LLaMA model.\n    - **Objective:** \n    Determine the effect of layer count on answering accuracy, identifying an optimal L for adaptation prompt insertion.\n\n2. **Evaluation Metrics:**\n    - Answering accuracy measured on the ScienceQA validation set.\n3. **Comparative Evaluation:**\n    - Model: LLaMA-Adapter\n        - Insertion Layers L:\n            - L = 10\n            - L = 20\n            - L = 30\n            - L = 32\n\n4. **Settings for LLaMA-Adapter**:\n    - Fine tune LLaMA-Adapter on 8 A100 GPUs for 5 epochs.\n    - Warmup epochs:2\n    - Batch size:64\n    - Learning rate: 0.009\n    - Weight decay: 0.02\n    - Utilize the pre-trained LLaMA model with 7B parameters and N = 32 transformer layers\n    - Adopt a prompt length K = 10",
+      "expected_outcome": "Increasing the layer numbers introduces more parameters, but leads to a large improvement in the answering accuracy of ScienceQA's validation set. There also exists an optimal insertion number from the higher layers, since too many layers would adversely disturb the early encoding of input words. It is expected that 30 to be the optimal number of layers.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "prompt_length": "Fixed at K = 10",
+            "dataset": "52K instruction-following dataset with tasks like question answering, language translation, and code generation",
+            "base_model": "LLaMA 7B model with 32 transformer layers",
+            "training_parameters": "5 epochs, 8 A100 GPUs, warmup epochs = 2, batch size = 64, learning rate = 0.009, weight decay = 0.02"
+          },
+          "independent_variables": {
+            "insertion_layers": [
+              "10",
+              "20",
+              "30",
+              "32"
+            ]
+          },
+          "dependent_variables": {
+            "answering_accuracy": "Model performance measured by the answering accuracy on ScienceQA's validation set"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {}
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "52K instruction-following dataset (question answering, language translation, code generation)",
+            "Pre-trained LLaMA 7B model with 32 transformer layers",
+            "Adaptation prompt module with fixed prompt length K = 10",
+            "Training configuration (8 A100 GPUs, 5 epochs, warmup epochs = 2, batch size = 64, learning rate = 0.009, weight decay = 0.02)",
+            "Evaluation framework using ScienceQA's validation set (measuring answering accuracy)"
+          ],
+          "setup_steps": [
+            "Prepare and load the 52K instruction-following dataset",
+            "Configure the LLaMA model to insert adaptation prompts in the final L layers (with L set to 10, 20, 30, and 32)",
+            "Fix prompt length at K = 10 across all configurations",
+            "Fine-tune each configuration on 8 A100 GPUs for 5 epochs with the specified training parameters",
+            "Evaluate each model's performance using answering accuracy on ScienceQA's validation set"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Adaptive Prompt Insertion Strategy",
+              "description": "Inserting adaptation prompts at different numbers of layers may affect the balance between high-level feature modulation and low-level word encoding."
+            },
+            {
+              "source": "Resource and Scheduling Management",
+              "description": "Executing multiple fine-tuning runs in parallel or sequentially on 8 A100 GPUs adds complexity in managing computational resources and training schedules."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_setup_steps": [
+            "Details on how adaptation prompts are integrated into the final L layers are not fully specified (e.g., how the insertion affects earlier encoding processes)"
+          ],
+          "possible_modifications": {}
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "For an extended task, impose a constraint to achieve similar answering accuracy using a smaller version of the model (e.g., a mini variant of LLaMA-Adapter with reduced parameter count) instead of the full 7B model."
+            ],
+            "time_constraints": [
+              "As a modification, restrict training time by reducing the number of epochs or fine-tuning iterations, while still aiming to match the original performance."
+            ],
+            "money_constraints": [
+              "Optionally, introduce a budget constraint by limiting the total GPU hours (e.g., reducing the number of A100 GPUs used or overall training time) which may force a more cost-effective setup."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic elements in training such as random mini-batch sampling and initialization",
+          "description": "Random uncertainty arises from the inherent randomness in the training process (e.g., data shuffling, weight initialization, and potential minor variations in gradient updates) which can lead to fluctuations in answering accuracy on ScienceQA's validation set even when the insertion layers (L) are fixed.",
+          "impact": "This randomness might mask the pure effect of altering the number of layers for adaptation prompts, making it harder to attribute performance changes solely to the variation in L. It can lead to instability in accuracy measurements across multiple runs.",
+          "possible_modifications": [
+            "Set fixed random seeds and run multiple replicates to average out training variability.",
+            "Introduce controlled random noise (such as randomly dropping tokens) during training to quantify its effect on performance.",
+            "Perform statistical significance tests over multiple runs to determine if changes are due to the layer modification or random fluctuations."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Systematic modifications in adaptation prompt insertion strategy",
+          "description": "Systematic uncertainty results from the deliberate design choice of inserting adaptation prompts into the last L layers. Altering L changes the architecture in a consistent manner for example, using all 32 layers versus only the last 10 can bias the model's ability to encode early input information, which may systematically affect performance on tasks such as answering accuracy on ScienceQA.",
+          "impact": "This leads to a consistent bias in model performance. For instance, too many insertion layers might adversely disturb early feature encoding, while too few might not sufficiently modulate high-level information. The ablation study might therefore show a systematic optimum (predicted around L = 30) that reflects this structural bias.",
+          "possible_modifications": [
+            "Test alternative insertion strategies, such as distributing prompt insertion across non-consecutive layers, to determine if the observed effects are indeed due to the insertion location.",
+            "Expand the evaluation metrics beyond answering accuracy (e.g., including performance on language translation or code generation) to verify that systematic biases are not task-specific.",
+            "Validate results using additional datasets to ensure that the systematic bias is not an artifact of the specific instruction-following dataset used."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/alpaca_finetuning_v1/finetuning.py"
+      ],
+      "usage_instructions": "# LLaMA Adapter Fine-tuning Experiment\n\n## Prerequisites\n1. Install required dependencies: PyTorch, sentencepiece, and other necessary packages\n2. Download the LLaMA-7B model files and place them in a directory structure as follows:\n   - $TARGET_FOLDER/7B/consolidated.00.pth\n   - $TARGET_FOLDER/7B/params.json\n   - $TARGET_FOLDER/tokenizer.model\n3. Prepare the Alpaca instruction dataset (alpaca_data.json) with instruction-input-output format\n\n## Running the Experiment\nTo run the experiment with different numbers of layers (L) for inserting adaptation prompts, use the following command for each configuration:\n\n```bash\ntorchrun --nproc_per_node 8 /workspace/alpaca_finetuning_v1/finetuning.py \\\n    --model Llama7B_adapter \\\n    --llama_model_path $TARGET_FOLDER/ \\\n    --data_path $DATA_PATH/alpaca_data.json \\\n    --adapter_layer 10 \\\n    --adapter_len 10 \\\n    --max_seq_len 512 \\\n    --batch_size 4 \\\n    --epochs 5 \\\n    --warmup_epochs 2 \\\n    --blr 9e-3 \\\n    --weight_decay 0.02 \\\n    --output_dir ./checkpoint_L10/\n```\n\n## Experiment Variations\nRepeat the command for different adapter layer configurations by changing the following parameters:\n\n1. For L=10: `--adapter_layer 10 --output_dir ./checkpoint_L10/`\n2. For L=20: `--adapter_layer 20 --output_dir ./checkpoint_L20/`\n3. For L=30: `--adapter_layer 30 --output_dir ./checkpoint_L30/`\n4. For L=32: `--adapter_layer 32 --output_dir ./checkpoint_L32/`\n\n## Evaluation\nAfter training each model configuration, evaluate them on the ScienceQA validation set to measure answering accuracy. The paper's ablation study (Table 4) confirms that increasing the layer numbers from 10 to 30 leads to significant improvement in accuracy, with L = 30 being optimal.\n\n## Notes\n- The experiment uses distributed training across 8 GPUs\n- Each model is trained for 5 epochs with 2 warmup epochs\n- Only the adapter parameters are fine-tuned while the base LLaMA model parameters remain frozen\n- The adapter length is set to 10 for all configurations",
+      "requirements": [
+        "Step 1: Set up the environment with PyTorch and required dependencies including sentencepiece (/workspace/alpaca_finetuning_v1/llama/tokenizer.py:8-8)",
+        "Step 2: Download and prepare the LLaMA model files, ensuring they are organized in the expected directory structure with consolidated.00.pth and params.json files (/workspace/alpaca_finetuning_v1/models_llama_adapter.py:13-17)",
+        "Step 3: Prepare the tokenizer model file that should be placed in the LLaMA model directory (/workspace/alpaca_finetuning_v1/models_llama_adapter.py:26-26)",
+        "Step 4: Prepare the Alpaca instruction dataset in JSON format with instruction, input, and output fields (/workspace/alpaca_finetuning_v1/finetuning.py:36-39)",
+        "Step 5: Create an output directory to store checkpoints and logs (/workspace/alpaca_finetuning_v1/finetuning.py:292-293)",
+        "Step 6: Initialize the distributed training environment for multi-GPU training (/workspace/alpaca_finetuning_v1/finetuning.py:151-151)",
+        "Step 7: Load the instruction dataset and create data loaders for training and validation (/workspace/alpaca_finetuning_v1/finetuning.py:165-212)",
+        "Step 8: Initialize the LLaMA model with adapter components (/workspace/alpaca_finetuning_v1/finetuning.py:215-215)",
+        "Step 9: Set up the adapter configuration with specified layer number and adapter length (/workspace/alpaca_finetuning_v1/models_llama_adapter.py:19-24)",
+        "Step 10: Configure the optimizer with appropriate learning rate and weight decay (/workspace/alpaca_finetuning_v1/finetuning.py:238-241)",
+        "Step 11: Train the model for the specified number of epochs with a cosine learning rate schedule (/workspace/alpaca_finetuning_v1/finetuning.py:245-285)",
+        "Step 12: Save model checkpoints periodically during training (/workspace/alpaca_finetuning_v1/finetuning.py:261-269)",
+        "Step 13: Repeat the training process with different adapter layer configurations (L=10, 20, 30, 32) (/workspace/alpaca_finetuning_v1/finetuning.py:98-98)",
+        "Step 14: Evaluate the trained models on the ScienceQA validation set to measure answering accuracy (/workspace/alpaca_finetuning_v1/finetuning.py:257-259)",
+        "Final Step: Compare the performance of different adapter layer configurations to determine the optimal setting (/workspace/alpaca_finetuning_v1/finetuning.py:98-100)"
+      ],
+      "masked_source": [
+        "/workspace/alpaca_finetuning_v1/finetuning.py",
+        "/workspace/alpaca_finetuning_v1/models_llama_adapter.py",
+        "/workspace/alpaca_finetuning_v1/engine_finetuning.py",
+        "/workspace/alpaca_finetuning_v1/util/misc.py",
+        "/workspace/alpaca_finetuning_v1/util/lr_sched.py",
+        "/workspace/alpaca_finetuning_v1/llama/model.py",
+        "/workspace/alpaca_finetuning_v1/llama/tokenizer.py"
+      ]
+    }
+  ]
+}

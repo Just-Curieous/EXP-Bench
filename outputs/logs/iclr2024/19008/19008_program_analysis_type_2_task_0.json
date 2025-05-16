@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Parse command-line arguments including model name, questionnaire, shuffle-count, test-count, and OpenAI API key (run_psychobench.py:6-26)",
+    "Step 2: Create directories for storing results, prompts, and responses (utils.py:491-492, example_generator.py:132-133)",
+    "Step 3: Load the questionnaire data from questionnaires.json file (utils.py:13-29)",
+    "Step 4: Generate test files with questions in original and shuffled orders based on shuffle-count parameter (utils.py:61-88)",
+    "Step 5: Set up OpenAI API with the provided key (example_generator.py:78)",
+    "Step 6: For each order of questions, split them into manageable chunks if needed (example_generator.py:97-99)",
+    "Step 7: Send questions to the GPT-3.5-turbo model using appropriate API calls (example_generator.py:114-125)",
+    "Step 8: Process model responses and extract numerical scores (example_generator.py:62-70, 142)",
+    "Step 9: Save responses to the testing file (example_generator.py:145-155)",
+    "Step 10: Convert the raw response data into a structured format for analysis (utils.py:92-137)",
+    "Step 11: Compute statistics (mean, standard deviation) for each category in the questionnaire (utils.py:141-164)",
+    "Step 12: Perform hypothesis testing to compare model scores with human baseline data (utils.py:168-239)",
+    "Step 13: Generate visualizations comparing model scores with human baseline data (utils.py:33-57)",
+    "Step 14: Save analysis results and figures to output files (utils.py:469-474)"
+  ],
+  "agent_instructions": "Your task is to create a script that evaluates how GPT-3.5-turbo scores on the Empathy questionnaire compared to human responses using the PsychoBench framework. The script should:\n\n1. Accept command-line arguments for:\n   - The model name (gpt-3.5-turbo)\n   - The questionnaire name (Empathy)\n   - Number of different question orders to test (shuffle-count)\n   - Number of test runs per order (test-count)\n   - OpenAI API key\n\n2. Implement a workflow that:\n   - Loads the Empathy questionnaire data from a JSON file\n   - Creates test files with questions in original and shuffled orders\n   - Sends the questions to the GPT-3.5-turbo model via the OpenAI API\n   - Processes the model's responses to extract numerical scores\n   - Computes statistics on the scores\n   - Performs hypothesis testing to compare the model's scores with human baseline data\n   - Generates visualizations of the results\n   - Saves the analysis results and figures to output files\n\n3. The Empathy questionnaire:\n   - Contains 10 questions about empathy\n   - Uses a 7-point scale (1='very inaccurately' to 7='very accurately')\n   - Some questions are reverse-scored\n   - Results should be compared with human baseline data\n\n4. The output should include:\n   - Statistical analysis comparing GPT-3.5-turbo's empathy scores with human baseline data\n   - Visualizations showing the comparison\n   - Conclusions about whether the model scores higher, lower, or similar to humans on empathy measures\n\nMake sure to handle API requests properly with appropriate error handling and rate limiting."
+}

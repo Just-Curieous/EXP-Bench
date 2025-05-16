@@ -1,0 +1,3 @@
+{
+    "no_answer": "After a thorough search of the repository, I couldn't find any specific scripts that directly analyze the singular value distribution or effective rank of the learning perturbation matrices for BAdam compared to Adam. The repository contains the implementation of the BAdam optimizer itself, but lacks scripts for extracting the learned perturbation matrices (difference between finetuned and pretrained weights), computing the cumulative explained variance (cvar) of singular values, or evaluating the effective rank across different modules. While the repository includes code for finetuning models using BAdam, it doesn't include the analysis tools needed to answer the specific experiment question about BAdam's learning perturbation characteristics."
+}

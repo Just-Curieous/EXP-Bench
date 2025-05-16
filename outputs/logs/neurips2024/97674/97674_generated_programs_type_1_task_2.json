@@ -1,0 +1,9 @@
+{
+    "source": [
+        "/workspace/shells/eval_internvl.sh",
+        "/workspace/shells/prepare_rag.sh",
+        "/workspace/shells/eval_internvl_rag.sh",
+        "/workspace/calculate_scores.py"
+    ],
+    "usage_instructions": "1. First, run the standard InternVL-1.5 evaluation to get baseline performance: `sh shells/eval_internvl.sh`\n2. Then, prepare the RAG segments for evaluation: `sh shells/prepare_rag.sh`\n3. Next, run the RAG-enhanced InternVL-1.5 evaluation: `sh shells/eval_internvl_rag.sh`\n4. Finally, calculate and compare the scores between standard and RAG versions: `python calculate_scores.py --outputs-dir ./outputs/`\n\nThe results will show that the RAG-enhanced model (InternVL-1.5-RAG) performs better on text needle tasks (retrieval-text, counting-text, reasoning-text) but does not show similar improvements on image needle tasks (retrieval-image, counting-image, reasoning-image) compared to the standard InternVL-1.5 model."
+}

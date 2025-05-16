@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/run_benchmarks.py", "/workspace/validate_results.py"],
+    "usage_instructions": "1. Run the BoT method on the Game of 24, Geometric Shapes, and Multi-Step Arithmetic Two tasks using run_benchmarks.py with your OpenAI API key. For example: `python run_benchmarks.py --task_name 'gameof24' --api_key 'your_api_key' --model_id 'gpt-4o'`. 2. Repeat this for each task (gameof24 is already included, but you'll need to run similar commands for the other tasks - note that 'Geometric Shapes' and 'Multi-Step Arithmetic Two' are not directly available in the current repository version but would follow the same pattern). 3. After running the experiments, validate the results using validate_results.py. For example: `python validate_results.py --task_name 'gameof24' --test_path 'test_results/BoT_gameof24_timestamp.jsonl'`. 4. Compare the results with the baseline methods (Standard GPT-4, GPT-4+CoT, GPT-4+ToT) as shown in Table 1 of the paper."
+}

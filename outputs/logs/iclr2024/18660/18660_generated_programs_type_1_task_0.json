@@ -1,0 +1,13 @@
+{
+    "source": [
+        "/workspace/sota-check/run_a2c_mujoco.sh",
+        "/workspace/sota-check/run_a2c_atari.sh",
+        "/workspace/sota-check/run_ppo_mujoco.sh",
+        "/workspace/sota-check/run_ppo_atari.sh",
+        "/workspace/sota-check/run_ddpg.sh",
+        "/workspace/sota-check/run_td3.sh",
+        "/workspace/sota-check/run_sac.sh",
+        "/workspace/sota-check/run_impala_single_node.sh"
+    ],
+    "usage_instructions": "To reproduce baseline online RL algorithms on MuJoCo and Atari environments using TorchRL, execute the following scripts:\n\n1. For MuJoCo environments (1 million steps):\n   - Run A2C: `bash /workspace/sota-check/run_a2c_mujoco.sh`\n   - Run PPO: `bash /workspace/sota-check/run_ppo_mujoco.sh`\n   - Run DDPG: `bash /workspace/sota-check/run_ddpg.sh`\n   - Run TD3: `bash /workspace/sota-check/run_td3.sh`\n   - Run SAC: `bash /workspace/sota-check/run_sac.sh`\n\n2. For Atari environments:\n   - Run A2C (10 million steps): `bash /workspace/sota-check/run_a2c_atari.sh`\n   - Run PPO (10 million steps): `bash /workspace/sota-check/run_ppo_atari.sh`\n   - Run IMPALA (200 million frames): `bash /workspace/sota-check/run_impala_single_node.sh`\n\nTo run each algorithm with 5 different random seeds as required, modify the seed parameter in the corresponding configuration files before running each script. For example, for SAC, edit `/workspace/sota-implementations/sac/config.yaml` and change the `env.seed` value for each run. The scripts will log results to WandB, allowing you to calculate mean rewards and standard deviations across the 5 runs for comparison with the reported values in the original papers."
+}

@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including model name, questionnaire type (BFI), shuffle-count, test-count, and other parameters (run_psychobench.py:7-21)",
+    "Step 2: Set up OpenAI API key for model access (example_generator.py:78)",
+    "Step 3: Load the BFI questionnaire data from questionnaires.json, which contains questions, scoring rules, and human baseline data (utils.py:13-29)",
+    "Step 4: Create a test file with the BFI questions in original and shuffled orders based on shuffle-count parameter (utils.py:61-88)",
+    "Step 5: For each question set, send the questions to the specified LLM using appropriate API call (chat or completion based on model type) (example_generator.py:113-127)",
+    "Step 6: Process LLM responses by extracting numerical answers (1-5 scale for BFI) (example_generator.py:62-70, 142)",
+    "Step 7: Save prompts and responses to files for later analysis (example_generator.py:132-138)",
+    "Step 8: Convert raw responses into structured data, applying reverse scoring where needed (utils.py:92-137)",
+    "Step 9: Compute statistics (mean and standard deviation) for each personality trait category (Extraversion, Agreeableness, Conscientiousness, Neuroticism, Openness) (utils.py:141-164)",
+    "Step 10: Compare LLM results with human baseline data using statistical tests (t-tests) (utils.py:168-239)",
+    "Step 11: Generate visualizations showing personality trait scores across different models and human baselines (utils.py:33-57)",
+    "Step 12: Save analysis results to files including statistical comparisons and visualizations (utils.py:469-474)",
+    "Final Step: Repeat the process for each LLM to be evaluated, then manually compare the results across models (utils.py:484-507)"
+  ],
+  "agent_instructions": "Your task is to create a system that evaluates and compares the personality profiles of different Large Language Models (LLMs) using the Big Five Inventory (BFI) personality assessment. The BFI measures five personality traits: Extraversion, Agreeableness, Conscientiousness, Neuroticism, and Openness.\n\nYou'll need to:\n\n1. Create a framework that can administer the BFI questionnaire to different LLMs. The BFI consists of 44 questions rated on a 5-point scale (1=strongly disagree to 5=strongly agree).\n\n2. Implement functionality to:\n   - Load the BFI questionnaire data (questions, scoring rules, human baseline data)\n   - Present the questionnaire to LLMs in a consistent format\n   - Process LLM responses and calculate scores for each personality trait\n   - Apply proper scoring rules (some questions are reverse-scored)\n   - Generate statistical analyses comparing LLM results with human baseline data\n   - Create visualizations of personality profiles\n\n3. Design the system to work with different types of LLMs:\n   - Support both chat-based models (like GPT-3.5/4) and completion-based models\n   - Handle appropriate API calls for each model type\n\n4. Include parameters for experimental rigor:\n   - Allow for multiple runs with the same questions (test-count)\n   - Support question order randomization (shuffle-count) to control for order effects\n   - Save all prompts and responses for transparency\n\n5. Generate comprehensive results that:\n   - Show mean scores and standard deviations for each personality trait\n   - Compare results with human baseline data using statistical tests\n   - Visualize differences between models and human data\n\nThe goal is to run this framework multiple times with different LLMs, then compare how their personality profiles differ across the Big Five traits and in relation to human baseline data."
+}

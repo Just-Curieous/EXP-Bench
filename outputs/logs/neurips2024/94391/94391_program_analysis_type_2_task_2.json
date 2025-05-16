@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment and import necessary libraries (torch, numpy, pandas, etc.) (/workspace/run.py:1-7)",
+    "Step 2: Configure the CycleNet model with appropriate parameters including cycle length of 168 (weekly pattern) (/workspace/scripts/CycleNet/Linear-Input-96/electricity.sh:9-30)",
+    "Step 3: Load the electricity consumption dataset from CSV file (/workspace/data_provider/data_loader.py:234-237)",
+    "Step 4: Preprocess the data by splitting into train/validation/test sets and applying normalization (/workspace/data_provider/data_loader.py:247-268)",
+    "Step 5: Create cyclic indices for the data based on the specified cycle length (168 hours) (/workspace/data_provider/data_loader.py:286-287)",
+    "Step 6: Initialize the CycleNet model with a RecurrentCycle component to capture periodic patterns (/workspace/models/CycleNet.py:21-43)",
+    "Step 7: Train the model using MSE loss and early stopping for optimal performance (/workspace/exp/exp_main.py:115-244)",
+    "Step 8: Generate forecasts by removing cyclic components, applying the forecasting model, and adding back the learned cyclic components (/workspace/models/CycleNet.py:45-67)",
+    "Step 9: Evaluate model performance using metrics like MSE, MAE, etc. (/workspace/exp/exp_main.py:335-342)",
+    "Step 10: Visualize the forecasting results and compare with ground truth (/workspace/exp/exp_main.py:311-317)"
+  ],
+  "agent_instructions": "Your task is to implement a forecasting system for electricity consumption data using the CycleNet framework. The electricity consumption data exhibits strong weekly patterns (168 hours), and CycleNet is specifically designed to capture such periodic patterns.\n\nYou need to:\n\n1. Create a forecasting system that uses CycleNet with a linear model variant to predict future electricity consumption values.\n\n2. The system should explicitly model the weekly cycle (168 hours) in the electricity consumption data.\n\n3. Implement the core CycleNet architecture which consists of:\n   - A RecurrentCycle component that learns the cyclic patterns in the data\n   - A forecasting component (linear model) that predicts the residuals after removing cyclic patterns\n   - A mechanism to combine the cyclic component and residual forecasts\n\n4. The data processing pipeline should:\n   - Load the electricity consumption dataset\n   - Split it into training, validation, and test sets\n   - Apply appropriate normalization\n   - Create cyclic indices based on the 168-hour weekly pattern\n\n5. Train the model with:\n   - MSE loss function\n   - Early stopping based on validation performance\n   - Multiple prediction horizons (96, 192, 336, 720 time steps)\n\n6. Evaluate the model using metrics such as MSE and MAE\n\n7. Visualize the forecasting results, comparing predictions with actual values\n\n8. Implement functionality to extract and visualize the learned cyclic components to demonstrate how the model captures weekly patterns\n\nThe goal is to show how CycleNet can effectively forecast electricity consumption by explicitly modeling and leveraging the weekly patterns in the data."
+}

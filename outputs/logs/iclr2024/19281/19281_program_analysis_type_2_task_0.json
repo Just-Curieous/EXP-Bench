@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including RDKit, pandas, numpy, and matplotlib for molecule processing, data manipulation, and visualization (/workspace/molecule_optimization.py:1-10)",
+    "Step 2: Define a function to calculate Lipinski's Rule of Five violations that checks molecular weight, logP, hydrogen bond donors, hydrogen bond acceptors (/workspace/molecule_optimization.py:12-25)",
+    "Step 3: Load the ZINC dataset of molecules from a CSV file (/workspace/molecule_optimization.py:27-30)",
+    "Step 4: Convert SMILES strings to RDKit molecule objects, filtering out invalid molecules (/workspace/molecule_optimization.py:32-38)",
+    "Step 5: Calculate QED (Quantitative Estimation of Drug-likeness) scores for each valid molecule using RDKit's QED module (/workspace/molecule_optimization.py:40-45)",
+    "Step 6: Create a dataframe with molecules and their QED scores (/workspace/molecule_optimization.py:47-50)",
+    "Step 7: Sort molecules by QED score in descending order (/workspace/molecule_optimization.py:52-53)",
+    "Step 8: Select top molecules with QED scores greater than 0.8 (/workspace/molecule_optimization.py:55-57)",
+    "Step 9: Calculate additional molecular properties for the top molecules: molecular weight, logP, hydrogen bond donors/acceptors, rotatable bonds (/workspace/molecule_optimization.py:59-70)",
+    "Step 10: Check Lipinski's Rule of Five violations for each top molecule (/workspace/molecule_optimization.py:72-75)",
+    "Step 11: Generate 2D visualizations of the top molecules (/workspace/molecule_optimization.py:77-85)",
+    "Step 12: Display the results with all calculated properties in a formatted table (/workspace/molecule_optimization.py:87-95)",
+    "Final Step: Save the results to a CSV file for further analysis (/workspace/molecule_optimization.py:97-98)"
+  ],
+  "agent_instructions": "Create a program that analyzes molecules for drug-likeness using the QED (Quantitative Estimation of Drug-likeness) metric. Your program should:\n\n1. Load a dataset of molecules from the ZINC dataset (you can use a subset if the full dataset is too large).\n\n2. For each molecule:\n   - Convert SMILES strings to RDKit molecule objects\n   - Calculate QED scores using RDKit's QED module\n   - Filter out invalid molecules\n\n3. Sort the molecules by QED score in descending order.\n\n4. Select the top molecules with QED scores greater than 0.8.\n\n5. For each selected molecule, calculate and display additional properties:\n   - Molecular weight\n   - LogP (lipophilicity)\n   - Number of hydrogen bond donors\n   - Number of hydrogen bond acceptors\n   - Number of rotatable bonds\n   - Lipinski's Rule of Five violations\n\n6. Generate 2D visualizations of the top molecules.\n\n7. Display the results in a formatted table showing all calculated properties.\n\n8. Save the results to a CSV file for further analysis.\n\nYou'll need to use RDKit for molecular operations and property calculations, pandas for data manipulation, and matplotlib for visualizations. Make sure to handle exceptions for molecules that cannot be processed correctly."
+}

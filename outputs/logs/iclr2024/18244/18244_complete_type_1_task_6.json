@@ -1,0 +1,43 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Does using the concatenation aggregation method to combine DVMB outputs achieve better forecasting accuracy (i.e., lower MSE and MAE) compared to using the mean aggregation method? Given prior experimental evidence (see values in Table 5) where the Concat method generally yields lower errors than Mean, can this advantage be consistently observed across multiple datasets and prediction horizons?",
+      "method": "Develop an ablation study using the datasets provided (ETTh2, ETTm2, Weather, Electricity). Implement two variants of the DVMB aggregation block within the PDF model: (1) Concat: Concatenate the outputs of all DVMBs and project them linearly, following the equation XO = Linear(Concat(\u02c6Xi)), and (2) Mean: Compute the average of the DVMB outputs. Ensure both methods are evaluated under identical configurations, including normalization of data (using the same train/val/test splits as in previous studies: 0.6:0.2:0.2 for ETT datasets and 0.7:0.1:0.2 for the others), the same look-back window sizes (with configurations such as t = 336 and t = 720 as applicable), and prediction horizons T = {96, 192, 336, 720}. Additionally, refer to Table 2 for detailed look-back window settings and ensure comprehensive logging, statistical significance testing where applicable, and consistency with the protocols described in previous literature. Compare the performance of these two variants by evaluating them with both MSE and MAE metrics, and cross-reference the outcomes with the baseline results reported in Table 5.",
+      "expected_outcome": "It is anticipated that the Concat aggregation method will deliver marginally better performance than the Mean method, as evidenced by lower MSE and MAE values across most datasets and prediction horizons. This outcome would support the claim that the concatenation of DVMB outputs better preserves the variations necessary for enhanced forecasting accuracy. The experimental results should echo the trends observed in Table 5, thereby reinforcing the methodological choice of aggregation in the PDF model.",
+      "subsection_source": "4.3 ABLATION STUDIES",
+      "source": [
+        "/workspace/run_longExp.py",
+        "/workspace/scripts/PDF/336/etth2.sh",
+        "/workspace/scripts/PDF/336/ettm2.sh",
+        "/workspace/scripts/PDF/336/weather.sh",
+        "/workspace/scripts/PDF/336/electricity.sh",
+        "/workspace/scripts/PDF/720/etth2.sh",
+        "/workspace/scripts/PDF/720/ettm2.sh",
+        "/workspace/scripts/PDF/720/weather.sh",
+        "/workspace/scripts/PDF/720/electricity.sh"
+      ],
+      "usage_instructions": "To run the ablation study comparing concatenation vs. mean aggregation methods in DVMB outputs, use the following steps:\n\n1. For the Concat aggregation method (default in the paper):\n   - Run the scripts as they are, for example: `sh ./scripts/PDF/336/etth2.sh`\n   - This will run the model with the default concatenation aggregation method\n\n2. For the Mean aggregation method:\n   - Modify the scripts to add the `--add` flag, for example:\n   - Edit the python command in each script to include `--add` before the `--des` parameter\n   - Example: `python -u run_longExp.py ... --add --des Exp ...`\n   - Then run the modified scripts\n\n3. Run both versions for all datasets (ETTh2, ETTm2, Weather, Electricity) and prediction horizons (96, 192, 336, 720) as specified in the scripts\n\n4. Compare the MSE and MAE metrics from the results to determine which aggregation method performs better\n\nThe results will be stored in:\n- Model checkpoints: `./checkpoints/`\n- Visualization outputs: `./test_results/`\n- Numerical results: `./results/`\n- Summary metrics: `./results.txt`",
+      "requirements": [
+        "Step 1: Create necessary log directories if they don't exist (/workspace/scripts/PDF/336/etth2.sh:1-7, /workspace/scripts/PDF/336/ettm2.sh:1-7, /workspace/scripts/PDF/336/weather.sh:1-7, /workspace/scripts/PDF/336/electricity.sh:1-7, /workspace/scripts/PDF/720/etth2.sh:1-7, /workspace/scripts/PDF/720/ettm2.sh:1-7, /workspace/scripts/PDF/720/weather.sh:1-7, /workspace/scripts/PDF/720/electricity.sh:1-7)",
+        "Step 2: Define experiment parameters including model name, dataset paths, and sequence length (/workspace/scripts/PDF/336/etth2.sh:9-15, /workspace/scripts/PDF/336/ettm2.sh:9-15, /workspace/scripts/PDF/336/weather.sh:8-15, /workspace/scripts/PDF/336/electricity.sh:8-15, /workspace/scripts/PDF/720/etth2.sh:9-15, /workspace/scripts/PDF/720/ettm2.sh:9-15, /workspace/scripts/PDF/720/weather.sh:8-15, /workspace/scripts/PDF/720/electricity.sh:8-15)",
+        "Step 3: For each prediction length (96, 192, 336, 720), run the time series forecasting model with appropriate dataset-specific parameters (/workspace/scripts/PDF/336/etth2.sh:17-45, /workspace/scripts/PDF/336/ettm2.sh:17-45, /workspace/scripts/PDF/336/weather.sh:17-104, /workspace/scripts/PDF/336/electricity.sh:17-104, /workspace/scripts/PDF/720/etth2.sh:17-45, /workspace/scripts/PDF/720/ettm2.sh:17-45, /workspace/scripts/PDF/720/weather.sh:17-104, /workspace/scripts/PDF/720/electricity.sh:17-104)",
+        "Step 4: Run the model with the default concatenation aggregation method (without the --add flag) (/workspace/run_longExp.py:46, /workspace/scripts/PDF/336/etth2.sh:19-44, /workspace/scripts/PDF/336/ettm2.sh:19-44, /workspace/scripts/PDF/336/weather.sh:19-43, /workspace/scripts/PDF/336/electricity.sh:19-43)",
+        "Step 5: Run the model with the mean aggregation method by adding the --add flag before the --des parameter (/workspace/run_longExp.py:46, usage_instructions)",
+        "Step 6: Log experiment results to appropriate files for later analysis (/workspace/scripts/PDF/336/etth2.sh:44, /workspace/scripts/PDF/336/ettm2.sh:44, /workspace/scripts/PDF/336/weather.sh:43, /workspace/scripts/PDF/336/electricity.sh:43, /workspace/scripts/PDF/720/etth2.sh:44, /workspace/scripts/PDF/720/ettm2.sh:44, /workspace/scripts/PDF/720/weather.sh:43, /workspace/scripts/PDF/720/electricity.sh:43)",
+        "Step 7: Compare MSE and MAE metrics from the results to determine which aggregation method performs better (usage_instructions)"
+      ],
+      "agent_instructions": "Your task is to implement scripts for running an ablation study comparing two aggregation methods (concatenation vs. mean) in a time series forecasting model called PDF. The experiment needs to be run on four datasets (ETTh2, ETTm2, Weather, Electricity) with different prediction horizons (96, 192, 336, 720) and sequence lengths (336, 720).\n\nYou need to:\n\n1. Create a main Python script that can run time series forecasting experiments with the PDF model. This script should accept command-line arguments for configuring the model, including dataset parameters, model architecture, and training settings.\n\n2. Create shell scripts to run experiments for each dataset and sequence length combination. These scripts should:\n   - Create necessary log directories\n   - Define experiment parameters (model name, dataset paths, etc.)\n   - Run the model with different prediction horizons\n   - Log results to appropriate files\n\n3. Implement two aggregation methods in the model:\n   - Concatenation method (default)\n   - Mean aggregation method (activated with a command-line flag)\n\n4. The experiments should be run twice for each configuration:\n   - Once with the default concatenation method\n   - Once with the mean aggregation method (by adding a specific flag to the command)\n\n5. Results should be stored in appropriate directories for later comparison of MSE and MAE metrics.\n\nThe goal is to determine which aggregation method performs better across different datasets and prediction horizons.",
+      "masked_source": [
+        "/workspace/run_longExp.py",
+        "/workspace/scripts/PDF/336/etth2.sh",
+        "/workspace/scripts/PDF/336/ettm2.sh",
+        "/workspace/scripts/PDF/336/weather.sh",
+        "/workspace/scripts/PDF/336/electricity.sh",
+        "/workspace/scripts/PDF/720/etth2.sh",
+        "/workspace/scripts/PDF/720/ettm2.sh",
+        "/workspace/scripts/PDF/720/weather.sh",
+        "/workspace/scripts/PDF/720/electricity.sh"
+      ]
+    }
+  ]
+}

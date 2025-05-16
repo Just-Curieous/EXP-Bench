@@ -1,0 +1,30 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Does the ordering of the retrieved snippets in the cross-file context (placing the gold snippet at the head versus the tail) affect the code completion performance?",
+      "method": "Set up an experiment using the RepoBench-P task where the cross-file context is composed of a gold snippet along with other randomly fetched snippets to fill the 6400-token capacity. Create two configurations: one where the gold snippet is placed at the beginning of the cross-file context (Gold-Filled-Head) and another where it is placed at the end (Gold-Filled-Tail). Use a fixed in-file context as described (1600 tokens with a limit of 60 preceding lines). Use Codex (code-davinci-002) for next-line prediction across both Python and Java datasets. Evaluate the performance of both configurations using Exact Match, Edit Similarity, and CodeBLEU metrics and analyze any statistically significant differences.",
+      "expected_outcome": "The expected outcome is that positioning the gold snippet at the head (i.e., closer to the in-file context and the prediction point) will result in better code completion performance compared to positioning it at the tail. This supports the claim that the proximity of relevant code snippets in the context improves the autoregressive prediction accuracy.",
+      "subsection_source": "4.3 R EPOBENCH -P",
+      "source": [
+        "/workspace/inference_repobench_p.py"
+      ],
+      "usage_instructions": "Execute the script with the following commands to run the experiment:\n\n1. For the Gold-Filled-Head configuration (gold snippet at the beginning):\n   ```\n   python inference_repobench_p.py --language python --mode gold-filled-head --model_name codex\n   python inference_repobench_p.py --language java --mode gold-filled-head --model_name codex\n   ```\n\n2. For the Gold-Filled-Tail configuration (gold snippet at the end):\n   ```\n   python inference_repobench_p.py --language python --mode gold-filled-tail --model_name codex\n   python inference_repobench_p.py --language java --mode gold-filled-tail --model_name codex\n   ```\n\n3. After running both configurations, evaluate the results using:\n   ```\n   python evaluate_completion.py --model codex/gold-filled-head\n   python evaluate_completion.py --model codex/gold-filled-tail\n   ```\n\nThe script will automatically handle the RepoBench-P task, compose the cross-file context with the gold snippet at the head or tail position, use Codex (code-davinci-002) for next-line prediction, and evaluate using Exact Match, Edit Similarity, and CodeBLEU metrics.",
+      "requirements": [
+        "Step 1: Import necessary libraries (argparse, os, json, tqdm, etc.) (/workspace/inference_repobench_p.py:1-10)",
+        "Step 2: Define argument parser to handle command-line arguments for language, mode, and model_name (/workspace/inference_repobench_p.py:12-20)",
+        "Step 3: Load the RepoBench-P dataset for the specified language (/workspace/inference_repobench_p.py:22-30)",
+        "Step 4: Set up the model (Codex/code-davinci-002) with appropriate parameters (/workspace/inference_repobench_p.py:32-40)",
+        "Step 5: Create a function to construct prompts with gold snippets at head or tail position based on the mode (/workspace/inference_repobench_p.py:42-70)",
+        "Step 6: Process each example in the dataset, constructing the cross-file context with gold snippets (/workspace/inference_repobench_p.py:72-90)",
+        "Step 7: Generate next-line predictions using the model (/workspace/inference_repobench_p.py:92-100)",
+        "Step 8: Extract the first non-comment line from the generated output (/workspace/inference_repobench_p.py:102-110)",
+        "Step 9: Save the predictions along with ground truth in the appropriate output directory structure (/workspace/inference_repobench_p.py:112-120)",
+        "Final Step: Execute the main function when the script is run directly (/workspace/inference_repobench_p.py:122-125)"
+      ],
+      "agent_instructions": "Create a script that performs next-line prediction on the RepoBench-P dataset using the Codex model (code-davinci-002). The script should:\n\n1. Accept command-line arguments for:\n   - language (python or java)\n   - mode (gold-filled-head or gold-filled-tail)\n   - model_name (codex)\n\n2. Load the RepoBench-P dataset for the specified language.\n\n3. Implement two different prompt construction strategies:\n   - gold-filled-head: Place the gold snippet (correct code) at the beginning of the context\n   - gold-filled-tail: Place the gold snippet (correct code) at the end of the context\n\n4. For each example in the dataset:\n   - Construct the cross-file context with the gold snippet positioned according to the specified mode\n   - Generate next-line predictions using the Codex model\n   - Extract the first non-comment line from the generated output\n   - Save the predictions along with ground truth for later evaluation\n\n5. Organize the output in a directory structure that can be used by the evaluation script, which will calculate Exact Match, Edit Similarity, and CodeBLEU metrics.\n\nThe script should handle both Python and Java code appropriately, including language-specific comment syntax.",
+      "masked_source": [
+        "/workspace/inference_repobench_p.py"
+      ]
+    }
+  ]
+}

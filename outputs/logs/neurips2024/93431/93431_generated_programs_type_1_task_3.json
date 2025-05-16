@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/examples/bbh/run_prompt_bigbench_trace.py",
+        "/workspace/examples/bbh/run_prompt_bigbench_dspy.py"
+    ],
+    "usage_instructions": "1. First, ensure you have the required dependencies installed (autogen, datasets, etc.). 2. Run the Trace optimization script with: `python /workspace/examples/bbh/run_prompt_bigbench_trace.py --task <task_name> --train`. 3. Run the DSPy COPRO optimization script with: `python /workspace/examples/bbh/run_prompt_bigbench_dspy.py --task <task_name> --copro`. 4. Compare the results from both approaches to see which one achieves better performance. The scripts will output accuracy metrics and save detailed results to the specified save paths."
+}

@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Ensure the Waymo dataset is properly prepared according to OpenPCDet's instructions, with the raw data organized in the expected directory structure (/workspace/tools/train.py:68-69)",
+    "Step 2: Generate Hilbert curve template files for three different ranks (7, 8, 9) that will be used by the Voxel Mamba model for sequence ordering of voxels (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:144-219)",
+    "Step 3: Parse command line arguments to configure the training process, including the configuration file path, batch size, and number of epochs (/workspace/tools/train.py:21-65)",
+    "Step 4: Load the model configuration from the specified YAML file, which defines the model architecture, dataset configuration, and optimization parameters (/workspace/tools/train.py:56-65)",
+    "Step 5: Initialize distributed training if specified, setting up the appropriate backend and calculating the batch size per GPU (/workspace/tools/train.py:70-86)",
+    "Step 6: Create output directories for logs, checkpoints, and tensorboard files (/workspace/tools/train.py:93-117)",
+    "Step 7: Build the dataloader for the training set, which loads and preprocesses the Waymo point cloud data (/workspace/tools/train.py:119-130)",
+    "Step 8: Build the Voxel Mamba network model with the specified configuration, including the backbone that uses Hilbert curve templates (/workspace/tools/train.py:132-136)",
+    "Step 9: Initialize the optimizer and learning rate scheduler based on the configuration (/workspace/tools/train.py:137-172)",
+    "Step 10: Train the model for the specified number of epochs, saving checkpoints periodically (/workspace/tools/train.py:174-203)",
+    "Step 11: Clean up shared memory if used by the dataset (/workspace/tools/train.py:205-206)",
+    "Step 12: Build the dataloader for the validation set to evaluate the trained model (/workspace/tools/train.py:211-218)",
+    "Step 13: Evaluate the trained model on the validation set and report performance metrics (/workspace/tools/train.py:219-229)"
+  ],
+  "agent_instructions": "Your task is to train a Voxel Mamba model from scratch on the Waymo dataset. This involves several key steps:\n\n1. First, ensure the Waymo dataset is properly prepared according to the OpenPCDet framework's instructions. The dataset should be organized in the expected directory structure.\n\n2. Generate the Hilbert curve template files that are essential for the Voxel Mamba model. These templates enable the model to process 3D voxels as sequences. You'll need to create three template files with different ranks (7, 8, 9) using the provided script.\n\n3. Train the Voxel Mamba model using the train.py script with the appropriate configuration file (voxel_mamba_waymo.yaml). The configuration specifies the model architecture, which uses a Voxel Mamba backbone that processes point cloud data through state space models instead of traditional 3D convolutions.\n\n4. For efficient training, use distributed training across multiple GPUs if available. The batch size should be set according to the available GPU memory (the default is 3 per GPU).\n\n5. The training process will save checkpoints periodically, and after training completes, the model will be evaluated on the validation set to report performance metrics.\n\nThe Voxel Mamba model is designed to achieve state-of-the-art performance on 3D object detection for autonomous driving by using state space models to process point cloud data efficiently without requiring explicit voxel grouping operations."
+}

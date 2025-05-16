@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/scripts/musc.sh",
+        "/workspace/examples/musc_main.py"
+    ],
+    "usage_instructions": "To evaluate the zero-shot MuSc method against other methods on industrial anomaly detection tasks, execute the script 'scripts/musc.sh'. This script runs the MuSc method on both MVTec AD and VisA datasets with the optimal configuration (ViT-L-14-336 backbone, image size 518, aggregation degrees [1,3,5]). The script will automatically evaluate all categories in both datasets and compute all the required metrics (image-level AUROC, F1-max, AP and pixel-level AUROC, F1-max, AP, PRO). Results will be saved in Excel format in the output directory. To evaluate inference efficiency with different test set sizes, modify the '--divide_num' parameter in the script to divide the test set into different subsets (e.g., '--divide_num 2' or '--divide_num 4'). The script outputs per-image inference time in milliseconds, which can be used to analyze efficiency. For GPU memory usage analysis, the script already uses memory-efficient implementations by default, but you can monitor GPU memory usage externally during execution."
+}

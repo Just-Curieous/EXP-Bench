@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries for permutations, combinations, and symbolic mathematics (/workspace/test_templates.py:2-3)",
+    "Step 2: Define a function that takes a list of four numbers as input (/workspace/test_templates.py:5)",
+    "Step 3: Define the four basic arithmetic operations (+, -, *, /) (/workspace/test_templates.py:6)",
+    "Step 4: Set up symbolic variables for evaluation (/workspace/test_templates.py:7)",
+    "Step 5: Generate all possible permutations of the four input numbers (/workspace/test_templates.py:8)",
+    "Step 6: For each permutation, try all possible combinations of the four operations (/workspace/test_templates.py:9)",
+    "Step 7: For each combination, construct different expression patterns with different parentheses placements (/workspace/test_templates.py:10-16)",
+    "Step 8: Evaluate each expression and check if it equals 24 (with tolerance for floating-point errors) (/workspace/test_templates.py:18-20)",
+    "Step 9: Return the first valid expression that evaluates to 24, or a message if no solution is found (/workspace/test_templates.py:21)",
+    "Final Step: Demonstrate the function with a sample input (/workspace/test_templates.py:24-25)"
+  ],
+  "agent_instructions": "Implement a Game of 24 solver that finds a mathematical expression using four input numbers and the four basic arithmetic operations (+, -, *, /) to reach a result of 24.\n\nYour implementation should:\n\n1. Take four numbers as input\n2. Try all possible permutations of these numbers\n3. For each permutation, try all possible combinations of the four basic arithmetic operations\n4. Consider different ways to place parentheses to change the order of operations\n5. Evaluate expressions accurately, avoiding floating-point errors\n6. Return the first valid expression that evaluates to 24, or indicate that no solution exists\n\nFor example, given the numbers [1, 7, 10, 13], your solver should find a valid expression that equals 24.\n\nHint: Consider using libraries for permutations/combinations and symbolic mathematics to handle the evaluation accurately."
+}

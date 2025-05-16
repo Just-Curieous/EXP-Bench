@@ -1,0 +1,3 @@
+{
+    "no_answer": "While the repository contains all the necessary components to run the experiment comparing llama-2-70b and llama-2-13b across AGENT BENCH tasks, there is no single script or small set of scripts specifically designed to answer this exact question. The repository provides a framework (src.assigner and src.analysis) for running and analyzing experiments with different models, but users would need to create a custom configuration file that assigns both models to all tasks with identical prompt formatting and temperature=0. The MODEL_MAP in src/analysis.py does include both models, but there are no pre-configured assignment files specifically for this comparison experiment."
+}

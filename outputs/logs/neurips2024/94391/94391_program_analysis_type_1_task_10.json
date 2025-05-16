@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Create a shell script that will execute both CycleNet and SparseTSF models on multiple datasets (/workspace/run_std.sh:1-9)",
+    "Step 2: For CycleNet, configure it to use a linear model type with a fixed look-back window of 336 and forecast horizons of 96, 192, 336, and 720 (/workspace/scripts/CycleNet/STD/CycleNet.sh:195-225)",
+    "Step 3: For CycleNet on Electricity dataset, set the appropriate parameters including model name, data path, features type (multivariate), and disable instance normalization (use_revin=0) (/workspace/scripts/CycleNet/STD/CycleNet.sh:195-225)",
+    "Step 4: For CycleNet on Electricity dataset, set the appropriate cycle length (168) and input dimension (321) (/workspace/scripts/CycleNet/STD/CycleNet.sh:218-219)",
+    "Step 5: For SparseTSF on Electricity dataset, configure it with the same look-back window of 336 and forecast horizons of 96, 192, 336, and 720 (/workspace/scripts/CycleNet/STD/SparseTSF.sh:188-216)",
+    "Step 6: For SparseTSF on Electricity dataset, set the appropriate parameters including model name, data path, features type (multivariate), and disable instance normalization (use_revin=0) (/workspace/scripts/CycleNet/STD/SparseTSF.sh:188-216)",
+    "Step 7: For SparseTSF on Electricity dataset, set the appropriate period length (24) and input dimension (862) (/workspace/scripts/CycleNet/STD/SparseTSF.sh:209-210)",
+    "Step 8: Execute the script to run both models and evaluate their performance using MSE and MAE metrics (/workspace/run_std.sh:3-6)"
+  ],
+  "agent_instructions": "Create a shell script that runs experiments comparing two time series forecasting approaches (CycleNet and SparseTSF) on the Electricity dataset. The script should:\n\n1. Run both models with a fixed look-back window of 336 and forecast horizons of 96, 192, 336, and 720.\n\n2. For CycleNet (which implements a Recurrent Cycle Forecasting approach):\n   - Use a linear model type\n   - Disable instance normalization\n   - Set appropriate cycle length for the Electricity dataset\n   - Configure for multivariate forecasting\n\n3. For SparseTSF (which implements a Sparse Time Series Forecasting approach):\n   - Use the same look-back window as CycleNet\n   - Disable instance normalization\n   - Set appropriate period length for the Electricity dataset\n   - Configure for multivariate forecasting\n\n4. Both models should be evaluated using MSE and MAE metrics to allow direct comparison of their performance across all forecast horizons.\n\nThe experiment should demonstrate the effectiveness of both approaches on the Electricity dataset for different prediction lengths.",
+  "masked_source": [
+    "/workspace/run_std.sh"
+  ]
+}

@@ -1,0 +1,1006 @@
+{
+  "questions": [
+    {
+      "question": "Will the LLaMA-Adapter outperform Alpaca-LoRA and fully fine-tuned Alpaca on challenging generative tasks as measured by the GPT-4 evaluation benchmark?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Compare the performance of LLaMA-Adapter, Alpaca-LoRA, and fully fine-tuned Alpaca on generative tasks.\n\n    - **Objective:** \n    Determine if the LLaMA-Adapter shows superior performance in generative capabilities as evaluated by GPT-4 benchmarks.\n\n2. **Evaluation Metrics:**\n    -  GPT-4 evaluating benchmark. It adopts GPT-4 to assess the quality of two compared responses from different models on 80 questions.\n\n3. **Comparative Evaluation:**\n    - Model:\n        - Fully fine-tuned Alpaca (trained by the 52K instruction data)\n        - Alpaca-LoRA (trained by the 52K instruction data)\n        - LLaMA-Adapter (with prompt length K = 10 and adaptation prompts in the last 30 layers)\n\n4. **Settings for LLaMA-Adapter**:\n    - Follow Stanford Alpaca, utilize 52K instruction-following data for training\n    - Fine tune LLaMA-Adapter on 8 A100 GPUs for 5 epochs.\n    - Warmup epochs:2\n    - Batch size:64\n    - Learning rate: 0.009\n    - Weight decay: 0.02\n    - Utilize the pre-trained LLaMA model with 7B parameters and N = 32 transformer layers\n    - Adopt a prompt length K = 10 and insert the adaption prompts into the last L = 30 layers",
+      "expected_outcome": "Based on reported results, LLaMA-Adapter is expected to win both Alpaca and Alpaca-LoRA on GPT-4 Evaluating Benchmark.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "instruction_dataset": "52K instruction dataset (used for training all models)",
+            "evaluation_benchmark": "GPT-4 evaluation benchmark (LLaMA-Adapter vs Alpaca and LLaMA-Adapter vs Alpaca-LoRA)"
+          },
+          "independent_variables": {
+            "model": [
+              "fully fine-tuned Alpaca",
+              "Alpaca-LoRA",
+              "LLaMA-Adapter"
+            ],
+            "model_configuration": "For LLaMA-Adapter: prompt length K = 10 and adaptation prompts inserted into last L = 30 layers (others use their respective configurations)"
+          },
+          "dependent_variables": {
+            "performance_metrics": "Measured by GPT-4 ratings on 80 generative tasks"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "model_training_protocols": "The exact training protocols for Alpaca and Alpaca-LoRA are referenced as 'their respective protocols' without detailed specification"
+          },
+          "possible_modifications": {
+            "modification_2": [
+              "Introduce new variables such as different training epochs, learning rates, or data augmentation strategies to explore their impact on performance"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Models: fully fine-tuned Alpaca, Alpaca-LoRA, and LLaMA-Adapter",
+            "Training data: a fixed 52K instruction dataset used across all models",
+            "Model configuration: LLaMA-Adapter with a prompt length K = 10 and adaptation prompts in the last 30 layers; other models use their respective configurations",
+            "Evaluation: GPT-4 evaluation benchmark for assessing paired responses on 80 generative tasks",
+            "Hardware: use of 8 A100 GPUs for training"
+          ],
+          "setup_steps": [
+            "Train all models on the fixed 52K instruction dataset following their predefined protocols",
+            "For LLaMA-Adapter, implement the specific configuration by setting prompt length K to 10 and inserting adaptation prompts into the last 30 layers",
+            "Set up the evaluation environment using the GPT-4 evaluation benchmark where GPT-4 compares paired responses on 80 questions spanning question answering, language translation, and code generation"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Divergent training protocols",
+              "description": "Alpaca and Alpaca-LoRA refer to their own training protocols with limited implementation details, adding complexity in comparing training setups."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Training protocols for Alpaca and Alpaca-LoRA: The documentation vaguely refers to 'their respective protocols' without detailed, reproducible steps."
+          ],
+          "ambiguous_setup_steps": [
+            "Exact configuration details for model-specific training protocols (e.g., learning rate, warmup periods for Alpaca and Alpaca-LoRA) are not fully detailed."
+          ],
+          "possible_modifications": {
+            "modification_1": [
+              "Omit or hide specific training protocol details for Alpaca and Alpaca-LoRA to assess robustness and reliance on default settings."
+            ],
+            "modification_2": [
+              "Introduce new variables such as altering the number of training epochs, adjusting learning rate schedules, or incorporating data augmentation to explore their impact on performance."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Constrain the training hardware by, for example, reducing the available GPUs from 8 A100s to a smaller number, thereby testing efficiency under limited computational resources.",
+              "Enforce a constraint that requires achieving similar performance using a model with fewer tuned parameters (e.g., a mini version of LLaMA-Adapter) to simulate limited resource scenarios."
+            ],
+            "time_constraints": [
+              "Limit the training duration (for instance, reducing the training time from 1 hour to 45 minutes) for all models to highlight efficiency trade-offs."
+            ],
+            "money_constraints": [
+              "Impose a compute budget constraint (simulating a lower financial allocation for compute resources) that forces a tighter control on training and evaluation expenses."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Random token dropping and evaluation stochasticity",
+          "description": "Random uncertainty arises from factors that introduce non-determinism into both the training and evaluation processes. For example, if random tokens are dropped during adaptation prompt insertion (instead of masking unimportant tokens deterministically), gradient updates may become unstable. Furthermore, the GPT-4 evaluation benchmark itself might exhibit stochastic scoring variability due to its internal sampling process.",
+          "impact": "Such randomness can lead to fluctuations in the measured performance (e.g., GPT-4 ratings on the 80 generative tasks), making it harder to reliably compare the three models\u2019 performance. This could result in inconsistent efficiency metrics and variations in performance across different runs.",
+          "possible_modifications": [
+            "Introduce artificial random token dropping during the adaptation process to simulate higher randomness and examine its effect on model stability.",
+            "Vary random seeds or evaluation conditions in the GPT-4 evaluation benchmark to assess the robustness of performance metrics under stochastic conditions."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Dataset bias and variation in training protocols",
+          "description": "Systematic uncertainty is introduced by factors that bias the results in a consistent manner. In this experiment, differences in model training protocols (e.g., LLaMA-Adapter\u2019s specific adaptation prompt insertion into the last 30 layers versus the protocols used in Alpaca and Alpaca-LoRA) and potential hidden biases in the fixed 52K instruction dataset can systematically affect performance. ",
+          "impact": "These systematic issues can lead to consistent over- or under-estimation of a model's generative and adaptation capabilities, thereby skewing the comparison outcomes reported via the GPT-4 benchmark.",
+          "possible_modifications": [
+            "Perform a one-time systematic alteration of the dataset (such as relabeling samples based on a fixed rule) to observe whether the models can recognize and overcome introduced bias.",
+            "Omit or mask detailed training protocol specifics for Alpaca and Alpaca-LoRA so that evaluation relies solely on performance outputs, reducing systematic differences that arise from differing implementation details."
+          ]
+        }
+      }
+    },
+    {
+      "question": "Hoe does the multi-modal 'LLaMA-Adpater' perfroms, compared with ChatGPT_CoT and GPT-4_CoT, evaluating with ScienceQA benchmark? (CoT denotes using a chain of thought for question answering.)",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Assess and compare the performance of LLaMA-Adapter, ChatGPT_CoT, and GPT-4_CoT on the ScienceQA benchmark.\n\n    - **Objective:** \n    Determine if the multi-modal LLaMA-Adapter achieves superior results across generative tasks in the ScienceQA benchmark compared to other models.\n\n2. **Evaluation Metrics:**\n    -  Visial question answering on ScienceQA benchmark\n    - Evaluate accuracy score on following tasks:\n        - NAT\n        - SOC\n        - LAN\n        - TXT\n        - IMG\n        - NO\n        - G1-6\n        - G7-12\n    - Also report the average on these scores for each model\n\n3. **Comparative Evaluation:**\n    - Model:\n        - Multi-modal LLaMA-Adapter\n        - ChatGPT_CoT\n        - GPT-4_CoT\n\n4. **Settings for LLaMA-Adapter**:\n    -  Adopt CLIP as the image encoder to extract multi-scale visual features, and leverage a simple bottleneck MLP layer as the learnable projection network. \n    - Fine tune LLaMA-Adapter on 8 A100 GPUs for 5 epochs.\n    - Warmup epochs:2\n    - Batch size:64\n    - Learning rate: 0.009\n    - Weight decay: 0.02\n    - Utilize the pre-trained LLaMA model with 7B parameters and N = 32 transformer layers\n    - Adopt a prompt length K = 10 and insert the adaption prompts into the last L = 30 layers\n    - For ScienceQA, concatenate the given question, textual context, and options sequentially in one sentence as LLaMA\u2019s input.",
+      "expected_outcome": "The multi-modal 'LLaMA-Adapter' attains leading results superior to the GPT series.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "dataset": "ScienceQA benchmark (same set of visual and textual questions with multiple-choice answers)",
+            "evaluation_protocol": "score on NAT,SOC,LAN,TXT,IMG,NO,G1-6,G7-12 tasks of ScienceQA benchmark and average score"
+          },
+          "independent_variables": {
+            "llm_model": [
+              "multi-modal LLaMA-Adapter",
+              "ChatGPT_CoT",
+              "GPT-4_CoT"
+            ],
+            "input_modality": [
+              "multi-modal (image + text)",
+              "text-only (via chain-of-thought)"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metric": "Accuracy (percentage of correct answers on ScienceQA benchmark)"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "chain_of_thought": "It is not detailed how chain-of-thought prompting is uniformly applied across models, especially for ChatGPT_CoT and GPT-4_CoT.",
+            "comparison_metric_threshold": "The criteria for 'leading results superior to the GPT series' is not numerically defined."
+          },
+          "possible_modifications": {
+            "modification_method_definition": [
+              "Explicitly define the adaptation/fine-tuning procedure used for LLaMA-Adapter as well as the inference settings for ChatGPT_CoT and GPT-4_CoT."
+            ],
+            "modification_chain_of_thought": [
+              "Introduce a variable that masks or varies the chain-of-thought prompt length or usage to analyze its impact on performance."
+            ],
+            "modification_metric_threshold": [
+              "Specify numerical thresholds or performance bands to clearly delineate what constitutes 'leading results'."
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "ScienceQA benchmark (visual and textual questions with multiple-choice answers)",
+            "LLM models (multi-modal LLaMA-Adapter, ChatGPT_CoT, GPT-4_CoT)",
+            "Input modalities (multi-modal input for LLaMA-Adapter vs text-only for ChatGPT_CoT and GPT-4_CoT)",
+            "Performance metric (accuracy as percentage of correct answers)"
+          ],
+          "setup_steps": [
+            "Ensure the dataset remains consistent across all models",
+            "Configure the ScienceQA Evaluating Benchmark procedure",
+            "Set up the inference pipelines for each LLM model for their respective input modalities",
+            "Run the evaluation under identical conditions to record the accuracy",
+            "Collect and compare the performance results across models"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Model Inference Configuration",
+              "description": "Different models may require unique configurations (e.g., input processing for multi-modal vs text-only) which increases overall setup complexity."
+            },
+            {
+              "source": "Chain-of-Thought Integration",
+              "description": "Incorporating chain-of-thought prompting uniformly across models adds complexity, especially if the prompt length or structure is not consistent."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Method field: The exact tuning or inference procedure for the experiment is not specified.",
+            "Chain-of-thought application: It is not detailed how the chain-of-thought prompting is applied uniformly across the models.",
+            "Comparison metric threshold: The criteria for what constitutes 'leading results' is not numerically defined."
+          ],
+          "ambiguous_setup_steps": [
+            "The inference and fine-tuning procedures for LLaMA-Adapter compared to ChatGPT_CoT and GPT-4_CoT are not clearly described.",
+            "The process for integrating multi-modal data and chain-of-thought prompts is not elaborated in detail."
+          ],
+          "possible_modifications": {
+            "modification_method_definition": [
+              "Explicitly define the adaptation/fine-tuning procedure used for LLaMA-Adapter and provide the corresponding inference settings for ChatGPT_CoT and GPT-4_CoT."
+            ],
+            "modification_chain_of_thought": [
+              "Introduce a variable or parameter that masks or varies the chain-of-thought prompt length or usage to analyze its isolated impact on performance."
+            ],
+            "modification_metric_threshold": [
+              "Specify numerical thresholds or performance bands (e.g., accuracy percentages) to clearly delineate what constitutes 'leading results' superior to the GPT series."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Enforce model size limitations by requiring that a smaller version of the multi-modal LLaMA-Adapter (e.g., a 'mini' variant) achieves comparable accuracy on the ScienceQA benchmark as the full-sized model."
+            ],
+            "money_constraints": [
+              "Limit computational expenses by constraining the usage of high-cost GPU resources."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Random token modifications and chain-of-thought variability",
+          "description": "Uncertainty is introduced by approaches such as dropping tokens at random (instead of using a fixed scheme) and variable chain-of-thought prompt lengths. These random modifications, similar to techniques used to lower pre-training costs by selectively dropping tokens, can destabilize gradient updates and lead to unpredictable performance fluctuations, particularly in the fine-tuning and inference phases of the experiment.",
+          "impact": "This results in run-to-run variations in model predictions and accuracy on the ScienceQA benchmark, making it difficult to consistently ascertain the true superiority of one model over another.",
+          "possible_modifications": [
+            "Eliminate random token dropping and adopt a deterministic approach for token selection in adaptation prompts.",
+            "Standardize the chain-of-thought prompt length and configuration across all experimental runs.",
+            "Introduce fixed random seeds during training and inference to control variability."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Methodological and dataset biases",
+          "description": "Systematic uncertainty may stem from ambiguities in the experimental method definition. For example, if the tuning process, chain-of-thought prompting, or inference configurations (especially between multi-modal input for LLaMA-Adapter and text-only input for ChatGPT_CoT and GPT-4_CoT) are not uniformly defined, it could introduce biases. Additionally, any one-time modifications or pre-processing errors in the ScienceQA benchmark data may embed a bias favoring one model over the others.",
+          "impact": "This bias could lead to systematically skewed performance results that overstate the capabilities of the multi-modal LLaMA-Adapter relative to ChatGPT_CoT and GPT-4_CoT, thereby misrepresenting the true model differences.",
+          "possible_modifications": [
+            "Explicitly define the tuning and inference procedures for all models, ensuring that the chain-of-thought prompting is applied uniformly.",
+            "Review and standardize the multi-modal integration and data pre-processing steps to prevent inadvertent systematic bias.",
+            "Specify numerical performance thresholds and criteria to clearly delineate what constitutes 'leading results' and avoid subjective comparisons.",
+            "Revalidate the dataset to ensure its integrity and remove any inadvertent biases introduced during pre-processing."
+          ]
+        }
+      }
+    },
+    {
+      "question": "How does LLaMA-Adapter performs, compared to LLaVA on Zero-shot Multi-modal Evaluation benchmark: MME?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Evaluate and compare the performance of LLaMA-Adapter and LLaVA on the MME benchmark under zero-shot conditions.\n    - **Objective:** \n    Determine if LLaMA-Adapter achieves higher scores in Perception and Cognition compared to LLaVA.\n\n2. **Evaluation Metrics:**\n    - Measure Perception and Cognition scores for both models on MME benchmark.\n3. **Comparative Evaluation:**\n    - Model:\n        - LLaMA-Adapter\n        - LLaVA\n\n4. **Settings for LLaMA-Adapter**:\n    -  Adopt CLIP as the image encoder to extract multi-scale visual features, and leverage a simple bottleneck MLP layer as the learnable projection network. \n    - Fine tune LLaMA-Adapter on 8 A100 GPUs for 5 epochs.\n    - Warmup epochs:2\n    - Batch size:64\n    - Learning rate: 0.009\n    - Weight decay: 0.02\n    - Utilize the pre-trained LLaMA model with 7B parameters and N = 32 transformer layers\n    - Adopt a prompt length K = 10 and insert the adaption prompts into the last L = 30 layers",
+      "expected_outcome": "For the multi-modal benchmark MME, compared to LLaVA, LLaMA-Adapter achieves higher scores in Perception and Cognition.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "benchmark": "MME benchmark and its evaluation protocol remain constant for all model evaluations"
+          },
+          "independent_variables": {
+            "model": [
+              "LLaMA-Adapter",
+              "LLaVA"
+            ],
+            "evaluation_metrics": [
+              "Perception score",
+              "Cognition score"
+            ]
+          },
+          "dependent_variables": {
+            "performance_scores": "The numerical scores achieved on the Perception and Cognition metrics"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {}
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "MME benchmark with evaluation protocol",
+            "Two models: LLaMA-Adapter and LLaVA",
+            "Evaluation metrics: Perception score and Cognition score",
+            "Data handling and preprocessing for zero-shot evaluation"
+          ],
+          "setup_steps": [
+            "Ensure the MME benchmark evaluation protocol remains constant for all tests",
+            "Load and preprocess the MME dataset according to the specified protocol",
+            "Run experiments independently on LLaMA-Adapter and LLaVA using the zero-shot setup",
+            "Compute numerical performance scores for Perception and Cognition metrics",
+            "Compare the scores between the two models to assess relative performance"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Inter-model comparison",
+              "description": "Maintaining identical experimental conditions across the two models can be complex, especially when comparing performance metrics."
+            },
+            {
+              "source": "Evaluation protocol implementation",
+              "description": "Implementing the detailed MME evaluation protocol adds procedural complexity."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_setup_steps": [
+            "Evaluation procedure: The exact steps to compute performance scores under the zero-shot setting are not explicitly described.",
+            "Data preprocessing: No details are provided on how the dataset should be processed or prepared prior to evaluation."
+          ],
+          "possible_modifications": {
+            "evaluation_method_detail": [
+              "Include explicit details on the evaluation procedure such as score computation, conditions of the zero-shot setup, and data preprocessing steps."
+            ],
+            "extend_metrics": [
+              "Consider incorporating additional evaluation metrics from other tables (e.g., metrics shown in Table 11) to provide a more comprehensive performance assessment.",
+              "Mask some instructions/tools to evaluate model robustness under incomplete information scenarios."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Enforce a model size constraint by requiring that a reduced-parameter version of LLaMA-Adapter (e.g., a mini version) must achieve comparable Perception and Cognition scores to LLaVA"
+            ],
+            "time_constraints": [
+              "Limit the evaluation runtime per experiment instance to reflect a more constrained real-time processing environment, such as reducing the allowed inference time compared to standard full-scale tests."
+            ],
+            "money_constraints": [
+              "Impose a computational budget cap by restricting the available hardware resources (for example, operating with fewer than the 8 A100 GPUs mentioned in related setups), thereby simulating a cost-sensitive execution scenario."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic variations in evaluation input handling",
+          "description": "Random uncertainty arises when random modifications affect the evaluation process. For example, if the protocol randomly drops tokens in data preprocessing or applies stochastic noise to inputs during zero-shot evaluation, it may lead to instability in the gradient updates or random fluctuations in the computed Perception and Cognition scores. This randomness can mask true performance differences between models like LLaMA-Adapter and LLaVA.",
+          "impact": "Inconsistent performance scores that may vary from run to run, thereby obscuring the true comparison between models on the MME benchmark. This could incorrectly favor one model over the other due to random input perturbations rather than genuine performance differences.",
+          "possible_modifications": [
+            "Enforce fixed random seeds during data preprocessing and evaluation to ensure consistency.",
+            "Deterministically process all inputs (avoid random token dropping or similar perturbations) to remove stochastic variations from the evaluation pipeline."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Biased evaluation dataset]",
+          "description": "Systematic uncertainty is introduced when the evaluation dataset or metric selection is inherently biased or incomplete. For instance, if only the Perception and Cognition metrics are considered while ignoring other important aspects (such as additional metrics in Table 11 or those from the LVLM-eHub benchmark), the evaluation might systematically favor one model.",
+          "impact": "The reported performance differences may reflect the biases in the test conditions rather than true differences between the models, leading to skewed conclusions about the superiority of one approach over the other.",
+          "possible_modifications": [
+            "Clarify and fully detail the evaluation procedure including all data preprocessing steps and metric computation methods.",
+            "Extend the evaluation to include additional metrics and benchmarks to mitigate the bias from over-focusing on only two metrics (Perception and Cognition)."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py"
+      ],
+      "usage_instructions": "1. Download MME datasets and eval_tool from the MME repo (https://github.com/bradyfu/awesome-multimodal-large-language-models#our-mllm-works), and put them under `MME_Benchmark_release_version`. 2. Generate MME results using: `python util/evaluate_mme.py --pretrained_path [MODEL_PATH] --llama_path [LLAMA_DIR] --output_path [RESULT_FILE_PATH]` 3. Evaluate with MME's eval_tool: `python MME_Benchmark_release_version/eval_tool/calculation.py --results_dir [RESULT_FILE_PATH]`. Based on the MME leaderboard, LLaVA outperforms LLaMA-Adapter V2 on Perception (1531.31 vs 1328.39), while LLaMA-Adapter V2 performs better on Cognition (356.43 vs 295.36).",
+      "requirements": [
+        "Step 1: Import necessary libraries including torch, PIL, cv2, and custom modules for the LLaMA adapter model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:1-11)",
+        "Step 2: Define a constant DATA_DIR pointing to the MME benchmark directory (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:13)",
+        "Step 3: Create a helper function to load and convert images to RGB format, handling different image types and potential errors (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:15-31)",
+        "Step 4: Define a custom Dataset class (MMEDataset) that loads MME benchmark data, handling different dataset formats and file structures (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:34-83)",
+        "Step 5: Create an argument parser to handle command-line parameters for model paths and output directory (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:86-95)",
+        "Step 6: Set up the device (CUDA if available, otherwise CPU) for model execution (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:101)",
+        "Step 7: Configure paths to LLaMA model directory and tokenizer based on command-line arguments (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:103-106)",
+        "Step 8: Load the pretrained LLaMA-Adapter model weights from the specified checkpoint (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:108-111)",
+        "Step 9: Configure LoRA (Low-Rank Adaptation) parameters for the model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:113-116)",
+        "Step 10: Initialize the LLaMA-Adapter model with the specified parameters, including CLIP visual encoder and adapter configurations (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:117-128, /workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:15-89)",
+        "Step 11: Load the model state dictionary from the checkpoint and move the model to the appropriate device (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:130-133)",
+        "Step 12: Convert the model to half precision (FP16) and set it to evaluation mode (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:134-135)",
+        "Step 13: Get the CLIP image preprocessing transform from the model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:136)",
+        "Step 14: Define a prompt format template for structuring the input to the model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:138-142)",
+        "Step 15: Create a function to generate responses for multimodal inputs (image + text) using the loaded model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:144-159)",
+        "Step 16: Define the list of MME dataset categories to evaluate (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:162-163)",
+        "Step 17: Set up the output path for saving results (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:164)",
+        "Step 18: For each dataset category, load the corresponding MME dataset (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:168-169)",
+        "Step 19: Process each sample in the dataset by loading the image and generating a response to the question (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:171-175)",
+        "Step 20: Create the output directory if it doesn't exist (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:177)",
+        "Step 21: Format the prediction results for each sample, including image path, question, ground truth answer, and model's prediction (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:178-182)",
+        "Step 22: Save the formatted predictions to a text file for each dataset category (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:183-184)",
+        "Step 23: During model inference, process the image through the CLIP visual encoder and adapter modules (/workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:112-149)",
+        "Step 24: Generate text responses by combining visual features with the language model through cross-attention mechanisms (/workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:214-274)",
+        "Step 25: Apply top-p sampling for text generation to produce diverse and coherent responses (/workspace/llama_adapter_v2_multimodal7b/llama/utils.py:10-18)"
+      ],
+      "masked_source": [
+        "/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py",
+        "/workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py",
+        "/workspace/llama_adapter_v2_multimodal7b/llama/llama.py",
+        "/workspace/llama_adapter_v2_multimodal7b/llama/tokenizer.py",
+        "/workspace/llama_adapter_v2_multimodal7b/llama/utils.py"
+      ]
+    },
+    {
+      "question": "Will altering the number of layers (L) used for inserting adaptation prompts (try L = 10, 20, 30, 32) change the model performance?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Perform an ablation study to assess the impact of varying the number of layers (L) on model performance when inserting adaptation prompts in a LLaMA model.\n    - **Objective:** \n    Determine the effect of layer count on answering accuracy, identifying an optimal L for adaptation prompt insertion.\n\n2. **Evaluation Metrics:**\n    - Answering accuracy measured on the ScienceQA validation set.\n3. **Comparative Evaluation:**\n    - Model: LLaMA-Adapter\n        - Insertion Layers L:\n            - L = 10\n            - L = 20\n            - L = 30\n            - L = 32\n\n4. **Settings for LLaMA-Adapter**:\n    - Fine tune LLaMA-Adapter on 8 A100 GPUs for 5 epochs.\n    - Warmup epochs:2\n    - Batch size:64\n    - Learning rate: 0.009\n    - Weight decay: 0.02\n    - Utilize the pre-trained LLaMA model with 7B parameters and N = 32 transformer layers\n    - Adopt a prompt length K = 10",
+      "expected_outcome": "Increasing the layer numbers introduces more parameters, but leads to a large improvement in the answering accuracy of ScienceQA's validation set. There also exists an optimal insertion number from the higher layers, since too many layers would adversely disturb the early encoding of input words. It is expected that 30 to be the optimal number of layers.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "prompt_length": "Fixed at K = 10",
+            "dataset": "52K instruction-following dataset with tasks like question answering, language translation, and code generation",
+            "base_model": "LLaMA 7B model with 32 transformer layers",
+            "training_parameters": "5 epochs, 8 A100 GPUs, warmup epochs = 2, batch size = 64, learning rate = 0.009, weight decay = 0.02"
+          },
+          "independent_variables": {
+            "insertion_layers": [
+              "10",
+              "20",
+              "30",
+              "32"
+            ]
+          },
+          "dependent_variables": {
+            "answering_accuracy": "Model performance measured by the answering accuracy on ScienceQA's validation set"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {}
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "52K instruction-following dataset (question answering, language translation, code generation)",
+            "Pre-trained LLaMA 7B model with 32 transformer layers",
+            "Adaptation prompt module with fixed prompt length K = 10",
+            "Training configuration (8 A100 GPUs, 5 epochs, warmup epochs = 2, batch size = 64, learning rate = 0.009, weight decay = 0.02)",
+            "Evaluation framework using ScienceQA's validation set (measuring answering accuracy)"
+          ],
+          "setup_steps": [
+            "Prepare and load the 52K instruction-following dataset",
+            "Configure the LLaMA model to insert adaptation prompts in the final L layers (with L set to 10, 20, 30, and 32)",
+            "Fix prompt length at K = 10 across all configurations",
+            "Fine-tune each configuration on 8 A100 GPUs for 5 epochs with the specified training parameters",
+            "Evaluate each model's performance using answering accuracy on ScienceQA's validation set"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Adaptive Prompt Insertion Strategy",
+              "description": "Inserting adaptation prompts at different numbers of layers may affect the balance between high-level feature modulation and low-level word encoding."
+            },
+            {
+              "source": "Resource and Scheduling Management",
+              "description": "Executing multiple fine-tuning runs in parallel or sequentially on 8 A100 GPUs adds complexity in managing computational resources and training schedules."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_setup_steps": [
+            "Details on how adaptation prompts are integrated into the final L layers are not fully specified (e.g., how the insertion affects earlier encoding processes)"
+          ],
+          "possible_modifications": {}
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "For an extended task, impose a constraint to achieve similar answering accuracy using a smaller version of the model (e.g., a mini variant of LLaMA-Adapter with reduced parameter count) instead of the full 7B model."
+            ],
+            "time_constraints": [
+              "As a modification, restrict training time by reducing the number of epochs or fine-tuning iterations, while still aiming to match the original performance."
+            ],
+            "money_constraints": [
+              "Optionally, introduce a budget constraint by limiting the total GPU hours (e.g., reducing the number of A100 GPUs used or overall training time) which may force a more cost-effective setup."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic elements in training such as random mini-batch sampling and initialization",
+          "description": "Random uncertainty arises from the inherent randomness in the training process (e.g., data shuffling, weight initialization, and potential minor variations in gradient updates) which can lead to fluctuations in answering accuracy on ScienceQA's validation set even when the insertion layers (L) are fixed.",
+          "impact": "This randomness might mask the pure effect of altering the number of layers for adaptation prompts, making it harder to attribute performance changes solely to the variation in L. It can lead to instability in accuracy measurements across multiple runs.",
+          "possible_modifications": [
+            "Set fixed random seeds and run multiple replicates to average out training variability.",
+            "Introduce controlled random noise (such as randomly dropping tokens) during training to quantify its effect on performance.",
+            "Perform statistical significance tests over multiple runs to determine if changes are due to the layer modification or random fluctuations."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Systematic modifications in adaptation prompt insertion strategy",
+          "description": "Systematic uncertainty results from the deliberate design choice of inserting adaptation prompts into the last L layers. Altering L changes the architecture in a consistent manner for example, using all 32 layers versus only the last 10 can bias the model's ability to encode early input information, which may systematically affect performance on tasks such as answering accuracy on ScienceQA.",
+          "impact": "This leads to a consistent bias in model performance. For instance, too many insertion layers might adversely disturb early feature encoding, while too few might not sufficiently modulate high-level information. The ablation study might therefore show a systematic optimum (predicted around L = 30) that reflects this structural bias.",
+          "possible_modifications": [
+            "Test alternative insertion strategies, such as distributing prompt insertion across non-consecutive layers, to determine if the observed effects are indeed due to the insertion location.",
+            "Expand the evaluation metrics beyond answering accuracy (e.g., including performance on language translation or code generation) to verify that systematic biases are not task-specific.",
+            "Validate results using additional datasets to ensure that the systematic bias is not an artifact of the specific instruction-following dataset used."
+          ]
+        }
+      }
+    },
+    {
+      "question": "How does zero-initialized attention compare to random-initialized attention in terms of effectiveness, when evaluated on the ScienceQA validation set?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Compare the impact of zero-initialized versus random-initialized attention on model performance.\n    - **Objective:** \n    Determine which initialization strategy leads to better performance, measured on the ScienceQA validation set.\n\n2. **Evaluation Metrics:**\n    - Answering accuracy measured on the ScienceQA validation set.\n3. **Comparative Evaluation:**\n    - Model: LLaMA-Adapter\n        - Attention Initialization:\n            - Zero-initialized\n            - Random-initialized\n\n4. **Settings for LLaMA-Adapter**:\n    - Fine tune LLaMA-Adapter on 8 A100 GPUs for 5 epochs.\n    - Warmup epochs:2\n    - Batch size:64\n    - Learning rate: 0.009\n    - Weight decay: 0.02\n    - Utilize the pre-trained LLaMA model with 7B parameters and N = 32 transformer layers\n    - Adopt a prompt length K = 10",
+      "expected_outcome": "Zero-initialized attention contributes to a significant gain on ScienceAQ's validation set.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "dataset": "ScienceQA validation set with fixed evaluation protocol"
+          },
+          "independent_variables": {
+            "attention_initialization": [
+              "zero-initialized",
+              "random-initialized"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metric": "Evaluation score (accuracy) on ScienceQA validation set"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "method": "The detailed experimental procedure for integrating and testing the different attention initializations is not provided"
+          },
+          "possible_modifications": {
+            "method_details": [
+              "Provide a clear description of how the zero-initialized and random-initialized attention are implemented within the model",
+              "Include details on any additional parameter settings or architectural modifications"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "ScienceQA validation dataset with a fixed evaluation protocol",
+            "Attention initialization methods (zero-initialized and random-initialized)",
+            "Performance metric computation module (evaluation accuracy)",
+            "Model architecture integrating the attention mechanism"
+          ],
+          "setup_steps": [
+            "Implement zero-initialized attention in the model",
+            "Implement random-initialized attention in the model",
+            "Configure constant variables such as using the ScienceQA validation set and fixed evaluation protocol",
+            "Run evaluations for both attention initialization variants",
+            "Collect and compare performance metrics from the experiments"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Model Architecture Adaptation",
+              "description": "Adapting the base model to support different attention initialization strategies could require additional parameter tuning and configuration changes."
+            },
+            {
+              "source": "Computational Resource Management",
+              "description": "Managing experiments on a complex dataset and ensuring fair comparisons between the two initialization methods may involve nontrivial overhead."
+            }
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "constraint_type": {
+              "modifications": [
+                "Although there are no explicit constraints stated, one possible modification is to tighten the experimental setup by requiring that both attention initialization methods achieve comparable performance (within a small margin) using a smaller or more efficient model architecture, thereby indirectly limiting computational resources.",
+                "Another modification is to restrict the number of training iterations or evaluation runs to simulate a faster turn-around time, which would force the model tuning process to be more efficient under time constraints."
+              ]
+            }
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic elements in training and initialization",
+          "description": "Random-initialized attention inherently introduces stochastic variation in the training process. This randomness can lead to differences in gradient updates and performance, making it harder to consistently evaluate the impact of zero-initialization versus random-initialization.",
+          "impact": "Results may show variability in performance metrics (e.g., accuracy), making the comparison across methods sensitive to random fluctuations rather than true differences in effectiveness.",
+          "possible_modifications": [
+            "Introduce a fixed random seed across experiments to minimize run-to-run variability.",
+            "Repeat experiments multiple times and average the outcomes to mitigate the impact of random noise.",
+            "Eliminate any additional sources of random perturbations (such as random token drops) in the training procedure."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Ambiguities in experimental implementation",
+          "description": "The lack of a detailed procedure for integrating zero-initialized and random-initialized attention creates a systematic uncertainty. This ambiguity can lead to a consistent bias in how experiments are set up or results are measured, favoring one method over the other unintentionally.",
+          "impact": "The systematic bias may lead to incorrect conclusions regarding the superiority of zero-initialized attention if the implementation details or metric selection skew results consistently.",
+          "possible_modifications": [
+            "Provide a clear, standardized description of how both attention initialization methods are integrated into the model.",
+            "Ensure that all experimental settings, including parameter configurations and architectural changes, are consistently applied to avoid introducing unintended biases."
+          ]
+        }
+      }
+    },
+    {
+      "question": "How does Zero-initialized attention compare to full fine-tuning, Adapter, Sidetune, and VPT methods for vision model fine-tuning with ViT on the VTAB-1K benchmark?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Evaluate and compare different fine-tuning methods for a vision model on the VTAB-1K benchmark.\n    - **Objective:** \n    Assess the effectiveness of Zero-initialized attention against other methods across various image distributions in the VTAB-1K dataset.\n\n2. **Evaluation Metrics:**\n    - Answering accuracy of Natural, Specialized and Structured tasks, measured on the VTAB-1K benchmark\n3. **Comparative Evaluation:**\n    - Fine-tuning Method:\n        - Zero-initialized attention\n        - Full fine-tuning\n        - Adapter\n        - Sidetune\n        - VPT\n\n4. **Settings for LLaMA-Adapter**:\n    -  Select a pre-trained ViT/16 (Dosovitskiy et al.,2020) as the vision model and evaluate on VTAB-1k(Zhaietal.,2019) benchmark,which contains 19 visual tasks with three domains:Natural,Specialized,and Structured.",
+      "expected_outcome": "For various image distributions, e.g.,natural images, medical and satellite imagery, Zero-initialized attention performs much better than the full fine-tuning, and also surpasses existing parameter-efficient methods.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "vision_model": "ViT",
+            "benchmark": "VTAB-1K"
+          },
+          "independent_variables": {
+            "fine_tuning_method": [
+              "Zero-initialized attention",
+              "full fine tuning",
+              "Adapter",
+              "Sidetune",
+              "VPT"
+            ],
+            "Benchmark tasks": [
+              "Natural tasks",
+              "Specialized tasks",
+              "Structured tasks"
+            ]
+          },
+          "dependent_variables": {
+            "model_performance": "Measured performance (accuracy) on the VTAB-1K benchmark across different tasks"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {}
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Vision Model (ViT)",
+            "Benchmark Dataset (VTAB-1K)",
+            "Fine-tuning Methods (Zero-initialized attention, full fine tuning, Adapter, Sidetune, VPT)",
+            "Image Task Distributions",
+            "Performance Measurement Tools (accuracy)"
+          ],
+          "setup_steps": [
+            "Prepare and partition the VTAB-1K dataset by the different image tasks distribution categories",
+            "Implement each fine-tuning method for the ViT model",
+            "Train the model under each method using consistent protocols",
+            "Evaluate model performance on the VTAB-1K benchmark",
+            "Compare results across the different fine-tuning methods and image distributions"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Methodological Differences",
+              "description": "Different fine-tuning methods may require distinct training protocols, hyperparameters, and adaptation procedures, increasing the overall experiment complexity."
+            },
+            {
+              "source": "Data Distribution Variability",
+              "description": "The categorization and sampling of natural, specialized, and structured tasks within VTAB-1K introduces additional complexity in dataset preparation."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Task Distribution: The criteria for how different tasks are sampled or defined within VTAB-1K are not provided."
+          ],
+          "ambiguous_setup_steps": [
+            "Training Protocol: Unclear details on training protocols, such as hyperparameter settings and adaptation procedures for each method.",
+            "Data Partitioning: The process for partitioning the VTAB-1K dataset by task distribution is not described in detail."
+          ],
+          "possible_modifications": {
+            "modification_method_details": [
+              "Include a precise description of the training protocols, hyperparameters, and adaptation procedures for each fine-tuning method."
+            ],
+            "modification_image_distribution": [
+              "Explicitly state the criteria and method for selecting or partitioning natural specialized and structured tasks within VTAB-1K."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "constraint_type": {
+              "modifications": [
+                "Enforce a fixed hyperparameter budget and identical training protocols across all fine-tuning methods to rule out variability due to different setups.",
+                "Limit computational resources (for example by reducing the number of training epochs or GPU hours) and require that the Zero-initialized attention method still outperforms the other methods under these tighter constraints.",
+                "Introduce a constraint to achieve comparable performance using a reduced model variant (e.g., a smaller version of ViT), ensuring a fair comparison with parameter-efficient approaches."
+              ]
+            }
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic elements in the training process and input data handling",
+          "description": "Random uncertainty arises from unpredictable fluctuations during training such as variations in mini-batch sampling, random initialization effects, and potential random perturbations in input pre-processing (e.g., if random patch or token dropping is mistakenly applied). Such randomness could lead to instability in gradient updates and inconsistent performance measures across runs.",
+          "impact": "This uncertainty can cause variations in the measured performance on the VTAB-1K benchmark, potentially masking the true benefits of the Zero-initialized attention method over full fine tuning and other parameter-efficient methods.",
+          "possible_modifications": [
+            "Standardize and fix random seeds and batch selection procedures to mitigate fluctuations.",
+            "Eliminate or control any random data perturbations (e.g., avoid random dropping of image patches or tokens) to improve training stability.",
+            "Run multiple replicates and average the results to account for random variability."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Biases in experiment setup and data partitioning",
+          "description": "Systematic uncertainty can be introduced if there is a one-time bias in the method, such as uneven or biased partitioning of the VTAB-1K dataset among tasks, or inconsistent training protocols across the compared fine-tuning methods. For example, if hyperparameters or adaptation procedures are set preferentially for one method or one type of image distribution, a systematic error could skew performance results.",
+          "impact": "This can result in consistent over- or underestimation of a method's performance, leading to misleading conclusions about the superiority of the Zero-initialized attention method relative to full fine tuning, Adapter, Sidetune, and VPT.",
+          "possible_modifications": [
+            "Apply uniform training protocols, hyperparameters, and data partitioning criteria across all methods.",
+            "Clearly define and balance the sampling methods for natural, specialized and structured tasks within the VTAB-1K dataset.",
+            "Perform a critical review of the experimental design to identify and remove any biases in the dataset or method implementation."
+          ]
+        }
+      }
+    },
+    {
+      "question": "How does the Zero-initialized attention method compare with Full, PT, and PT2 fine-tuning methods for language model fine-tuning using RoBERTa on the SQuAD v1.1 and v2.0 benchmarks?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Compare different attention initialization methods for fine-tuning RoBERTa on SQuAD benchmarks.\n    - **Objective:** \n    Evaluate if Zero-initialized attention yields leading performance in terms of Exact Match (EM) and F1 scores.\n\n2. **Evaluation Metrics:**\n    - EM and F1 score on SQuAD benchmark\n    - Dataset Version:\n        - SQuAD v1.1\n        - SQuAD v2.0\n3. **Comparative Evaluation:**\n    - Fine-tuning Method:\n        - Zero-initialized\n        - Full\n        - PT\n        - PT2\n\n4. **Settings for LLaMA-Adapter**:\n    - Utilize a pre-trained RoBERTa_large (Liu et al.,2019)and adopt SQuAD(Rajpurkar et al.,2016) v1.1 and v2.0 benchmarks for extractive question answering evaluation. Exact Match(EM)and F1 scores on the dev set are reported.",
+      "expected_outcome": "Compared to previous works, Zero-initialized approach achieves the leading performance.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "model_and_dataset": "RoBERTa fine tuning on the SQuAD benchmark (v1.1 and v2.0)"
+          },
+          "independent_variables": {
+            "attention_initialization_method": [
+              "Zero-initialized",
+              "Full",
+              "PT",
+              "PT2"
+            ],
+            "dataset_version": [
+              "SQuAD v1.1",
+              "SQuAD v2.0"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": [
+              "Exact Match (EM)",
+              "F1 score"
+            ]
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "zero_initialized_attention_method": "There is no explicit detail on how the Zero-initialized attention is implemented compared to the other methods.",
+            "PT_and_PT2": "The definitions and differences between PT and PT2 are not explicitly provided.",
+            "dataset_preprocessing": "It is unclear if additional data preprocessing or specific splits of SQuAD v1.1 and v2.0 are applied."
+          },
+          "possible_modifications": {
+            "detailed_method": [
+              "Extend the experiment by specifying the steps and hyperparameters used in fine tuning (e.g., learning rate, batch size, and epochs).",
+              "Provide implementation details for the zero-initialized, PT, and PT2 approaches."
+            ],
+            "additional_independent_variables": [
+              "Mask some existing variables (e.g., hide whether SQuAD v1.1 or v2.0 is used to test model robustness).",
+              "Include other variables such as data preprocessing procedures or additional RoBERTa configurations."
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "RoBERTa model",
+            "SQuAD benchmark datasets v1.1 and v2.0",
+            "Attention initialization methods (Zero-initialized, Full, PT, PT2)",
+            "Performance metrics (Exact Match (EM) and F1 score)"
+          ],
+          "setup_steps": [
+            "Load the SQuAD v1.1 and v2.0 datasets",
+            "Preprocess the datasets (if required)",
+            "Initialize the RoBERTa model for fine tuning",
+            "Apply each attention initialization method (Zero-initialized, Full, PT, PT2)",
+            "Fine tune the model on the datasets",
+            "Evaluate the model performance on the dev sets using EM and F1 metrics"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Hyperparameter Settings",
+              "description": "Lack of specified hyperparameters (learning rate, batch size, epochs) increases complexity in reproducing the experiment."
+            },
+            {
+              "source": "Implementation Details",
+              "description": "Differences in how the Zero-initialized, PT, and PT2 methods are implemented add more complexity to the setup."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "The specific implementation details of the Zero-initialized attention method are not provided",
+            "The definitions and differences between PT and PT2 are not explicitly stated"
+          ],
+          "ambiguous_setup_steps": [
+            "The data preprocessing steps for SQuAD v1.1 and v2.0 are not specified",
+            "The fine tuning procedure lacks detailed instructions, such as hyperparameter configuration and training schedule"
+          ],
+          "possible_modifications": {
+            "detailed_method": [
+              "Extend the experiment by specifying the steps and hyperparameters used in fine tuning (e.g., learning rate, batch size, and epochs).",
+              "Provide implementation details for the Zero-initialized, PT, and PT2 approaches."
+            ],
+            "additional_independent_variables": [
+              "Mask some existing variables (e.g., hide whether SQuAD v1.1 or v2.0 is used) to test model robustness.",
+              "Include additional variables such as data preprocessing procedures or alternative RoBERTa configurations."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Restrict the available computational resources by, for example, limiting the model size or using a smaller variant. This tests whether the leading performance of the Zero-initialized approach holds under resource-limited scenarios."
+            ],
+            "time_constraints": [
+              "Reduce the number of training epochs or overall fine-tuning iterations to determine if the Zero-initialized attention method can achieve similar performance in a shorter training time."
+            ],
+            "money_constraints": [
+              "Impose a cost constraint by limiting the compute budget, which might involve reducing batch sizes or the number of experimental runs, to evaluate efficiency under monetary restrictions."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic elements in training and data sampling",
+          "description": "Due to inherent randomness in training procedures such as stochastic gradient descent, random initialization of weights, and batch sampling order, there is variability in model performance. In addition, any random perturbations (e.g., randomly dropping tokens or noise injection during training) affect stability and prediction accuracy.",
+          "impact": "Leads to fluctuations in the reported Exact Match (EM) and F1 scores that can mask or exaggerate the effects of different attention initialization methods, thereby making it harder to draw robust performance comparisons.",
+          "possible_modifications": [
+            "Perform multiple training runs with different random seeds to average out noise and assess variance.",
+            "Introduce controlled random noise (e.g., random token dropping) in a systematic manner to study its effect on convergence and model performance.",
+            "Fix random seeds during training to reduce variability and isolate the impact of the attention initialization methods."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Ambiguities in experimental design and data preprocessing",
+          "description": "The lack of detailed implementation procedures\u2014especially for the Zero-initialized attention, PT, and PT2 methods\u2014and uncertainty about data preprocessing steps (e.g., splitting SQuAD v1.1 versus v2.0) may introduce bias. Systematic bias can also arise if the dataset is inadvertently modified or if key hyperparameters (learning rate, batch size, epochs) are not consistently applied across methods.",
+          "impact": "Can lead to consistently skewed performance metrics favoring one method over another, thus distorting the true efficacy of the Zero-initialized approach relative to Full, PT, and PT2.",
+          "possible_modifications": [
+            "Provide a detailed method section outlining the exact implementation and training hyperparameters for each attention initialization variant.",
+            "Standardize data preprocessing and ensure consistent splits for both versions of the SQuAD benchmark.",
+            "Conduct controlled experiments that mask or vary the independent variables (e.g., using different dataset versions or preprocessing pipelines) to test the robustness of the conclusions."
+          ]
+        }
+      }
+    },
+    {
+      "question": "How does the Zero-initialized attention method compare with CLIP, CoOP, CoCop, and MaPLe in vision-language fine-tuning using the CLIP model on the base-to-novel benchmark?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Evaluate the effectiveness of various fine-tuning methods on vision-language tasks using the base-to-novel benchmark.\n    - **Objective:** \n    Determine if Zero-initialized attention achieves better average classification accuracy on both base and novel categories compared to other methods.\n\n2. **Evaluation Metrics:**\n    - Base, Novel and Harmonic mean (HM) Accuracy on Base-to-novel benchmark\n3. **Comparative Evaluation:**\n    - Fine-tuning Method:\n        - Zero-initialized attention method\n        - CLIP\n        - CoOP\n        - CoCop\n        - MaPLe\n\n4. **Settings for LLaMA-Adapter**:\n    -  Adopt CLIP (Radford et al.,2021) as the pre-trained vision-language model,and test on base-to-novel generalization (Zhou et al.,2022b) benchmark, where 'HM' denotes harmonic mean.",
+      "expected_outcome": "Compared to previous works, Zero-initialized approach achieves the best average classification accuracy on both base and novel categories.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "dataset_benchmark": "base-to-novel benchmark using CLIP for vision language fine tuning",
+            "evaluation_metric": "classification accuracy (measured separately on base and novel categories)"
+          },
+          "independent_variables": {
+            "fine_tuning_method": [
+              "Zero-initialized attention method",
+              "CLIP",
+              "CoOP",
+              "CoCop",
+              "MaPLe"
+            ]
+          },
+          "dependent_variables": {
+            "classification_accuracy": "Harmonic mean classification accuracy on base and novel categories"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "benchmark_composition": "Details about the dataset splits (e.g., number of classes in base and novel categories) and exact evaluation protocol are not explicitly mentioned.",
+            "implementation_variations": "It is unclear what specific modifications or network architectures (beyond the attention mechanism) are involved in the Zero-initialized approach compared to the baselines."
+          },
+          "possible_modifications": {
+            "modification_1": [
+              "Introduce additional variables such as different data augmentation strategies or learning rate schedules to test the robustness of the methods."
+            ],
+            "modification_2": [
+              "Mask portions of the method details (e.g., hyperparameter choices) to evaluate the sensitivity of performance to implementation specifics."
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "CLIP model for vision language fine tuning",
+            "Fine-tuning methods: Zero-initialized attention method, CLIP baseline, CoOP, CoCop, MaPLe",
+            "Benchmark dataset: base-to-novel benchmark",
+            "Evaluation metric: classification accuracy (evaluated separately on base and novel categories)"
+          ],
+          "setup_steps": [
+            "Prepare and split the dataset into base and novel categories",
+            "Initialize the CLIP model and set up the vision language fine tuning framework",
+            "Apply each fine tuning method (Zero-initialized attention, CLIP, CoOP, CoCop, MaPLe) under the same experimental conditions",
+            "Conduct training/fine-tuning sessions for each method",
+            "Evaluate the models using classification accuracy on both base and novel categories",
+            "Compare the results across different methods"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Benchmark composition",
+              "description": "The details on dataset splits (e.g., number of classes in base versus novel) and the exact evaluation protocol are not specified, increasing complexity."
+            },
+            {
+              "source": "Implementation variations",
+              "description": "It is unclear what specific architectural changes or modifications beyond the attention mechanism are applied in the Zero-initialized approach compared to the baselines."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Method details (training procedures, hyperparameters, and modifications for each approach)",
+            "Benchmark composition (exact split of classes and evaluation protocol)",
+            "Implementation variations of Zero-initialized approach compared to baselines"
+          ],
+          "ambiguous_setup_steps": [
+            "Fine-tuning procedure specifics (how each method is applied and what changes are made)",
+            "Definition of training hyperparameters and schedule",
+            "Details on dataset preparation and evaluation protocol"
+          ],
+          "possible_modifications": {
+            "modification_1": [
+              "Introduce additional variables such as different data augmentation strategies or learning rate schedules to test robustness."
+            ],
+            "modification_2": [
+              "Mask portions of the method details (e.g., hyperparameter choices) to evaluate the sensitivity of performance to implementation specifics."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Require the experiment to achieve similar classification accuracy using a smaller version of the CLIP model (e.g., CLIP-mini) to simulate limited computational resources."
+            ],
+            "time_constraints": [
+              "Impose a stricter training time limit (e.g., fewer epochs or reduced optimization iterations) to highlight differences in efficiency among the fine-tuning methods."
+            ],
+            "money_constraints": []
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Random modifications in the fine-tuning process",
+          "description": "In the experiment, random uncertainty arises from variables such as stochastic data augmentations, random mini-batch selections, or even the potential of randomly dropping training tokens (or parts of method details) that can lead to unstable gradient updates. These random changes affect the training dynamics of the vision language fine tuning methods (including Zero-initialized attention, CLIP, CoOP, CoCop, and MaPLe), causing variability in the measured classification accuracy on base and novel categories.",
+          "impact": "Random fluctuations may lead to inconsistent outcomes and variability in the reported classification accuracy. The degree of instability might obscure true performance differences between the methods, introducing difficulty in replicating the results.",
+          "possible_modifications": [
+            "Introduce controlled random perturbations (e.g., systematic variation in dropout rates or token drop probabilities) to quantify robustness.",
+            "Run multiple trials with different random seeds to average out the variability.",
+            "Mask or randomly modify portions of method details (e.g., hyperparameter choices) as a sensitivity analysis to better understand how randomness impacts performance."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Ambiguity and potential bias in experimental design details",
+          "description": "Systematic uncertainty in this experiment stems from insufficient specification in the experimental setup such as missing detailed method descriptions (e.g., hyperparameters), unclear composition of the benchmark dataset (e.g., exact splits of base versus novel categories), and undocumented implementation variations in the Zero-initialized attention method compared to competing methods. These issues could lead to a consistent bias in the evaluation, with results skewed by the experimental configuration rather than true methodological superiority.",
+          "impact": "Such systematic biases can result in misleading conclusions regarding the overall effectiveness of the zero-initialized approach, consistently favoring one method over others due to inherent flaws in the dataset preparation or evaluation protocol instead of genuine performance differences.",
+          "possible_modifications": [
+            "Re-assess and standardize the experimental protocol by acquiring a complete and uncorrupted version of the benchmark dataset along with clear splits for base and novel categories.",
+            "Document and control all hyperparameters and training procedures to minimize design ambiguity.",
+            "Introduce additional controlled variables (e.g., alternative data augmentation strategies or learning rate schedules) to assess if systematic biases affect the model's outcomes."
+          ]
+        }
+      }
+    }
+  ]
+}

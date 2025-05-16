@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/benchmarks/qattention_benchmark.py"],
+    "usage_instructions": "Execute the script with different batch sizes to compare inference latency: python /workspace/benchmarks/qattention_benchmark.py --batch_size 1 && python /workspace/benchmarks/qattention_benchmark.py --batch_size 2 && python /workspace/benchmarks/qattention_benchmark.py --batch_size 4 && python /workspace/benchmarks/qattention_benchmark.py --batch_size 8 && python /workspace/benchmarks/qattention_benchmark.py --batch_size 16 && python /workspace/benchmarks/qattention_benchmark.py --batch_size 32"
+}

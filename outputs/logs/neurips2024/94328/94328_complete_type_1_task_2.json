@@ -1,0 +1,163 @@
+{
+  "questions": [
+    {
+      "question": "How does the clipping ratio used during runtime quantization affect perplexity on LLAMA2-7B when applying symmetric input quantization and asymmetric KV cache quantization? What is the optimal fixed clipping ratio that balances quantization error and model accuracy in inference?",
+      "method": "#### Model\n\n- **LLAMA2-7B**\n- Only partially quantized:\n  - The rest of the model is kept in FP16 (full precision)\n  - Only inputs or KV caches are quantized separately\n\n#### Quantization Setup\n\n- **Quantized Components** (evaluated separately):\n  1. **Input Quantization**:\n     - Quantize activations before MatMul using **symmetric quantization**\n  2. **KV Cache Quantization**:\n     - Quantize cached key/value tensors using **asymmetric quantization**\n- **Bit Width**: INT4 (4 bits)\n- **Clipping Ratios Evaluated**:\n  - 1.0, 0.95, 0.9, 0.85\n- **Precision**: Output remains in FP16\n\n#### Dataset\n\n- **WikiText-2**, 2048-token context\n- Metric: **Perplexity (PPL)**\n\n#### Experiment Steps\n\n1. **Setup Environment**\n\n   - Use QuaRot or PyTorch with on-the-fly quantization hooks\n   - Prepare FP16 LLAMA2-7B baseline\n\n2. **Clipping-Aware Quantization Logic**\n\n   - Implement symmetric quantization (for input):\n\n     ```python\n     def symmetric_quant(x, clip_ratio=1.0):\n         max_val = clip_ratio * x.abs().max()\n         scale = max_val / (2**(bit_width - 1) - 1)\n         return torch.clamp(torch.round(x / scale), -8, 7) * scale\n     ```\n     \n   - Implement asymmetric quantization (for KV cache):\n   \n     ```python\n     def asymmetric_quant(x, clip_ratio=1.0):\n         min_val = -clip_ratio * x.abs().max()\n         max_val = clip_ratio * x.abs().max()\n         scale = (max_val - min_val) / 15.0\n         zero_point = -min_val / scale\n         return torch.clamp(torch.round(x / scale + zero_point), 0, 15) * scale - zero_point * scale\n     ```\n   \n3. **Run Perplexity Evaluation**\n\n   - Modify forward pass to inject quantization on inputs or KV cache only\n\n   - Use WikiText-2 sequences (2048 tokens)\n\n   - Measure perplexity:\n\n     ```python\n     import evaluate\n     perplexity = evaluate.load(\"perplexity\")\n     result = perplexity.compute(model=custom_quant_model, dataset=wikitext2)\n     ```\n   \n4. **Repeat Across Clipping Ratios**\n\n   - Evaluate at clipping ratios: **1.0, 0.95, 0.9, 0.85**\n   - Test separately for:\n     - Input Quantization\n     - KV Cache Quantization",
+      "expected_outcome": "Result should look similar to table 5 in the paper ablation study.\n\n| Clipping Ratio | Input Quantization PPL \u2193 | KV Cache Quantization PPL \u2193 |\n| -------------- | ------------------------ | --------------------------- |\n| 1.0            | 5.938                    | 5.513                       |\n| 0.95           | 5.910                    | **5.510**                   |\n| 0.9            | **5.828**                | 5.517                       |\n| 0.85           | 5.850                    | 5.532                       |\n\n- **0.90** is the best clipping ratio for **input quantization** (symmetric)\n- **0.95** is optimal for **KV cache quantization** (asymmetric)\n- Using a smaller clipping ratio reduces range and therefore quantization noise\n- Trade-off: too low a ratio results in over-clipping and performance drop",
+      "design_complexity": {
+        "constant_variables": {
+          "llm_model": "LLAMA2-7B (fixed model used in the experiment)",
+          "bit_width": "4 bits for quantized components (INT4)",
+          "dataset": "WikiText-2 with 2048-token context",
+          "model_precision": "The rest of the model is kept in FP16 (full precision)"
+        },
+        "independent_variables": {
+          "quantization_component": [
+            "Input Quantization (symmetric quantization of activations)",
+            "KV Cache Quantization (asymmetric quantization of key/value tensors)"
+          ],
+          "clipping_ratio": [
+            "1.0",
+            "0.95",
+            "0.9",
+            "0.85"
+          ]
+        },
+        "dependent_variables": {
+          "perplexity": "WikiText perplexity measured on the quantized model (as seen in Table 5)"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "clipping_ratio": "While clipping ratios are provided for both quantization types, it is not explicitly stated if the same ratio must be used for both or if they could be tuned separately in extended tasks.",
+          "quantization_component": "The paper focuses only on inputs and KV caches; other components like weights or activations are not discussed, leaving room for ambiguity in their impact.",
+          "precision_details": "The exact handling/precision of intermediate computations (e.g., Hadamard transforms) is described briefly but might be ambiguous in broader application contexts."
+        },
+        "possible_modifications": {
+          "modification_clipping_ratio": [
+            "Investigate additional clipping ratio values (e.g., 0.92, 0.88) to fine-tune the balance between quantization error and model accuracy."
+          ],
+          "modification_quant_component": [
+            "Extend the experiment to include symmetric quantization for other components such as weights and activations.",
+            "Test different quantization schemes on KV caches separately to further validate the optimal ratio."
+          ],
+          "modification_precision": [
+            "Explore using different bit widths (e.g., INT8) or precision adjustments (FP16 vs. FP32 for critical operations) to assess overall impact on model performance."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "LLAMA2-7B as the FP16 baseline model",
+          "WikiText-2 dataset with 2048-token context",
+          "Quantization modules for two components: Input (symmetric) and KV Cache (asymmetric)",
+          "On-the-fly quantization hooks using QuaRot or PyTorch",
+          "Python implementations of quantization logic (symmetric_quant and asymmetric_quant functions)",
+          "Perplexity evaluation module (using the 'evaluate' library)"
+        ],
+        "setup_steps": [
+          "Set up the environment using QuaRot or PyTorch with on-the-fly quantization hooks",
+          "Prepare the FP16 baseline model (LLAMA2-7B) and load WikiText-2 dataset",
+          "Implement the clipping-aware quantization logic for both input and KV cache components",
+          "Modify the model\u2019s forward pass to inject quantization for inputs or KV cache as required",
+          "Run perplexity evaluation on the quantized model using WikiText-2 sequences",
+          "Repeat the evaluation across different clipping ratios (1.0, 0.95, 0.9, 0.85) for each quantization component"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Simultaneous management of two quantization schemes",
+            "description": "Handling both symmetric and asymmetric quantization in parallel increases integration complexity and requires careful modularization of code."
+          },
+          {
+            "source": "Code Integration and Environment Setup",
+            "description": "Using either QuaRot or PyTorch with on-the-fly hooks could lead to additional overhead in ensuring consistent behavior and correct quantization function application."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Clipping Ratio usage: Unclear whether the same ratio should be applied to both input and KV cache quantization or if separate tuning is allowed.",
+          "Quantization Component Focus: The paper only discusses inputs and KV caches, leaving ambiguity about quantizing weights or other activations.",
+          "Precision Details: The handling of intermediate computations (e.g., how certain high-precision operations interact with quantized parts) is not fully detailed."
+        ],
+        "ambiguous_setup_steps": [
+          "Implementation of quantization logic: While the provided Python snippets outline the process, details such as the declaration of variables (e.g., bit_width) and edge-case handling are not fully explained.",
+          "Integration in the forward pass: How and where exactly to inject the quantization logic during inference is mentioned but not exhaustively detailed."
+        ],
+        "possible_modifications": {
+          "modification_clipping_ratio": [
+            "Investigate additional clipping ratio values (e.g., 0.92, 0.88) to refine the balance between quantization error and model accuracy."
+          ],
+          "modification_quant_component": [
+            "Extend the experiment by including quantization of other components, such as model weights or additional activations, to assess overall system impact."
+          ],
+          "modification_precision": [
+            "Explore using different bit widths (e.g., INT8 instead of INT4) or evaluate the impact of varying precision settings (FP16 vs. FP32) on intermediate computations."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Tighten computational requirements by evaluating the quantization performance on a smaller model variant (e.g., a LLAMA2-7B-mini) to achieve similar perplexity results while reducing memory and compute usage.",
+            "Investigate additional clipping ratios (e.g., 0.92, 0.88) to further fine-tune the trade-off between quantization error and model accuracy under tighter resource limits."
+          ],
+          "time_constraints": [
+            "Reduce the number of clipping ratios or evaluation runs to shorten experiment duration, thereby lowering the overall runtime of the quantization evaluations."
+          ],
+          "money_constraints": [
+            "Optimize the evaluation pipeline by reducing the number of full-precision baseline runs or using less expensive compute resources, which could help in replicating results at lower cost."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Intrinsic variability in the on-the-fly quantization process",
+        "description": "During runtime quantization, functions such as symmetric and asymmetric quantization involve rounding operations and clipping based on live computed statistics (e.g., max absolute value). Even with a fixed clipping ratio, slight numerical differences (e.g., due to floating-point arithmetic or asynchronous computation order) can introduce random variability in the computed quantized values. This variability can affect the gradient updates and ultimately lead to small fluctuations in reported perplexity values.",
+        "impact": "These random fluctuations may result in inconsistent perplexity measurements across runs, potentially obscuring subtle effects of different clipping ratios on model performance. The randomness may be more pronounced during intermediate computations, where rounding and clipping operations produce slightly different values.",
+        "possible_modifications": [
+          "Implement deterministic quantization routines by setting fixed random seeds and ensuring consistent computation order.",
+          "Use statistical aggregation (e.g., averaging perplexity over multiple runs) to mitigate the influence of random round-off errors.",
+          "Experiment by adding controlled noise (such as randomly dropping tokens) to assess the stability of the quantization process and its impact on perplexity."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Design choices in the quantization method and clipping ratio selection",
+        "description": "The experiment systematically introduces uncertainty by selecting specific, fixed clipping ratios (1.0, 0.95, 0.9, 0.85) for symmetric input quantization and asymmetric KV cache quantization. These choices, coupled with the fixed FP16 baseline for non-quantized components and a single dataset (WikiText-2), may introduce consistent biases in the reported performance. For instance, a clipping ratio that is too low can lead to over-clipping and a systematic increase in quantization error, while a high ratio may not fully suppress outliers, both resulting in a stable yet biased shift in perplexity.",
+        "impact": "These systematic biases can affect the balance between quantization noise and model accuracy during inference, potentially misidentifying the optimal clipping ratio for each quantization component. The fixed experimental design may not capture variability present across different datasets or additional model components.",
+        "possible_modifications": [
+          "Tune the clipping ratio for different quantization components separately rather than applying the same set of ratios uniformly.",
+          "Extend the experiment to include additional datasets or model components (e.g., weights or extra activations) that might reveal further systematic effects.",
+          "Evaluate more granular clipping ratio values (for example, 0.92 or 0.88) to better pinpoint the trade-off between quantization error and inference accuracy."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "To run the experiment on how clipping ratio affects perplexity on LLAMA2-7B with different quantization approaches, execute the following commands:\n\n1. For symmetric input quantization with different clipping ratios:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2 --a_bits 4 --a_clip_ratio 1.0 --w_bits 16\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2 --a_bits 4 --a_clip_ratio 0.95 --w_bits 16\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2 --a_bits 4 --a_clip_ratio 0.9 --w_bits 16\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2 --a_bits 4 --a_clip_ratio 0.85 --w_bits 16\n   ```\n\n2. For asymmetric KV cache quantization with different clipping ratios:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2 --k_bits 4 --v_bits 4 --k_asym --v_asym --k_clip_ratio 1.0 --v_clip_ratio 1.0 --w_bits 16\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2 --k_bits 4 --v_bits 4 --k_asym --v_asym --k_clip_ratio 0.95 --v_clip_ratio 0.95 --w_bits 16\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2 --k_bits 4 --v_bits 4 --k_asym --v_asym --k_clip_ratio 0.9 --v_clip_ratio 0.9 --w_bits 16\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2 --k_bits 4 --v_bits 4 --k_asym --v_asym --k_clip_ratio 0.85 --v_clip_ratio 0.85 --w_bits 16\n   ```\n\nNote: The `--w_bits 16` parameter ensures that only the specified components are quantized while keeping the weights in full precision (FP16). The batch size can be adjusted with the `--bsz` parameter if needed (default is 32).",
+      "requirements": [
+        "Step 1: Install the required Python packages including transformers, torch, datasets, and wandb (if using wandb for logging) (/workspace/fake_quant/main.py:1-10)",
+        "Step 2: Set up access to the Hugging Face model repository by obtaining a Hugging Face token for accessing the meta-llama/Llama-2-7b-hf model (/workspace/fake_quant/model_utils.py:40-49)",
+        "Step 3: Prepare the evaluation environment by setting random seeds for reproducibility and disabling TensorFloat-32 tensor cores to avoid numerical issues (/workspace/fake_quant/utils.py:24-27)",
+        "Step 4: Load the meta-llama/Llama-2-7b-hf model using the Hugging Face transformers library with appropriate dtype settings (/workspace/fake_quant/model_utils.py:40-49)",
+        "Step 5: Set up the quantization configuration for input activations by specifying the number of bits (a_bits=4) and clipping ratio (a_clip_ratio varying from 0.85 to 1.0) (/workspace/fake_quant/main.py:78-109)",
+        "Step 6: Apply activation quantization wrappers to the model's linear layers to enable input quantization (/workspace/fake_quant/quant_utils.py:367-393)",
+        "Step 7: Configure the quantization parameters for each layer based on the specified bits and clipping ratio (/workspace/fake_quant/quant_utils.py:113-119)",
+        "Step 8: Load the WikiText-2 dataset for evaluation using the Hugging Face datasets library (/workspace/fake_quant/data_utils.py:5-28)",
+        "Step 9: Process the dataset by tokenizing it with the model's tokenizer and preparing it for evaluation (/workspace/fake_quant/data_utils.py:97-105)",
+        "Step 10: Run the evaluation loop to calculate perplexity on the WikiText-2 dataset with the quantized model (/workspace/fake_quant/eval_utils.py:10-150)",
+        "Step 11: Repeat the experiment with different clipping ratios (1.0, 0.95, 0.9, 0.85) for symmetric input quantization to analyze the impact on perplexity (/workspace/fake_quant/main.py:78-109)",
+        "Step 12: Set up the quantization configuration for KV cache by specifying the number of bits (k_bits=4, v_bits=4) and enabling asymmetric quantization (k_asym, v_asym) (/workspace/fake_quant/main.py:111-124)",
+        "Step 13: Apply KV cache quantization to the model by adding quantization wrappers after the RoPE function call in the attention mechanism (/workspace/fake_quant/main.py:111-124)",
+        "Step 14: Repeat the experiment with different clipping ratios (1.0, 0.95, 0.9, 0.85) for asymmetric KV cache quantization to analyze the impact on perplexity (/workspace/fake_quant/main.py:111-124)",
+        "Final Step: Compare the perplexity results across different quantization approaches and clipping ratios to determine the optimal configuration (/workspace/fake_quant/main.py:137-139)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment that evaluates how different clipping ratios affect perplexity when quantizing the LLAMA2-7B model. You need to run experiments with two different quantization approaches: (1) symmetric input quantization and (2) asymmetric KV cache quantization, each with varying clipping ratios (1.0, 0.95, 0.9, 0.85). The experiment uses the WikiText-2 dataset for evaluation.\n\nYou'll need to:\n1. Set up the environment with necessary libraries\n2. Obtain access to the meta-llama/Llama-2-7b-hf model\n3. Run the provided script with different parameter configurations\n4. For symmetric input quantization: vary a_bits=4 and a_clip_ratio (1.0, 0.95, 0.9, 0.85) while keeping w_bits=16\n5. For asymmetric KV cache quantization: set k_bits=4, v_bits=4, enable k_asym and v_asym flags, and vary k_clip_ratio and v_clip_ratio (1.0, 0.95, 0.9, 0.85) while keeping w_bits=16\n\nThe goal is to understand how different clipping ratios affect model performance under these quantization approaches.",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "mode": "A",
+    "question": "How does QuaRot's 4-bit quantization with rotation affect the perplexity of a LLaMa-2-7B model compared to standard quantization?",
+    "method": "Run the main.py script in the fake_quant directory to evaluate the perplexity of the LLaMa-2-7B model with and without rotation-based quantization.",
+    "expected_outcome": "The rotated model with 4-bit quantization should show lower perplexity (better performance) compared to standard 4-bit quantization without rotation. The expected perplexity difference should be reported.",
+    "source": ["/workspace/fake_quant/main.py"],
+    "usage_instructions": "1. Install the required dependencies from requirements.txt\n2. Run the main.py script with the LLaMa-2-7B model, first without rotation (--a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip)\n3. Then run the same script with rotation enabled (--rotate --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip)\n4. Compare the perplexity results between the two runs\n5. Report the difference in perplexity and any other relevant metrics"
+  },
+  {
+    "mode": "A",
+    "question": "How does the Hadamard transform in QuaRot affect computational performance for different matrix sizes?",
+    "method": "Run the hadamard_benchmark.py script to measure the performance difference between FP16 and FP32 Hadamard transforms for various matrix sizes.",
+    "expected_outcome": "Performance metrics (execution time) for both FP16 and FP32 Hadamard transforms across different matrix sizes (1024, 2048, 4096, 8192, 12288), along with verification that the results are numerically equivalent within a small tolerance.",
+    "source": ["/workspace/benchmarks/hadamard_benchmark.py"],
+    "usage_instructions": "1. Install the required dependencies including the fast_hadamard_transform module\n2. Run the hadamard_benchmark.py script which will:\n   - Create random matrices of different sizes (1024x1024 to 12288x12288)\n   - Apply the Hadamard transform in both FP32 and FP16 precision\n   - Measure and report the execution time for each\n   - Verify that the results are numerically equivalent\n3. Analyze the performance difference between FP16 and FP32 implementations\n4. Report the speedup factor and whether numerical accuracy is maintained"
+  },
+  {
+    "mode": "A",
+    "question": "How does QuaRot's 4-bit quantization with Hadamard rotation affect the inference speed of linear layers compared to standard FP16?",
+    "method": "Run the qlinear_benchmark.py script to compare the performance of standard FP16 linear layers against 4-bit quantized layers with and without Hadamard rotation.",
+    "expected_outcome": "Performance metrics showing the execution time and speedup factor of 4-bit quantized linear layers (with and without Hadamard rotation in FP16/FP32) compared to standard FP16 linear layers for different model sizes.",
+    "source": ["/workspace/benchmarks/qlinear_benchmark.py"],
+    "usage_instructions": "1. Install the required dependencies including the quarot package\n2. Run the qlinear_benchmark.py script with parameters:\n   - --bsz 1 (batch size)\n   - --seq_len 2048 (sequence length)\n   - --layer_type v_proj (for attention projection layers)\n3. The script will benchmark:\n   - Standard FP16 linear layers\n   - 4-bit quantized linear layers without Hadamard rotation\n   - 4-bit quantized linear layers with FP32 Hadamard rotation\n   - 4-bit quantized linear layers with FP16 Hadamard rotation\n4. Analyze the execution time and speedup factor for each configuration\n5. Report the performance differences across different model sizes (7B, 13B, 70B)"
+  },
+  {
+    "mode": "A",
+    "question": "How does QuaRot's 4-bit quantization affect the memory usage and inference speed of the KV cache in transformer models?",
+    "method": "Run the qattention_benchmark.py script to compare the performance and memory usage of standard FP16 KV cache against 4-bit quantized KV cache with Hadamard rotation.",
+    "expected_outcome": "Performance and memory usage metrics showing the execution time, memory consumption, and speedup factor of 4-bit quantized KV cache (with different Hadamard rotation implementations) compared to standard FP16 KV cache for different model sizes.",
+    "source": ["/workspace/benchmarks/qattention_benchmark.py"],
+    "usage_instructions": "1. Install the required dependencies including the quarot package\n2. Run the qattention_benchmark.py script with parameters:\n   - --batch_size 1 (batch size)\n   - --seq_len 2048 (sequence length)\n3. The script will benchmark:\n   - Standard FP16 KV cache\n   - 4-bit quantized KV cache without Hadamard rotation\n   - 4-bit quantized KV cache with FP32 Hadamard rotation\n   - 4-bit quantized KV cache with FP16 Hadamard rotation\n4. Analyze the execution time, memory usage, and speedup factor for each configuration\n5. Report the performance and memory differences across different model sizes (7B, 13B, 70B)"
+  },
+  {
+    "mode": "A",
+    "question": "How does QuaRot's end-to-end 4-bit quantization affect the prefill and decoding performance of LLaMa-2 models?",
+    "method": "Run the e2e/benchmark.py script to compare the end-to-end performance of standard FP16 LLaMa-2 models against fully 4-bit quantized models with QuaRot.",
+    "expected_outcome": "Performance metrics showing the prefill time, decoding time, and memory usage of 4-bit quantized LLaMa-2 models compared to FP16 models, along with the speedup factor for each phase.",
+    "source": ["/workspace/e2e/benchmark.py"],
+    "usage_instructions": "1. Install the required dependencies including the quarot package\n2. Run the e2e/benchmark.py script with parameters:\n   - --batch_size 1 (batch size)\n   - --prefill_seq_len 2048 (prefill sequence length)\n   - --decode_steps 32 (number of decoding steps)\n3. The script will benchmark:\n   - Standard FP16 LLaMa-2 model\n   - 4-bit quantized LLaMa-2 model with QuaRot\n4. Analyze the prefill time, decoding time, and memory usage for each configuration\n5. Report the speedup factor and memory savings for the quantized model"
+  }
+]

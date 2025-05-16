@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments for training script, including config file path, number of GPUs, and other optional parameters (/workspace/detection/dist_train.sh:3-8)",
+    "Step 2: Set up distributed training environment with PyTorch distributed launch, configuring node settings, master address, and port (/workspace/detection/dist_train.sh:10-16)",
+    "Step 3: Execute the training script with the provided configuration file, setting random seed and using PyTorch launcher (/workspace/detection/dist_train.sh:17-20)",
+    "Step 4: Parse command line arguments for testing script, including config file path, checkpoint path, number of GPUs, and evaluation metrics (/workspace/detection/dist_test.sh:3-9)",
+    "Step 5: Set up distributed testing environment with PyTorch distributed launch, configuring node settings, master address, and port (/workspace/detection/dist_test.sh:11-17)",
+    "Step 6: Execute the testing script with the provided configuration file, checkpoint path, and evaluation parameters (/workspace/detection/dist_test.sh:18-22)"
+  ],
+  "agent_instructions": "Create two shell scripts for distributed training and testing of object detection models on the COCO dataset:\n\n1. Create a distributed training script that:\n   - Takes a configuration file path and number of GPUs as input parameters\n   - Supports optional environment variables for distributed training (NNODES, NODE_RANK, PORT, MASTER_ADDR)\n   - Uses PyTorch's distributed launch module to run the training script\n   - Passes appropriate parameters to the training script including the configuration file, random seed, and launcher type\n\n2. Create a distributed testing script that:\n   - Takes a configuration file path, checkpoint file path, and number of GPUs as input parameters\n   - Supports optional environment variables for distributed testing (NNODES, NODE_RANK, PORT, MASTER_ADDR)\n   - Uses PyTorch's distributed launch module to run the testing script\n   - Passes appropriate parameters to the testing script including the configuration file, checkpoint path, launcher type, and any additional evaluation parameters\n\nBoth scripts should be designed to work with MMDetection framework for object detection tasks, supporting models like RetinaNet, Mask R-CNN, and Cascade Mask R-CNN with MogaNet backbones.",
+  "masked_source": [
+    "/workspace/detection/dist_train.sh",
+    "/workspace/detection/dist_test.sh"
+  ]
+}

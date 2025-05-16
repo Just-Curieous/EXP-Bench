@@ -1,0 +1,30 @@
+{
+  "requirements": [
+    "Step 1: Check if libibverbs-dev is installed, which is required for RDMA communication (/workspace/examples/test_all_schedules.sh:3-8)",
+    "Step 2: Define an array of pipeline parallelism methods to test, including 1f1b, 1f1bv, offload-grouped-interleaved, zb (zero bubble), zbv (zero bubble V-schedule), zbv-half, zbv-min, and seq1f1b (/workspace/examples/test_all_schedules.sh:10-20)",
+    "Step 3: Set up distributed training environment variables for multi-GPU training (/workspace/examples/test_all_schedules.sh:22-34)",
+    "Step 4: Wait until GPUs are available (less than 2 GPUs with >5000MB memory in use) (/workspace/examples/test_all_schedules.sh:38-59)",
+    "Step 5: Set common environment variables for all methods, including CUDA settings, logging intervals, and model configuration parameters (/workspace/examples/test_all_schedules.sh:61-102)",
+    "Step 6: For each pipeline parallelism method, configure specific parameters: (/workspace/examples/test_all_schedules.sh:71-142)",
+    "Step 7: For the 'zb' (zero bubble) method, set ENABLE_ZERO_BUBBLE=1 and ZERO_BUBBLE_MEM_LIMIT to 2 times the pipeline size (/workspace/examples/test_all_schedules.sh:105-107)",
+    "Step 8: For the 'zbv' method, enable both zero bubble and V-schedule (/workspace/examples/test_all_schedules.sh:108-111)",
+    "Step 9: For 'zbv-half', enable sync optimizer, zero bubble with V-schedule, and set memory setup to 'half' (/workspace/examples/test_all_schedules.sh:112-117)",
+    "Step 10: For 'zbv-min', enable sync optimizer, zero bubble with V-schedule, and set memory setup to 'min' (/workspace/examples/test_all_schedules.sh:118-123)",
+    "Step 11: Create log directory and prepare output files for each method (/workspace/examples/test_all_schedules.sh:144-152)",
+    "Step 12: Run the appropriate training script based on the method (pretrain_offload.sh for offload-grouped-interleaved, pretrain_zero_bubble.sh for others) (/workspace/examples/test_all_schedules.sh:154-158)",
+    "Step 13: In pretrain_zero_bubble.sh, download and prepare the dataset if not already available (/workspace/examples/pretrain_zero_bubble.sh:17-20)",
+    "Step 14: In pretrain_zero_bubble.sh, configure model and training parameters including pipeline size, layers, batch sizes, and model dimensions (/workspace/examples/pretrain_zero_bubble.sh:45-53)",
+    "Step 15: In pretrain_zero_bubble.sh, add zero bubble specific options when ENABLE_ZERO_BUBBLE is set, including timer settings and memory limit (/workspace/examples/pretrain_zero_bubble.sh:129-139)",
+    "Step 16: In pretrain_zero_bubble.sh, add V-schedule options when ZERO_BUBBLE_V_SCHEDULE is set (/workspace/examples/pretrain_zero_bubble.sh:124-127)",
+    "Step 17: In pretrain_offload.sh, configure offloading parameters when OFFLOAD is set (/workspace/examples/pretrain_offload.sh:184-189)",
+    "Step 18: In pretrain_offload.sh, configure interleaved 1F1B parameters when INTERLEAVED_1F1B is set, including interleave group size and offloading settings (/workspace/examples/pretrain_offload.sh:170-182)",
+    "Step 19: Monitor the training process and wait for completion (/workspace/examples/test_all_schedules.sh:159-172)",
+    "Final Step: Mark the method as completed and continue to the next method until all methods are tested (/workspace/examples/test_all_schedules.sh:173-175)"
+  ],
+  "agent_instructions": "Create a script to test different pipeline parallelism schedules for training large language models, focusing on the relationship between memory limits and bubble rate. The experiment should compare various scheduling strategies including standard 1F1B (one-forward-one-backward), Zero Bubble configurations with different memory limits, and V-schedule variations.\n\nThe script should:\n\n1. Define multiple pipeline parallelism methods to test, including at minimum:\n   - Standard 1F1B pipeline schedule\n   - Zero Bubble configuration with configurable memory limit\n   - Zero Bubble with V-schedule\n   - Zero Bubble V-schedule with reduced memory (half and minimum configurations)\n\n2. For each method, configure appropriate environment variables that control:\n   - Whether Zero Bubble scheduling is enabled\n   - Memory limits for Zero Bubble configurations\n   - V-schedule settings\n   - Optimizer synchronization options\n\n3. The key experiment should test how increasing the memory limit affects the bubble rate. Specifically for the Zero Bubble configuration, implement a way to set different memory limits (as multiples of the pipeline size).\n\n4. Run each configuration sequentially, capturing logs for later analysis.\n\n5. The script should handle downloading a sample dataset for training if not already present.\n\n6. Include proper GPU availability checking and distributed training setup.\n\nThe experiment aims to demonstrate that as the memory limit increases, the bubble rate decreases linearly until reaching a plateau near the theoretical threshold.",
+  "masked_source": [
+    "/workspace/examples/test_all_schedules.sh",
+    "/workspace/examples/pretrain_zero_bubble.sh",
+    "/workspace/examples/pretrain_offload.sh"
+  ]
+}

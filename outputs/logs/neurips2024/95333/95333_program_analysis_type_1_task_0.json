@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Define scene categories from different datasets (MipNeRF360 outdoor/indoor, Tanks and Temples, Deep Blending) (/workspace/3dgs_dataset_generator/full_eval.py:15-18)",
+    "Step 2: Parse command line arguments for training, rendering, and metrics evaluation (/workspace/3dgs_dataset_generator/full_eval.py:20-37)",
+    "Step 3: Train 3DGS models on each scene with appropriate image directories and parameters (/workspace/3dgs_dataset_generator/full_eval.py:39-52)",
+    "Step 4: Render images from trained models at specific iterations (7000 and 30000) (/workspace/3dgs_dataset_generator/full_eval.py:54-68)",
+    "Step 5: Compute evaluation metrics across all scenes (/workspace/3dgs_dataset_generator/full_eval.py:70-75)",
+    "Step 6: Implement image loading and processing functions for evaluation (/workspace/3dgs_dataset_generator/metrics.py:24-34, /workspace/SVDFor3D/eval.py:47-91)",
+    "Step 7: Calculate image quality metrics (PSNR, SSIM, LPIPS) between rendered and ground truth images (/workspace/3dgs_dataset_generator/metrics.py:67-75, /workspace/SVDFor3D/eval.py:43-45)",
+    "Step 8: Create dataset class for evaluation that loads rendered and ground truth images (/workspace/SVDFor3D/eval.py:11-41)",
+    "Step 9: Process evaluation results by scene and view, computing average metrics (/workspace/SVDFor3D/eval.py:110-159)",
+    "Step 10: Save evaluation results to output files (/workspace/3dgs_dataset_generator/metrics.py:88-91, /workspace/SVDFor3D/eval.py:161-163)",
+    "Final Step: Compare generalization performance between baseline 3DGS and 3DGS-Enhancer models (/workspace/SVDFor3D/eval.py:98-163)"
+  ],
+  "agent_instructions": "Create a system to evaluate and compare the generalization performance of 3DGS-Enhancer against baseline 3DGS models. The system should consist of three main components:\n\n1. A training and rendering pipeline that:\n   - Processes scenes from multiple datasets (MipNeRF360 outdoor/indoor scenes, Tanks and Temples, Deep Blending)\n   - Trains 3DGS models on these scenes with appropriate parameters\n   - Renders images from the trained models at different training iterations\n\n2. A metrics computation module that:\n   - Loads rendered images and ground truth images\n   - Calculates image quality metrics (PSNR, SSIM, LPIPS) between rendered and ground truth images\n   - Aggregates and saves the metrics results in JSON format\n\n3. A generalization evaluation script that:\n   - Loads rendered images from both 3DGS-Enhancer and baseline 3DGS models\n   - Compares their performance on the MipNeRF360 dataset\n   - Organizes results by views and scenes\n   - Calculates average PSNR metrics across different views\n   - Outputs the comparison results to a text file\n\nThe system should support command-line arguments to control which stages to run (training, rendering, metrics) and to specify dataset paths. The evaluation should demonstrate whether 3DGS-Enhancer generalizes better to out-of-distribution data compared to the baseline 3DGS model.",
+  "masked_source": [
+    "/workspace/3dgs_dataset_generator/full_eval.py",
+    "/workspace/3dgs_dataset_generator/metrics.py",
+    "/workspace/SVDFor3D/eval.py"
+  ]
+}

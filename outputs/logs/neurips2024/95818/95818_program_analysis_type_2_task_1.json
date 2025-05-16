@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Set up the training environment with necessary imports and dependencies (/workspace/train.sh:1-13)",
+    "Step 2: Define paths to training data in webdataset format and validation data (/workspace/train.sh:15-16)",
+    "Step 3: Configure the training script to use distributed training with torchrun (/workspace/train.sh:21-27)",
+    "Step 4: Load the configuration file that defines model architecture, batch size, learning rate, and other hyperparameters (/workspace/opencls/configs/cls_schedule/cls_vit_b16_s1.28B_bs16k.yaml:1-36)",
+    "Step 5: Initialize the model and transforms based on the configuration (/workspace/opencls/training/main.py:232-250)",
+    "Step 6: Set up the optimizer with appropriate weight decay settings (/workspace/opencls/training/main.py:320-335)",
+    "Step 7: Load the training data using webdataset format for efficient processing of large datasets (/workspace/opencls/training/data.py:328-398)",
+    "Step 8: Configure the learning rate scheduler (/workspace/opencls/training/main.py:376-385)",
+    "Step 9: Execute the training loop with gradient accumulation and mixed precision support (/workspace/opencls/training/train.py:70-151)",
+    "Step 10: Save checkpoints periodically during training (/workspace/opencls/training/main.py:132-136)",
+    "Final Step: Evaluate the model on validation data (/workspace/opencls/training/main.py:558-562)"
+  ],
+  "agent_instructions": "Your task is to create a training pipeline for the SuperClass model on a custom dataset of image-text pairs. The SuperClass model is designed for training on large-scale image-text datasets using the webdataset format for efficient data loading.\n\nYou need to:\n\n1. Create a training script that uses torchrun for distributed training across multiple GPUs.\n\n2. Set up configuration for the model architecture (ViT-B-16), training parameters (batch size, learning rate, etc.), and data paths.\n\n3. Implement data loading using the webdataset format, which is optimized for large-scale datasets. The training data should be in tar files containing image-text pairs.\n\n4. Configure the optimizer (AdamW) with appropriate parameters and a cosine learning rate scheduler with warmup.\n\n5. Implement mixed precision training using PyTorch's AMP for better performance.\n\n6. Set up checkpoint saving and validation on an ImageNet validation set.\n\nThe training pipeline should be able to handle a custom dataset by simply changing the data paths in the configuration. The webdataset format expects tar files containing corresponding image and text files (e.g., 000000.jpg and 000000.txt in the same tar file)."
+}

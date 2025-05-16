@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Install the required libraries: datasets from HuggingFace and any dependencies (/workspace/tutorials/1-Downloading-HEST-1k.ipynb:67-68)",
+    "Step 2: Import and authenticate with HuggingFace using a token (/workspace/tutorials/1-Downloading-HEST-1k.ipynb:77-79)",
+    "Step 3: Load the HEST metadata CSV file from HuggingFace (/workspace/tutorials/1-Downloading-HEST-1k.ipynb:152)",
+    "Step 4: Filter the metadata dataframe based on specific attributes (e.g., oncotree_code and organ) (/workspace/tutorials/1-Downloading-HEST-1k.ipynb:154-156)",
+    "Step 5: Extract the sample IDs from the filtered metadata (/workspace/tutorials/1-Downloading-HEST-1k.ipynb:158)",
+    "Step 6: Generate file patterns for each sample ID to use in the download query (/workspace/tutorials/1-Downloading-HEST-1k.ipynb:160)",
+    "Step 7: Download the selected samples using datasets.load_dataset with the appropriate patterns (/workspace/tutorials/1-Downloading-HEST-1k.ipynb:161-165)",
+    "Step 8: Import the iter_hest function to iterate through downloaded samples (/workspace/tutorials/2-Interacting-with-HEST-1k.ipynb:32)",
+    "Step 9: Use iter_hest to access and interact with the downloaded samples (/workspace/tutorials/2-Interacting-with-HEST-1k.ipynb:35)",
+    "Step 10: Access and print information about the samples (e.g., adata, WSI, shapes) (/workspace/tutorials/2-Interacting-with-HEST-1k.ipynb:37-60)",
+    "Final Step: Perform additional operations on the samples as needed (e.g., visualize spots, save data, segment tissue) (/workspace/tutorials/2-Interacting-with-HEST-1k.ipynb:116-118)"
+  ],
+  "agent_instructions": "Your task is to create a Python script or notebook that demonstrates how to download and interact with specific samples from the HEST-1k dataset based on their metadata attributes. The HEST-1k dataset is a collection of spatial transcriptomics data hosted on HuggingFace.\n\nFollow these steps:\n\n1. Set up the environment:\n   - Install the necessary libraries (datasets from HuggingFace)\n   - Import the required modules\n   - Authenticate with HuggingFace using a token\n\n2. Download specific samples based on metadata:\n   - Load the HEST metadata CSV file from HuggingFace\n   - Filter the metadata based on specific attributes of interest (e.g., filter by organ type like 'Breast' and oncotree code like 'IDC')\n   - Extract the sample IDs from the filtered metadata\n   - Generate appropriate file patterns for the download query\n   - Download the selected samples using the datasets.load_dataset function\n\n3. Interact with the downloaded samples:\n   - Use the iter_hest function to iterate through the downloaded samples\n   - Access and display information about each sample, such as:\n     * The scanpy AnnData object (adata) containing gene expression data\n     * The Whole Slide Image (WSI)\n     * Shapes and tissue contours\n   - Demonstrate how to visualize the spots over a downscaled version of the WSI\n\nYour solution should be well-commented and include error handling where appropriate. The goal is to create a workflow that allows researchers to efficiently query and download specific samples from the HEST-1k dataset based on metadata attributes, and then interact with the downloaded data."
+}

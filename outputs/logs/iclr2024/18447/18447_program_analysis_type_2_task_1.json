@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including mmdet.apis for detection functionality (/workspace/detection/demo/image_demo.py:1-6)",
+    "Step 2: Import models module to register MogaNet model (/workspace/detection/demo/image_demo.py:7-9)",
+    "Step 3: Parse command line arguments for image path, config file, checkpoint file, output file, device, color palette, and confidence threshold (/workspace/detection/demo/image_demo.py:12-32)",
+    "Step 4: Initialize the detector model using init_detector() with the config file and checkpoint (/workspace/detection/demo/image_demo.py:37)",
+    "Step 5: Run inference on the input image using inference_detector() (/workspace/detection/demo/image_demo.py:39)",
+    "Step 6: Visualize the results using show_result_pyplot() to draw bounding boxes and segmentation masks with class labels and confidence scores (/workspace/detection/demo/image_demo.py:41-47)",
+    "Step 7: Support both synchronous and asynchronous inference modes (/workspace/detection/demo/image_demo.py:50-63)",
+    "Final Step: Execute the appropriate inference function based on the async_test flag (/workspace/detection/demo/image_demo.py:66-71)"
+  ],
+  "agent_instructions": "Create a script that demonstrates how to use MogaNet-based Mask R-CNN for object detection and instance segmentation on images. The script should:\n\n1. Import the necessary libraries from mmdet.apis for detection functionality\n2. Register the MogaNet model by importing the appropriate module\n3. Accept command line arguments for:\n   - Input image path\n   - Model configuration file path\n   - Model checkpoint file path\n   - Optional output file path\n   - Device selection (default: CUDA)\n   - Color palette selection\n   - Confidence threshold for detections\n4. Initialize the detector model using the provided config and checkpoint\n5. Perform inference on the input image\n6. Visualize and display the results showing:\n   - Bounding boxes around detected objects\n   - Class labels and confidence scores\n   - Segmentation masks for each detected object\n7. Support saving the visualization to an output file if specified\n\nThe script should be able to handle different MogaNet model variants (tiny, small, base, large) through the configuration file."
+}

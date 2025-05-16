@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Set up environment variables for distributed training (number of GPUs, nodes, etc.) (/workspace/train_combo.sh:4-13)",
+    "Step 2: Define paths to the Datacomp-1B dataset and ImageNet-1K validation set (/workspace/train_combo.sh:15-16)",
+    "Step 3: Change to the project directory (/workspace/train_combo.sh:18-19)",
+    "Step 4: Launch distributed training for the SuperClass model using torchrun with the first configuration file (/workspace/train_combo.sh:21-27)",
+    "Step 5: Configure SuperClass ViT-L/16 model with 512M samples from Datacomp-1B dataset, batch size of 16384, and learning rate of 5e-4 (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml:2-16)",
+    "Step 6: Set precision to amp_bfloat16 and enable gradient checkpointing for memory efficiency (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml:6-22)",
+    "Step 7: Save checkpoints every 6104 steps (/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml:33-34)",
+    "Step 8: Launch distributed training for Lock-image Tuning (LiT) using torchrun with the second configuration file (/workspace/train_combo.sh:30-36)",
+    "Step 9: Configure LiT training to use the pretrained SuperClass model checkpoint (/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml:24-26)",
+    "Step 10: Lock the image encoder except for the last group during LiT training (/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml:24-25)",
+    "Step 11: Enable zero-shot evaluation on ImageNet-1K during LiT training every 6104 steps (/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml:33-35)",
+    "Final Step: Complete the LiT training process and report zero-shot classification accuracy on ImageNet-1K (/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml:31-36)"
+  ],
+  "agent_instructions": "Your task is to implement a two-stage training process for a SuperClass ViT-L/16 model followed by Lock-image Tuning (LiT) for zero-shot image classification. The implementation should:\n\n1. Create a script that orchestrates the entire training process, which will:\n   - Set up distributed training environment variables\n   - Define paths for the Datacomp-1B dataset and ImageNet-1K validation set\n   - Run two sequential training jobs using torchrun\n\n2. Create configuration files for both training stages:\n   - First configuration for SuperClass ViT-L/16 model training:\n     - Use 512M samples from Datacomp-1B dataset\n     - Set global batch size to 16384\n     - Use learning rate of 5e-4\n     - Enable mixed precision training with bfloat16\n     - Enable gradient checkpointing for memory efficiency\n     - Save checkpoints periodically\n\n   - Second configuration for Lock-image Tuning (LiT):\n     - Use the pretrained SuperClass model from the first stage\n     - Lock the image encoder except for the last group\n     - Enable zero-shot evaluation on ImageNet-1K\n     - Use the same dataset and training parameters as the first stage\n\n3. The goal is to train a model that achieves competitive zero-shot classification accuracy on ImageNet-1K compared to OpenAI CLIP ViT-L/14 (75.3%) and OpenCLIP ViT-L/14 (79.2%).\n\nThe implementation should work with the existing OpenCLS framework, which provides the training infrastructure and model definitions.",
+  "masked_source": [
+    "/workspace/train_combo.sh",
+    "/workspace/opencls/configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml",
+    "/workspace/opencls/configs/cls_schedule/lit_vit_l16_s512m_bs16k.yaml"
+  ]
+}

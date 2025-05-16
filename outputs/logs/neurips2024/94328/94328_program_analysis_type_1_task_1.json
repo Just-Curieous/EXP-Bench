@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Set up the Python environment with required libraries including PyTorch, transformers, datasets, and other dependencies (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Obtain access to the Hugging Face API token for downloading LLAMA-2 models, which are gated models requiring authentication (/workspace/fake_quant/utils.py:80)",
+    "Step 3: Prepare the evaluation dataset (wikitext2) which will be automatically downloaded through the datasets library (/workspace/fake_quant/data_utils.py:5-28)",
+    "Step 4: Load the specified LLAMA-2 model (7B, 13B, or 70B) from Hugging Face using the transformers library (/workspace/fake_quant/main.py:20)",
+    "Step 5: If using rotation (QuaRot), apply Hadamard rotation to the model weights by fusing layer norms and rotating the model (/workspace/fake_quant/main.py:25-27)",
+    "Step 6: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30)",
+    "Step 7: Apply Hadamard transformation to specific layers (down_proj and o_proj) to prepare for quantization (/workspace/fake_quant/main.py:31-45)",
+    "Step 8: If weight quantization is enabled (w_bits < 16), either load a pre-quantized model or apply GPTQ/RTN quantization (/workspace/fake_quant/main.py:50-75)",
+    "Step 9: Configure activation quantization with the specified bit precision (a_bits) and group size (a_groupsize) (/workspace/fake_quant/main.py:79-109)",
+    "Step 10: Configure key cache quantization if enabled (k_bits < 16) (/workspace/fake_quant/main.py:111-124)",
+    "Step 11: Load the evaluation dataset (wikitext2) for perplexity measurement (/workspace/fake_quant/main.py:127-134)",
+    "Step 12: Evaluate the quantized model on the dataset to calculate perplexity (/workspace/fake_quant/main.py:137)",
+    "Step 13: Log and display the perplexity results (/workspace/fake_quant/main.py:138-139)",
+    "Step 14: Run the experiment multiple times with different configurations as specified in the usage instructions, varying the group sizes (64, 128, 256) and model sizes (7B, 13B, 70B) (/workspace/fake_quant/utils.py:71-222)",
+    "Step 15: Compare the perplexity results across different configurations to understand how group size affects model accuracy (/workspace/fake_quant/eval_utils.py:147-150)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment that compares different group sizes in QuaRot quantization for LLAMA-2 models. You need to run a series of experiments using the provided script to evaluate how different group sizes (64, 128, 256) affect model accuracy across different LLAMA-2 model sizes (7B, 13B, 70B). The experiment measures perplexity on the wikitext2 dataset.\n\nYou'll need to:\n1. Understand how to use the main.py script with appropriate parameters\n2. Ensure you have access to the LLAMA-2 models (which require Hugging Face authentication)\n3. Run the script with different configurations:\n   - Different group sizes (64, 128, 256)\n   - Different model sizes (7B, 13B, 70B)\n   - Baseline (FP16 model without quantization)\n   - Default QuaRot (non-grouped)\n4. Compare the perplexity results to understand the impact of group size on model accuracy\n\nThe script handles model loading, rotation, quantization, and evaluation automatically based on the parameters you provide.",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

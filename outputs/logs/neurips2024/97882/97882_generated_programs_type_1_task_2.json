@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/the_well/benchmark/train.py",
+        "/workspace/the_well/benchmark/metrics/spectral.py"
+    ],
+    "usage_instructions": "To evaluate models based on frequency components for the turbulent_radiative_layer_2D dataset, use the following steps:\n\n1. First, ensure you have trained models (CNextU-net, original U-net, and other baselines) or have access to pre-trained checkpoints.\n\n2. Run the validation script using the train.py with validation_mode=True:\n   ```\n   cd /workspace/the_well/benchmark\n   python train.py experiment=unet_classic server=local data=turbulent_radiative_layer_2D validation_mode=True\n   ```\n\n3. Repeat this for each model you want to evaluate by changing the experiment parameter (e.g., experiment=unet_convnext for CNextU-net).\n\n4. The validation process automatically uses the binned_spectral_mse metric from metrics/spectral.py, which bins the prediction error according to frequency components derived from the Fourier decomposition of the predicted state fields.\n\n5. The results will be logged and visualized, showing error metrics separately for low frequency and high frequency bins over long prediction horizons for each model.\n\nThe spectral.py file contains the implementation of the binned_spectral_mse metric that performs the frequency binning and error calculation. By default, it uses three frequency bins (low, medium, and high) based on a logarithmic spacing from 0 to π."
+}

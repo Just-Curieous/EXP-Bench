@@ -1,0 +1,6 @@
+{
+    "source": [
+        "/workspace/scripts/infinitebench.sh"
+    ],
+    "usage_instructions": "To compare InfLLM with sliding window baselines on ∞-Bench tasks using Mistral-7B, run the infinitebench.sh script with each model configuration file. First, download the datasets with 'bash scripts/download.sh'. Then run: (1) 'bash scripts/infinitebench.sh config/mistral-inf-llm.yaml' for InfLLM, (2) 'bash scripts/infinitebench.sh config/mistral-infinite-lm.yaml' for Infinite, (3) 'bash scripts/infinitebench.sh config/mistral-stream-llm.yaml' for StreamingLLM, and (4) 'bash scripts/infinitebench.sh config/mistral-origin.yaml' for baseline Mistral. The script will evaluate each model on the ∞-Bench tasks (including Retrieve.PassKey, Retrieve.Num, Retrieve.KV, Choice QA, etc.) and output results in the benchmark/infinite-bench-result directory."
+}

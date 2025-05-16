@@ -1,0 +1,191 @@
+{
+  "questions": [
+    {
+      "question": "Can QuaRot-128G achieve comparable or better perplexity than Atom-128G while avoiding the use of high-precision outlier features and the associated reordering complexity?",
+      "method": "#### Dataset & Task\n\n- **Dataset**: WikiText-2\n  - Standard pre-tokenized benchmark for language modeling\n  - 2048-token sequence length used for evaluation\n- **Metric**: Perplexity on test set\n\n#### Models Evaluated\n\n- LLAMA 2-7B\n- LLAMA 2-13B\n- LLAMA 2-70B\n\n#### Methods Compared\n\n| Method | Weight Quantization | Outlier Features | Description |\n| ------ | ------------------- | ---------------- | ----------- |\n| Atom-128G | GPTQ-128G | 128  | Groupwise quantization + outlier support |\n| QuaRot-128G | GPTQ-128G | 0    | Groupwise QuaRot, no outliers, uses Hadamard |\n\n#### Quantization Settings\n\n- **Group Size**: 128 (groupwise quantization for both methods)\n  \n  **Bit-width**: 4-bit\n  \n  **Quantized Modules**: Weights, activations, caches\n  \n  **Hadamard Transform**: Applied to `W_down` in QuaRot-128G\n  \n  **Precision**: FP16 inputs/outputs\n  \n  **Batch size**: 1\n  \n  **Sequence length**: 2048\n\n#### Tooling & Framework\n\n- **Quantization**: Use QuaRot implementation from https://github.com/spcl/QuaRot\n- **Model Loading**: HuggingFace Transformers or original LLAMA-2 checkpoints\n- **Inference Engine**: CUDA, PyTorch + custom CUDA kernels from QuaRot\n- **Evaluation**:\n  - Use perplexity evaluation from HuggingFace\u2019s `evaluate` or equivalent\n  - Decode 2048-token sequences using batch size = 1\n  - Evaluate on full WikiText-2 test set\n  - No finetuning or calibration unless explicitly specified, groupwise GPTQ quantization logic as per QuaRot and Atom papers",
+      "expected_outcome": "| Method          | 7B       | 13B      | 70B  |\n| --------------- | -------- | -------- | ---- |\n| Atom-128G       | 6.03     | **5.26** | -    |\n| **QuaRot-128G** | **5.93** | **5.26** | 3.61 |\n\n- QuaRot-128G matches or slightly improves over Atom-128G\n- Avoids 128 high-precision outlier features while maintaining perplexity\n- Shows that groupwise Hadamard-enabled quantization scales to mid-sized LLMs",
+      "design_complexity": {
+        "constant_variables": {
+          "dataset": [
+            "WikiText-2"
+          ],
+          "sequence_length": [
+            "2048 tokens"
+          ],
+          "bit_width": [
+            "4-bit"
+          ],
+          "quantized_modules": [
+            "weights",
+            "activations",
+            "KV cache"
+          ],
+          "precision": [
+            "FP16 for inputs/outputs"
+          ],
+          "group_size": [
+            "128 (groupwise quantization)"
+          ],
+          "inference_settings": [
+            "batch size = 1",
+            "full WikiText-2 test set evaluation"
+          ]
+        },
+        "independent_variables": {
+          "quantization_method": [
+            "Atom-128G",
+            "QuaRot-128G"
+          ],
+          "llama_model": [
+            "LLAMA 2-7B",
+            "LLAMA 2-13B",
+            "LLAMA 2-70B"
+          ],
+          "weight_quantization_technique": [
+            "GPTQ (and its variations across methods)",
+            "Hadamard transformation (used in QuaRot-128G)"
+          ],
+          "outlier_features": [
+            "128 high-precision outlier features in Atom-128G",
+            "0 outlier features in QuaRot-128G"
+          ]
+        },
+        "dependent_variables": {
+          "perplexity": [
+            "Measured perplexity on WikiText-2 test set"
+          ]
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "weight_quantization_technique": "The paper mentions both GPTQ and RTN in different contexts (e.g., in Table 1 and Table 7), but the precise configuration used in the main comparison between Atom-128G and QuaRot-128G is not fully clarified.",
+          "measurement_of_reordering_complexity": "It is not explicitly defined how the reordering complexity is quantified or compared between the two methods.",
+          "implementation_details": "The specifics for custom CUDA kernels and integration of the Hadamard transformation in QuaRot are not fully described, which might leave ambiguity in replicability."
+        },
+        "possible_modifications": {
+          "extend_quantization_precision": [
+            "Introduce additional bit-width settings (e.g., INT6, INT8) for further comparisons as seen in Table 13 and Table 6."
+          ],
+          "include_additional_metrics": [
+            "Add metrics like latency or energy consumption to evaluate the overall efficiency and complexity beyond perplexity."
+          ],
+          "mask_or_introduce_variables": [
+            "Mask or modify details of the outlier feature count to explore its isolated effect, or introduce a variable for reordering complexity metrics."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Dataset (WikiText-2 pre-tokenized)",
+          "Language Models (LLAMA 2-7B, LLAMA 2-13B, LLAMA 2-70B)",
+          "Quantization Methods (Atom-128G using GPTQ with 128 high-precision outlier features vs. QuaRot-128G using GPTQ with Hadamard transform and 0 outlier features)",
+          "Quantization Settings (4-bit precision, group size of 128, FP16 inputs/outputs, quantized weights, activations, KV cache)",
+          "Tooling & Framework (QuaRot implementation from GitHub, HuggingFace Transformers or original LLAMA-2 checkpoints, CUDA, PyTorch, custom CUDA kernels)",
+          "Evaluation Metric (Perplexity on WikiText-2 test set)"
+        ],
+        "setup_steps": [
+          "Load the WikiText-2 dataset and set the sequence length to 2048 tokens",
+          "Configure the experiment with constant variables: dataset, sequence length, bit-width, quantized modules, precision, group size, and inference settings (batch size = 1, full test set evaluation)",
+          "Load the LLAMA 2 models (7B, 13B, 70B) using HuggingFace Transformers or original checkpoints",
+          "Apply the quantization using either the Atom-128G method (with GPTQ and 128 outlier features) or the QuaRot-128G method (with GPTQ, Hadamard transform and no outlier features)",
+          "Run inference on the quantized models using CUDA and custom CUDA kernels",
+          "Evaluate the models by decoding 2048-token sequences and calculating perplexity using the designated metric (e.g., from HuggingFace\u2019s evaluate)"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Custom CUDA Kernels Integration",
+            "description": "Using custom CUDA kernels in conjunction with standard PyTorch and HuggingFace libraries increases the overall system complexity."
+          },
+          {
+            "source": "Quantization Logic Variations",
+            "description": "The differences between Atom-128G and QuaRot-128G in handling outlier features and incorporating the Hadamard transformation introduce additional complexity."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Weight Quantization Technique",
+          "Measurement of Reordering Complexity",
+          "Custom CUDA Kernels Implementation Details"
+        ],
+        "ambiguous_setup_steps": [
+          "Configuration details for integrating the Hadamard transform within QuaRot-128G are not fully specified.",
+          "The method for quantifying and comparing reordering complexity between Atom-128G and QuaRot-128G is not clearly defined.",
+          "There is ambiguity in the precise configuration of the GPTQ-based quantization, as multiple techniques (e.g., GPTQ and RTN) are mentioned in different parts of the document."
+        ],
+        "possible_modifications": {
+          "extend_quantization_precision": [
+            "Introduce additional bit-width settings (e.g., INT6, INT8) for further comparison, as hinted by extra details in other tables."
+          ],
+          "include_additional_metrics": [
+            "Add metrics like latency or energy consumption to fully capture the trade-offs beyond perplexity."
+          ],
+          "mask_or_introduce_variables": [
+            "Mask or modify details of the outlier feature count to isolate its effect, or explicitly introduce a variable that quantifies reordering complexity."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Restrict GPU memory usage by limiting the experiment to a smaller model (e.g., using only LLAMA 2-7B) to test whether QuaRot-128G maintains comparable perplexity under limited hardware resources."
+          ],
+          "time_constraints": [
+            "Reduce the overall runtime by evaluating on a smaller random subset of the WikiText-2 test set (instead of the full test set) to speed up inference and analysis."
+          ],
+          "money_constraints": [
+            "Lower computational expenditure by excluding the LLAMA 2-70B model and focusing on mid-sized models (LLAMA 2-7B and LLAMA 2-13B) to reduce costs while still comparing Atom-128G and QuaRot-128G."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Quantization algorithm non-determinism and GPU execution variability",
+        "description": "The GPTQ-based quantization methods, including the use of the Hadamard transform in QuaRot-128G, can introduce randomness. This can arise from dynamic rounding decisions, stochastic behavior in custom CUDA kernels, and potential variability in execution on GPUs when processing 2048-token sequences in batch size 1. These factors may lead to run-to-run fluctuations in perplexity measurements.",
+        "impact": "Variability in perplexity could blur the genuine performance difference between Atom-128G and QuaRot-128G, making it challenging to discern whether observed improvements (or degradations) are due to the method or random fluctuations.",
+        "possible_modifications": [
+          "Run multiple inference passes with different random seeds and aggregate the results using bootstrap or error-bar estimation methods.",
+          "Report standard deviation or standard error of the mean as error bars to capture the randomness in the quantization process.",
+          "Integrate more deterministic procedures in the quantization pipeline if possible to reduce variability."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Dataset selection and quantization design choices",
+        "description": "Using a single pre-tokenized dataset (WikiText-2) for evaluating language models can lead to systematic bias. Moreover, the comparison between Atom-128G (which uses 128 high-precision outlier features) and QuaRot-128G (which uses no outlier features and applies a Hadamard transform) may systematically favor one method due to intrinsic design differences, possibly impacting the perplexity in a consistent manner.",
+        "impact": "These systematic biases may limit the generalizability of the results. The improvements observed might reflect inherent dataset bias or methodological design rather than universal improvements in quantization quality across diverse tasks and datasets.",
+        "possible_modifications": [
+          "Expand evaluation to additional datasets to assess the generalizability of the results beyond WikiText-2.",
+          "Include supplementary metrics like latency and energy consumption to evaluate trade-offs beyond perplexity.",
+          "Isolate the effect of outlier feature handling by testing varied configurations (e.g., varying the number of high-precision outlier features) to quantify their impact on performance."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "Execute the following command to run the experiment comparing QuaRot-128G with Atom-128G on WikiText-2 perplexity:\n\n1. For Llama-2-7B model:\n/bin/python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip --w_groupsize 128 --a_groupsize 128 --eval_dataset wikitext2\n\n2. For Llama-2-13B model:\n/bin/python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --rotate --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip --w_groupsize 128 --a_groupsize 128 --eval_dataset wikitext2\n\n3. For Llama-2-70B model:\n/bin/python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --rotate --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip --w_groupsize 128 --a_groupsize 128 --eval_dataset wikitext2\n\nThese commands will run the QuaRot-128G configuration (4-bit quantization with group size 128 and Hadamard rotation) on the specified models and evaluate perplexity on WikiText-2, which directly answers the experiment question by showing that QuaRot-128G achieves comparable or better perplexity than Atom-128G while avoiding high-precision outlier features.",
+      "requirements": [
+        "Step 1: Set up the environment with PyTorch and required libraries including transformers, datasets, and accelerate (/workspace/fake_quant/main.py:1-10)",
+        "Step 2: Obtain access to Hugging Face token for downloading Llama-2 models, which are gated models requiring authentication (/workspace/fake_quant/model_utils.py:40-49)",
+        "Step 3: Download the WikiText-2 dataset which will be used for both calibration and evaluation (/workspace/fake_quant/data_utils.py:5-28)",
+        "Step 4: Load the specified Llama-2 model (7B, 13B, or 70B) from Hugging Face using the provided token (/workspace/fake_quant/main.py:20)",
+        "Step 5: Apply layer normalization fusion to the model by fusing linear operations in LayerNorm into adjacent linear blocks (/workspace/fake_quant/main.py:26)",
+        "Step 6: Apply Hadamard rotation to the model weights using the rotation_utils module (/workspace/fake_quant/main.py:27)",
+        "Step 7: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30)",
+        "Step 8: Configure Hadamard transformation for down_proj and o_proj layers (/workspace/fake_quant/main.py:31-45)",
+        "Step 9: Prepare the calibration dataset (WikiText-2) for weight quantization (/workspace/fake_quant/main.py:62-65)",
+        "Step 10: Apply 4-bit weight quantization using GPTQ with group size 128 and weight clipping (/workspace/fake_quant/main.py:67-68)",
+        "Step 11: Configure 4-bit activation quantization for model inputs with group size 128 (/workspace/fake_quant/main.py:79-109)",
+        "Step 12: Configure 4-bit quantization for key and value projections in attention layers (/workspace/fake_quant/main.py:91-95, 111-124)",
+        "Step 13: Load the WikiText-2 evaluation dataset (/workspace/fake_quant/main.py:127-134)",
+        "Step 14: Evaluate the quantized model on WikiText-2 to measure perplexity (/workspace/fake_quant/main.py:137-139)",
+        "Step 15: Compare the perplexity results with baseline models to verify that QuaRot-128G achieves comparable or better perplexity than Atom-128G (/workspace/fake_quant/eval_utils.py:147-150)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment from a research paper that compares QuaRot-128G with Atom-128G on WikiText-2 perplexity using Llama-2 models. You need to understand and run a quantization framework that applies Hadamard rotation and 4-bit quantization to large language models.\n\nYou should:\n1. Understand the main script and its dependencies\n2. Set up the necessary environment and obtain access to Hugging Face models\n3. Run the experiment with the provided command for at least one of the Llama-2 models (7B, 13B, or 70B)\n4. Interpret the perplexity results to determine if QuaRot-128G achieves comparable or better performance than Atom-128G\n\nThe command to run the experiment is:\n/bin/python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip --w_groupsize 128 --a_groupsize 128 --eval_dataset wikitext2",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

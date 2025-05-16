@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/scripts/5_trick_target_size_autodan.sh",
+        "/workspace/scripts/5_trick_target_size_pair.sh"
+    ],
+    "usage_instructions": "These scripts evaluate model robustness against jailbreak attacks across different model sizes in the Llama family. To run the experiment:\n\n1. First execute the AutoDAN token-level attack script: `bash scripts/5_trick_target_size_autodan.sh`\n2. Then execute the PAIR prompt-level attack script: `bash scripts/5_trick_target_size_pair.sh`\n3. After execution, the results will be saved in the `./exp_results/trick_target_size_autodan/` and `./exp_results/trick_target_size_pair/` directories\n4. To analyze the results and generate ASR (Attack Success Rate) metrics, run: `python analysis/report_trick.py --exp t`\n\nThese scripts test both Llama-2 (7B, 13B, 70B) and Llama-3 (8B, 70B) models against both attack types using the harmful_bench_50.csv dataset, exactly matching the experiment requirements. The scripts use agent evaluation to measure both ASRPrefix and ASRAgent metrics as specified in the experiment design."
+}

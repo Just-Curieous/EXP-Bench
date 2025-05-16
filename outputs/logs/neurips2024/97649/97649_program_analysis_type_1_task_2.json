@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including jax, jaxmarl, numpy, time, and matplotlib (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:594-596,671-675,768)",
+    "Step 2: Define a benchmark function that creates environments and runs them for a specified number of steps (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:598-634)",
+    "Step 3: Initialize configuration parameters including environment name, number of steps, and number of environments (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:678-686)",
+    "Step 4: Run JaxMARL benchmark with different numbers of parallel environments (1, 100, 1000, 10000) (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:689-707)",
+    "Step 5: For each parallelization level, compile the benchmark function using jax.jit and measure execution time (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:692-700)",
+    "Step 6: Calculate steps per second for each parallelization level and store results (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:702-707)",
+    "Step 7: Create a mapping between JaxMARL environment names and PettingZoo environments (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:711-721)",
+    "Step 8: Run PettingZoo benchmark with the same environment and number of steps (but without parallelization) (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:722-732)",
+    "Step 9: Calculate steps per second for PettingZoo implementation (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:733-739)",
+    "Final Step: Visualize the results by plotting JaxMARL performance across different parallelization levels against PettingZoo performance (/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb:766-779)"
+  ],
+  "agent_instructions": "Create a benchmark script that compares the performance of JaxMARL (GPU-accelerated) and PettingZoo (CPU-based) implementations of Multi-Agent Particle Environments (MPE). The benchmark should specifically use the 'MPE_simple_spread_v3' environment.\n\nThe benchmark should:\n\n1. Measure the steps per second (SPS) that each implementation can achieve\n2. For JaxMARL, test different levels of parallelization (1, 100, 1000, and 10000 parallel environments)\n3. For PettingZoo, run a single environment (no parallelization)\n4. Use random actions for both implementations\n5. Run each environment for 1000 steps\n\nThe core of the benchmark should include:\n- A function that creates JaxMARL environments and runs them for the specified number of steps using JAX's vectorization capabilities\n- Code to measure execution time and calculate steps per second for both implementations\n- A visualization that compares the performance of both implementations, showing how JaxMARL's performance scales with increasing parallelization\n\nThe expected output should be a log-log plot showing the steps per second achieved by JaxMARL at different parallelization levels compared to PettingZoo's performance.",
+  "masked_source": [
+    "/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb"
+  ]
+}

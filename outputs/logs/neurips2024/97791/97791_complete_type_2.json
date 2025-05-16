@@ -1,0 +1,73 @@
+[
+  {
+    "mode": "B",
+    "question": "How can we visualize and analyze astronomical light curves from the PLAsTiCC dataset?",
+    "method": "Create a program that loads the PLAsTiCC dataset from the Multimodal Universe collection, processes the light curve data to remove padding, and visualizes the light curves for different astronomical objects with proper error bars and band colors.",
+    "expected_outcome": "A visualization of a PLAsTiCC light curve showing flux measurements over time across different bands, with proper error bars, and information about the object type and redshift displayed.",
+    "source": [
+      "/workspace/notebooks/plasticc_demo.ipynb",
+      "/workspace/notebooks/getting_started.ipynb"
+    ],
+    "usage_instructions": "1. Install and import the necessary libraries (datasets, numpy, matplotlib).\n2. Load the PLAsTiCC dataset using the Hugging Face datasets library with streaming enabled.\n3. Extract a light curve example from the dataset.\n4. Process the light curve data by:\n   - Identifying unique bands in the data\n   - Determining the sequence length for each band\n   - Finding non-padding timestamps to determine the unpadded sequence length\n   - Reshaping the time, flux, and flux error data to remove padding\n5. Create a visualization of the light curve with:\n   - Different colors for each band\n   - Error bars for flux measurements\n   - Proper axis labels and title\n   - A legend identifying each band\n6. Display metadata about the object including its ID, type, and redshift information.",
+    "requirements": [
+      "Step 1: Import necessary libraries (datasets, numpy, matplotlib) (/workspace/notebooks/plasticc_demo.ipynb:10-11, /workspace/notebooks/getting_started.ipynb:97-98)",
+      "Step 2: Load the PLAsTiCC dataset from the Multimodal Universe collection with streaming enabled (/workspace/notebooks/plasticc_demo.ipynb:23, /workspace/notebooks/getting_started.ipynb:348-351)",
+      "Step 3: Extract a light curve example from the dataset (/workspace/notebooks/plasticc_demo.ipynb:35, /workspace/notebooks/getting_started.ipynb:376)",
+      "Step 4: Identify unique bands in the light curve data (/workspace/notebooks/plasticc_demo.ipynb:47-48, /workspace/notebooks/getting_started.ipynb:416)",
+      "Step 5: Determine the sequence length for each band (/workspace/notebooks/plasticc_demo.ipynb:49-51)",
+      "Step 6: Find non-padding timestamps to determine the unpadded sequence length (/workspace/notebooks/plasticc_demo.ipynb:64-66)",
+      "Step 7: Reshape the time, flux, and flux error data to remove padding (/workspace/notebooks/plasticc_demo.ipynb:79-81)",
+      "Step 8: Create a visualization with different colors for each band, error bars for flux measurements, and proper axis labels (/workspace/notebooks/plasticc_demo.ipynb:93-107)",
+      "Final Step: Display metadata about the astronomical object including its type and redshift information (/workspace/notebooks/getting_started.ipynb:419-421)"
+    ],
+    "agent_instructions": "Create a program that visualizes astronomical light curves from the PLAsTiCC dataset. Your program should:\n\n1. Install and import the necessary libraries: datasets (from Hugging Face), numpy, and matplotlib.\n\n2. Load the PLAsTiCC dataset from the Multimodal Universe collection using the Hugging Face datasets library with streaming enabled.\n\n3. Extract a light curve example from the dataset. The light curve data will be stored in a 'lightcurve' field of the example.\n\n4. Process the light curve data to prepare it for visualization:\n   - Identify the unique bands (different wavelength filters) in the data\n   - Determine the sequence length for each band\n   - Find non-padding timestamps to determine the actual data points (the dataset uses padding with zeros or negative values)\n   - Reshape the time, flux, and flux error data to remove padding\n\n5. Create a visualization of the light curve that includes:\n   - Different colors for each band (u, g, r, i, z, Y)\n   - Error bars for flux measurements\n   - Proper axis labels (time in MJD for x-axis, flux for y-axis)\n   - A legend identifying each band\n\n6. Display metadata about the astronomical object, including its object ID, type (e.g., supernova type), and redshift information.\n\nThe goal is to create an informative visualization that shows how the brightness of an astronomical object changes over time across different wavelength bands, which is crucial for identifying and classifying transient astronomical phenomena."
+  },
+  {
+    "mode": "A",
+    "question": "How can we classify supernovae types using wavelet features extracted from light curves?",
+    "method": "Use the snmachine library to extract wavelet features from supernova light curves and train a classifier to distinguish between different supernova types (Ia, II, Ibc, etc.).",
+    "expected_outcome": "A trained classifier that can distinguish between different supernova types with accuracy metrics and visualizations (confusion matrix, ROC curve, t-SNE plot).",
+    "source": [
+      "/workspace/baselines/photo_class/snmachine_example.py"
+    ],
+    "usage_instructions": "1. Load a dataset of supernova light curves from the Multimodal Universe collection.\n2. Clean and preprocess the light curve data by:\n   - Removing padding (zero values)\n   - Clipping the light curves around the peak brightness\n   - Normalizing the time axis\n   - Standardizing filter names\n3. Extract wavelet features from the light curves using the WaveletFeatures class from snmachine.\n4. Visualize the feature space using t-SNE to see how well different supernova types separate.\n5. Train multiple classifiers (SVM, Random Forest, Boosted Decision Trees) on the wavelet features.\n6. Evaluate the classifiers using accuracy metrics and confusion matrices.\n7. Plot ROC curves to visualize classifier performance.",
+    "requirements": [
+      "Step 1: Load a dataset of supernova light curves from the Multimodal Universe collection (/workspace/baselines/photo_class/snmachine_example.py:10-38)",
+      "Step 2: Clean and preprocess the light curve data by removing padding (zero values), clipping around peak brightness, normalizing the time axis, and standardizing filter names (/workspace/baselines/photo_class/snmachine_example.py:54-105)",
+      "Step 3: Group supernova types into major categories (Ia, II, Ibc, other) (/workspace/baselines/photo_class/snmachine_example.py:96-104)",
+      "Step 4: Extract wavelet features from the light curves using the WaveletFeatures class from snmachine (/workspace/baselines/photo_class/snmachine_example.py:125-169)",
+      "Step 5: Visualize the feature space using t-SNE to see how well different supernova types separate (/workspace/baselines/photo_class/snmachine_example.py:201-203)",
+      "Step 6: Train multiple classifiers (SVM, Random Forest, Boosted Decision Trees) on the wavelet features (/workspace/baselines/photo_class/snmachine_example.py:171-186)",
+      "Step 7: Evaluate the classifiers using accuracy metrics and confusion matrices (/workspace/baselines/photo_class/snmachine_example.py:177-182)",
+      "Step 8: Plot ROC curves to visualize classifier performance (/workspace/baselines/photo_class/snmachine_example.py:177-186)",
+      "Final Step: Save the classification results and visualizations (/workspace/baselines/photo_class/snmachine_example.py:183-186)"
+    ],
+    "agent_instructions": "Your task is to create a script that classifies supernovae types using wavelet features extracted from light curves. Follow these steps:\n\n1. Load a dataset of supernova light curves from the Multimodal Universe collection.\n\n2. Clean and preprocess the light curve data by:\n   - Removing padding (zero values)\n   - Clipping the light curves around the peak brightness\n   - Normalizing the time axis\n   - Standardizing filter names\n   - Filtering out objects with insufficient observations\n\n3. Group supernova types into major categories (Ia, II, Ibc, other) for classification purposes.\n\n4. Extract wavelet features from the light curves using the WaveletFeatures class from the snmachine library.\n\n5. Visualize the feature space using t-SNE to see how well different supernova types separate in the feature space.\n\n6. Train multiple classifiers on the wavelet features. You should implement at least three different classification algorithms such as SVM, Random Forest, and Boosted Decision Trees.\n\n7. Evaluate the classifiers using appropriate metrics such as accuracy and confusion matrices.\n\n8. Plot ROC curves to visualize classifier performance.\n\n9. Save the classification results and visualizations to files.\n\nThe script should use the snmachine library which provides tools for supernova light curve analysis, feature extraction, and classification. Make sure to handle cases where objects have missing or invalid data."
+  },
+  {
+    "mode": "A",
+    "question": "How can we use the Informer model to classify astronomical time series data from the PLAsTiCC dataset?",
+    "method": "Implement a sequence classification pipeline using the Informer model architecture to classify astronomical objects based on their light curves from the PLAsTiCC dataset.",
+    "expected_outcome": "A trained Informer model that can classify astronomical objects from their light curves with accuracy metrics reported.",
+    "source": [
+      "/workspace/baselines/plasticc/plasticc.py",
+      "/workspace/baselines/plasticc/preprocess.py",
+      "/workspace/baselines/plasticc/models.py"
+    ],
+    "usage_instructions": "1. Load the PLAsTiCC dataset using the Hugging Face datasets library.\n2. Preprocess the light curve data by:\n   - Normalizing flux values using min-max normalization\n   - Creating attention masks to handle padding in the sequences\n   - Preparing time and wavelength features\n3. Configure the Informer model with appropriate parameters for sequence classification:\n   - Set input size, context length, and model dimensions\n   - Configure encoder and decoder layers\n   - Set up dropout and other hyperparameters\n4. Create a custom positional encoding using Fourier features for the time and wavelength dimensions.\n5. Implement the sequence classification model by:\n   - Processing the input data through the encoder\n   - Pooling the output sequence by taking the mean across the time dimension\n   - Passing the pooled representation through a classifier head\n6. Train the model on the preprocessed data.\n7. Evaluate the model's classification accuracy on a validation set.",
+    "requirements": [
+      "Step 1: Load the PLAsTiCC dataset using the Hugging Face datasets library (/workspace/baselines/plasticc/plasticc.py:52-52)",
+      "Step 2: Preprocess the light curve data by normalizing flux values using min-max normalization (/workspace/baselines/plasticc/preprocess.py:20-24, /workspace/baselines/plasticc/preprocess.py:26-32)",
+      "Step 3: Create attention masks to handle padding in the sequences (/workspace/baselines/plasticc/preprocess.py:34-38)",
+      "Step 4: Transform the raw data by applying normalization and creating attention masks (/workspace/baselines/plasticc/preprocess.py:77-88, /workspace/baselines/plasticc/preprocess.py:90-115)",
+      "Step 5: Configure the Informer model with appropriate parameters for sequence classification (/workspace/baselines/plasticc/plasticc.py:20-37)",
+      "Step 6: Implement a custom positional encoding using Fourier features for time and wavelength dimensions (/workspace/baselines/plasticc/models.py:18-56)",
+      "Step 7: Extend the Informer encoder to use the custom Fourier positional encoding (/workspace/baselines/plasticc/models.py:58-200)",
+      "Step 8: Implement the sequence classification model by processing input through the encoder and pooling the output sequence (/workspace/baselines/plasticc/models.py:202-318)",
+      "Step 9: Create a data loader for the preprocessed data (/workspace/baselines/plasticc/preprocess.py:117-151)",
+      "Step 10: Load a pretrained model for evaluation (/workspace/baselines/plasticc/plasticc.py:46-50)",
+      "Step 11: Evaluate the model's classification accuracy on a validation set (/workspace/baselines/plasticc/plasticc.py:60-66)"
+    ],
+    "agent_instructions": "Your task is to implement a sequence classification pipeline using the Informer model architecture to classify astronomical objects from the PLAsTiCC dataset based on their light curves. Follow these steps:\n\n1. Set up the environment by importing necessary libraries including PyTorch, transformers (for the Informer model), and the datasets library to load the PLAsTiCC dataset.\n\n2. Implement preprocessing functions for the light curve data that:\n   - Apply min-max normalization to flux values to scale them to [0,1] range\n   - Create attention masks to handle padding in the sequences\n   - Prepare time and wavelength features from the astronomical data\n\n3. Implement a custom positional encoding module using Fourier features that can encode both time and wavelength dimensions of the astronomical data.\n\n4. Extend the Informer encoder to use your custom positional encoding instead of the default one.\n\n5. Implement a sequence classification model based on the Informer architecture that:\n   - Processes the input light curve data through the encoder\n   - Pools the output sequence by taking the mean across the time dimension\n   - Passes the pooled representation through a classifier head\n\n6. Create a configuration for the Informer model with appropriate parameters:\n   - Set input size to handle flux and flux error values\n   - Configure context length to handle the light curve sequences\n   - Set appropriate model dimensions and number of encoder/decoder layers\n\n7. Implement a data loading pipeline that:\n   - Loads the PLAsTiCC dataset\n   - Applies your preprocessing functions\n   - Creates batches with proper attention masks\n\n8. Implement an evaluation function that:\n   - Loads a trained model\n   - Runs inference on a validation set\n   - Calculates and reports classification accuracy\n\nThe goal is to create a complete pipeline that can effectively classify astronomical objects from their light curves using the Informer model architecture."
+  }
+]

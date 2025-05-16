@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Parse command-line arguments to determine the finetuning type (block/BAdam or lora) and other training parameters (/workspace/llama-alpaca/src/llmtuner/tuner/tune.py:19-34)",
+    "Step 2: Load the model and tokenizer based on the model arguments (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:34)",
+    "Step 3: Convert model to bfloat16 precision for efficient training (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:35)",
+    "Step 4: Load and preprocess the dataset (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:30-36)",
+    "Step 5: Create a custom trainer that implements timing instrumentation for forward pass, backward pass, and parameter updates (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:162-189)",
+    "Step 6: Implement time measurement wrappers for model.forward, optimizer.step, and accelerator.backward methods (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:26-50)",
+    "Step 7: For BAdam, implement a BlockOptimizer that updates different blocks of parameters in each step (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:60-199)",
+    "Step 8: For LoRA, implement parameter-efficient fine-tuning using the PEFT library (/workspace/llama-alpaca/src/llmtuner/tuner/core/adapter.py:58-92)",
+    "Step 9: Enable gradient checkpointing for memory efficiency (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:52-87)",
+    "Step 10: Run the training loop with the configured trainer (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:69-77)",
+    "Step 11: Log metrics including the timing information for forward pass, backward pass, and parameter updates (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:177-179)",
+    "Final Step: Compare the logged backward_time values between BAdam and LoRA to evaluate the efficiency of the backward pass (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:177-179)"
+  ],
+  "agent_instructions": "Your task is to implement a script that compares the wall-clock running time for the backward pass between BAdam (Block-wise Adam) and LoRA (Low-Rank Adaptation) when finetuning a Llama 3-8B model on the Alpaca dataset.\n\nYou need to:\n\n1. Create a training script that supports different finetuning methods (BAdam and LoRA) through command-line arguments.\n\n2. Implement timing instrumentation to measure and log the time taken for:\n   - Forward pass through the model\n   - Backward pass (gradient computation)\n   - Parameter update step\n\n3. For BAdam implementation:\n   - Create a block-wise optimizer that updates different blocks of parameters in each step\n   - Support switching between blocks based on different strategies (random, ascending, descending)\n   - Implement efficient gradient handling for the active blocks\n\n4. For LoRA implementation:\n   - Use parameter-efficient fine-tuning that adds trainable rank decomposition matrices\n   - Ensure proper integration with the timing instrumentation\n\n5. Ensure both methods use the same model architecture, dataset, and training configuration except for the finetuning method.\n\n6. Log the timing information in a way that allows comparing the efficiency of the backward pass between the two methods.\n\nThe expected outcome is that BAdam's backward pass should be nearly half as long as that of LoRA, demonstrating its efficiency advantage.",
+  "masked_source": [
+    "/workspace/llama-alpaca/src/train_bash.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/tune.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/core/adapter.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/core/utils.py"
+  ]
+}

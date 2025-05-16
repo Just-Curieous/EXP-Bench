@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh",
+        "/workspace/scripts/train_clipself_coco_region_proposals_eva_vitb16.sh",
+        "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh"
+    ],
+    "usage_instructions": "1. First, train the baseline CLIPSelf model using image patches by executing: bash scripts/train_clipself_coco_image_patches_eva_vitb16.sh\n2. Then, train the CLIPSelf model using region proposals by executing: bash scripts/train_clipself_coco_region_proposals_eva_vitb16.sh\n3. Finally, evaluate both models to compare their performance metrics by running:\n   - For the baseline model: bash scripts/test_eva_vitb16_macc_boxes_masks.sh baseline_test path/to/baseline_checkpoint.pt\n   - For the region proposals model: bash scripts/test_eva_vitb16_macc_boxes_masks.sh region_proposals_test path/to/region_proposals_checkpoint.pt\n4. The evaluation will output Top1 and Top5 accuracy metrics for Boxes (rois), Thing Masks (thing), and Stuff Masks (stuff) for both models, allowing direct comparison."
+}

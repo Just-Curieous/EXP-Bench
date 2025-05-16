@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with required dependencies including PyTorch, transformers, datasets, and lm_eval libraries (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Obtain Hugging Face API token for accessing the LLaMA models (/workspace/fake_quant/utils.py:80)",
+    "Step 3: Load the specified LLaMA model (either LLaMA-2-7b-hf or LLaMA-2-13b-hf) from Hugging Face (/workspace/fake_quant/main.py:20)",
+    "Step 4: Apply layer normalization fusion to the model by merging linear operations in LayerNorm into adjacent linear blocks (/workspace/fake_quant/main.py:26)",
+    "Step 5: Apply Hadamard rotation to the model weights using either FP32 precision (when --fp32_had flag is set) or FP16 precision (default) (/workspace/fake_quant/main.py:27-45)",
+    "Step 6: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30)",
+    "Step 7: Configure Hadamard transformation for down_proj and o_proj layers with the specified precision (/workspace/fake_quant/main.py:32-45)",
+    "Step 8: Apply weight quantization to the model using either GPTQ or RTN method with the specified bit-width (4 bits) (/workspace/fake_quant/main.py:50-75)",
+    "Step 9: Apply input quantization to the model with the specified bit-width for activations and value projections (/workspace/fake_quant/main.py:79-109)",
+    "Step 10: Apply key quantization to the model if specified (/workspace/fake_quant/main.py:111-124)",
+    "Step 11: Load the WikiText-2 dataset for perplexity evaluation (/workspace/fake_quant/main.py:127-134)",
+    "Step 12: Evaluate the model's perplexity on the WikiText-2 dataset (/workspace/fake_quant/main.py:137-139)",
+    "Step 13: Prepare the model for zero-shot evaluation by loading the lm_eval library and moving the model to the appropriate device (/workspace/fake_quant/main.py:141-155)",
+    "Step 14: Load the tokenizer for the model (/workspace/fake_quant/main.py:157)",
+    "Step 15: Create an HFLM (Hugging Face Language Model) wrapper for evaluation (/workspace/fake_quant/main.py:158)",
+    "Step 16: Evaluate the model on the specified zero-shot tasks (piqa, winogrande, hellaswag, arc_easy, arc_challenge, lambada) (/workspace/fake_quant/main.py:160-161)",
+    "Step 17: Calculate and display the average accuracy across all tasks (/workspace/fake_quant/main.py:163-165)",
+    "Final Step: Compare the results between FP32 and FP16 Hadamard transformation to determine the impact on model performance (/workspace/fake_quant/main.py:137-168)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment comparing FP32 vs FP16 precision for Hadamard transformation in quantized language models. You need to run the provided script with different configurations and analyze the results.\n\nYou'll need to:\n1. Understand the purpose of the experiment (comparing FP32 vs FP16 precision for Hadamard transformation)\n2. Set up the necessary environment with required dependencies\n3. Obtain access to the LLaMA models (you'll need a Hugging Face token)\n4. Run the script with the specified configurations for both LLaMA-2-7B and LLaMA-2-13B models\n5. Compare the results between FP32 and FP16 Hadamard transformation\n\nThe script applies quantization to the models and evaluates them on perplexity (WikiText-2) and zero-shot accuracy on multiple tasks (piqa, winogrande, hellaswag, arc_easy, arc_challenge, lambada).",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

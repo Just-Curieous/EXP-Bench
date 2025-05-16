@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including pandas, numpy, json, autogluon, sklearn, xgboost, lightgbm, matplotlib, seaborn, and scipy (/workspace/ParametricModels/AutoML_parametric.py:14-26)",
+    "Step 2: Define a ModelTrainer class that handles model training and evaluation using R² score (/workspace/ParametricModels/AutoML_parametric.py:29-65)",
+    "Step 3: Define a DataHandler class to load and preprocess the parametric data, including extracting design categories from the 'Experiment' column (/workspace/ParametricModels/AutoML_parametric.py:68-97)",
+    "Step 4: Define a ResultSaver class to save and load results in JSON format (/workspace/ParametricModels/AutoML_parametric.py:100-130)",
+    "Step 5: Define a Plotter class to visualize model performance across different training set sizes (/workspace/ParametricModels/AutoML_parametric.py:133-238)",
+    "Step 6: Implement the main function that orchestrates the workflow: loading data, training models, evaluating performance, saving results, and generating visualizations (/workspace/ParametricModels/AutoML_parametric.py:241-329)",
+    "Step 7: Load the parametric data from the CSV file (/workspace/ParametricModels/AutoML_parametric.py:81)",
+    "Step 8: Split the data into two datasets: Fastback-only and Combined (all designs) (/workspace/ParametricModels/AutoML_parametric.py:86-96)",
+    "Step 9: Define and initialize multiple surrogate models: AutoGluon, XGBoost, LightGBM, RandomForest, and GradientBoosting (/workspace/ParametricModels/AutoML_parametric.py:253-258)",
+    "Step 10: Define training set sizes (20%, 40%, 60%, 80%, 95%) for scaling experiments (/workspace/ParametricModels/AutoML_parametric.py:261)",
+    "Step 11: For each dataset (Fastback-only and Combined), split into training and test sets (/workspace/ParametricModels/AutoML_parametric.py:273)",
+    "Step 12: For each model and training set size, train the model multiple times (20 splits) and calculate average R² score and confidence intervals (/workspace/ParametricModels/AutoML_parametric.py:284-316)",
+    "Step 13: Save the evaluation results to a JSON file (/workspace/ParametricModels/AutoML_parametric.py:325)",
+    "Step 14: Generate and save visualizations showing how model performance scales with increasing training data size (/workspace/ParametricModels/AutoML_parametric.py:328-329)"
+  ],
+  "agent_instructions": "Create a script that trains and evaluates multiple surrogate models on a parametric dataset for aerodynamic drag prediction. The script should:\n\n1. Load and preprocess the parametric data from a CSV file containing various car design parameters and their corresponding drag coefficients (Cd).\n\n2. Extract design categories from the 'Experiment' column and create two datasets: one for Fastback designs only and another combining all designs.\n\n3. Implement a workflow that trains five different surrogate models (AutoGluon, XGBoost, LightGBM, RandomForest, and GradientBoosting) on these datasets.\n\n4. Conduct a scaling experiment by training each model on different training set sizes (20%, 40%, 60%, 80%, and 95% of the data) to analyze how model performance improves with more training data.\n\n5. For robustness, perform multiple training runs (20 splits) for each configuration and calculate average R² scores and confidence intervals.\n\n6. Save the evaluation results in a structured JSON format.\n\n7. Create visualizations that show how model performance (R² score) scales with increasing training data size for both the Fastback-only and Combined datasets.\n\nThe script should be organized using object-oriented programming with separate classes for model training, data handling, result saving, and visualization.",
+  "masked_source": [
+    "/workspace/ParametricModels/AutoML_parametric.py"
+  ]
+}

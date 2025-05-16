@@ -1,0 +1,40 @@
+{
+  "questions": [
+    {
+      "question": "Does explicit motion information improve the accuracy of video anomaly description generation and question-answering when tested on the Hawk anomaly video dataset?",
+      "method": "Design an experiment on the Hawk dataset (approximately 8,000 videos divided into a 90% training and 10% testing split). Train two versions of the model: one full model that incorporates all motion components (fm, Pm, and motion input Xm) and another ablated model where all explicit motion information is removed. Evaluate both models on two tasks: (a) anomaly video description generation and (b) anomaly video question-answering. Use four Text-Level metrics (BLEU-1, BLEU-2, BLEU-3, BLEU-4) to assess word overlap and GPT-guided metrics (Reasonability, Detail, Consistency) to quantitatively measure the quality of the outputs.",
+      "expected_outcome": "The ablated model without explicit motion information should exhibit lower performance across all metrics compared to the full model. This supports the claim that incorporating explicit motion information enhances the model\u2019s ability to describe motion-related anomalies and improves overall anomaly understanding in both description generation and question-answering tasks.",
+      "subsection_source": "5 Experiments",
+      "source": [
+        "/workspace/train.py",
+        "/workspace/app.py"
+      ],
+      "usage_instructions": "To evaluate the impact of explicit motion information on video anomaly description generation and question-answering on the Hawk dataset:\n\n1. First, train the full model with motion components using:\n   ```\n   NCCL_P2P_DISABLE=1 CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node=4 --master_port='12001' train.py --cfg-path ./configs/train_configs/stage2_finetune.yaml\n   ```\n   This trains the complete model with all motion components (fm, Pm, and motion input Xm).\n\n2. Then, create a modified configuration file by copying stage2_finetune.yaml to stage2_finetune_no_motion.yaml and modify it to disable motion components by setting the motion-related parameters to False or removing them.\n\n3. Train the ablated model without motion components using:\n   ```\n   NCCL_P2P_DISABLE=1 CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node=4 --master_port='12001' train.py --cfg-path ./configs/train_configs/stage2_finetune_no_motion.yaml\n   ```\n\n4. For evaluation on both tasks (anomaly video description generation and question-answering), use app.py with the appropriate model checkpoints:\n   ```\n   # For full model with motion\n   python app.py --cfg-path configs/eval_configs/eval.yaml --model_type llama_v2 --gpu-id 0\n   \n   # For ablated model without motion\n   python app.py --cfg-path configs/eval_configs/eval_no_motion.yaml --model_type llama_v2 --gpu-id 0\n   ```\n\n5. Compare the performance of both models using the Text-Level metrics (BLEU-1, BLEU-2, BLEU-3, BLEU-4) and GPT-guided metrics (Reasonability, Detail, Consistency) as specified in the experiment description.",
+      "requirements": [
+        "Step 1: Load and parse command line arguments for training and evaluation scripts (/workspace/train.py:49-64, /workspace/app.py:36-49)",
+        "Step 2: Set up configuration from YAML files for model parameters, dataset paths, and training settings (/workspace/train.py:94-103, /workspace/app.py:69)",
+        "Step 3: Initialize distributed training environment for multi-GPU processing (/workspace/train.py:96)",
+        "Step 4: Set up random seeds for reproducibility (/workspace/train.py:98, /workspace/app.py:53-60)",
+        "Step 5: Build the Hawk model with motion components including separate visual encoders, Q-Formers, and projection layers for both regular frames and motion frames (/workspace/hawk/models/video_llama.py:108-164, 224-248, 308-344)",
+        "Step 6: Process video data by extracting optical flow to create motion-enhanced frames that highlight regions with significant movement (/workspace/hawk/processors/video_processor.py:27-50, 64-100)",
+        "Step 7: Create datasets that provide both regular video frames and motion-enhanced frames with corresponding text descriptions (/workspace/hawk/datasets/datasets/webvid_datasets.py:99-118, /workspace/hawk/datasets/datasets/video_instruct_dataset.py:152-171)",
+        "Step 8: Implement forward pass that processes both regular and motion frames through separate encoder paths and combines their features (/workspace/hawk/models/video_llama.py:608-777)",
+        "Step 9: Calculate loss for both regular and motion components during training (/workspace/hawk/models/video_llama.py:768-777)",
+        "Step 10: Train the model using the combined loss from both regular and motion components (/workspace/train.py:105-115)",
+        "Step 11: Implement evaluation function that processes videos and generates descriptions using both regular and motion features (/workspace/app.py:125-136, /workspace/hawk/conversation/conversation_video.py:282-318)",
+        "Step 12: Create a modified configuration for ablation study that disables motion components (/workspace/configs/eval_configs/eval_no_motion.yaml)",
+        "Final Step: Compare performance between full model (with motion) and ablated model (without motion) using text-level metrics (/workspace/app.py:62-78)"
+      ],
+      "agent_instructions": "Your task is to implement a system for evaluating the impact of explicit motion information on video anomaly description generation and question-answering. You'll need to create scripts for training and evaluating a model that can process videos and generate descriptions of anomalies.\n\nThe system should:\n\n1. Process videos by extracting both regular frames and motion-enhanced frames that highlight regions with significant movement.\n\n2. Implement a model architecture that can process both regular video frames and motion information in parallel paths, with:\n   - Visual encoders for both regular frames and motion frames\n   - Query-based transformers to process visual features\n   - Projection layers to map visual features to language model space\n   - A LLaMA-2 language model for generating text outputs\n\n3. Create a training script that:\n   - Accepts configuration files for model parameters and training settings\n   - Supports distributed training across multiple GPUs\n   - Processes both regular and motion frames\n   - Calculates loss for both regular and motion components\n\n4. Create an evaluation script that:\n   - Loads trained models\n   - Processes videos to extract regular and motion features\n   - Generates descriptions of anomalies in videos\n   - Supports a chat-like interface for question-answering about video anomalies\n\n5. Support ablation studies by creating configurations that can disable motion components to evaluate their impact.\n\nThe system should be evaluated on the Hawk dataset using both Text-Level metrics (BLEU-1, BLEU-2, BLEU-3, BLEU-4) and GPT-guided metrics (Reasonability, Detail, Consistency).",
+      "masked_source": [
+        "/workspace/train.py",
+        "/workspace/app.py",
+        "/workspace/hawk/processors/video_processor.py",
+        "/workspace/hawk/models/video_llama.py",
+        "/workspace/hawk/datasets/datasets/webvid_datasets.py",
+        "/workspace/hawk/datasets/datasets/video_instruct_dataset.py",
+        "/workspace/hawk/conversation/conversation_video.py"
+      ]
+    }
+  ]
+}

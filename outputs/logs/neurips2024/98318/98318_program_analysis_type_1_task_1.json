@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including hydra, DictConfig, and OmegaConf (/workspace/benchmarl/run.py:7-9)",
+    "Step 2: Import the load_experiment_from_hydra function from benchmarl.hydra_config (/workspace/benchmarl/run.py:11)",
+    "Step 3: Define a function decorated with @hydra.main that specifies the configuration path and name (/workspace/benchmarl/run.py:14)",
+    "Step 4: Extract the task and algorithm names from Hydra runtime choices (/workspace/benchmarl/run.py:29-31)",
+    "Step 5: Print information about the experiment being run, including algorithm name, task name, and configuration (/workspace/benchmarl/run.py:33-35)",
+    "Step 6: Load the experiment using the load_experiment_from_hydra function with the configuration and task name (/workspace/benchmarl/run.py:37)",
+    "Step 7: Run the experiment by calling the run method (/workspace/benchmarl/run.py:38)",
+    "Final Step: Execute the hydra_experiment function when the script is run directly (/workspace/benchmarl/run.py:41-42)"
+  ],
+  "agent_instructions": "Create a Python script that serves as an entry point for running multi-agent reinforcement learning experiments using the BenchMARL framework. The script should:\n\n1. Use Hydra for configuration management\n2. Accept command-line arguments to specify algorithms, tasks, and experiment parameters\n3. Support running multiple experiments with different configurations using Hydra's multirun feature\n4. Load experiment configurations from Hydra and create experiment objects\n5. Execute the experiments and display relevant information\n\nThe script should be designed to work with commands like:\n```\npython script.py -m algorithm=mappo,maddpg,masac task=vmas/balance,vmas/sampling,vmas/navigation experiment.max_n_frames=20000000 seed=0,1,2,3,4\n```\n\nThis command would run experiments with three actor-critic algorithms (MAPPO, MADDPG, MASAC) on three VMAS tasks (Balance, Sampling, Navigation) with five different random seeds, extending training to 2e7 timesteps.\n\nThe script should print information about each experiment being run, including the algorithm name, task name, and loaded configuration.",
+  "masked_source": [
+    "/workspace/benchmarl/run.py"
+  ]
+}

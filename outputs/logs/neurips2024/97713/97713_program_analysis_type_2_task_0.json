@@ -1,0 +1,33 @@
+{
+  "requirements": [
+    "Step 1: Import the necessary modules: random for shuffling tasks, BrowserEnv from browsergym.core.env for the browser environment, ATOMIC_TASKS from browsergym.workarena for the task list, and sleep from time for adding delays between tasks (/workspace/README.md:134-138)",
+    "Step 2: Shuffle the ATOMIC_TASKS list to randomize the order of tasks for demonstration (/workspace/README.md:141)",
+    "Step 3: Create a loop to iterate through each task in the shuffled task list (/workspace/README.md:142-143)",
+    "Step 4: For each task, instantiate a new BrowserEnv environment with the current task as the task_entrypoint and set headless=False to make the browser visible (/workspace/README.md:145-147)",
+    "Step 5: Reset the environment to initialize it for the current task (/workspace/README.md:148)",
+    "Step 6: Add an initial assistant message to the chat interface indicating that work is starting (/workspace/README.md:151)",
+    "Step 7: Create an empty list to store the cheat messages that will be generated during the automated solution process (/workspace/README.md:152)",
+    "Step 8: Call the task's cheat function, passing the environment's page object and the cheat_messages list to automatically solve the task (/workspace/README.md:153)",
+    "Step 9: Iterate through each cheat message and add it to the chat interface with the appropriate role (/workspace/README.md:156-157)",
+    "Step 10: Add a completion message from the assistant to the chat interface indicating the task is done (/workspace/README.md:160)",
+    "Step 11: Validate the solution by calling the task's validate function with the page object and cheat messages (/workspace/README.md:163)",
+    "Step 12: Based on the validation result, add appropriate user feedback to the chat - positive feedback if successful (reward=1) or an error message if unsuccessful (/workspace/README.md:164-167)",
+    "Step 13: Wait for 3 seconds before proceeding to the next task (/workspace/README.md:169)",
+    "Step 14: Close the environment to clean up resources before moving to the next task (/workspace/README.md:170)"
+  ],
+  "agent_instructions": "Create a Python script that demonstrates WorkArena-L1 atomic tasks using BrowserGym. The script should:
+
+1. Import the necessary modules from browsergym and other required libraries
+2. Get a randomized list of WorkArena atomic tasks
+3. Loop through a selection of these tasks
+4. For each task:
+   - Create a visible browser environment
+   - Use the task's built-in 'cheat' function to automatically solve it
+   - Display the solution steps in the chat interface
+   - Validate if the solution was successful
+   - Show appropriate feedback based on the validation result
+   - Add a brief pause between tasks
+   - Clean up resources before moving to the next task
+
+The goal is to create a demonstration that shows how WorkArena-L1 atomic tasks can be automatically solved and validated using the BrowserGym environment."
+}

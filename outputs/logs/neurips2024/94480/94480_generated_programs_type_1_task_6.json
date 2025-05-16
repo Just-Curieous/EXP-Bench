@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/scripts/infinitebench.sh", "/workspace/benchmark/pred.py", "/workspace/benchmark/eval.py"],
+    "usage_instructions": "1. First run 'bash scripts/download.sh' to download the necessary datasets including kv_retrieval.jsonl (R.KV), passkey.jsonl (R.PK), and number_string.jsonl (R.Num). 2. Then execute 'bash scripts/infinitebench.sh' which will run the InfLLM model on these retrieval tasks using the configuration in config/mistral-inf-llm.yaml. This script will generate predictions and evaluate them automatically."
+}

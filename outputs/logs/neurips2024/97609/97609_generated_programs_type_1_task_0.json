@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/DeepSurrogates/train_GNN.py",
+        "/workspace/DeepSurrogates/train_RegPointNet.py",
+        "/workspace/DrivAerNet_v1/RegDGCNN/train.py"
+    ],
+    "usage_instructions": "To evaluate the differential predictive accuracies of geometric deep learning models (PointNet, GCNN, and RegDGCNN) on aerodynamic drag prediction across varying car design complexities:\n\n1. First, train the Graph Convolutional Neural Network (GCNN) model using:\n   ```\n   cd /workspace/DeepSurrogates\n   python train_GNN.py\n   ```\n   This script trains the DragGNN_XL model on the DrivAerNet++ dataset (8,000 car designs) using graph-based representations.\n\n2. Next, train the PointNet model using:\n   ```\n   cd /workspace/DeepSurrogates\n   python train_RegPointNet.py\n   ```\n   This script trains the RegPointNet model on the DrivAerNet++ dataset using point cloud representations.\n\n3. Finally, train the RegDGCNN model using:\n   ```\n   cd /workspace/DrivAerNet_v1/RegDGCNN\n   python train.py\n   ```\n   This script trains the RegDGCNN model on the original DrivAerNet dataset (4,000 car designs).\n\nEach script automatically evaluates the trained models on the test set and reports metrics including Mean Squared Error (MSE), Mean Absolute Error (MAE), Maximum Absolute Error (Max AE), R2 score, training time, and inference time. The scripts use the train/val/test splits provided in the `/workspace/train_val_test_splits` directory.\n\nTo compare performance across different car design complexities, you may need to modify the dataset paths in the config dictionaries of each script to point to specific subsets of data with varying underbody details, wheel configurations, or rear design configurations."
+}

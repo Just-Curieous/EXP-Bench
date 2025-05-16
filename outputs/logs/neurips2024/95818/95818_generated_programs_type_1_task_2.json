@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/train.sh",
+        "/workspace/opencls/training/zero_shot.py"
+    ],
+    "usage_instructions": "To evaluate how scaling model size impacts zero-shot classification performance on SuperClass, follow these steps:\n\n1. Train the different model sizes (ViT-B/16 and ViT-L/16) using the train.sh script with the appropriate configuration files:\n\n   ```bash\n   # Train ViT-B/16 model with 512M samples and batch size 16k\n   bash train.sh configs/cls_schedule/cls_vit_b16_s512m_bs16k.yaml opencls\n   \n   # Train ViT-L/16 model with 512M samples and batch size 16k\n   bash train.sh configs/cls_schedule/cls_vit_l16_s512m_bs16k.yaml opencls\n   ```\n\n2. The zero-shot evaluation on ImageNet-1K is automatically performed during training by the zero_shot.py script. The results will be logged in the tensorboard logs and saved in the checkpoint directory.\n\n3. To compare the results, check the logs for 'imagenet-zeroshot-val-top1' and 'imagenet-zeroshot-val-top5' metrics for each model size.\n\nNote: While the repository doesn't contain a specific script for linear probing evaluation, the zero-shot classification evaluation is implemented. For the ViT-S/16 model, you would need to create a configuration file similar to the existing ones but with the model parameter set to 'CLS-ViT-S-16'."
+}

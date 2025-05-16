@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including dataset path, dataset name, class name, device, backbone name, pretrained model, feature layers, image resize dimensions, divide_num, r_list, batch size, output directory, visualization flag, and save_excel flag (/workspace/examples/musc_main.py:11-30)",
+    "Step 2: Load configuration from YAML file and override with command line arguments (/workspace/examples/musc_main.py:32-78)",
+    "Step 3: Initialize the MuSc model with the configuration (/workspace/examples/musc_main.py:86)",
+    "Step 4: Load the specified backbone model (CLIP, DINO, or DINO_v2) (/workspace/models/musc.py:64-76)",
+    "Step 5: For each category in the dataset, process the test data (/workspace/models/musc.py:269-278)",
+    "Step 6: Divide the test dataset into the specified number of subsets (divide_num) (/workspace/models/musc.py:130-140)",
+    "Step 7: For each subset, load the test dataset with the appropriate division parameters (/workspace/models/musc.py:79-93)",
+    "Step 8: Extract features from the test images using the backbone model and measure extraction time (/workspace/models/musc.py:153-181)",
+    "Step 9: Apply LNAMD (Local Neighborhood Aggregation with Multiple Degrees) to process features for each aggregation degree in r_list (/workspace/models/musc.py:185-202)",
+    "Step 10: Use MSM (Mutual Scoring Module) to compute anomaly scores for each feature layer (/workspace/models/musc.py:204-217)",
+    "Step 11: Interpolate anomaly maps to match the original image size (/workspace/models/musc.py:222-227)",
+    "Step 12: Calculate image-level anomaly scores and apply RsCIN (Robust Score Calibration with Image Neighborhood) (/workspace/models/musc.py:240-248)",
+    "Step 13: Compute evaluation metrics (AUROC, F1, AP, AUPRO) for both image-level and pixel-level anomaly detection (/workspace/models/musc.py:250-260)",
+    "Step 14: Optionally visualize anomaly maps if the vis flag is set (/workspace/models/musc.py:262-264)",
+    "Step 15: Calculate and display mean performance metrics across all categories (/workspace/models/musc.py:289-303)",
+    "Step 16: Save results to Excel file if save_excel flag is set (/workspace/models/musc.py:306-340)"
+  ],
+  "agent_instructions": "Implement a script to evaluate how dividing a test dataset into smaller subsets affects anomaly detection performance, inference time, and GPU memory usage. The script should:\n\n1. Accept command line arguments for configuring the experiment, including:\n   - Dataset path and name (MVTec AD or VisA)\n   - Class name (specific category or 'ALL' for all categories)\n   - GPU device ID\n   - Backbone model (ViT variants like ViT-L-14-336)\n   - Feature extraction layers\n   - Image resize dimensions\n   - Number of subsets to divide the test dataset into (divide_num)\n   - Aggregation degrees for feature processing (r_list)\n   - Batch size\n   - Output directory\n   - Visualization and Excel saving flags\n\n2. Load a pre-trained vision model (CLIP, DINO, or DINO_v2) as the feature extractor.\n\n3. For each category in the dataset:\n   - Divide the test dataset into the specified number of subsets\n   - For each subset:\n     - Extract features from test images using the backbone model\n     - Measure and report feature extraction time per image\n     - Process features using local neighborhood aggregation with multiple degrees\n     - Compute anomaly scores using a mutual scoring approach\n     - Measure and report processing time\n\n4. Calculate anomaly detection metrics:\n   - Image-level: AUROC, F1 score, Average Precision\n   - Pixel-level: AUROC, F1 score, Average Precision, AUPRO\n\n5. Report mean performance metrics across all categories.\n\n6. Optionally save results to an Excel file and visualize anomaly maps.\n\nThe implementation should measure and report the inference time per image for different divide_num values (1, 2, 3) to demonstrate how dividing the test dataset affects computational efficiency and detection performance.",
+  "masked_source": [
+    "/workspace/examples/musc_main.py"
+  ]
+}

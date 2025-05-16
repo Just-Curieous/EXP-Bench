@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including AnomalyCLIP_lib, torch, PIL, cv2, numpy, and scipy.ndimage for Gaussian filtering (/workspace/test_one_example.py:1-11,43)",
+    "Step 2: Define utility functions for normalizing anomaly maps and applying color maps to visualize anomalies (/workspace/test_one_example.py:13-41)",
+    "Step 3: Load the pre-trained AnomalyCLIP model with the specified checkpoint (/workspace/test_one_example.py:53-54)",
+    "Step 4: Set up image preprocessing transformations according to model requirements (/workspace/test_one_example.py:56)",
+    "Step 5: Load the prompt learner that generates text prompts for normal and anomalous conditions (/workspace/test_one_example.py:59-64)",
+    "Step 6: Generate text features for normal and anomalous conditions using the prompt learner (/workspace/test_one_example.py:66-69)",
+    "Step 7: Load and preprocess the input image (/workspace/test_one_example.py:71-75)",
+    "Step 8: Extract image features and patch features from multiple layers of the model (/workspace/test_one_example.py:77-79)",
+    "Step 9: Compute similarity between image features and text features (/workspace/test_one_example.py:81-83)",
+    "Step 10: Generate anomaly maps for each feature layer by computing similarity between patch features and text features (/workspace/test_one_example.py:84-91)",
+    "Step 11: Combine anomaly maps from different layers (/workspace/test_one_example.py:93-95)",
+    "Step 12: Apply Gaussian filtering to smooth the anomaly map (/workspace/test_one_example.py:97)",
+    "Step 13: Visualize the anomaly map by overlaying it on the original image and save the result (/workspace/test_one_example.py:99)"
+  ],
+  "agent_instructions": "Implement a zero-shot anomaly detection system using AnomalyCLIP to identify defects in product images without any domain-specific training. Your implementation should follow these steps:\n\n1. Set up the environment by importing necessary libraries (AnomalyCLIP_lib, torch, PIL, cv2, numpy, scipy.ndimage).\n\n2. Create utility functions for:\n   - Normalizing anomaly maps (scaling values between 0 and 1)\n   - Visualizing anomaly maps (applying color maps and overlaying on original images)\n\n3. Implement the main anomaly detection function that:\n   - Loads a pre-trained AnomalyCLIP model\n   - Loads and preprocesses an input image\n   - Generates text features for both normal and anomalous conditions using prompt templates\n   - Extracts multi-scale image features from different layers of the model\n   - Computes similarity between image features and text features\n   - Generates an anomaly map by combining similarities across different feature layers\n   - Applies Gaussian filtering to smooth the anomaly map\n   - Creates a visualization by overlaying the anomaly heatmap on the original image\n   - Saves the visualization and returns an anomaly score\n\n4. The system should work in a zero-shot manner, meaning it should be able to detect anomalies in new, unseen product images without any additional training.\n\n5. The implementation should use a CLIP-based architecture that compares visual features with textual descriptions of normal and anomalous states.\n\nYour code should accept an input image path and produce both a visualization of potential defects and a quantitative anomaly score."
+}

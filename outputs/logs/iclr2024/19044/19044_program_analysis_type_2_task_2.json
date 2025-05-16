@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by importing necessary libraries including torch, diffusers, transformers, and AnimateDiff-specific modules (/workspace/scripts/animate.py:1-29)",
+    "Step 2: Create a function to handle the animation generation process with command-line arguments (/workspace/scripts/animate.py:31-35)",
+    "Step 3: Create a directory to save the generated animations with a timestamp (/workspace/scripts/animate.py:36-38)",
+    "Step 4: Load the configuration file that specifies different motion styles (/workspace/scripts/animate.py:40-41)",
+    "Step 5: Initialize the base models (tokenizer, text encoder, VAE) from the pretrained model path (/workspace/scripts/animate.py:44-46)",
+    "Step 6: For each motion style configuration in the config file, process it separately (/workspace/scripts/animate.py:48-49)",
+    "Step 7: Set up dimensions (width, height, length) for the animation (/workspace/scripts/animate.py:50-52)",
+    "Step 8: Load the UNet model with appropriate configuration (/workspace/scripts/animate.py:54-55)",
+    "Step 9: Optionally load and configure ControlNet if specified in the config (/workspace/scripts/animate.py:58-115)",
+    "Step 10: Enable memory optimization with xformers if available (/workspace/scripts/animate.py:117-119)",
+    "Step 11: Create the AnimationPipeline with all the loaded components (/workspace/scripts/animate.py:121-125)",
+    "Step 12: Load the motion module, MotionLoRA weights, and other model components (/workspace/scripts/animate.py:127-139)",
+    "Step 13: Prepare prompts, negative prompts, and random seeds for generation (/workspace/scripts/animate.py:141-146)",
+    "Step 14: For each prompt, generate an animation using the pipeline with the specified motion style (/workspace/scripts/animate.py:148-170)",
+    "Step 15: Save each generated animation as a GIF file with appropriate naming (/workspace/scripts/animate.py:172-174)",
+    "Step 16: Combine all generated animations into a grid and save as a single GIF (/workspace/scripts/animate.py:178-179)",
+    "Step 17: Save the final configuration for reproducibility (/workspace/scripts/animate.py:181)",
+    "Final Step: Set up command-line argument parsing to allow users to specify configuration files and parameters (/workspace/scripts/animate.py:184-197)"
+  ],
+  "agent_instructions": "Your task is to create a system that generates animations from text prompts using AnimateDiff with different motion styles. You'll need to implement a script that does the following:\n\n1. Create a script that uses AnimateDiff's motion module and MotionLoRA to generate animations from text prompts\n2. The script should accept a configuration file that defines different motion styles to apply to the same text prompt\n3. For each motion style (like ZoomIn, ZoomOut, PanLeft, PanRight, TiltUp, TiltDown, etc.), the script should:\n   - Load the appropriate motion module and MotionLoRA model\n   - Apply the same text prompt with the different motion style\n   - Generate an animation and save it as a GIF\n4. The configuration should allow specifying:\n   - The text prompt and negative prompt\n   - The motion module path\n   - The MotionLoRA model path and its strength (alpha)\n   - The base model (DreamBooth model)\n   - Generation parameters like seed, steps, and guidance scale\n5. The script should save all generated animations in a timestamped directory\n6. Additionally, create a sample configuration file that demonstrates how to apply different camera movements (ZoomIn, ZoomOut, PanLeft, PanRight, TiltUp, TiltDown, RollingClockwise, RollingAnticlockwise) to the same text prompt\n\nThe goal is to demonstrate how AnimateDiff's MotionLoRA can be used to control camera movements in generated animations while keeping the content (defined by the text prompt) the same across all animations."
+}

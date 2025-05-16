@@ -1,0 +1,91 @@
+[
+  {
+    "mode": "B",
+    "question": "Implement a Game of 24 solver that can find a solution using the four basic arithmetic operations to reach 24 from four given numbers.",
+    "method": "Create a program that takes four numbers as input and finds a mathematical expression using addition, subtraction, multiplication, and division that evaluates to 24. The program should try different permutations of the numbers and different combinations of operations to find a valid solution.",
+    "expected_outcome": "A mathematical expression using the four input numbers and basic arithmetic operations that evaluates to 24, or a message indicating no solution exists.",
+    "source": [
+      "/workspace/test_templates.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries (itertools for permutations and product, sympy for symbolic mathematics)\n2. Define a function that takes a list of four numbers as input\n3. Generate all possible permutations of the four numbers\n4. For each permutation, try all possible combinations of the four basic arithmetic operations (+, -, *, /)\n5. For each combination, construct different expression patterns with different parentheses placements\n6. Evaluate each expression using sympy to handle potential floating-point errors\n7. Return the first valid expression that evaluates to 24, or a message if no solution is found\n8. Test the function with a sample input",
+    "requirements": [
+      "Step 1: Import necessary libraries for permutations, combinations, and symbolic mathematics (/workspace/test_templates.py:2-3)",
+      "Step 2: Define a function that takes a list of four numbers as input (/workspace/test_templates.py:5)",
+      "Step 3: Define the four basic arithmetic operations (+, -, *, /) (/workspace/test_templates.py:6)",
+      "Step 4: Set up symbolic variables for evaluation (/workspace/test_templates.py:7)",
+      "Step 5: Generate all possible permutations of the four input numbers (/workspace/test_templates.py:8)",
+      "Step 6: For each permutation, try all possible combinations of the four operations (/workspace/test_templates.py:9)",
+      "Step 7: For each combination, construct different expression patterns with different parentheses placements (/workspace/test_templates.py:10-16)",
+      "Step 8: Evaluate each expression and check if it equals 24 (with tolerance for floating-point errors) (/workspace/test_templates.py:18-20)",
+      "Step 9: Return the first valid expression that evaluates to 24, or a message if no solution is found (/workspace/test_templates.py:21)",
+      "Final Step: Demonstrate the function with a sample input (/workspace/test_templates.py:24-25)"
+    ],
+    "agent_instructions": "Implement a Game of 24 solver that finds a mathematical expression using four input numbers and the four basic arithmetic operations (+, -, *, /) to reach a result of 24.\n\nYour implementation should:\n\n1. Take four numbers as input\n2. Try all possible permutations of these numbers\n3. For each permutation, try all possible combinations of the four basic arithmetic operations\n4. Consider different ways to place parentheses to change the order of operations\n5. Evaluate expressions accurately, avoiding floating-point errors\n6. Return the first valid expression that evaluates to 24, or indicate that no solution exists\n\nFor example, given the numbers [1, 7, 10, 13], your solver should find a valid expression that equals 24.\n\nHint: Consider using libraries for permutations/combinations and symbolic mathematics to handle the evaluation accurately."
+  },
+  {
+    "mode": "B",
+    "question": "Create a chess program that can find a checkmate-in-one move given a sequence of previous moves in Standard Algebraic Notation (SAN).",
+    "method": "Develop a program that takes a sequence of chess moves in SAN format, reconstructs the current board position, and then identifies a legal move that would result in checkmate.",
+    "expected_outcome": "The move in Standard Algebraic Notation that results in checkmate, or a message indicating that no checkmate-in-one move exists.",
+    "source": [
+      "/workspace/test_templates.py"
+    ],
+    "usage_instructions": "1. Import the chess library\n2. Define a function to preprocess the input string by removing move numbers and periods\n3. Define a function that takes a list of chess moves in SAN format\n4. Initialize a new chess board\n5. Apply each move from the input to update the board state\n6. Generate all possible legal moves from the current position\n7. For each legal move, create a copy of the board and apply the move\n8. Check if the move results in checkmate\n9. Return the first move that results in checkmate, or a message if none is found\n10. Test the function with a sample input",
+    "requirements": [
+      "Step 1: Import the chess library (/workspace/test_templates.py:31-31)",
+      "Step 2: Define a function to preprocess the input string by removing move numbers and periods (/workspace/test_templates.py:61-69)",
+      "Step 3: Define a function that takes a list of chess moves in SAN format (/workspace/test_templates.py:33-59)",
+      "Step 4: Initialize a new chess board (/workspace/test_templates.py:40-40)",
+      "Step 5: Apply each move from the input to update the board state, handling invalid moves (/workspace/test_templates.py:43-48)",
+      "Step 6: Generate all possible legal moves from the current position (/workspace/test_templates.py:51-51)",
+      "Step 7: For each legal move, create a copy of the board and apply the move (/workspace/test_templates.py:52-53)",
+      "Step 8: Check if the move results in checkmate (/workspace/test_templates.py:56-57)",
+      "Step 9: Return the first move that results in checkmate in SAN format, or a message if none is found (/workspace/test_templates.py:57-59)",
+      "Final Step: Process input and call the function with a sequence of chess moves (/workspace/test_templates.py:72-75)"
+    ],
+    "agent_instructions": "Create a chess program that can find a checkmate-in-one move given a sequence of previous moves in Standard Algebraic Notation (SAN). Your program should:\n\n1. Use the Python chess library to handle chess logic\n2. Include a function to preprocess input strings by removing move numbers and periods (e.g., convert '1. e4 e5 2. Nf3' to ['e4', 'e5', 'Nf3'])\n3. Create a main function that:\n   - Takes a list of chess moves in SAN format\n   - Sets up a new chess board\n   - Applies each input move to update the board state\n   - Handles invalid moves appropriately\n   - Examines all legal moves from the current position\n   - For each potential move, tests if it would result in checkmate\n   - Returns the first move that results in checkmate (in SAN format)\n   - Returns an appropriate message if no checkmate-in-one exists\n\nThe program should be able to process a string of chess moves and output either the checkmate move or a message indicating no checkmate move was found. Test your implementation with sample chess positions where a checkmate-in-one is possible."
+  },
+  {
+    "mode": "B",
+    "question": "Build a word sorting program that alphabetically sorts a list of words and returns them as a single line of text with spaces between words.",
+    "method": "Create a program that takes a string containing multiple words, splits it into individual words, sorts them alphabetically, and then joins them back together with spaces between them.",
+    "expected_outcome": "A single line of text containing all the input words sorted alphabetically and separated by spaces.",
+    "source": [
+      "/workspace/test_templates.py"
+    ],
+    "usage_instructions": "1. Define a function that takes a list of words as input\n2. Use the built-in sorted() function to sort the words alphabetically\n3. Join the sorted words into a single string with spaces between them using the join() method\n4. Return the resulting string\n5. For the main program, split the input string into a list of words\n6. Call the sorting function with this list\n7. Print or return the sorted result\n8. Test the function with a sample input",
+    "requirements": [
+      "Step 1: Define a function that takes a list of words as input (/workspace/test_templates.py:80-89)",
+      "Step 2: Sort the list of words alphabetically using the built-in sorted() function (/workspace/test_templates.py:91)",
+      "Step 3: Join the sorted words into a single string with spaces between them using the join() method (/workspace/test_templates.py:94)",
+      "Step 4: Return the resulting string (/workspace/test_templates.py:96)",
+      "Step 5: For the main program, split the input string into a list of words (/workspace/test_templates.py:100)",
+      "Step 6: Call the sorting function with this list (/workspace/test_templates.py:101)",
+      "Step 7: Print or return the sorted result (/workspace/test_templates.py:102)"
+    ],
+    "agent_instructions": "Create a program that alphabetically sorts a list of words and returns them as a single line of text with spaces between words. Your program should:\n\n1. Accept a string containing multiple words as input\n2. Split the input string into individual words\n3. Sort the words alphabetically\n4. Join the sorted words back together with spaces between them\n5. Return or print the resulting string\n\nFor example, if the input is \"thrill splutter panicking\", the output should be \"panicking splutter thrill\"."
+  },
+  {
+    "mode": "A",
+    "question": "Use the Buffer of Thoughts (BoT) framework to solve a math word problem by retrieving relevant thought templates from a meta-buffer and instantiating them for the specific problem.",
+    "method": "Utilize the BoT framework to solve a math word problem by first distilling the problem information, retrieving relevant thought templates from the meta-buffer, instantiating the templates for the specific problem, and generating a solution.",
+    "expected_outcome": "A step-by-step solution to the math word problem that follows the thought template structure, with the final numerical answer clearly stated.",
+    "source": [
+      "/workspace/inference.py",
+      "/workspace/bot_pipeline.py"
+    ],
+    "usage_instructions": "1. Initialize the BoT framework with the appropriate API key and model parameters\n2. Provide a math word problem as input to the framework\n3. The framework will first distill the problem information using the problem_distillation method\n4. Then it will retrieve relevant thought templates from the meta-buffer using buffer_instantiation\n5. The framework will instantiate the templates for the specific problem\n6. It will generate a solution based on the instantiated templates\n7. The buffer_manager will update the meta-buffer with the new problem-solution pair\n8. Extract and return the final answer from the generated solution",
+    "requirements": [
+      "Step 1: Set up a pipeline class that can handle both API-based and local language model inference, supporting different model types and configurations (/workspace/bot_pipeline.py:11-66)",
+      "Step 2: Create a Buffer of Thoughts (BoT) class that initializes with user input, API key, model parameters, and meta-buffer (/workspace/bot_pipeline.py:71-84)",
+      "Step 3: Implement problem distillation to extract key information from the input math problem using the language model (/workspace/bot_pipeline.py:89-92)",
+      "Step 4: Implement buffer retrieval functionality to find relevant thought templates from the meta-buffer based on the problem description (/workspace/bot_pipeline.py:94-101, 103-108)",
+      "Step 5: Implement buffer instantiation to apply the retrieved thought templates to the specific problem and generate a solution (/workspace/bot_pipeline.py:103-109)",
+      "Step 6: Create a buffer manager to update the meta-buffer with new problem-solution pairs (/workspace/bot_pipeline.py:111-114)",
+      "Step 7: Implement thought distillation to generalize problem-solution pairs into reusable templates (/workspace/bot_pipeline.py:116-138)",
+      "Step 8: Create an inference script that initializes the BoT framework with appropriate parameters and runs the inference pipeline (/workspace/inference.py:1-30)",
+      "Final Step: Execute the BoT inference workflow (problem distillation, buffer instantiation, buffer management) to solve the math word problem (/workspace/bot_pipeline.py:205-209)"
+    ],
+    "agent_instructions": "Your task is to implement a Buffer of Thoughts (BoT) framework for solving math word problems. The framework should follow these key steps:\n\n1. Create a system that can work with either OpenAI API or local language models for inference\n\n2. Implement the core BoT framework with these components:\n   - Problem distillation: Extract key information from a math word problem\n   - Meta-buffer: Store and retrieve thought templates (patterns for solving different types of problems)\n   - Buffer instantiation: Apply relevant thought templates to the specific problem\n   - Solution generation: Generate a step-by-step solution based on the instantiated templates\n   - Buffer management: Update the meta-buffer with new problem-solution pairs\n   - Thought distillation: Convert problem-solution pairs into generalized templates\n\n3. The framework should follow this workflow:\n   - Take a math word problem as input\n   - Distill the problem to extract key information\n   - Retrieve relevant thought templates from the meta-buffer\n   - Instantiate the templates for the specific problem\n   - Generate a solution with clear reasoning steps\n   - Update the meta-buffer with the new problem-solution pair\n   - Return the final answer\n\n4. Create a simple interface to initialize the framework with appropriate parameters (API key, model IDs, etc.) and run inference on a given math problem\n\nThe implementation should be flexible enough to handle different types of math word problems and should clearly show the step-by-step reasoning process leading to the final answer."
+  }
+]

@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/scripts/reverse_experiments/generate_reverse_dataset.py",
+        "/workspace/scripts/reverse_experiments/start_finetunes.py",
+        "/workspace/scripts/evaluate_quickly.py"
+    ],
+    "usage_instructions": "1. Generate the dataset with `python scripts/reverse_experiments/generate_reverse_dataset.py --num_examples_per_group 30 --num_train_examples 4 --num_test_examples 2 --dataset_name celebrity_facts`. This creates a synthetic dataset of 30 fictitious celebrity facts in different orders (NameToDescription and DescriptionToName).\n\n2. Fine-tune models on this dataset with `python scripts/reverse_experiments/start_finetunes.py --model_name ada --learning_rate_multiplier 0.2 --batch_size 2 --n_epochs 1 --num_finetunes 1`. You can replace 'ada' with other models like 'babbage', 'curie', or 'davinci' to test different model sizes.\n\n3. Monitor your OpenAI runs with `python scripts/listruns.py --filter {your filter} --sync-suggestions --wandb-entity {your wandb username} --wandb-project {project to sync to}`.\n\n4. Once a run is synced to Wandb, add the 'eval' tag to the runs you want to evaluate.\n\n5. Evaluate the models with `python scripts/evaluate_quickly.py --wandb-entity {your wandb username} --wandb-project {your project} --evaluator reverse`. This will test the models on both same-order and reversed-order prompts, showing accuracy metrics that demonstrate the reversal curse phenomenon."
+}

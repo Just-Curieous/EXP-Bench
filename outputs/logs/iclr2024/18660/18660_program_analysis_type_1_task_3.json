@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries for benchmarking, visualization, and environment interaction (lines 7-28)",
+    "Step 2: Create utility functions to store and load benchmark results using pickle (lines 31-46)",
+    "Step 3: Implement a function to run VMAS with TorchRL that creates a vectorized environment, sets up a data collector, measures execution time, and returns the time taken (lines 49-75)",
+    "Step 4: Implement a function to run VMAS with RLlib that creates a callback to measure time, registers the environment, configures and runs the trainer, and returns the time taken (lines 78-138)",
+    "Step 5: Create a comparison function that runs both implementations across different numbers of environments, calculates frames per second, stores results, and generates a plot (lines 141-216)",
+    "Step 6: Set up the main execution with the 'simple_spread' scenario, running for 100 steps, with up to 30000 environments in 10 steps (lines 219-232)"
+  ],
+  "agent_instructions": "Create a benchmarking script that compares the sampling performance (frames per second) between TorchRL and RLlib when running VMAS (Vectorized Multi-Agent Simulator) environments. The script should:\n\n1. Implement functions to run the same VMAS scenario using both TorchRL and RLlib frameworks\n2. Measure the execution time for each framework across varying numbers of vectorized environments (from a small number to a very large number)\n3. Calculate frames per second for each configuration\n4. Store the results for reproducibility\n5. Generate a plot comparing the performance of both frameworks\n\nThe benchmark should use the 'simple_spread' scenario, run for 100 simulation steps, and test with an increasing number of vectorized environments. The script should handle both CPU and GPU execution and properly configure both frameworks for a fair comparison.\n\nMake sure to include proper error handling and ensure that resources are cleaned up after benchmarking.",
+  "masked_source": [
+    "/workspace/benchmarks/ecosystem/vmas_rllib_vs_torchrl_sampling_performance.py"
+  ]
+}

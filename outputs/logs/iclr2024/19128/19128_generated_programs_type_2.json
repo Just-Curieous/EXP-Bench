@@ -1,0 +1,26 @@
+[
+  {
+    "mode": "B",
+    "question": "How can you use CLIPSelf to compute similarity between images and text prompts?",
+    "method": "Create a simple program that uses the CLIP model to compute similarity scores between a given image and various text prompts.",
+    "expected_outcome": "A list of similarity scores between the image and different text prompts, along with a visualization of these scores.",
+    "source": ["/workspace/example_clipself.py"],
+    "usage_instructions": "1. Import the necessary libraries including torch, torch.nn.functional, and open_clip.\n2. Create a SimpleCLIPSelf class that loads a pre-trained CLIP model.\n3. Implement methods to encode images and text into feature vectors.\n4. Implement a method to compute cosine similarity between image and text features.\n5. Create a main function that initializes the model, generates a random image, and computes similarity with various text prompts.\n6. Visualize the similarity scores using matplotlib."
+  },
+  {
+    "mode": "B",
+    "question": "How can you implement a simplified version of CLIPSelf distillation to fine-tune a vision transformer?",
+    "method": "Create a program that demonstrates the core concept of CLIPSelf distillation, where a student model learns from a teacher model by aligning image features.",
+    "expected_outcome": "A training loop that shows decreasing loss values as the student model learns from the teacher, and a final evaluation showing high similarity between teacher and student features.",
+    "source": ["/workspace/example_clipself_distillation.py"],
+    "usage_instructions": "1. Import the necessary libraries including torch, torch.nn.functional, torch.optim, and open_clip.\n2. Create a CLIPSelfDistillation class that initializes both teacher and student CLIP models.\n3. Freeze the teacher model and selectively freeze parts of the student model (e.g., only train the last few transformer blocks).\n4. Implement methods to extract features from both models.\n5. Implement a loss function that measures cosine similarity between teacher and student features.\n6. Create functions to generate synthetic training data (images and crops).\n7. Implement a training loop that updates the student model to align with the teacher model.\n8. Evaluate the final model by comparing teacher and student features on a test image."
+  },
+  {
+    "mode": "B",
+    "question": "How can you build a simplified F-ViT model for zero-shot object detection using CLIP embeddings?",
+    "method": "Create a program that demonstrates how to use CLIP embeddings for zero-shot object detection in a simplified F-ViT architecture.",
+    "expected_outcome": "A model that can perform zero-shot classification on images using CLIP text embeddings, with output showing bounding box predictions and classification scores for various object categories.",
+    "source": ["/workspace/example_fvit.py"],
+    "usage_instructions": "1. Import the necessary libraries including torch, torch.nn, torch.nn.functional, and open_clip.\n2. Create a SimpleFViT class that uses a pre-trained CLIP model as the backbone.\n3. Implement a feature extraction method that gets image features from the CLIP model.\n4. Create a simple FPN-like neck to process the features.\n5. Implement detection and classification heads for object detection.\n6. Create a method to generate text embeddings for zero-shot classification using CLIP.\n7. Implement a zero-shot inference method that uses text embeddings for classification.\n8. Create a main function that initializes the model, generates text embeddings for COCO classes, and performs inference on a test image.\n9. Visualize the classification scores and print the top predicted classes."
+  }
+]

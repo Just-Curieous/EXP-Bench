@@ -1,0 +1,13 @@
+{
+    "source": [
+        "/workspace/scripts/PDF/720/etth1.sh",
+        "/workspace/scripts/PDF/720/etth2.sh",
+        "/workspace/scripts/PDF/720/ettm1.sh",
+        "/workspace/scripts/PDF/720/ettm2.sh",
+        "/workspace/scripts/PDF/720/electricity.sh",
+        "/workspace/scripts/PDF/720/traffic.sh",
+        "/workspace/scripts/PDF/720/weather.sh",
+        "/workspace/Formers/FEDformer/scripts/LongForecasting.sh"
+    ],
+    "usage_instructions": "First, download the datasets as described in the README.md and place them in the './dataset' directory. Then, run the PDF(720) model scripts for each dataset by executing the shell scripts in '/workspace/scripts/PDF/720/' (e.g., 'sh /workspace/scripts/PDF/720/etth1.sh'). These scripts will train and evaluate the PDF model with a 720 look-back window on all datasets for prediction lengths of 96, 192, 336, and 720. Next, run the FEDformer model by executing 'cd /workspace/Formers/FEDformer && sh scripts/LongForecasting.sh', which will train and evaluate the FEDformer model with a 96 look-back window on the same datasets and prediction lengths. After running both sets of scripts, the evaluation metrics (MSE and MAE) will be saved in the './results/' directory and summarized in 'result.txt'. You can then compare these metrics to verify the hypothesis that PDF(720) achieves an overall 14.59% reduction in MSE and 10.77% reduction in MAE compared to transformer-based models like FEDformer."
+}

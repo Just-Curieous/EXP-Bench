@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Set up the preprocessing script to generate candidate molecules using DeepSpeed with a pre-trained model (/workspace/MolGen/preprocess.sh:1-20)",
+    "Step 2: Configure the preprocessing script with appropriate parameters including batch size, experiment name, return number, sequence length constraints, and sampling strategy (/workspace/MolGen/preprocess.sh:2-13)",
+    "Step 3: Specify input/output paths for the preprocessing script including checkpoint path, input data path, output path, and finetune path (/workspace/MolGen/preprocess.sh:14-17)",
+    "Step 4: Set the property parameter (plogp, qed, or binding_affinity) for molecule optimization in the preprocessing script (/workspace/MolGen/preprocess.sh:18)",
+    "Step 5: Enable DeepSpeed with appropriate configuration file in the preprocessing script (/workspace/MolGen/preprocess.sh:19-20)",
+    "Step 6: Set up the finetuning script to apply the chemical feedback paradigm using DeepSpeed (/workspace/MolGen/finetune.sh:1)",
+    "Step 7: Configure the finetuning script with appropriate parameters including batch size, experiment name, loss weights, and training epochs (/workspace/MolGen/finetune.sh:2-8)",
+    "Step 8: Specify checkpoint path and finetune path for the finetuning script (/workspace/MolGen/finetune.sh:9-10)",
+    "Step 9: Enable DeepSpeed with appropriate configuration file in the finetuning script (/workspace/MolGen/finetune.sh:11-12)",
+    "Step 10: Configure optimization parameters including weight decay, maximum sequence length, and learning rate in the finetuning script (/workspace/MolGen/finetune.sh:13-16)",
+    "Step 11: Set up the generation script to produce optimized molecules using DeepSpeed (/workspace/MolGen/generate.sh:1)",
+    "Step 12: Configure the generation script with appropriate parameters including batch size, experiment name, return number, sequence length constraints, and sampling strategy (/workspace/MolGen/generate.sh:2-13)",
+    "Step 13: Specify checkpoint path, input path, and generation output path for the generation script (/workspace/MolGen/generate.sh:14-16)",
+    "Step 14: Set the property parameter (plogp, qed, or binding_affinity) for molecule optimization in the generation script (/workspace/MolGen/generate.sh:17)",
+    "Step 15: Enable DeepSpeed with appropriate configuration file in the generation script (/workspace/MolGen/generate.sh:18-19)",
+    "Final Step: Execute the scripts in sequence (preprocess.sh → finetune.sh → generate.sh) to generate optimized molecules and evaluate their properties"
+  ],
+  "agent_instructions": "Your task is to implement three shell scripts for a molecular generation pipeline that optimizes molecules for specific properties (plogp, qed, or binding_affinity). The pipeline consists of three stages:\n\n1. Preprocessing Stage:\n   - Create a script that uses DeepSpeed to generate candidate molecules from a pre-trained model\n   - The script should support configuring the target property (plogp, qed, or binding_affinity)\n   - For binding affinity tasks, it should accept a protein file path\n   - The script should use appropriate sampling parameters (top-k, beam search) for molecule generation\n   - Output should be saved as candidate molecules for the next stage\n\n2. Finetuning Stage:\n   - Create a script that finetunes the model using the candidates generated in the previous stage\n   - The script should implement a chemical feedback paradigm during molecule generation\n   - Configure appropriate loss weights for the training process\n   - Use DeepSpeed for distributed training\n   - Save the finetuned model for the next stage\n\n3. Generation Stage:\n   - Create a script that generates optimized molecules using the finetuned model\n   - The script should support the same properties as the preprocessing stage\n   - For binding affinity tasks with protein targets, it should accept a protein file path\n   - Configure appropriate generation parameters for diverse molecule generation\n   - The script should evaluate and report the top-3 property scores for the generated molecules\n\nThe scripts should work together to reproduce the experiment results from the paper, focusing on optimizing molecules for p-logP, QED, or binding affinity as shown in Tables 2 and 3 of the paper.",
+  "masked_source": [
+    "/workspace/MolGen/preprocess.sh",
+    "/workspace/MolGen/finetune.sh",
+    "/workspace/MolGen/generate.sh"
+  ]
+}

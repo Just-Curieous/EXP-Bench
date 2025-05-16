@@ -1,0 +1,177 @@
+{
+  "questions": [
+    {
+      "question": "Will the proposed solution **NeuRodin** outperform existing solutions such as **Neuralangelo** under the conditions of *structural integrity* and *parameter efficiency*, particularly in preserving geometrically challenging areas like the barn\u2019s roof in the **Tanks and Temples** dataset?",
+      "method": "#### **Problem Setup**\n\n- **Objective**: Validate the claim that NeuRodin achieves higher structural fidelity and surface detail than Neuralangelo, with significantly fewer parameters, by reproducing their results using a controlled benchmarking setup.\n\n#### **Experiment Components**\n\n- **Dataset**:\n  - **Tanks and Temples (T&T)**: Use the training subset (Barn, Caterpillar, Courthouse, Ignatius, Meetingroom, Truck) as well as the advanced subset.\n- **Models Under Comparison**:\n  - NeuRodin\n  - Neuralangelo\n- **Evaluation Metrics**:\n  - Accuracy\n  - Completeness\n  - Precision\n  - Recall\n  - F-score (\u2191 higher is better)\n  - Structural integrity (qualitative inspection of scene structures\u2014e.g., barn roof collapse)\n  - Parameter count (model size)\n- **Hardware Setup**:\n  - Ideally replicate the original authors\u2019 hardware: an A100 40G GPU; if not, note GPU type and VRAM capacity.\n\n#### **Independent Variables**:\n\n- **Reconstruction Framework**: NeuRodin vs. Neuralangelo\n- **Parameter Efficiency**: Number of parameters used\n\n#### **Dependent Variables**:\n\n- F-score and supporting metrics on Tanks and Temples\n- Qualitative structural fidelity in visual reconstructions\n- Inferred or measured number of model parameters\n\n#### **Experimental Steps**:\n\n1. **Implementation Setup**:\n   - Use the [NeuRodin repo](https://github.com/Open3DVLab/NeuRodin)\n   - Use either Neuralangelo\u2019s original code or Bakedangelo if indoor stability is required.\n   - Ensure both models use the same input pipeline, pose files, and training settings (resolution, learning rate, hash grid config).\n2. **Dataset Preparation**:\n   - Download and preprocess Tanks and Temples scenes identically for both methods.\n   - Align camera poses and resolution with NeuRodin\u2019s expectations (consult Appendix G in the paper).\n3. **Training and Mesh Extraction**:\n   - Train both models to convergence using comparable steps.\n   - Extract meshes with **marching cubes** at resolution 2048 for consistency.\n4. **Structural Integrity Analysis**:\n   - Visually inspect the **barn roof** and similar sensitive structures.\n   - Compare collapsing artifacts, noise, and continuity of geometry.\n5. **Parameter Efficiency Check**:\n   - Use Python tools or repository logs to count trainable parameters.\n6. **Evaluation Metrics Computation**:\n   - Use official T&T script for F-score on training scenes.\n   - For advanced subset, submit reconstructions to [T&T server](https://www.tanksandtemples.org/).\n   - Record and present metrics in Table 5 format.",
+      "expected_outcome": "- NeuRodin should achieve a higher mean F-score (\u2248 0.51) than Neuralangelo (\u2248 0.50) on the Tanks and Temples training subset.\n- On structurally complex scenes (e.g., Barn), NeuRodin should preserve the roof while Neuralangelo may fail.\n- NeuRodin will use 1/8 fewer parameters than Neuralangelo (Table 1 + Sec. 5.1), making it substantially more efficient.\n- Visual reconstructions from NeuRodin will exhibit better fine-grained detail and smoother surfaces with minimal artifacts.\n- Quantitative edge on the Tanks and Temples *advanced* subset (NeuRodin: 28.84 vs. Neuralangelo: 26.28) as shown in Table 2.",
+      "design_complexity": {
+        "constant_variables": {
+          "dataset": "Tanks and Temples training subset (Barn, Caterpillar, Courthouse, Ignatius, Meetingroom, Truck) and advanced subset",
+          "input_pipeline": "Identical preprocessing steps including pose alignment, resolution, cropping/downsampling, and use of the same training settings (e.g., learning rate, hash grid config)",
+          "hardware_setup": "A100 40G GPU (or equivalent), to ensure similar computational environment"
+        },
+        "independent_variables": {
+          "reconstruction_framework": [
+            "NeuRodin",
+            "Neuralangelo"
+          ],
+          "parameter_efficiency_setting": "Model parameter count configuration (e.g., NeuRodin using 1/8 fewer parameters than Neuralangelo)"
+        },
+        "dependent_variables": {
+          "f_score": "F-score measured on reconstructions from the Tanks and Temples dataset",
+          "accuracy": "Accuracy metric from the reconstruction evaluation",
+          "completeness": "Completeness metric from the reconstruction evaluation",
+          "precision": "Precision metric from the reconstruction evaluation",
+          "recall": "Recall metric from the reconstruction evaluation",
+          "structural_integrity": "Qualitative assessment of structural fidelity (e.g., preservation of the barn roof)",
+          "model_parameters": "Number of trainable parameters measured or inferred from repository logs"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "parameter_efficiency_setting": "It is not explicitly detailed which exact parameter configurations (beyond the 1/8 fewer parameters claim) will be used or varied in the experiment.",
+          "hardware_setup": "While an A100 40G GPU is suggested, deviations or substitutions may introduce variability not clearly addressed.",
+          "input_pipeline": "Preprocessing details such as the specific cropping, downsampling routines, and pose alignment steps are referenced indirectly (e.g., Appendix G) and may lead to ambiguity if not followed exactly.",
+          "structural_integrity": "The qualitative analysis of structural fidelity (e.g., barn roof preservation) is subjective without standardized, quantitative measures."
+        },
+        "possible_modifications": {
+          "modification_hardware": [
+            "Standardize or explicitly mask the hardware details to evaluate the sensitivity of the results to GPU differences."
+          ],
+          "modification_input_pipeline": [
+            "Provide a more detailed or masked version of the input preprocessing steps to test the robustness of the pipeline against small configuration changes."
+          ],
+          "modification_parameter_setting": [
+            "Introduce additional variables for parameter budgets or allow variable parameter counts to comprehensively evaluate efficiency."
+          ],
+          "modification_structural_integrity": [
+            "Develop quantitative measures or standardized scoring for structural integrity to reduce reliance on subjective visual inspection."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Dataset: Tanks and Temples (training subset and advanced subset)",
+          "Models: NeuRodin and Neuralangelo (or its stable variant, Bakedangelo)",
+          "Input Pipeline: Preprocessing tools including pose alignment, resolution cropping/downsampling, and camera pose scaling",
+          "Evaluation Metrics: Accuracy, Completeness, Precision, Recall, F-score, qualitative structural integrity, model parameter count",
+          "Mesh Extraction: Marching cubes algorithm at resolution 2048",
+          "Hardware Setup: GPU (A100 40G or equivalent) and corresponding computing environment",
+          "Code Repositories: NeuRodin repo and Neuralangelo/Bakedangelo code"
+        ],
+        "setup_steps": [
+          "Clone and set up NeuRodin repository and obtain Neuralangelo/Bakedangelo code",
+          "Configure the input pipeline to use identical preprocessing (pose files, resolution settings, cropping/downsampling) for both models (consult Appendix G for details)",
+          "Download and prepare the Tanks and Temples dataset following the same alignment and preprocessing protocols",
+          "Train both models to convergence with comparable training settings (same learning rate, hash grid configuration, etc.)",
+          "Extract the reconstructed meshes using the marching cubes algorithm at a consistent resolution",
+          "Compute evaluation metrics using the official Tanks and Temples scripts and perform qualitative analysis on structural integrity (e.g., barn roof assessment)",
+          "Measure and compare the number of trainable model parameters from the logs or Python tools"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Input Pipeline Preprocessing",
+            "description": "The exact cropping, downsampling, and pose alignment steps are only indirectly described (e.g., via Appendix G), adding complexity to replicating the experiment accurately."
+          },
+          {
+            "source": "Hardware Requirements",
+            "description": "Reliance on high-end GPU (e.g., A100 40G) or equivalent may complicate reproduction if similar hardware is not available, potentially affecting training convergence and performance."
+          },
+          {
+            "source": "Qualitative Structural Integrity Evaluation",
+            "description": "Assessing structural fidelity (e.g., barn roof preservation) involves subjective visual inspection, which introduces complexity in standardizing the evaluation process."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Parameter Efficiency Setting: The exact parameter configuration beyond the claim of '1/8 fewer parameters' is not explicitly defined.",
+          "Hardware Setup: The suggestion to use an A100 40G GPU is clear but substitutions or deviations are not well addressed."
+        ],
+        "ambiguous_setup_steps": [
+          "Input Pipeline Details: The specific steps for pose alignment, cropping, and downsampling refer to Appendix G, leaving room for interpretation if not followed exactly.",
+          "Training Convergence Criteria: The criteria for 'convergence' during training are not clearly defined across the models.",
+          "Qualitative Assessment: The process for performing a consistent and objective structural integrity analysis (especially for the barn roof) is ambiguous without standardized guidelines."
+        ],
+        "possible_modifications": {
+          "modification_hardware": [
+            "Standardize or explicitly mask detailed hardware specifications to evaluate sensitivity to GPU differences."
+          ],
+          "modification_input_pipeline": [
+            "Provide a detailed or modified version of the preprocessing instructions (or mask some instructions) to test the robustness of the input pipeline against small configuration changes."
+          ],
+          "modification_parameter_setting": [
+            "Introduce additional experimental variables to test different parameter budgets or allow variable parameter counts to more comprehensively evaluate efficiency."
+          ],
+          "modification_structural_integrity": [
+            "Develop and incorporate quantitative measures or standardized scoring systems for assessing structural integrity to reduce reliance on subjective visual inspection."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Enforce a stricter hardware constraint by substituting the recommended A100 40G GPU with a less powerful, consumer-grade GPU (e.g., RTX 3090) to examine sensitivity of the results to VRAM and computation power.",
+            "Tighten the parameter efficiency setup by explicitly reducing the model size further (e.g., testing with NeuRodin-mini) while attempting to preserve the reported performance, thereby challenging the original efficiency claims."
+          ],
+          "time_constraints": [
+            "Reduce the allowed number of training iterations or impose stricter convergence criteria to simulate a constrained-time scenario, potentially affecting the quality of mesh extraction and reconstruction fidelity."
+          ],
+          "money_constraints": [
+            "Impose a financial budget constraint that restricts the use of high-end GPUs and forces the use of lower-cost computing alternatives, which may impact training duration and model performance."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Stochastic variations in training and data preprocessing",
+        "description": "Random uncertainty arises from factors such as stochastic initialization of model weights, potential randomness in data augmentation (e.g., slight variations in cropping or downsampling due to interpretation of Appendix G), and other uncontrolled variations in the training process. These can lead to differing convergence speeds and subtle variations in reconstruction quality even with identical overall settings.",
+        "impact": "Such random variations can cause fluctuations in metrics like the F-score, accuracy, and the qualitative appearance of reconstructed structures (e.g., the barn roof), making it difficult to attribute observed improvements solely to the NeuRodin method. This uncertainty might mask small differences between NeuRodin and Neuralangelo.",
+        "possible_modifications": [
+          "Run multiple training trials with varied random seeds and report statistical measures (e.g., confidence intervals or error bars) to capture variance.",
+          "Introduce controlled perturbations in the input pipeline such as minor random modifications in cropping or alignment to test the model\u2019s robustness.",
+          "Standardize or fix the random seed across experiments to lessen random uncertainty."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Preprocessing choices and evaluation subjectivity",
+        "description": "Systematic uncertainty may be introduced through consistent biases in the dataset preprocessing (e.g., pose alignment, cropping, downsampling as referenced in Appendix G) and in the qualitative evaluation of structural integrity (such as assessing the barn roof\u2019s fidelity). If the preprocessing steps are not applied identically between NeuRodin and Neuralangelo or if subjective evaluation criteria are used without standard guidelines, this could lead to a systematic bias in the experimental outcomes.",
+        "impact": "These systematic biases can lead to a consistent over- or under-estimation of model performance and may favor one method over the other due to non-random, replicable errors in the experimental pipeline or evaluation metrics.",
+        "possible_modifications": [
+          "Develop and incorporate quantitative measures or standardized scoring systems for assessing structural integrity to reduce subjective bias.",
+          "Ensure identical replication of the input pipeline for both models by providing detailed preprocessing instructions or employing automated alignment tools.",
+          "Evaluate the models on an alternate, unmodified dataset or use cross-validation to assess whether the observed effects persist beyond a single, potentially biased dataset.",
+          "Blind the qualitative evaluation by having independent reviewers assess the reconstructions without knowing the method used."
+        ]
+      },
+      "source": [
+        "/workspace/scripts/train.py",
+        "/workspace/zoo/extract_surface.py"
+      ],
+      "usage_instructions": "To compare NeuRodin with Neuralangelo on the Tanks and Temples dataset, follow these steps:\n\n1. First, train NeuRodin on the Barn scene from Tanks and Temples dataset using the two-stage approach:\n   ```bash\n   # Stage 1 - Train NeuRodin first stage on Barn (outdoor scene)\n   ns-train neurodin-stage1-outdoor-large --experiment_name neurodin-Barn-stage1 --pipeline.datamanager.eval_camera_res_scale_factor 0.5 tnt-data --data <path-to-tnt> --scene_name Barn\n   \n   # Stage 2 - Train NeuRodin second stage on Barn\n   ns-train neurodin-stage2-outdoor-large --experiment_name neurodin-Barn-stage2 --pipeline.datamanager.eval_camera_res_scale_factor 0.5 --trainer.load_dir <path-to-stage1-checkpoints-dir> tnt-data --data <path-to-tnt> --scene_name Barn\n   ```\n\n2. Train Neuralangelo on the same Barn scene:\n   ```bash\n   # Train Neuralangelo on Barn\n   ns-train neuralangelo --experiment_name neuralangelo-Barn --pipeline.datamanager.eval_camera_res_scale_factor 0.5 tnt-data --data <path-to-tnt> --scene_name Barn\n   ```\n\n3. Extract meshes from both models at resolution 2048 for fair comparison:\n   ```bash\n   # Extract NeuRodin mesh\n   python zoo/extract_surface.py --conf <path-to-neurodin-config> --resolution 2048\n   \n   # Extract Neuralangelo mesh\n   python zoo/extract_surface.py --conf <path-to-neuralangelo-config> --resolution 2048\n   ```\n\n4. Evaluate the meshes using the official Tanks and Temples evaluation script (not included in this repo, but referenced in the paper) to compute F-score, accuracy, completeness, precision, and recall.\n\n5. Visually inspect the structural integrity of the barn roof in both reconstructions.\n\n6. Compare parameter counts between the two models by examining the model configurations in the method_configs.py file. NeuRodin is designed to use approximately 1/8 fewer parameters than Neuralangelo.",
+      "requirements": [
+        "Step 1: Set up the training script to handle command-line arguments for model configuration and dataset paths (/workspace/scripts/train.py:246-255)",
+        "Step 2: Implement the main training function that initializes the trainer with the specified configuration (/workspace/scripts/train.py:220-243)",
+        "Step 3: Create a training loop function that sets up the environment, initializes the model, and runs the training process (/workspace/scripts/train.py:78-90)",
+        "Step 4: Implement distributed training capabilities to support multi-GPU training (/workspace/scripts/train.py:93-146)",
+        "Step 5: Create a launch function to handle single or multi-process training based on available GPUs (/workspace/scripts/train.py:149-217)",
+        "Step 6: Implement a mesh extraction function that loads a trained model from a checkpoint (/workspace/zoo/extract_surface.py:18-60)",
+        "Step 7: Create a function to extract the SDF (Signed Distance Function) from the model for mesh generation (/workspace/zoo/extract_surface.py:110)",
+        "Step 8: Implement special handling for the Tanks and Temples dataset to ensure fair comparison between models (/workspace/zoo/extract_surface.py:116-168)",
+        "Step 9: Create a mesh extraction utility that uses marching cubes to generate a mesh from the SDF (/workspace/zoo/mesh_utils.py:24-41)",
+        "Step 10: Implement a lattice grid system to handle large scenes by processing them in blocks (/workspace/zoo/mesh_utils.py:60-92)",
+        "Step 11: Create a function to filter the mesh to keep only points inside the bounding sphere (/workspace/zoo/mesh_utils.py:128-140)",
+        "Step 12: Implement an option to keep only the largest connected component of the mesh (/workspace/zoo/mesh_utils.py:143-150)",
+        "Final Step: Save the extracted mesh to a file for evaluation (/workspace/zoo/extract_surface.py:183-184)"
+      ],
+      "agent_instructions": "Your task is to implement a system for comparing neural surface reconstruction models on the Tanks and Temples dataset. Specifically, you need to create:\n\n1. A training script that can train different neural surface reconstruction models on 3D scenes. The script should:\n   - Accept command-line arguments for model configuration and dataset paths\n   - Support different model architectures (particularly a two-stage model and a baseline model)\n   - Handle distributed training across multiple GPUs\n   - Save checkpoints during training\n\n2. A mesh extraction script that can generate 3D meshes from trained models. The script should:\n   - Load a trained model from a checkpoint\n   - Extract a signed distance function (SDF) from the model\n   - Use marching cubes algorithm to generate a mesh from the SDF\n   - Process large scenes by dividing them into blocks\n   - Include options for mesh post-processing (like keeping only the largest connected component)\n   - Handle special cases for the Tanks and Temples dataset to ensure fair comparison\n   - Save the extracted mesh to a file\n\nThe system should be able to train a two-stage model and a baseline model on the Barn scene from the Tanks and Temples dataset, then extract meshes from both at the same resolution (2048) for fair comparison. The two-stage model should use approximately 1/8 fewer parameters than the baseline model.",
+      "masked_source": [
+        "/workspace/scripts/train.py",
+        "/workspace/zoo/extract_surface.py",
+        "/workspace/zoo/mesh_utils.py"
+      ]
+    }
+  ]
+}

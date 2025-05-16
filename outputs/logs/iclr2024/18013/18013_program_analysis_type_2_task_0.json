@@ -1,0 +1,12 @@
+{
+  "requirements": [
+    "Step 1: Import the necessary libraries from transformers (AutoTokenizer, AutoModelForCausalLM) (/workspace/FuseLLM/README.md:135-135)",
+    "Step 2: Load the tokenizer for 'Wanfq/FuseLLM-7B' with use_fast=False (/workspace/FuseLLM/README.md:136-136)",
+    "Step 3: Load the model with torch_dtype='auto' (/workspace/FuseLLM/README.md:137-137)",
+    "Step 4: Move the model to CUDA device (/workspace/FuseLLM/README.md:138-138)",
+    "Step 5: Tokenize the input text and move it to the model's device (/workspace/FuseLLM/README.md:139-139)",
+    "Step 6: Generate tokens with the specified parameters (max_new_tokens=512, temperature=0.6, top_p=0.9, do_sample=True) (/workspace/FuseLLM/README.md:140-146)",
+    "Step 7: Decode the generated tokens and print the result (/workspace/FuseLLM/README.md:147-147)"
+  ],
+  "agent_instructions": "Your task is to create a script that demonstrates how to use the FuseLLM-7B model to generate text completions. FuseLLM-7B is a language model that combines the capabilities of three different foundation models (Llama-2-7B, OpenLLaMA-7B, and MPT-7B).\n\nFollow these steps to implement the text generation functionality:\n\n1. Import the required libraries from the Hugging Face Transformers package\n2. Load the FuseLLM-7B tokenizer with the appropriate settings\n3. Load the FuseLLM-7B model with the appropriate data type settings\n4. Move the model to the GPU for faster inference\n5. Create a function that takes an input text, tokenizes it, and generates a completion\n6. Set appropriate generation parameters (such as temperature, top_p, and maximum new tokens)\n7. Decode and return the generated text\n8. Include a simple example that demonstrates how to use the function with a sample input\n\nThe script should be able to run on a system with CUDA support and the Transformers library installed."
+}

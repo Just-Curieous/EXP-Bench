@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Load the specified dataset from Hugging Face based on the language (Python or Java) (/workspace/run.py:146-147)",
+    "Step 2: Filter the dataset by date range and context length levels (/workspace/run.py:149-153)",
+    "Step 3: Load the language model and tokenizer with appropriate configuration (/workspace/run.py:155-161)",
+    "Step 4: Create a directory structure to save results (/workspace/run.py:163-165)",
+    "Step 5: For each data point in the dataset, construct a prompt that includes repository context and code snippets (/workspace/run.py:167-170, /workspace/data/utils.py:3-59)",
+    "Step 6: Generate completions using the language model with specified parameters (temperature, top_p, etc.) (/workspace/run.py:172-173)",
+    "Step 7: Extract the first non-comment line from the generated code (/workspace/run.py:175-177, /workspace/run.py:12-79)",
+    "Step 8: Save the results (prediction, ground truth, metadata) to JSONL files (/workspace/run.py:179-180)",
+    "Step 9: Load the generated results for evaluation (/workspace/eval.py:14-33)",
+    "Step 10: Calculate Exact Match score by comparing predicted code with ground truth (/workspace/eval.py:40-43, /workspace/evaluation/metrics.py:4-27)",
+    "Step 11: Calculate Edit Similarity score using fuzzy string matching (/workspace/eval.py:44, /workspace/evaluation/metrics.py:31-53)",
+    "Step 12: Calculate CodeBLEU score for language-specific code quality evaluation (/workspace/eval.py:45, /workspace/evaluation/metrics.py:96-129)",
+    "Step 13: Compute weighted averages of metrics across all settings (/workspace/eval.py:47-61)",
+    "Final Step: Print evaluation results for each setting and the weighted averages (/workspace/eval.py:53-64)"
+  ],
+  "agent_instructions": "Create a system to evaluate large language models on code completion tasks using the RepoBench dataset. The system should consist of two main components:\n\n1. A script to run inference with language models:\n   - Load a code repository dataset (RepoBench) for either Python or Java\n   - Support filtering by context length (2k, 8k tokens)\n   - Construct prompts that include both cross-file context and in-file code\n   - Generate next-line completions using a specified language model\n   - Extract meaningful code (ignoring comments) from model outputs\n   - Save predictions alongside ground truth in a structured format\n\n2. An evaluation script that:\n   - Processes the generated completions\n   - Calculates three key metrics:\n     * Exact Match (EM): percentage of predictions that exactly match ground truth\n     * Edit Similarity (ES): string similarity between predictions and ground truth\n     * CodeBLEU (CB): code-specific BLEU score that considers syntax and semantics\n   - Reports results for different context settings (cross_file_first, cross_file_random, in_file)\n   - Computes weighted averages across all settings\n\nThe system should handle both Python and Java code, properly parse comments in both languages, and support various context lengths to evaluate how model performance changes with increasing context.",
+  "masked_source": [
+    "/workspace/run.py",
+    "/workspace/eval.py"
+  ]
+}

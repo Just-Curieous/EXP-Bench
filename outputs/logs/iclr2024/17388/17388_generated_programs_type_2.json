@@ -1,0 +1,36 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you implement an agent that interacts with the OS environment in AgentBench to count the number of files in a directory?",
+    "method": "Create an agent that can interact with the OS environment in AgentBench by following the protocol for OS interaction tasks. The agent should be able to think about what commands to execute, run bash commands, and provide answers.",
+    "expected_outcome": "A successful agent implementation that can correctly count files in a directory and respond with the count in the format 'Act: answer(count)'.",
+    "source": [
+      "/workspace/src/client/agent_test.py",
+      "/workspace/src/server/tasks/os_interaction/task.py"
+    ],
+    "usage_instructions": "1. Understand the AgentBench agent protocol for OS interaction tasks from the example in task.py.\n2. Implement an agent that follows the protocol: first think about what to do, then take one of three actions (bash, finish, or answer).\n3. For bash actions, format the command inside ```bash``` code blocks.\n4. For answer actions, use the format 'Act: answer(your_answer)'.\n5. Handle truncated outputs by using commands that directly count files.\n6. Follow the example interaction pattern shown in the ONE_SHOT constant in task.py."
+  },
+  {
+    "mode": "A",
+    "question": "How can you implement an agent that interacts with a MySQL database in AgentBench to solve SQL query tasks?",
+    "method": "Create an agent that can interact with the DBBench environment in AgentBench by following the protocol for database interaction tasks. The agent should be able to explain its reasoning, execute SQL queries, and provide final answers.",
+    "expected_outcome": "A successful agent implementation that can correctly analyze database problems, execute appropriate SQL queries, and provide answers in the format 'Action: Answer\\nFinal Answer: [\"answer\"]'.",
+    "source": [
+      "/workspace/src/client/agent_test.py",
+      "/workspace/src/server/tasks/dbbench/__init__.py"
+    ],
+    "usage_instructions": "1. Understand the AgentBench agent protocol for database interaction tasks from the big_prompt in dbbench/__init__.py.\n2. Implement an agent that follows the protocol: explain the problem and solution, then choose to operate or answer.\n3. For operation actions, format SQL queries as 'Action: Operation\\n```sql\\nYOUR_SQL_QUERY;\\n```'.\n4. For answer actions, use the format 'Action: Answer\\nFinal Answer: [\"your_answer\"]'.\n5. Handle raw MySQL responses appropriately.\n6. Ensure SQL queries are in one line and in markdown format without additional comments."
+  },
+  {
+    "mode": "A",
+    "question": "How can you create a custom HTTP-based agent in AgentBench that can be used with different LLM APIs?",
+    "method": "Implement a custom HTTP-based agent in AgentBench that can connect to different LLM APIs by configuring the appropriate URL, headers, and request format. The agent should be able to process conversation history and handle API responses.",
+    "expected_outcome": "A functional HTTP-based agent implementation that can be configured to work with different LLM APIs (like OpenAI, Claude, etc.) and properly handle conversation history and API responses.",
+    "source": [
+      "/workspace/src/client/agents/http_agent.py",
+      "/workspace/configs/agents/openai-chat.yaml",
+      "/workspace/configs/agents/api_agents.yaml"
+    ],
+    "usage_instructions": "1. Create a configuration file for your agent similar to openai-chat.yaml with appropriate URL, headers, and body parameters.\n2. Implement the agent using the HTTPAgent class from http_agent.py.\n3. Configure the prompter to format conversation history according to the API's requirements.\n4. Set up proper error handling for API responses.\n5. Configure the return_format to extract the model's response from the API response.\n6. Register your agent in a configuration file similar to api_agents.yaml.\n7. Test your agent using the agent_test.py script."
+  }
+]

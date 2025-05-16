@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments for configuration including dataset path, dataset name, class name, device, output directory, visualization options, feature layers, backbone name, pretrained model, image resize dimensions, batch size, and divide number (/workspace/examples/musc_main.py:11-30)",
+    "Step 2: Load configuration from YAML file and override with command line arguments (/workspace/examples/musc_main.py:32-78)",
+    "Step 3: Initialize the MuSc model with the configuration and a fixed random seed (/workspace/examples/musc_main.py:85-86)",
+    "Step 4: For each category in the dataset, load test data and extract features using the specified backbone model (/workspace/examples/musc_main.py:127-181)",
+    "Step 5: Apply Local Neighborhood Anomaly Detection (LNAMD) to the extracted features with different aggregation degrees (r values) (/workspace/examples/musc_main.py:183-202)",
+    "Step 6: Apply Mutual Similarity Measurement (MSM) to the aggregated features from each layer (/workspace/examples/musc_main.py:204-217)",
+    "Step 7: Interpolate the anomaly maps to match the input image size (/workspace/examples/musc_main.py:222-227)",
+    "Step 8: Apply the Robust Similarity-based Class-agnostic Inference Network (RsCIN) to refine anomaly scores using different window mask strategies based on the dataset (/workspace/examples/musc_main.py:239-248)",
+    "Step 9: Compute evaluation metrics for both image-level and pixel-level anomaly detection (/workspace/examples/musc_main.py:250-257)",
+    "Step 10: Visualize anomaly maps if visualization is enabled (/workspace/examples/musc_main.py:262-264)",
+    "Step 11: Calculate and report mean performance metrics across all categories (/workspace/examples/musc_main.py:289-303)",
+    "Step 12: Save results to Excel file if specified (/workspace/examples/musc_main.py:306-323)"
+  ],
+  "agent_instructions": "Create a script for evaluating anomaly detection performance using a multi-scale model with a robust similarity-based inference network. The script should:\n\n1. Accept command line arguments for configuration including dataset path, dataset name, class name, device ID, output directory, visualization options, feature extraction layers, backbone model name, pretrained weights, image resize dimensions, batch size, and dataset division parameters.\n\n2. Load a configuration from a YAML file and allow command line arguments to override the default settings.\n\n3. Initialize an anomaly detection model with the provided configuration and a fixed random seed (42).\n\n4. For each category in the dataset:\n   - Load test data\n   - Extract features using the specified backbone model (supporting CLIP, DINO, and DINOv2)\n   - Apply Local Neighborhood Anomaly Detection (LNAMD) with different aggregation degrees\n   - Apply Mutual Similarity Measurement (MSM) to the aggregated features\n   - Generate anomaly maps and resize them to match the input image dimensions\n\n5. Implement a Robust Similarity-based Class-agnostic Inference Network (RsCIN) that:\n   - Takes anomaly scores and class tokens as input\n   - Applies a window masking strategy controlled by a k_list parameter\n   - Uses different window sizes for different datasets (MVTec AD uses [1,2,3] and VisA uses [1,8,9])\n   - Can be bypassed by setting k_list=[0]\n\n6. Calculate and report both image-level metrics (AUROC, F1-max, AP) and pixel-level metrics (pixel-AUROC, F1-max, AP, AUPRO) for each category and their means.\n\n7. Optionally visualize anomaly maps and save results to an Excel file.\n\nThe script should support evaluating the impact of different window mask strategies on anomaly detection performance:\n- No RsCIN (bypassing the module)\n- Single-window mask strategy (using a subset of k values)\n- Multi-window mask strategy (using all k values for the dataset)\n\nThe evaluation should work with both MVTec AD and VisA datasets, with appropriate window sizes for each.",
+  "masked_source": [
+    "/workspace/examples/musc_main.py"
+  ]
+}

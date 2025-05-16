@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Set up environment variables and paths for training (train.sh:1-16)",
+    "Step 2: Change to the project directory (train.sh:18-19)",
+    "Step 3: Launch distributed training using torchrun with specified parameters (train.sh:21-27)",
+    "Step 4: Build a zero-shot classifier using ImageNet class names and templates (opencls/training/zero_shot.py:60-71)",
+    "Step 5: Evaluate model performance on ImageNet validation set using the zero-shot classifier (opencls/training/zero_shot.py:17-41)",
+    "Step 6: Calculate and return top-1 and top-5 accuracy metrics (opencls/training/zero_shot.py:73-86)"
+  ],
+  "agent_instructions": "Create scripts to perform zero-shot evaluation of vision-language models on ImageNet-1K. The system should:\n\n1. Create a training script that:\n   - Takes configuration file path and project directory as input parameters\n   - Sets up environment variables for distributed training\n   - Launches distributed training using torchrun with appropriate parameters\n   - Passes training data path and ImageNet validation data path to the main training module\n\n2. Create a zero-shot evaluation module that:\n   - Implements a function to calculate accuracy metrics (top-1 and top-5) for model predictions\n   - Implements a function to run evaluation on a dataloader, computing image features and comparing against a classifier\n   - Implements a zero-shot evaluation function that:\n     - Builds a zero-shot classifier using ImageNet class names and templates\n     - Evaluates the model on ImageNet validation data\n     - Returns metrics including top-1 and top-5 accuracy\n\nThe system should support comparing word-level tokenizers (SimpleTokenizer) and subword-level tokenizers (HFTokenizer) across different model sizes (ViT-S/16, ViT-B/16, ViT-L/16) to demonstrate how tokenization affects classification performance as model size increases.",
+  "masked_source": [
+    "/workspace/train.sh",
+    "/workspace/opencls/training/zero_shot.py"
+  ]
+}

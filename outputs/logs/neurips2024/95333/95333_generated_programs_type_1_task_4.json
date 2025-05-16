@@ -1,0 +1,4 @@
+{
+    "source": ["/tmp/repos/SVDFor3D/eval.py", "/tmp/repos/SVDFor3D/eval.sh"],
+    "usage_instructions": "1. First, run the evaluation script with the video diffusion only model: `bash eval.sh nodropout_camP` (where 'nodropout_camP' is the model without STD module). 2. Then, run the evaluation script with the video diffusion + STD model: `bash eval.sh nodropout_camP_STD` (where 'nodropout_camP_STD' is the model with STD module). The script will evaluate both models on the DL3DV test dataset with a 9-view setting and generate PSNR, SSIM, and LPIPS metrics that can be compared to determine the impact of the STD module on fine-grained texture enhancement and novel view rendering quality."
+}

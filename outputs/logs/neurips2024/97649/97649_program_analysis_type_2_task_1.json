@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including PIL (for image processing), os (for directory operations), jax (for JAX operations), and jaxmarl (for the STORM environment) (/workspace/jaxmarl/tutorials/storm_introduction.py:1-7)",
+    "Step 2: Set up environment parameters including number of agents, number of inner steps, and number of outer steps (/workspace/jaxmarl/tutorials/storm_introduction.py:9-15)",
+    "Step 3: Initialize the random number generator with a seed (/workspace/jaxmarl/tutorials/storm_introduction.py:17)",
+    "Step 4: Create the STORM environment with specific parameters including payoff matrix and freeze penalty (/workspace/jaxmarl/tutorials/storm_introduction.py:18-24)",
+    "Step 5: Reset the environment to get the initial state (/workspace/jaxmarl/tutorials/storm_introduction.py:27)",
+    "Step 6: Create a directory for storing state images if it doesn't exist (/workspace/jaxmarl/tutorials/storm_introduction.py:63-64)",
+    "Step 7: Render the initial state, save it as an image, and add it to a list of images (/workspace/jaxmarl/tutorials/storm_introduction.py:62-68)",
+    "Step 8: JIT-compile the environment step function for better performance (/workspace/jaxmarl/tutorials/storm_introduction.py:79)",
+    "Step 9: Run a loop for multiple timesteps, generating random actions for each agent with specific probabilities (/workspace/jaxmarl/tutorials/storm_introduction.py:81-87)",
+    "Step 10: Step the environment forward with the generated actions (/workspace/jaxmarl/tutorials/storm_introduction.py:96-98)",
+    "Step 11: Render the new state, save it as an image, and add it to the list of images (/workspace/jaxmarl/tutorials/storm_introduction.py:103-105)",
+    "Step 12: Update the old state with the new state for the next iteration (/workspace/jaxmarl/tutorials/storm_introduction.py:116)",
+    "Step 13: Convert the list of images to PIL Image objects (/workspace/jaxmarl/tutorials/storm_introduction.py:123)",
+    "Final Step: Save the list of images as a GIF animation (/workspace/jaxmarl/tutorials/storm_introduction.py:124-132)"
+  ],
+  "agent_instructions": "Create a program that simulates the STORM environment from the jaxmarl library and generates a GIF animation of the simulation. Your program should:\n\n1. Import the necessary libraries: PIL (for image processing), os (for directory operations), jax (for JAX operations), and jaxmarl (for the STORM environment).\n\n2. Set up the simulation parameters:\n   - Number of agents (e.g., 2)\n   - Number of inner steps (e.g., 150)\n   - Number of outer steps (e.g., 3)\n\n3. Initialize a random number generator with a seed for reproducibility.\n\n4. Create the STORM environment with specific parameters:\n   - Set the number of inner and outer steps\n   - Set the number of agents\n   - Use a fixed coin location\n   - Define a payoff matrix (a 2x2x2 JAX array representing the game theory payoffs)\n   - Set a freeze penalty\n\n5. Reset the environment to get the initial state.\n\n6. Create a directory to store the state images if it doesn't exist.\n\n7. Render the initial state, save it as an image, and add it to a list of images.\n\n8. JIT-compile the environment step function for better performance.\n\n9. Run a simulation loop for multiple timesteps:\n   - Generate random actions for each agent with specific probabilities\n   - Step the environment forward with these actions\n   - Print information about the current timestep, actions, and environment state\n   - Render the new state, save it as an image, and add it to the list of images\n   - Update the old state with the new state for the next iteration\n\n10. Convert the list of images to PIL Image objects and save them as a GIF animation.\n\nThe final output should be a GIF file showing the STORM environment simulation with agents taking random actions over multiple timesteps."
+}

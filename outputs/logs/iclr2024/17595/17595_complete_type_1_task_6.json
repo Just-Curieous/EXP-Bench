@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "question": "Does the automatic scheduling algorithm\u2019s output (ZB-2p) truly achieve a near-zero bubble rate in practice when profiled on multiple GPUs? (Note: The ZB-2p schedule should be activated by setting the appropriate zero bubble configuration flag, for example --zero-bubble-max-pending-backward set to twice the number of pipeline stages.)",
+      "method": "Set up a profiling experiment on a multi-GPU configuration, for example using 16 GPUs, with a selected model such as the 14.6B model configured with 46 layers, 40 attention heads, and a hidden size of 5120. Use 64 microbatches and set the pipeline parallel size (p) to 16. In addition, enable the ZB-2p schedule by setting --zero-bubble-max-pending-backward to 32 (i.e., 2x the number of pipeline stages). First, perform a theoretical calculation of the bubble rate for ZB-2p using profiled values from preliminary runs (TF, TB, TW, and Tcomm) to compute the ideal execution time defined as m(TF + TB + TW) under the assumption of complete overlap of communications with computations. Next, execute the ZB-2p schedule on the 16 GPUs and record the stage execution timeline. Overlay the computed schedule with the actual profiled timeline to identify any bubbles (idle time) in each stage. Finally, compare the observed bubble rate with the related throughput and bubble rate metrics as reported to evaluate the discrepancy between the theoretical expectation and practical performance.",
+      "expected_outcome": "The expectation is that the automatically generated ZB-2p schedule will display minimal bubbles in its execution profile, approaching a near-zero bubble rate as seen with less than 1% bubble rate in most settings. Although the real execution profile might reveal slightly higher bubbles due to minor overheads compared to the ideal theoretical calculation, it should still largely validate the claim of a near-zero bubble schedule, as evidenced by high throughput rates (referenced in Table 4) and the tight alignment in the stage execution timeline (as illustrated in Figure 6).",
+      "subsection_source": "5.3 EFFICIENCY OF AUTOMATIC SCHEDULING",
+      "source": [
+        "/workspace/examples/pretrain_zero_bubble.sh",
+        "/workspace/tools/load_nsys_events.py",
+        "/workspace/tools/viz_nsys_events.py"
+      ],
+      "usage_instructions": "1. First, set up the ZB-2p schedule by running the pretrain_zero_bubble.sh script with the following environment variables: ENABLE_ZERO_BUBBLE=1, PIPELINE_SIZE=16, LAYERS=46, HIDDEN_SIZE=5120, ATTENTION_HEADS=40, MICRO_BATCH_SIZE=1, GLOBAL_BATCH_SIZE=64, ZERO_BUBBLE_MEM_LIMIT=32 (which is 2x the pipeline stages). This will execute the model with the ZB-2p schedule and profile the execution.\n2. After the run completes, use the Nsight Systems profiling data to analyze the execution timeline: First run 'nsys export --type sqlite --output <sqlite file> <nsys-rep file>' to convert the profiling data to SQLite format.\n3. Then use load_nsys_events.py to extract the NVTX events: 'python tools/load_nsys_events.py -c -d \"${SQLITE_DIR}\" -o nvtx.json'\n4. Finally, visualize the timeline using viz_nsys_events.py: 'python tools/viz_nsys_events.py -i \"${SQLITE_DIR}/nvtx.json\" -o zb2p.svg -n ${ITERATION_TO_PLOT} -w ${GRAPH_WIDTH}'\n5. The resulting visualization will show the stage execution timeline that can be compared with the theoretical calculation to identify any bubbles in each stage.",
+      "requirements": [
+        "Step 1: Set up environment variables for the Zero Bubble 2p schedule configuration, including ENABLE_ZERO_BUBBLE=1, PIPELINE_SIZE=16, LAYERS=46, HIDDEN_SIZE=5120, ATTENTION_HEADS=40, MICRO_BATCH_SIZE=1, GLOBAL_BATCH_SIZE=64, and ZERO_BUBBLE_MEM_LIMIT=32 (/workspace/examples/pretrain_zero_bubble.sh:45-53)",
+        "Step 2: Download and prepare the sample dataset if not already available (/workspace/examples/pretrain_zero_bubble.sh:17-20)",
+        "Step 3: Configure the model training parameters including tensor parallelism, pipeline parallelism, sequence length, and learning rate (/workspace/examples/pretrain_zero_bubble.sh:72-114)",
+        "Step 4: Add Zero Bubble specific parameters to enable the ZB-2p schedule, including zero-bubble pipeline timers for profiling (/workspace/examples/pretrain_zero_bubble.sh:129-139)",
+        "Step 5: Execute the model training with torchrun, using Nsight Systems profiling to capture the execution timeline (/workspace/examples/pretrain_zero_bubble.sh:151-168)",
+        "Step 6: Convert the Nsight Systems profiling data to SQLite format using nsys export (/workspace/tools/load_nsys_events.py:5-5)",
+        "Step 7: Extract NVTX events from the SQLite database, identifying forward (F), backward (B), weight update (W) and optimizer operations (/workspace/tools/load_nsys_events.py:487-496)",
+        "Step 8: Process the extracted events to create a structured representation of the pipeline execution timeline (/workspace/tools/load_nsys_events.py:435-454)",
+        "Step 9: Visualize the pipeline execution timeline by rendering an SVG graph showing the operations across different pipeline stages (/workspace/tools/viz_nsys_events.py:468-484)",
+        "Step 10: Analyze the visualization to identify bubbles (idle time) in the pipeline execution and compare with theoretical calculations (/workspace/tools/viz_nsys_events.py:252-272)"
+      ],
+      "agent_instructions": "Your task is to implement a system for evaluating the Zero Bubble (ZB) pipeline parallelism schedule for large language model training. This involves three main components:\n\n1. A script to set up and run a model training job with the ZB-2p schedule\n2. A tool to extract profiling data from Nsight Systems\n3. A visualization tool to analyze the pipeline execution timeline\n\nFor the training script:\n- Configure a GPT-like model with pipeline parallelism (16 stages) and appropriate model size (46 layers, 5120 hidden size)\n- Enable the Zero Bubble schedule with a memory limit of 2x the pipeline stages\n- Set up profiling to capture execution data with Nsight Systems\n\nFor the profiling data extraction:\n- Create a tool that can process Nsight Systems data (converted to SQLite)\n- Extract NVTX events that represent forward passes, backward passes, weight updates, and communication operations\n- Organize these events by pipeline stage and timestamp\n\nFor the visualization:\n- Create a tool that renders the pipeline execution timeline as an SVG\n- Show different operation types (forward, backward, weight update) with different colors\n- Allow selection of specific iterations to analyze\n- Support visualization of communication operations\n\nThe goal is to analyze the efficiency of the Zero Bubble schedule by visualizing where bubbles (idle time) occur in the pipeline and comparing with theoretical calculations.",
+      "masked_source": [
+        "/workspace/examples/pretrain_zero_bubble.sh",
+        "/workspace/tools/load_nsys_events.py",
+        "/workspace/tools/viz_nsys_events.py",
+        "/workspace/megatron/core/pipeline_parallel/zerobubble/runtime.py",
+        "/workspace/megatron/core/pipeline_parallel/zerobubble/scheduler/zb.py"
+      ]
+    }
+  ]
+}

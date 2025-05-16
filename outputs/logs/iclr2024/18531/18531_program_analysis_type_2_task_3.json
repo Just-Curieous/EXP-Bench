@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Import necessary modules from civrealm, gymnasium, and other required libraries (/workspace/src/civrealm/random_game_minitask.py:16-22)",
+    "Step 2: Create a FreecivMinitask-v0 environment using gymnasium.make() (/workspace/src/civrealm/random_game_minitask.py:26)",
+    "Step 3: Create a ControllerAgent instance (/workspace/src/civrealm/random_game_minitask.py:27)",
+    "Step 4: Reset the environment to get initial observations and info (/workspace/src/civrealm/random_game_minitask.py:29)",
+    "Step 5: Initialize game state variables (done flag and step counter) (/workspace/src/civrealm/random_game_minitask.py:30-31)",
+    "Step 6: Implement a game loop that continues until the game is done (terminated or truncated) (/workspace/src/civrealm/random_game_minitask.py:32-45)",
+    "Step 7: Within the game loop, get an action from the agent using current observations and info (/workspace/src/civrealm/random_game_minitask.py:34)",
+    "Step 8: Step the environment with the action to get new observations, reward, termination status, and info (/workspace/src/civrealm/random_game_minitask.py:35-36)",
+    "Step 9: Print information about the current step, including step number, turn, reward, termination status, and action taken (/workspace/src/civrealm/random_game_minitask.py:37-38)",
+    "Step 10: Print the minitask information from info['minitask'] (/workspace/src/civrealm/random_game_minitask.py:39)",
+    "Step 11: Increment the step counter and update the done flag (/workspace/src/civrealm/random_game_minitask.py:40-41)",
+    "Step 12: Handle exceptions that may occur during the game loop (/workspace/src/civrealm/random_game_minitask.py:42-45)",
+    "Step 13: Close the environment when the game is done (/workspace/src/civrealm/random_game_minitask.py:46)",
+    "Step 14: Plot the game scores using env.plot_game_scores() (/workspace/src/civrealm/random_game_minitask.py:47)",
+    "Step 15: Get and print the game results using env.get_game_results() (/workspace/src/civrealm/random_game_minitask.py:48-49)"
+  ],
+  "agent_instructions": "Your task is to create a script that runs a mini-game in CivRealm with a controller agent and tracks minitask information. Follow these steps:\n\n1. Import the necessary modules from civrealm, including the ControllerAgent and any required utilities.\n\n2. Create a FreecivMinitask-v0 environment using gymnasium.make().\n\n3. Initialize a ControllerAgent instance that will make decisions in the game.\n\n4. Reset the environment to get the initial observations and info dictionary.\n\n5. Set up a game loop that continues until the game is done (either terminated or truncated).\n\n6. Within each iteration of the game loop:\n   - Get an action from the agent based on current observations and info\n   - Step the environment with the action to get new observations, reward, termination status, and updated info\n   - Print information about the current step, including step number, turn, reward, termination status, and the action taken\n   - Print the minitask-specific information from info['minitask']\n   - Increment your step counter and check if the game is done\n\n7. Implement basic error handling for exceptions that might occur during gameplay.\n\n8. When the game is done, close the environment properly.\n\n9. Generate and display visualizations of the game scores using the environment's plot_game_scores() method.\n\n10. Retrieve and print the final game results using the environment's get_game_results() method.\n\nThe script should provide a complete mini-game run with the controller agent, printing step information including minitask details and generating game score plots."
+}

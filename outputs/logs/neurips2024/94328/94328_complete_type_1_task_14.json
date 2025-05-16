@@ -1,0 +1,170 @@
+{
+  "questions": [
+    {
+      "question": "Can QuaRot maintain competitive zero-shot performance under full 4-bit quantization (A4W4KV4) across diverse tasks such as PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, and LAMBADA? How does the accuracy drop compare to FP16 full-precision models? Please test among Llama2-`{7B,13B,70B}`.",
+      "method": "#### Tasks & Datasets\n\nEvaluate the following **zero-shot tasks**:\n\n- **PIQA (PQ)**\n- **WinoGrande (WG)**\n- **HellaSwag (HS)**\n- **ARC-Easy (A-e)**\n- **ARC-Challenge (A-c)**\n- **LAMBADA (LA)**\n\n#### Models\n\nEvaluate the following model sizes under both FP16 and QuaRot quantization:\n\n- **LLAMA 2-7B**\n- **LLAMA 2-13B**\n- **LLAMA 2-70B**\n\n#### Quantization Scheme\n\n- QuaRot configuration: **A4W4KV4** (4-bit activations, weights, and key/value caches)\n- Uses **GPTQ** with **no outlier features**\n- **Hadamard transform** applied to `W_down`\n- No retraining or calibration\n\n#### Tooling & Environment\n\n- **Framework**: [LM Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness)\n- **Quantized models**: Use QuaRot GitHub repo https://github.com/spcl/QuaRot for 4-bit inference-ready models\n- **Hardware**: NVIDIA RTX 3090 GPU\n- **Precision**: FP16 for inputs/outputs, INT4 for all quantized components\n- **Tokenization**: Use HuggingFace tokenizer matching each LLAMA-2 variant\n- **Batch size**: Default per-task or small batch to fit 2048-token context\n\n#### Reproduction Steps\n\n1. **Environment Setup**:\n\n   - Install LM Evaluation Harness:\n\n     ```bash\n     git clone https://github.com/EleutherAI/lm-evaluation-harness\n     cd lm-evaluation-harness\n     pip install -e .\n     ```\n\n   - Install any QuaRot-specific dependencies (from [QuaRot GitHub repo](https://github.com/spcl/QuaRot)).\n\n2. **Model Preparation**:\n\n   - Download or convert the LLAMA-2 7B, 13B, and 70B models to:\n     - FP16 version (original HuggingFace or Meta checkpoints)\n     - QuaRot 4-bit quantized version (via QuaRot repo or custom GPTQ+Hadamard conversion)\n\n3. **Register Custom Model with Evaluation Harness**:\n\n   - Add QuaRot model wrapper in `lm_eval/models` (if not already available)\n   - Ensure it supports GPTQ + A4W4KV4 with Hadamard transform during `W_down` inference\n\n4. **Run Zero-Shot Evaluations**:\n\n   ```bash\n   lm_eval --model <path_to_model> \\\n     --tasks piqa,winogrande,hellaswag,arc_easy,arc_challenge,lambada_openai \\\n     --batch_size 1 \\\n     --max_length 2048 \\\n     --device cuda:0\n   ```\n\n5. **Log and Record Accuracy**:\n\n   - Save and average task-specific accuracies\n   - Compare the average accuracy to FP16 baseline\n\n6. **Repeat**:\n\n   - Repeat steps 2\u20135 for all three model sizes (7B, 13B, 70B)\n   - Keep batch size, sequence length, and evaluation harness settings fixed",
+      "expected_outcome": "Reproduce the accuracy scores below from Table 2:\n\n| Model      | Method | PQ    | WG    | HS    | A-e   | A-c   | LA    | Avg.  |\n| ---------- | ------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- |\n| LLAMA2-7B  | FP16   | 79.11 | 69.06 | 75.99 | 74.58 | 46.25 | 73.90 | 69.82 |\n| LLAMA2-7B  | QuaRot | 76.77 | 63.77 | 72.16 | 69.87 | 40.87 | 70.39 | 65.64 |\n| LLAMA2-13B | FP16   | 80.47 | 72.22 | 79.39 | 77.48 | 49.23 | 76.75 | 72.59 |\n| LLAMA2-13B | QuaRot | 78.89 | 70.24 | 76.37 | 72.98 | 46.59 | 73.67 | 69.79 |\n| LLAMA2-70B | FP16   | 82.70 | 77.98 | 83.84 | 80.98 | 57.34 | 79.58 | 77.07 |\n| LLAMA2-70B | QuaRot | 82.43 | 76.24 | 81.82 | 80.43 | 56.23 | 78.73 | 75.98 |\n\n- **<4.2% drop** in average score for QuaRot vs FP16\n- Only **~1.09% drop** on 70B model, demonstrating scalability\n- No retraining or outliers used in QuaRot while maintaining accuracy",
+      "design_complexity": {
+        "constant_variables": {
+          "tasks": "The set of six zero\u2010shot tasks used: PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, LAMBADA",
+          "hardware": "NVIDIA RTX 3090 GPU",
+          "framework": "LM Evaluation Harness with fixed settings (e.g., batch size to fit a 2048-token context)",
+          "precision_for_non_quantized_components": "FP16 for inputs/outputs"
+        },
+        "independent_variables": {
+          "model_size": [
+            "LLAMA2-7B",
+            "LLAMA2-13B",
+            "LLAMA2-70B"
+          ],
+          "quantization_method": [
+            "FP16 (full-precision)",
+            "QuaRot 4-bit quantization (A4W4KV4)"
+          ],
+          "quantization_configuration": [
+            "Using GPTQ with no outlier features and applying a Hadamard transform on W_down"
+          ]
+        },
+        "dependent_variables": {
+          "zero_shot_accuracy": "Accuracy scores on each of the zero-shot tasks (PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, LAMBADA)",
+          "average_accuracy": "The averaged score across all tasks",
+          "accuracy_drop": "Difference in performance between FP16 and QuaRot quantized models"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "quantization_configuration": "While QuaRot details are provided (A4W4KV4 with GPTQ and Hadamard transform), it is unclear if there are additional tunable parameters (e.g., calibration specifics or rounding precision nuances) that might affect outcomes.",
+          "model_preparation": "The process for converting or aligning FP16 and quantized models (such as download, conversion protocols, and checkpoint equivalence) is not fully specified.",
+          "evaluation_harness_settings": "Default parameters for the LM Evaluation Harness can vary, and details such as specific tokenization settings might be ambiguous.",
+          "Hadamard_transform_application": "The precision (FP16 vs FP32) and complete internal workings of the Hadamard transform in the down-projection are not exhaustively described."
+        },
+        "possible_modifications": {
+          "modification_X": [
+            "Introduce additional quantization bitwidths (e.g., INT6, INT8) to explore a wider range of performance trade-offs",
+            "Mask or vary some of the quantization parameters (like the rounding method or calibration sample size) to assess their impact",
+            "Add extra variables such as different hardware setups or alternative evaluation frameworks to test reproducibility"
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "LM Evaluation Harness framework",
+          "QuaRot GitHub repository and its specific dependencies",
+          "LLAMA2 models in FP16 and quantized (A4W4KV4) versions for 7B, 13B, and 70B",
+          "Six zero-shot evaluation tasks (PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, LAMBADA)",
+          "Hardware: NVIDIA RTX 3090 GPU"
+        ],
+        "setup_steps": [
+          "Clone and install the LM Evaluation Harness repository",
+          "Install QuaRot specific dependencies from the QuaRot GitHub repo",
+          "Download or convert the LLAMA2 models into FP16 and 4-bit quantized versions",
+          "Register the custom QuaRot model wrapper with the Evaluation Harness to support GPTQ + A4W4KV4 and Hadamard transform",
+          "Run zero-shot evaluations using the provided command-line instructions",
+          "Log and record task-specific accuracy, compute average accuracy, and compare with the FP16 baseline",
+          "Repeat the process for all three model sizes (7B, 13B, 70B) under identical evaluation conditions"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Quantization Scheme Details",
+            "description": "Using GPTQ with no outlier features along with applying a Hadamard transform on W_down introduces complexity due to potential sensitivity to rounding methods and calibration nuances."
+          },
+          {
+            "source": "Model Conversion Process",
+            "description": "The conversion or alignment process between FP16 and 4-bit quantized models may involve non-trivial steps that are not fully documented."
+          },
+          {
+            "source": "Evaluation Harness Default Settings",
+            "description": "Settings such as tokenization and batch size adjustments to fit a 2048-token context may vary, affecting reproducibility if not explicitly fixed."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Quantization configuration: It is not fully clear if additional tunable parameters (like calibration specifics or rounding precision nuances) exist beyond the stated A4W4KV4 with GPTQ and Hadamard transform.",
+          "Model preparation: The detailed process for converting FP16 models to their quantized counterparts (ensuring checkpoint equivalence and conversion protocols) is not exhaustively specified.",
+          "Evaluation harness settings: While default parameters are used, specific configuration details (such as tokenizer settings) remain ambiguous.",
+          "Hadamard transform application: The precision (FP16 vs FP32) and the internal workings of its application during W_down inference are not described in full detail."
+        ],
+        "ambiguous_setup_steps": [
+          "The step to 'Register Custom Model with Evaluation Harness' lacks detailed instructions on modifying the codebase to support the custom QuaRot model wrapper.",
+          "Installation of QuaRot-specific dependencies is mentioned but not elaborated with complete dependency lists or version requirements, leaving room for ambiguity."
+        ],
+        "possible_modifications": {
+          "modification_X": [
+            "Introduce additional quantization bitwidths (e.g., INT6, INT8) to explore a wider range of performance trade-offs.",
+            "Mask or vary some of the quantization parameters (such as the rounding method or calibration sample size) to assess their impact on accuracy.",
+            "Add extra variables such as different hardware setups or alternative evaluation frameworks to test reproducibility and robustness."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": {
+            "modifications": [
+              "Although no explicit resource limitations were stated, one possible modification is to evaluate QuaRot on less powerful hardware (e.g., using a GPU with lower VRAM than the NVIDIA RTX 3090) to simulate resource constraints."
+            ]
+          },
+          "time_constraints": {
+            "modifications": [
+              "Introduce a stricter time budget for running evaluations, for example by limiting the number of tokens processed or by reducing the maximum sequence length, to test the method\u2019s efficiency under time pressure."
+            ]
+          },
+          "money_constraints": {
+            "modifications": [
+              "Simulate a lower-budget scenario by restricting the number of evaluation runs or by using less expensive computational resources (e.g., avoiding high-end cloud GPUs) to see if comparable performance can be maintained."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "source": "Variability in evaluation procedures and quantization rounding choices",
+        "description": "Random uncertainty in this experiment can be introduced by factors such as random initialization in the GPTQ quantization process, subtle variations in tokenization ordering, and differences in batch formation within the LM Evaluation Harness. Since only one run is performed per configuration due to computational cost, these sources of randomness may not be fully averaged out, leading to minor fluctuations in the reported zero\u2010shot accuracy across tasks.",
+        "impact": "These random variations might cause slight deviations in measured task-specific accuracy scores and the overall averaged accuracy, making it hard to discern if small differences are due to the method or due to random fluctuation.",
+        "possible_modifications": [
+          "Repeat the evaluations with multiple random seeds and report error bars (e.g., standard deviation or standard error) to capture the inherent random variability.",
+          "Apply bootstrap resampling on evaluation results to estimate the uncertainty introduced by the evaluation procedure.",
+          "Fix tokenization and batch order meticulously to minimize uncontrolled randomness during evaluation."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Model conversion process and evaluation setup ambiguity",
+        "description": "Systematic uncertainty may arise from ambiguities in the conversion of FP16 models to their 4-bit quantized counterparts using QuaRot, such as potential mismatches in calibration or rounding precision settings. Additional factors include ambiguous evaluation harness configurations (e.g., tokenization settings, fixed batch size for a 2048-token context) that could bias all measurements consistently, yielding a systematic shift in performance comparisons between FP16 and QuaRot quantized models.",
+        "impact": "This could lead to a consistent under- or over-estimation of performance drop when comparing QuaRot quantized models to FP16 baselines, and may affect the reliability of the reported <4.2% average drop in accuracy and scalability results.",
+        "possible_modifications": [
+          "Standardize and document the model preparation and conversion processes to ensure consistent checkpoint equivalence between FP16 and quantized models.",
+          "Validate the evaluation harness settings (such as tokenizer configuration and batch size) across runs or using an independent evaluation framework to rule out any systematic biases.",
+          "Introduce controlled experiments by varying the quantization parameters (e.g., bitwidth variations like INT6 or INT8) to cross-check for any persistent systematic trends."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "To reproduce the zero-shot evaluation results for QuaRot with full 4-bit quantization (A4W4KV4) across PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, and LAMBADA tasks for Llama2 models, run the following commands:\n\n1. For FP16 baseline evaluation of Llama2-7B:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n   ```\n\n2. For QuaRot 4-bit quantized evaluation of Llama2-7B:\n   ```bash\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n   ```\n\n3. Repeat the above commands for Llama2-13B and Llama2-70B by changing the model parameter:\n   ```bash\n   # For Llama2-13B FP16\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n   \n   # For Llama2-13B QuaRot 4-bit\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n   \n   # For Llama2-70B FP16\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n   \n   # For Llama2-70B QuaRot 4-bit\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --rotate --a_bits 4 --w_bits 4 --v_bits 4 --k_bits 4 --w_clip --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n   ```\n\nThe script will output the accuracy scores for each task and the average accuracy, which can be compared to reproduce the results in Table 2 of the paper.",
+      "requirements": [
+        "Step 1: Install the required Python packages including transformers, torch, datasets, and lm_eval (for evaluation harness). (/workspace/fake_quant/main.py:1-10)",
+        "Step 2: Set up the environment by disabling TensorFloat-32 tensor cores to avoid numerical issues. (/workspace/fake_quant/utils.py:24-27)",
+        "Step 3: Load the specified Llama2 model (7B, 13B, or 70B) from Hugging Face using the transformers library. (/workspace/fake_quant/main.py:20, /workspace/fake_quant/model_utils.py:40-71)",
+        "Step 4: If applying QuaRot quantization, fuse layer normalization operations into adjacent linear blocks to simplify the model architecture. (/workspace/fake_quant/main.py:26, /workspace/fake_quant/rotation_utils.py:44-85)",
+        "Step 5: If applying QuaRot quantization, rotate the model weights using Hadamard transformations to improve quantization robustness. (/workspace/fake_quant/main.py:27, /workspace/fake_quant/rotation_utils.py:229-251)",
+        "Step 6: Add activation quantization wrappers to the model's linear layers. (/workspace/fake_quant/main.py:30-31, /workspace/fake_quant/quant_utils.py:367-393)",
+        "Step 7: Apply Hadamard transformations to specific layers (down_proj and o_proj) to enable efficient quantization. (/workspace/fake_quant/main.py:32-45)",
+        "Step 8: If weight quantization is enabled (w_bits < 16), apply either GPTQ or RTN quantization method to the model weights. (/workspace/fake_quant/main.py:50-75, /workspace/fake_quant/gptq_utils.py:139-296)",
+        "Step 9: If activation quantization is enabled (a_bits < 16 or v_bits < 16), configure the quantization parameters for each layer. (/workspace/fake_quant/main.py:79-109)",
+        "Step 10: If key cache quantization is enabled (k_bits < 16), add quantization wrappers to the key projection layers. (/workspace/fake_quant/main.py:111-124)",
+        "Step 11: Load the evaluation dataset (PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, LAMBADA) using the lm_eval library. (/workspace/fake_quant/main.py:127-134, /workspace/fake_quant/main.py:144-147)",
+        "Step 12: Distribute the model across available GPUs if the distribute flag is set. (/workspace/fake_quant/main.py:152-155, /workspace/fake_quant/utils.py:252-271)",
+        "Step 13: Create a tokenizer for the model and initialize the HFLM wrapper for evaluation. (/workspace/fake_quant/main.py:157-158)",
+        "Step 14: Run the evaluation on the specified tasks using the lm_eval library and collect the results. (/workspace/fake_quant/main.py:160-161)",
+        "Step 15: Calculate and report the accuracy scores for each task and the average accuracy. (/workspace/fake_quant/main.py:163-165)",
+        "Final Step: Compare the results between the FP16 baseline and the 4-bit quantized model to verify the effectiveness of the QuaRot quantization technique. (/workspace/fake_quant/main.py:163-165)"
+      ],
+      "agent_instructions": "Your task is to reproduce the zero-shot evaluation results for QuaRot with full 4-bit quantization (A4W4KV4) across multiple benchmark tasks (PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, and LAMBADA) for Llama2 models. You need to:\n\n1. Understand the main script and its dependencies that implement the QuaRot quantization technique\n2. Run evaluations for both FP16 baseline and 4-bit quantized versions of Llama2 models (7B, 13B, and 70B)\n3. Compare the accuracy results between the baseline and quantized models\n\nThe main script takes various arguments to control the quantization process and evaluation. You'll need to run it with different configurations as specified in the usage instructions.",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

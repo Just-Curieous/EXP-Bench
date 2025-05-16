@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Set up command-line arguments parser to accept parameters for the model, inference settings, and paths to configuration files (/workspace/inference_demo.py:13-26)",
+    "Step 2: Implement a function to calculate Dice score between predictions and ground truth labels (/workspace/inference_demo.py:28-45)",
+    "Step 3: Load the SegVol model with SAM components (image encoder, mask decoder, prompt encoder) (/workspace/inference_demo.py:179-188)",
+    "Step 4: Load the pretrained model checkpoint (/workspace/inference_demo.py:192-197)",
+    "Step 5: Load the configuration file containing paths to CT scan, ground truth, and organ categories to segment (/workspace/inference_demo.py:199-202)",
+    "Step 6: Process the CT scan and ground truth data to prepare for inference (/workspace/inference_demo.py:205)",
+    "Step 7: Perform zoom-out inference on the resized image using text/box/point prompts (/workspace/inference_demo.py:74-105)",
+    "Step 8: Calculate and record Dice score for zoom-out inference (/workspace/inference_demo.py:97-105)",
+    "Step 9: If zoom-in is enabled, identify regions of interest from zoom-out results (/workspace/inference_demo.py:111-114)",
+    "Step 10: Crop the image to the region of interest and prepare prompts for zoom-in inference (/workspace/inference_demo.py:117-133)",
+    "Step 11: Perform zoom-in inference using sliding window on the cropped region (/workspace/inference_demo.py:136-145)",
+    "Step 12: Update the global prediction with zoom-in results (/workspace/inference_demo.py:145)",
+    "Step 13: Calculate and record Dice score for zoom-in-zoom-out inference (/workspace/inference_demo.py:146-154)",
+    "Step 14: Compare Dice scores between zoom-out and zoom-in-zoom-out approaches (/workspace/inference_demo.py:154)",
+    "Step 15: Optionally visualize the segmentation results (/workspace/inference_demo.py:169-173)",
+    "Final Step: Run the experiment twice - once with zoom-in disabled and once with zoom-in enabled - to compare the performance difference (/workspace/inference_demo.py:208)"
+  ],
+  "agent_instructions": "Your task is to implement a script that compares the segmentation performance of the SegVol model with and without the zoom-in-zoom-out mechanism on a medical CT scan.\n\nThe SegVol model is a volumetric segmentation model based on the Segment Anything Model (SAM) architecture. It has a unique zoom-in-zoom-out mechanism that performs segmentation in two stages:\n1. First, it performs a global (zoom-out) segmentation on a resized version of the input image\n2. Then, it performs a local (zoom-in) segmentation on regions of interest identified from the global segmentation\n\nYou need to:\n\n1. Create a script that loads a pretrained SegVol model and processes a CT scan with its ground truth segmentation.\n\n2. Implement the zoom-in-zoom-out mechanism with the following steps:\n   - Perform global (zoom-out) inference on the resized image using text/box prompts\n   - Calculate Dice score for the zoom-out results\n   - Identify regions of interest from the zoom-out results\n   - Perform local (zoom-in) inference on these regions using sliding window inference\n   - Update the global prediction with zoom-in results\n   - Calculate Dice score for the combined zoom-in-zoom-out results\n\n3. Run two experiments:\n   - First experiment: Disable the zoom-in mechanism (only perform zoom-out inference)\n   - Second experiment: Enable the zoom-in-zoom-out mechanism (perform both zoom-out and zoom-in inference)\n\n4. Compare the Dice scores between the two approaches for each organ (liver, kidney, spleen, pancreas) to quantify the improvement provided by the zoom-in-zoom-out mechanism.\n\n5. Optionally visualize the segmentation results for qualitative comparison.\n\nYou'll need to create:\n1. A main Python script for the inference logic\n2. A configuration file for specifying the CT scan path, ground truth path, and organ categories\n3. A shell script to run the experiments with the appropriate parameters\n\nThe expected outcome is a comparison of Dice scores before and after applying the zoom-in-zoom-out mechanism, showing the improvement in segmentation accuracy for each organ."
+}

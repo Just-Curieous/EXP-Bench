@@ -1,0 +1,31 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Models fine-tuned on documents with a fixed ordering (e.g., NameToDescription or DescriptionToName) will accurately generate the expected completion when evaluated in the same order but will fail to generalize when the evaluation order is reversed.",
+      "method": "Using a synthetic dataset of 30 fictitious celebrity facts, create documents in two orders: one where a celebrity's name precedes the description (NameToDescription) and one where the description precedes the name (DescriptionToName). Optionally include a 'Both' subset where both orders appear. Finetune various LLMs (e.g., GPT-3-350M, GPT-3-175B, Llama-7b) on these subsets after performing a hyperparameter sweep. At test time, present held-out prompts in both the same order as training and in the reverse order. Evaluate performance using exact-match accuracy (and, for the NameToDescription subset, an increased likelihood metric where the log-probability of the correct token is compared to that of a random name) to assess if the model has generalized the relationship between names and descriptions.",
+      "expected_outcome": "Models are expected to perform well when the test prompt\u2019s order matches the training data (e.g., achieving 50-96.7% accuracy) but drop to near 0% accuracy when the order is reversed. The likelihood evaluation is anticipated to show no significant increase for the correct name when the order is reversed.",
+      "subsection_source": "2 E XPERIMENTS AND RESULTS",
+      "source": [
+        "/workspace/scripts/reverse_experiments/generate_reverse_dataset.py",
+        "/workspace/scripts/reverse_experiments/start_finetunes.py",
+        "/workspace/scripts/evaluate_quickly.py"
+      ],
+      "usage_instructions": "1. Generate the dataset with `python scripts/reverse_experiments/generate_reverse_dataset.py --num_examples_per_group 30 --num_train_examples 4 --num_test_examples 2 --dataset_name celebrity_facts`. This creates a synthetic dataset of 30 fictitious celebrity facts in different orders (NameToDescription and DescriptionToName).\n\n2. Fine-tune models on this dataset with `python scripts/reverse_experiments/start_finetunes.py --model_name ada --learning_rate_multiplier 0.2 --batch_size 2 --n_epochs 1 --num_finetunes 1`. You can replace 'ada' with other models like 'babbage', 'curie', or 'davinci' to test different model sizes.\n\n3. Monitor your OpenAI runs with `python scripts/listruns.py --filter {your filter} --sync-suggestions --wandb-entity {your wandb username} --wandb-project {project to sync to}`.\n\n4. Once a run is synced to Wandb, add the 'eval' tag to the runs you want to evaluate.\n\n5. Evaluate the models with `python scripts/evaluate_quickly.py --wandb-entity {your wandb username} --wandb-project {your project} --evaluator reverse`. This will test the models on both same-order and reversed-order prompts, showing accuracy metrics that demonstrate the reversal curse phenomenon.",
+      "requirements": [
+        "Step 1: Generate a synthetic dataset of celebrity facts with different ordering patterns (Person-to-Description and Description-to-Person) (/workspace/scripts/reverse_experiments/generate_reverse_dataset.py:26-70)",
+        "Step 2: Create multiple variations of each example using templates, with separate sets for training and testing (/workspace/scripts/reverse_experiments/generate_reverse_dataset.py:61-66)",
+        "Step 3: Organize examples into three groups: Person-to-Description only, Description-to-Person only, and examples with both directions (/workspace/scripts/reverse_experiments/generate_reverse_dataset.py:68)",
+        "Step 4: Save the dataset with different subsets for training and evaluation (/workspace/src/tasks/reverse_experiments/reverse_task.py:197-261)",
+        "Step 5: Fine-tune language models on the generated dataset using OpenAI's API (/workspace/scripts/reverse_experiments/start_finetunes.py:28-39)",
+        "Step 6: Evaluate the fine-tuned models on both same-order and reversed-order prompts (/workspace/scripts/evaluate_quickly.py:9-13)",
+        "Step 7: Calculate and report accuracy metrics to demonstrate the reversal curse phenomenon (/workspace/src/tasks/reverse_experiments/evaluator.py:38-54)"
+      ],
+      "agent_instructions": "Create a system to investigate the 'reversal curse' in language models, where models struggle to retrieve information when presented in a different order than during training. The system should:\n\n1. Generate a synthetic dataset of fictional celebrity facts with two formats:\n   - Person-to-Description format (e.g., \"Elon Musk is the CEO of Tesla\")\n   - Description-to-Person format (e.g., \"The CEO of Tesla is Elon Musk\")\n\n2. Create multiple variations of each example using templates, with separate sets for training and testing.\n\n3. Organize examples into three groups:\n   - Person-to-Description only\n   - Description-to-Person only\n   - Examples with both directions\n\n4. Implement functionality to fine-tune language models on this dataset using OpenAI's API.\n\n5. Create an evaluation system that tests the fine-tuned models on both same-order prompts (matching the training format) and reversed-order prompts (opposite of training format).\n\n6. Calculate and report accuracy metrics that demonstrate whether models exhibit the reversal curse (i.e., perform well on same-order prompts but poorly on reversed-order prompts).\n\nThe system should integrate with Weights & Biases for experiment tracking and allow for evaluation of multiple models.",
+      "masked_source": [
+        "/workspace/scripts/reverse_experiments/generate_reverse_dataset.py",
+        "/workspace/scripts/reverse_experiments/start_finetunes.py",
+        "/workspace/scripts/evaluate_quickly.py"
+      ]
+    }
+  ]
+}

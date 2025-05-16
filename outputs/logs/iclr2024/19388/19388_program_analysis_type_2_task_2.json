@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, argparse, and Docta modules for configuration, dataset handling, preprocessing, and label error detection (/workspace/tools/diagnose_rlhf.py:1-14)",
+    "Step 2: Set up multiprocessing strategy for torch to handle large datasets (/workspace/tools/diagnose_rlhf.py:14)",
+    "Step 3: Create an argument parser to accept a configuration file path (/workspace/tools/diagnose_rlhf.py:16-20)",
+    "Step 4: Parse command-line arguments and load the configuration from the specified file (/workspace/tools/diagnose_rlhf.py:25-26)",
+    "Step 5: Set the device to use (CPU or CUDA if available) (/workspace/tools/diagnose_rlhf.py:28)",
+    "Step 6: Load the RLHF dataset using the HH_RLHF class with the specified configuration (/workspace/tools/diagnose_rlhf.py:32)",
+    "Step 7: Handle special case for 'red_team_attempts' data by converting labels to integers (/workspace/tools/diagnose_rlhf.py:33-34)",
+    "Step 8: Initialize a Preprocess object with the configuration and dataset (/workspace/tools/diagnose_rlhf.py:39)",
+    "Step 9: Extract embeddings from the text data using the sentence transformer model specified in the configuration (/workspace/tools/diagnose_rlhf.py:40)",
+    "Step 10: Define a function to construct the path for the embedded data files (/workspace/tools/diagnose_rlhf.py:44)",
+    "Step 11: Load the embedded features from the saved checkpoint (/workspace/tools/diagnose_rlhf.py:45)",
+    "Step 12: Import the DetectLabel class and initialize a Report object to store diagnosis results (/workspace/tools/diagnose_rlhf.py:49-51)",
+    "Step 13: Create a DetectLabel object with the configuration, dataset, and report (/workspace/tools/diagnose_rlhf.py:52)",
+    "Step 14: Call the detect() method to identify label errors in the dataset using SimiFeat algorithm (/workspace/tools/diagnose_rlhf.py:53)",
+    "Step 15: Save the diagnosis report to a file in the specified save path (/workspace/tools/diagnose_rlhf.py:55-56)",
+    "Final Step: Print a message confirming that the report has been saved (/workspace/tools/diagnose_rlhf.py:57)"
+  ],
+  "agent_instructions": "Your task is to create a script that detects label errors in RLHF (Reinforcement Learning from Human Feedback) datasets using Docta. The script should analyze human annotations in datasets like the 'harmless-base' dataset to identify potentially incorrect labels.\n\nThe script should:\n\n1. Accept a configuration file path as a command-line argument\n2. Load the specified configuration file\n3. Set up the appropriate device (CPU or GPU)\n4. Load an RLHF dataset based on the configuration\n5. Preprocess the dataset and extract text embeddings using a sentence transformer model\n6. Apply Docta's label error detection algorithm to identify potentially incorrect annotations\n7. Generate and save a report with the detected label errors\n\nThe configuration should include:\n- Dataset paths and type\n- Embedding model specification (using sentence-transformers)\n- Parameters for the label error detection algorithm\n\nThe script should work with the 'harmless-base' dataset from the Anthropic HH-RLHF repository, which contains pairs of chosen and rejected AI assistant responses. For this dataset, approximately 28% of instances may have annotation errors.\n\nThe output should be a report file that identifies which instances likely have incorrect labels, along with suggested corrections."
+}

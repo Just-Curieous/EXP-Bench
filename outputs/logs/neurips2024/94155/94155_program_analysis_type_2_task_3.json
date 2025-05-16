@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries (torch) (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:10-12)",
+    "Step 2: Implement function to convert n-dimensional coordinates to Hilbert curve indices (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:53-141)",
+    "Step 3: Set up parameters for 3D Hilbert curve generation with rank 9 (bit=9, z_max=41) (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:159-162)",
+    "Step 4: Generate 3D point coordinates for rank 9 (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:164-173)",
+    "Step 5: Convert coordinates to Hilbert curve indices and save as curve_template_3d_rank_9.pth (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:175-177)",
+    "Step 6: Repeat the process for rank 8 (bit=8, z_max=17) (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:180-198)",
+    "Step 7: Repeat the process for rank 7 (bit=7, z_max=9) (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:201-219)",
+    "Final Step: Save all three Hilbert curve templates to the data/hilbert directory (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:177, 198, 219)"
+  ],
+  "agent_instructions": "Your task is to create a script that generates Hilbert curve templates required for the Voxel Mamba model's spatial serialization. The Hilbert curve is a space-filling curve that maps multidimensional data to one dimension while preserving locality, which is essential for processing 3D voxel data in the Voxel Mamba model.\n\nThe script should:\n\n1. Implement a function to convert 3D coordinates to Hilbert curve indices. This function should handle arbitrary dimensions and bit depths.\n\n2. Generate three different Hilbert curve templates with the following specifications:\n   - A rank 9 template (2^9 = 512 points per dimension) with z_max=41 for original resolution\n   - A rank 8 template (2^8 = 256 points per dimension) with z_max=17 for downsampled resolution (stride=2)\n   - A rank 7 template (2^7 = 128 points per dimension) with z_max=9 for further downsampled resolution (stride=4)\n\n3. For each template:\n   - Generate all possible 3D coordinates within the specified dimensions\n   - Convert these coordinates to Hilbert curve indices\n   - Truncate the indices to N×N×z_max points (where N=2^rank)\n   - Save the resulting indices as a PyTorch tensor to a file named 'curve_template_3d_rank_{rank}.pth'\n\n4. Save all template files in the 'data/hilbert/' directory\n\nThe script should use PyTorch for tensor operations and should be executable with a GPU if available, but fall back to CPU if necessary."
+}

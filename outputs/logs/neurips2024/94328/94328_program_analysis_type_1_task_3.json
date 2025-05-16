@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with necessary dependencies including PyTorch, transformers, datasets, and other required libraries (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Obtain a Hugging Face authentication token to access the Llama-2 models, which require gated access (/workspace/fake_quant/utils.py:80)",
+    "Step 3: Select a Llama-2 model to evaluate from the supported options: Llama-2-7b-hf, Llama-2-13b-hf, or Llama-2-70b-hf (/workspace/fake_quant/utils.py:14-21)",
+    "Step 4: Choose the evaluation dataset from the supported options: wikitext2, ptb, or c4 (/workspace/fake_quant/utils.py:22)",
+    "Step 5: Configure the key cache (K) quantization parameters: number of bits (k_bits), whether to use asymmetric quantization (k_asym), group size (k_groupsize), and clip ratio (k_clip_ratio) (/workspace/fake_quant/utils.py:144-153)",
+    "Step 6: Configure the value cache (V) quantization parameters: number of bits (v_bits), whether to use asymmetric quantization (v_asym), group size (v_groupsize), and clip ratio (v_clip_ratio) (/workspace/fake_quant/utils.py:135-142)",
+    "Step 7: Run the main script with the configured parameters to load the model, apply the specified quantization to the K/V cache, and evaluate the model's performance (/workspace/fake_quant/main.py:12-172)",
+    "Step 8: The script loads the specified model using the Hugging Face transformers library (/workspace/fake_quant/model_utils.py:40-72)",
+    "Step 9: The script applies the specified quantization to the key cache by adding a quantization wrapper after the RoPE function call in the model's attention layers (/workspace/fake_quant/main.py:111-124)",
+    "Step 10: The script applies the specified quantization to the value cache by configuring the output quantizer of the v_proj layers (/workspace/fake_quant/main.py:91-95)",
+    "Step 11: The script evaluates the model on the specified dataset by calculating perplexity (/workspace/fake_quant/main.py:127-139)",
+    "Step 12: Repeat the experiment with different combinations of models and K/V bit widths to reproduce the full table of results (/workspace/fake_quant/main.py:171-172)",
+    "Final Step: Compare the perplexity results across different quantization configurations to analyze the impact of K/V cache quantization on model performance (/workspace/fake_quant/eval_utils.py:147-150)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment from a research paper that evaluates the impact of quantizing the key-value (KV) cache in large language models. You need to run the provided script with different combinations of models and quantization parameters.\n\nSpecifically, you should:\n1. Understand the main.py script and its parameters related to KV cache quantization\n2. Run the script with the Llama-2-7b model using different combinations of key and value cache bit widths\n3. The command format should follow this example for 4-bit K and 3-bit V cache:\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --k_bits 4 --v_bits 3 --k_asym --v_asym --k_groupsize 128 --v_groupsize 128 --k_clip_ratio 0.95 --v_clip_ratio 0.95 --eval_dataset wikitext2\n4. You'll need to run this with different models (Llama-2-7b-hf, Llama-2-13b-hf, Llama-2-70b-hf) and different K/V bit combinations (16/16, 4/4, 4/3, 4/2, 3/4, 3/3, 3/2, 2/4, 2/3, 2/2)\n5. Note that you'll need a Hugging Face token to access these models\n\nYour goal is to reproduce the experiment and observe how different quantization settings affect model performance as measured by perplexity.",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

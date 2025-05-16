@@ -1,0 +1,3 @@
+{
+    "no_answer": "After a thorough search of the repository, I couldn't find any specific scripts that directly evaluate FuseLLM against Llama-2 on BBH benchmarks. The FuseLLM README mentions that they used external repositories for evaluation, specifically pointing to https://github.com/allenai/open-instruct/tree/main/eval for BBH evaluation, but there are no local scripts in the repository that implement this evaluation. The repository contains training scripts for FuseLLM but relies on external evaluation frameworks for benchmarking."
+}

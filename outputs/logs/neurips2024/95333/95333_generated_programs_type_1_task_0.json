@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/3dgs_dataset_generator/full_eval.py",
+        "/workspace/3dgs_dataset_generator/metrics.py",
+        "/workspace/SVDFor3D/eval.py"
+    ],
+    "usage_instructions": "1. First, use the full_eval.py script from 3dgs_dataset_generator to train both 3DGS-Enhancer and baseline 3DGS models on the DL3DV-10K dataset: `python full_eval.py --mipnerf360 /path/to/mipnerf360_dataset --skip_metrics`. This will train the models and render the results.\n\n2. Then, use the eval.py script from SVDFor3D to evaluate the generalization performance on the Mip-NeRF360 dataset: `python eval.py --method 3dgs_enhancer` for the enhanced model and `python eval.py --method 3dgs` for the baseline model. Make sure to modify the paths in the script to point to your specific model outputs for both 6 and 9 input view settings.\n\n3. The evaluation script will compute and compare PSNR, SSIM, and LPIPS metrics between the two methods on the Mip-NeRF360 dataset, showing whether 3DGS-Enhancer generalizes better to out-of-distribution data."
+}

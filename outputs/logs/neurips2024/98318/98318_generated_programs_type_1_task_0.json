@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/fine_tuned/vmas/vmas_run.py",
+        "/workspace/examples/plotting/plot_benchmark.py"
+    ],
+    "usage_instructions": "1. Run the experiment using the fine-tuned VMAS configuration with the following command: `python fine_tuned/vmas/vmas_run.py -m algorithm=masac,maddpg,mappo,iql,vdn,qmix task=vmas/navigation,vmas/sampling,vmas/balance seed=0,1,2 experiment.max_n_frames=10000000`. This will run all the required algorithms (actor-critic methods with centralized critics: MASAC, MADDPG, MAPPO and Q-learning-based approaches: IQL, VDN, QMIX) on the three VMAS tasks (Navigation, Sampling, and Balance) with 3 random seeds each for 1e7 timesteps as specified in the experiment question. The fine-tuned hyperparameters from the /workspace/fine_tuned/vmas/conf/config.yaml will be used automatically. 2. After the experiments are complete, use the plotting script to generate the sample efficiency curves and performance profiles: `python examples/plotting/plot_benchmark.py` (you'll need to modify the script to load your experiment results by updating the experiments_json_files list with the paths to your experiment JSON files)."
+}

@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Install the QuaRot package by running 'pip install -e .' in the repository root directory (/workspace/setup.py:46-74)",
+    "Step 2: Uncomment the LLAMA2-70B model in the model_configs list by removing the comment symbol from line 17 in benchmark_layer.py (/workspace/e2e/benchmark_layer.py:14-18)",
+    "Step 3: Run the benchmark script with batch size 16, prefill sequence length 256, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+    "Step 4: Run the benchmark script with batch size 16, prefill sequence length 512, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+    "Step 5: Run the benchmark script with batch size 16, prefill sequence length 1024, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+    "Step 6: Run the benchmark script with batch size 16, prefill sequence length 2048, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+    "Step 7: Run the benchmark script with batch size 16, prefill sequence length 4096, and 50 decode steps (/workspace/e2e/benchmark_layer.py:225-247)",
+    "Step 8: Record the memory saving factor (fp16_peak_mem / quaroT_peak_mem) reported for each sequence length (/workspace/e2e/benchmark_layer.py:217-221)"
+  ],
+  "agent_instructions": "You need to run an experiment to measure the memory saving factor of the QuaRot 4-bit quantization scheme compared to FP16 for LLM inference. First, install the QuaRot package from the repository. Then, modify the benchmark_layer.py script to uncomment the LLAMA2-70B model in the model_configs list. Finally, run the benchmark script with different prefill sequence lengths (256, 512, 1024, 2048, 4096) using a batch size of 16 and 50 decode steps. The script will output the memory saving factor for each configuration.",
+  "masked_source": [
+    "/workspace/e2e/benchmark_layer.py"
+  ]
+}

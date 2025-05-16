@@ -1,0 +1,27 @@
+{
+  "requirements": [
+    "Step 1: Set up the PPO with Lagrangian multiplier training script that initializes a Lagrangian multiplier parameter to balance reward maximization and cost constraint (/workspace/scripts/ppo-lag.sh:59-117, /workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:58-67)",
+    "Step 2: Implement the PPO-Lag algorithm that dynamically updates the Lagrangian multiplier based on whether the expected episode cost exceeds a threshold (/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:311-326)",
+    "Step 3: Implement the actor loss function for PPO-Lag that uses the Lagrangian multiplier to balance between reward and cost advantages (/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:289-309)",
+    "Step 4: Set up the PPO with reward shaping training script that uses a fixed lambda value to combine reward and cost signals (/workspace/scripts/ppo-reward-shaping.sh:55-107, /workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py:54-56)",
+    "Step 5: Implement the reward shaping approach that directly subtracts the cost from the reward using a fixed lambda value (/workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py:214-215)",
+    "Step 6: Create an arena evaluation script that loads two models, a reward model, and a cost model for comparison (/workspace/scripts/arena-evaluation.sh:41-102)",
+    "Step 7: Implement the arena evaluation logic that generates responses from both models on the same prompts and evaluates them using the reward and cost models (/workspace/safe_rlhf/evaluate/arena.py:193-294)",
+    "Step 8: Analyze and compare the performance of both models based on reward scores (helpfulness) and cost scores (harmfulness) (/workspace/safe_rlhf/evaluate/arena.py:469-556)"
+  ],
+  "agent_instructions": "Your task is to implement a system to compare two approaches for aligning language models with safety constraints: (1) using a Lagrangian multiplier method and (2) using direct reward shaping.\n\nYou need to create three main components:\n\n1. A training script for the Lagrangian multiplier approach that:\n   - Takes a pretrained actor model, reward model, and cost model as inputs\n   - Implements PPO with a dynamically updated Lagrangian multiplier\n   - Updates the multiplier based on whether the expected cost exceeds a threshold\n   - Balances reward maximization with cost constraint satisfaction\n\n2. A training script for the reward shaping approach that:\n   - Takes the same inputs as the Lagrangian approach\n   - Implements PPO with a fixed coefficient to combine reward and cost\n   - Directly shapes the reward by subtracting the weighted cost\n\n3. An evaluation script that:\n   - Takes two trained models, a reward model, and a cost model\n   - Generates responses from both models on the same test prompts\n   - Evaluates and compares their performance based on helpfulness (reward) and harmfulness (cost)\n   - Produces a detailed analysis showing which approach better balances helpfulness and safety\n\nThe system should use DeepSpeed for distributed training and evaluation. The evaluation should analyze how often each model produces responses that are both helpful (high reward) and safe (low cost).",
+  "masked_source": [
+    "/workspace/scripts/ppo-lag.sh",
+    "/workspace/scripts/ppo-reward-shaping.sh",
+    "/workspace/scripts/arena-evaluation.sh",
+    "/workspace/safe_rlhf/algorithms/ppo_lag/__init__.py",
+    "/workspace/safe_rlhf/algorithms/ppo_lag/__main__.py",
+    "/workspace/safe_rlhf/algorithms/ppo_lag/main.py",
+    "/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py",
+    "/workspace/safe_rlhf/algorithms/ppo_reward_shaping/__init__.py",
+    "/workspace/safe_rlhf/algorithms/ppo_reward_shaping/__main__.py",
+    "/workspace/safe_rlhf/algorithms/ppo_reward_shaping/main.py",
+    "/workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py",
+    "/workspace/safe_rlhf/evaluate/arena.py"
+  ]
+}

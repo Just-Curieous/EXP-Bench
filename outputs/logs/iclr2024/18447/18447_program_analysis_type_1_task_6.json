@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by importing necessary libraries and modules for the specific task (pose estimation or video prediction) (/workspace/pose_estimation/train.py:1-26, /workspace/video_prediction/tools/non_dist_train.py:1-14)",
+    "Step 2: Parse command line arguments to configure the experiment (/workspace/pose_estimation/train.py:28-87, /workspace/video_prediction/tools/non_dist_train.py:18-19)",
+    "Step 3: Load configuration from specified config file and update with command line arguments (/workspace/pose_estimation/train.py:93-96, /workspace/video_prediction/tools/non_dist_train.py:25-28)",
+    "Step 4: Set up multi-processing and CUDA environment for efficient training (/workspace/pose_estimation/train.py:99-103, /workspace/pose_estimation/test.py:100-105)",
+    "Step 5: Configure distributed training environment if specified (/workspace/pose_estimation/train.py:133-147)",
+    "Step 6: Set up logging and working directory for saving results (/workspace/pose_estimation/train.py:149-154, /workspace/pose_estimation/test.py:109-118)",
+    "Step 7: Set random seeds for reproducibility (/workspace/pose_estimation/train.py:171-178)",
+    "Step 8: Build the model architecture according to configuration (/workspace/pose_estimation/train.py:180, /workspace/pose_estimation/test.py:154)",
+    "Step 9: Build datasets and data loaders for training and validation (/workspace/pose_estimation/train.py:181-186, /workspace/pose_estimation/test.py:127-151)",
+    "Step 10: For training, execute the training loop with validation if specified (/workspace/pose_estimation/train.py:195-202, /workspace/video_prediction/tools/non_dist_train.py:30-32)",
+    "Step 11: For testing, load the trained model checkpoint (/workspace/pose_estimation/test.py:158, /workspace/video_prediction/tools/non_dist_test.py:30-33)",
+    "Step 12: Run inference on test data and compute evaluation metrics (/workspace/pose_estimation/test.py:163-185, /workspace/video_prediction/tools/non_dist_test.py:33)",
+    "Final Step: Report and save evaluation results (/workspace/pose_estimation/test.py:179-185, /workspace/video_prediction/tools/non_dist_test.py:33-35)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for two separate deep learning tasks: 2D human pose estimation and video prediction.\n\n1. For 2D human pose estimation:\n   - Create a training script that uses the MMPose framework to train MogaNet models on the COCO dataset\n   - Create a testing script that evaluates trained models using the mAP metric\n   - Both scripts should support distributed training/testing and handle command-line arguments for configuration\n   - The scripts should load configurations from config files, build models and datasets, and handle logging\n\n2. For video prediction:\n   - Create a training script that uses the SimVP framework to train MogaNet models on the Moving MNIST (MMNIST) dataset\n   - Create a testing script that evaluates trained models on the MMNIST dataset\n   - Both scripts should handle command-line arguments and configuration files\n   - The scripts should create an experiment object that manages the training and testing process\n\nFor both tasks, ensure your implementation includes:\n- Proper environment setup and dependency imports\n- Command-line argument parsing for flexible configuration\n- Configuration loading from files with command-line overrides\n- Model and dataset building according to configurations\n- Training loops with validation capability\n- Testing procedures that load trained checkpoints and compute metrics\n- Result logging and saving\n\nYou should follow the standard practices of each framework (MMPose for pose estimation and SimVP for video prediction) while implementing these scripts.",
+  "masked_source": [
+    "/workspace/pose_estimation/train.py",
+    "/workspace/pose_estimation/test.py",
+    "/workspace/video_prediction/tools/non_dist_train.py",
+    "/workspace/video_prediction/tools/non_dist_test.py"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/design_inference.py",
+        "/workspace/scripts/analyze_peptide_design.py"
+    ],
+    "usage_instructions": "1. First, run the design_inference.py script to perform inpainting with MDGEN on high-flux transitions: `python design_inference.py --sim_ckpt inpainting.ckpt --split splits/4AA_test.csv --data_dir data/4AA_data/ --num_frames 100 --mddir data/4AA_sims --random_start_idx --out_dir high_flux_results`\n2. Then, run the same script for random transitions (without the --random_start_idx flag): `python design_inference.py --sim_ckpt inpainting.ckpt --split splits/4AA_test.csv --data_dir data/4AA_data/ --num_frames 100 --mddir data/4AA_sims --out_dir random_transitions_results`\n3. Finally, analyze the results using the analyze_peptide_design.py script for both experiments: `python -m scripts.analyze_peptide_design --mddir data/4AA_sims --data_dir data/4AA_data --pdbdir high_flux_results` and `python -m scripts.analyze_peptide_design --mddir data/4AA_sims --data_dir data/4AA_data --pdbdir random_transitions_results`\n\nNote: This repository only contains the MDGEN implementation. The baseline models (DYNMPNN and S-MPNN) mentioned in the experiment question are not included in this repository and would need to be run separately for comparison. The analyze_peptide_design.py script will output sequence recovery metrics for MDGEN that can be compared with the baseline results mentioned in the expected outcome."
+}

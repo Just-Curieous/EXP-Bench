@@ -1,0 +1,12 @@
+{
+  "requirements": [
+    "Step 1: Import the necessary libraries from vllm (LLM and SamplingParams) (/workspace/FuseO1-Preview/README.md:82-82)",
+    "Step 2: Initialize the LLM with the FuseO1-DeepSeekR1-QwQ-SkyT1-32B-Preview model and set tensor_parallel_size=8 (/workspace/FuseO1-Preview/README.md:84-84)",
+    "Step 3: Configure sampling parameters with max_tokens=32768, temperature=0.7, and appropriate stop tokens (/workspace/FuseO1-Preview/README.md:85-85)",
+    "Step 4: Create a conversation list with a system message instructing the model to reason step by step and put the final answer in \\boxed{} (/workspace/FuseO1-Preview/README.md:87-91)",
+    "Step 5: Add a user message containing the quadratic polynomial problem (/workspace/FuseO1-Preview/README.md:90-90)",
+    "Step 6: Call the chat method on the LLM with the conversation and sampling parameters (/workspace/FuseO1-Preview/README.md:94-94)",
+    "Step 7: Process and print the model's response (/workspace/FuseO1-Preview/README.md:96-97)"
+  ],
+  "agent_instructions": "Create a Python script that uses the FuseO1-DeepSeekR1-QwQ-SkyT1-32B-Preview model to solve a mathematical reasoning problem. The script should:\n\n1. Use the vllm library to load and interact with the model\n2. Initialize the model with appropriate parallel processing settings\n3. Configure the model to generate detailed responses with sufficient token length\n4. Set up a conversation that includes:\n   - A system message instructing the model to provide step-by-step reasoning and present the final answer in a boxed format\n   - A user message containing a challenging quadratic polynomial problem\n5. Generate and display the model's response\n\nThe goal is to demonstrate the model's mathematical reasoning capabilities by having it solve a complex problem with detailed step-by-step explanations, ultimately providing a boxed final answer."
+}

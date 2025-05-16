@@ -1,0 +1,161 @@
+{
+  "questions": [
+    {
+      "question": "Will the forward simulation model (MDGEN) achieve a significant wall-clock time speedup over conventional MD simulations while maintaining accuracy in the generated trajectories?",
+      "method": "#### Problem Setup\n\n- **Objective**: Compare the runtime efficiency and simulation fidelity of the MDGEN model with conventional MD simulations when generating 100 ns-equivalent trajectories for test tetrapeptides.\n\n#### Independent Variables\n\n- **Simulation Method**:\n  - MDGEN forward simulation rollouts\n  - Conventional MD simulations\n- **Hardware Used**:\n  - MDGEN: NVIDIA A6000 GPU\n  - MD: NVIDIA T4 or A100 GPU\n\n#### Dependent Variables (Evaluation Metrics)\n\n- **Wall-clock Time**:\n  - MDGEN: GPU-seconds per 100 ns trajectory\n  - MD: GPU-hours per 100 ns trajectory\n- **Accuracy Outcomes**:\n  - Jensen-Shannon Divergence (JSD) of torsion distributions\n  - Torsion angle relaxation times\n  - Free energy surface (FES) comparisons via TICA\n\n#### Experiment Setup\n\n- **Trajectory Generation**:\n  - Generate 100 ns-equivalent trajectories using:\n    - MDGEN: 10\u00d7 10 ns rollouts (\u224860 GPU-seconds each)\n    - MD: standard 100 ns simulation (\u22483 GPU-hours)\n- **Sample Selection**:\n  - Use a representative set of **100 test tetrapeptides**\n- **Runtime Measurement**:\n  - Record per-peptide generation time under each hardware setup.\n  - Normalize runtimes to compare speedup ratios.\n- **Accuracy Evaluation**:\n  - Compute JSD for torsion angles (backbone + sidechain)\n  - Estimate torsion relaxation times from autocorrelation functions\n  - Generate and compare TICA-based free energy surfaces\n- **Contextual Comparison**:\n  - Reference Table 2: MDGEN vs. MD runtime and JSDs\n  - Reference Table 4: Comparison with AlphaFlow and MSA subsampling methods",
+      "expected_outcome": "**Speedup**: MDGEN is expected to be **10x\u20131000x faster** than MD simulation in wall-clock time.\n\n**Accuracy**:\n\n- Structural and dynamic fidelity should remain high.\n- MDGEN should produce JSD values close to 100 ns MD simulations.\n- **\u226578/100 peptides** should show full torsional decorrelation.\n- Free energy surface and dynamic relaxation features should match the reference.",
+      "design_complexity": {
+        "constant_variables": {
+          "Test Peptides": [
+            "100 test tetrapeptides"
+          ],
+          "Trajectory Length": [
+            "100 ns-equivalent trajectories"
+          ],
+          "Trajectory Generation Protocol": [
+            "MDGEN uses 10\u00d7 10 ns rollouts (\u224860 GPU-seconds each) vs. MD uses a standard 100 ns simulation (\u22483 GPU-hours)"
+          ]
+        },
+        "independent_variables": {
+          "Simulation Method": [
+            "MDGEN forward simulation rollouts",
+            "Conventional MD simulations"
+          ],
+          "Hardware Used": [
+            "MDGEN: NVIDIA A6000 GPU",
+            "MD: NVIDIA T4 GPU or NVIDIA A100 GPU"
+          ]
+        },
+        "dependent_variables": {
+          "Wall-clock Time": [
+            "Measured as GPU-seconds per 100 ns trajectory for MDGEN and GPU-hours per 100 ns trajectory for MD"
+          ],
+          "Accuracy Outcomes": [
+            "Jensen-Shannon Divergence (JSD) of torsion distributions",
+            "Torsion angle relaxation times",
+            "Free energy surface (FES) comparisons via TICA"
+          ]
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "Hardware Used": "The paper mentions two different GPUs (NVIDIA T4 and A100) for MD simulations, which creates uncertainty in direct hardware comparisons.",
+          "Accuracy Outcomes": "The specific acceptable thresholds for JSD, torsion relaxation times, and FES matching are not explicitly defined, making interpretation ambiguous."
+        },
+        "possible_modifications": {
+          "modification_Hardware": [
+            "Standardize the hardware for MD simulations (e.g., choose either NVIDIA T4 or A100) to ensure a clear comparison."
+          ],
+          "modification_Accuracy": [
+            "Explicitly define threshold values or quantitative criteria for acceptable accuracy outcomes (e.g., maximum allowable JSD or minimum decorrelation standard)."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "MDGEN forward simulation system (10\u00d7 10 ns rollouts using NVIDIA A6000 GPU)",
+          "Conventional MD simulation system (100 ns simulation using NVIDIA T4 or A100 GPU)",
+          "Test peptide dataset (100 test tetrapeptides)",
+          "Runtime measurement tools (record GPU-seconds for MDGEN and GPU-hours for MD)",
+          "Accuracy evaluation modules (JSD computation for torsion distributions, torsion angle relaxation analysis, TICA for free energy surface comparisons)"
+        ],
+        "setup_steps": [
+          "Generate 100 ns-equivalent trajectories using two different methods: MDGEN (via multiple short rollouts) and a continuous MD simulation",
+          "Select a representative set of 100 test tetrapeptides for evaluation",
+          "Record the per-peptide runtime under each hardware configuration",
+          "Normalize runtimes to enable direct comparison of speedup ratios",
+          "Compute accuracy outcomes including Jensen-Shannon Divergence, torsion relaxation times from autocorrelation functions, and compare free energy surfaces using TICA",
+          "Reference and correlate results with reported data in Tables 2 and 4 for runtime and accuracy comparisons"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Hardware configuration variability",
+            "description": "Using different GPUs for MD simulations (NVIDIA T4 versus A100) alongside the A6000 for MDGEN adds complexity in comparing performance across experiments."
+          },
+          {
+            "source": "Evaluation metric calculation",
+            "description": "Computing statistical metrics such as JSD, torsional relaxation times, and free energy surfaces introduces additional computational pipelines and dependencies."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Hardware Used: The experiment mentions both NVIDIA T4 and A100 GPUs for conventional MD simulations, which creates uncertainty in ensuring a consistent hardware platform for direct comparisons."
+        ],
+        "ambiguous_setup_steps": [
+          "Accuracy Outcome thresholds: The acceptable quantitative limits for JSD, torsion relaxation times, and free energy surface matching are not explicitly defined.",
+          "Normalization process: The method for normalizing GPU-seconds and GPU-hours is implied but not detailed, leading to potential ambiguity in performance comparisons."
+        ],
+        "possible_modifications": {
+          "modification_Hardware": [
+            "Standardize the hardware for conventional MD simulations by selecting either NVIDIA T4 or A100 exclusively, thereby eliminating hardware variability in the comparison."
+          ],
+          "modification_Accuracy": [
+            "Explicitly define threshold values or quantitative criteria for acceptable accuracy outcomes (e.g., maximum allowable JSD or minimum torsion decorrelation metrics) to remove ambiguity in the evaluation of simulation fidelity."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Standardize the hardware for conventional MD simulations by selecting a single GPU type (e.g., exclusively NVIDIA A100) to eliminate variability in performance metrics.",
+            "Enforce a consistent GPU memory configuration and allocation across all simulation runs to ensure more uniform resource usage."
+          ],
+          "time_constraints": [
+            "Explicitly define time thresholds (e.g., a maximum allowable GPU-hour budget for a 100 ns simulation) to quantify and compare the speedup more definitively between MDGEN and conventional MD methods."
+          ],
+          "money_constraints": [
+            "Introduce a budget constraint by limiting total compute time expenditures, which may require choosing more cost-effective hardware (e.g., opting for NVIDIA T4 GPUs for conventional MD if cost is a factor) while still achieving acceptable simulation fidelity."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Stochasticity in MDGEN simulation rollouts",
+        "description": "The MDGEN approach uses 10 independent 10 ns rollouts to create a 100 ns-equivalent trajectory. Each short rollout has its own random initialization and inherent simulation noise, which may lead to instability and variability in both wall-clock time and accuracy metrics such as JSD and torsion relaxation times.",
+        "impact": "Random fluctuations in the short rollouts can lead to variations in overall simulation outcomes, causing uncertainty in the measured simulation fidelity and runtime performance across different runs.",
+        "possible_modifications": [
+          "Fix random seeds for each rollout to reduce stochastic variability.",
+          "Perform multiple independent repetitions and report averaged measures with error bars (e.g., standard deviation) to quantify the randomness.",
+          "Apply ensemble averaging or variance reduction techniques to mitigate the effects of random fluctuations in the simulation results."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Heterogeneous hardware setups and ambiguous accuracy thresholds",
+        "description": "The experimental design uses different GPU configurations for MDGEN (NVIDIA A6000) and MD simulations (NVIDIA T4 or A100), which may systematically bias the runtime comparisons. Furthermore, the acceptable thresholds for accuracy outcomes (JSD, torsion relaxation times, TICA-based free energy surface comparisons) are not explicitly defined, introducing ambiguity in the evaluation.",
+        "impact": "Systematic biases may emerge in the comparison of wall-clock times and accuracy assessments, potentially overstating the speedup of MDGEN or misinterpreting simulation fidelity due to inconsistent hardware performance and undefined evaluation criteria.",
+        "possible_modifications": [
+          "Standardize the hardware for both MDGEN and conventional MD simulations by selecting a single GPU type (e.g., exclusively NVIDIA A100) to ensure a fair runtime comparison.",
+          "Explicitly define quantitative threshold values for the accuracy outcomes (e.g., maximum allowable JSD or minimum decorrelation level) to remove ambiguity in performance evaluations."
+        ]
+      },
+      "source": [
+        "/workspace/sim_inference.py",
+        "/workspace/scripts/analyze_peptide_sim.py"
+      ],
+      "usage_instructions": "To compare the wall-clock time speedup of MDGEN over conventional MD simulations while maintaining accuracy:\n\n1. First, download the pre-trained forward simulation model weights:\n   ```\n   wget https://storage.googleapis.com/mdgen-public/weights/forward_sim.ckpt\n   ```\n\n2. Run the MDGEN forward simulation on the test tetrapeptides:\n   ```\n   python sim_inference.py --sim_ckpt forward_sim.ckpt --data_dir data/4AA_sims --split splits/4AA_test.csv --num_rollouts 10 --num_frames 1000 --xtc --out_dir results_mdgen\n   ```\n   This will generate 10 rollouts of 10 ns each (equivalent to 100 ns) for each test peptide using MDGEN, and the script will output the wall-clock time taken.\n\n3. Analyze the MDGEN simulation results to evaluate accuracy metrics:\n   ```\n   python -m scripts.analyze_peptide_sim --mddir data/4AA_sims --pdbdir results_mdgen --plot --save --num_workers 1\n   ```\n   This will compute the Jensen-Shannon Divergence (JSD) of torsion distributions, torsion angle relaxation times, and free energy surface comparisons via TICA.\n\n4. The wall-clock time comparison is directly observable from the runtime output of the sim_inference.py script, which shows that MDGEN generates 100 ns-equivalent trajectories in ~60 GPU-seconds, compared to conventional MD which takes ~3 GPU-hours for the same trajectory length (a speedup of 10x-1000x as expected in the experiment).",
+      "requirements": [
+        "Step 1: Load the pre-trained MDGEN forward simulation model from checkpoint (/workspace/sim_inference.py:129-130)",
+        "Step 2: Load test peptide data from a CSV file containing peptide names and sequences (/workspace/sim_inference.py:133)",
+        "Step 3: For each peptide in the test set, load its initial structure from the data directory (/workspace/sim_inference.py:33-59)",
+        "Step 4: Prepare the batch data for simulation by expanding the initial structure to the required number of frames (/workspace/sim_inference.py:62-79)",
+        "Step 5: Run multiple simulation rollouts using the MDGEN model, measuring wall-clock time (/workspace/sim_inference.py:108-115)",
+        "Step 6: Combine all rollout trajectories and save them as PDB and optionally XTC files (/workspace/sim_inference.py:116-125)",
+        "Step 7: Load both the MDGEN-generated trajectories and reference MD trajectories for analysis (/workspace/scripts/analyze_peptide_sim.py:44-46)",
+        "Step 8: Calculate Jensen-Shannon Divergence (JSD) between torsion angle distributions from MDGEN and reference MD (/workspace/scripts/analyze_peptide_sim.py:50-59)",
+        "Step 9: Compute torsion angle decorrelation times for both MDGEN and reference MD trajectories (/workspace/scripts/analyze_peptide_sim.py:64-101)",
+        "Step 10: Perform TICA (time-lagged independent component analysis) on both trajectories to extract slow collective variables (/workspace/scripts/analyze_peptide_sim.py:104-110)",
+        "Step 11: Compare free energy surfaces in TICA space using JSD (/workspace/scripts/analyze_peptide_sim.py:118-124)",
+        "Step 12: Optionally build Markov state models (MSMs) to compare metastable state distributions (/workspace/scripts/analyze_peptide_sim.py:153-197)",
+        "Step 13: Save analysis results to a pickle file for further processing (/workspace/scripts/analyze_peptide_sim.py:225-227)"
+      ],
+      "agent_instructions": "Your task is to implement a system for evaluating the speed and accuracy of MDGEN, a machine learning model for molecular dynamics simulations, compared to conventional MD simulations. You need to create two Python scripts:\n\n1. A script for running MDGEN forward simulations on test peptides:\n   - The script should load a pre-trained MDGEN model from a checkpoint file\n   - It should read test peptide data from a CSV file containing peptide names and sequences\n   - For each peptide, it should load the initial structure and run multiple simulation rollouts\n   - The script should measure and report the wall-clock time for the simulations\n   - It should save the simulation trajectories as PDB and XTC files\n   - Command-line arguments should allow specifying the checkpoint file, data directory, output directory, number of rollouts, and number of frames\n\n2. An analysis script that evaluates the accuracy of MDGEN simulations by comparing them to reference MD simulations:\n   - The script should load both MDGEN-generated trajectories and reference MD trajectories\n   - It should calculate Jensen-Shannon Divergence (JSD) between torsion angle distributions\n   - It should compute torsion angle decorrelation times for both trajectory types\n   - It should perform time-lagged independent component analysis (TICA) to extract slow collective variables\n   - It should compare free energy surfaces in TICA space\n   - Optionally, it should build Markov state models (MSMs) to compare metastable state distributions\n   - The script should generate plots visualizing these comparisons and save analysis results\n   - Command-line arguments should control analysis options and output formats\n\nThe goal is to demonstrate that MDGEN can generate trajectories 10-1000x faster than conventional MD while maintaining accuracy in terms of conformational sampling and dynamics.",
+      "masked_source": [
+        "/workspace/sim_inference.py",
+        "/workspace/scripts/analyze_peptide_sim.py"
+      ]
+    }
+  ]
+}

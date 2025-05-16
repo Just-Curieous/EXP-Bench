@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Load configuration from a YAML file using a ConfigLoader (/workspace/src/start_task.py:80-80)",
+    "Step 2: Start a task controller if specified in the arguments or configuration (/workspace/src/start_task.py:84-112)",
+    "Step 3: Determine the controller address from arguments or configuration (/workspace/src/start_task.py:116-121)",
+    "Step 4: Start task workers based on configuration or command line arguments (/workspace/src/start_task.py:123-137)",
+    "Step 5: Initialize the Assigner with configuration and set up data structures for tracking tasks and agents (/workspace/src/assigner.py:42-68)",
+    "Step 6: Create output directory and save configuration (/workspace/src/assigner.py:71-75)",
+    "Step 7: Process existing output files to resume interrupted experiments (/workspace/src/assigner.py:77-151)",
+    "Step 8: Create agent instances based on configuration (/workspace/src/assigner.py:155-157)",
+    "Step 9: Implement a worker generator that allocates tasks to agents using a max flow algorithm (/workspace/src/assigner.py:161-236)",
+    "Step 10: Start the experiment by assigning tasks to agents and tracking progress with progress bars (/workspace/src/assigner.py:238-299)",
+    "Step 11: Record task completions and write results to files (/workspace/src/assigner.py:301-327, /workspace/src/assigner.py:329-384)",
+    "Step 12: Load experiment configuration and analyze output files (/workspace/src/analysis.py:56-141)",
+    "Step 13: Process results using task-specific handlers to extract the main metrics (/workspace/src/analysis.py:144-263)",
+    "Step 14: Generate summary statistics and create CSV files comparing model performance (/workspace/src/analysis.py:301-442)"
+  ],
+  "agent_instructions": "You need to implement a system for running and analyzing experiments comparing code-tuned models (CodeLlama series) with non-code-tuned models (Llama-2 series) on three types of tasks: Web Shopping, Digital Card Game, and Operating System interactions. The system should consist of three main components:\n\n1. A task server starter that:\n   - Reads a configuration file specifying which tasks to run\n   - Starts a controller process if needed\n   - Launches task worker processes (either directly or in Docker containers)\n   - Handles communication between components\n\n2. A task assigner that:\n   - Loads experiment configuration from a YAML file\n   - Sets up agents (models) and tasks based on the configuration\n   - Efficiently allocates tasks to agents using a max flow algorithm\n   - Tracks progress with progress bars\n   - Handles concurrency and resource allocation\n   - Records results and writes them to output files\n   - Supports resuming interrupted experiments\n\n3. An analysis tool that:\n   - Processes the output files generated during the experiment\n   - Extracts task-specific metrics for each agent/model\n   - Generates CSV files with performance metrics including:\n     * Success rate\n     * Invalid action errors\n     * Invalid format errors\n     * Task limit exceeded outcomes\n   - Compares performance across different model groups and task categories\n\nThe system should be configurable through YAML files that specify which models to use, which tasks to run, and concurrency settings. The output should include detailed logs and summary statistics that can be used to compare the performance of code-tuned vs. non-code-tuned models.",
+  "masked_source": [
+    "/workspace/src/start_task.py",
+    "/workspace/src/assigner.py",
+    "/workspace/src/analysis.py"
+  ]
+}

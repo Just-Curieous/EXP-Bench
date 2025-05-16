@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/scripts/celebrity_relations/find_non_reversals_parents.py",
+        "/workspace/scripts/celebrity_relations/test_parent_child_pairs.py",
+        "/workspace/scripts/celebrity_relations/plot_parent_child_reversals.ipynb"
+    ],
+    "usage_instructions": "First, run the script 'find_non_reversals_parents.py' to compile a dataset of verified child-parent pairs using GPT-4 (e.g., 'python scripts/celebrity_relations/find_non_reversals_parents.py --num_celebrities 1000 --num_queries_per_celebrity 10'). This creates a dataset of parent-child relationships. Then, run 'test_parent_child_pairs.py' with different model names to evaluate how well various models can retrieve parents given children and children given parents (e.g., 'python scripts/celebrity_relations/test_parent_child_pairs.py --model gpt-3.5-turbo' and repeat for other models like llama-7b, llama-30b, llama-65b). Finally, use the notebook 'plot_parent_child_reversals.ipynb' to visualize and analyze the results, which will show the directional bias in parent-child relationship retrieval across different models."
+}

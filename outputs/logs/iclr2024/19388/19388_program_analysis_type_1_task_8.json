@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by importing necessary libraries and modules for text processing and machine learning (diagnose_rlhf.py:1-14)",
+    "Step 2: Parse command line arguments to specify which RLHF dataset configuration to use (diagnose_rlhf.py:16-26)",
+    "Step 3: Load the RLHF dataset (either red-team-attempts or harmless/helpful datasets) with appropriate preprocessing (diagnose_rlhf.py:32-36)",
+    "Step 4: Initialize the preprocessing module to encode text features into embeddings using a sentence transformer model (diagnose_rlhf.py:39-41)",
+    "Step 5: Load the embedded dataset with duplicated samples for robust analysis (diagnose_rlhf.py:44-45)",
+    "Step 6: Initialize the label error detection module with the dataset and configuration (diagnose_rlhf.py:49-52)",
+    "Step 7: Run the detection algorithm to identify potentially mislabeled examples (diagnose_rlhf.py:53)",
+    "Step 8: Save the detection report containing identified label errors and their confidence scores (diagnose_rlhf.py:55-57)",
+    "Step 9: For red-team-attempts dataset, process both raw and QA formats with different weights (cure_red_team_rlhf.py:66-86)",
+    "Step 10: Combine and normalize confidence scores from different preprocessing methods (cure_red_team_rlhf.py:88-105)",
+    "Step 11: Generate suggested ratings and confidence scores for each example (cure_red_team_rlhf.py:118-137)",
+    "Step 12: Save the corrected dataset with suggested ratings to a new JSONL file (cure_red_team_rlhf.py:145-151)",
+    "Step 13: For harmless/helpful datasets, process each dataset to identify and correct label errors (cure_hh_rlhf.py:33-42)",
+    "Step 14: Apply confidence thresholds to determine which labels to correct (cure_hh_rlhf.py:61-75)",
+    "Step 15: Save the corrected harmless/helpful datasets with suggested chosen/rejected labels (cure_hh_rlhf.py:80-86)",
+    "Final Step: Automate the entire process by running diagnose_rlhf.py and cure scripts for all datasets in sequence (docta_rlhf.sh:1-10)"
+  ],
+  "agent_instructions": "Create a system to detect and correct label errors in RLHF (Reinforcement Learning from Human Feedback) datasets. The system should work with two types of datasets: 'red-team-attempts' (containing potentially harmful content with severity ratings) and harmless/helpful datasets (containing pairs of responses where one is chosen and one is rejected).\n\nYour implementation should:\n\n1. Create a diagnosis script that:\n   - Loads RLHF datasets and preprocesses them into appropriate formats\n   - Converts text data into embeddings using a sentence transformer model\n   - Implements a similarity-based algorithm to detect label errors\n   - Generates confidence scores for potentially mislabeled examples\n   - Saves detection reports for further processing\n\n2. Create correction scripts that:\n   - For red-team datasets: Process both raw text and Q&A formats, combine their results with appropriate weights, and suggest corrected severity ratings\n   - For harmless/helpful datasets: Identify instances where the chosen/rejected labels should be swapped based on confidence scores\n   - Save the corrected datasets with suggested labels and confidence scores\n\n3. Create a shell script that orchestrates the entire process by:\n   - Running the diagnosis script on all datasets\n   - Running the appropriate correction script for each dataset type\n   - Processing both red-team-attempts and harmless/helpful datasets\n\nThe system should identify subtle toxic cues like indirect insults, personal attacks, or negative stereotypes that might have been missed by human annotators. The output should be corrected datasets saved as *_docta.jsonl.gz files.",
+  "masked_source": [
+    "/workspace/tools/diagnose_rlhf.py",
+    "/workspace/tools/cure_red_team_rlhf.py",
+    "/workspace/tools/docta_rlhf.sh"
+  ]
+}

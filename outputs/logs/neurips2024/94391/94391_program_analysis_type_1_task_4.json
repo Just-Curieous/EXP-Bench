@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Set up the experiment configuration for CycleNet with Linear backbone on Solar-Energy dataset, including parameters for input sequence length (96), forecast horizons (96, 192, 336, 720), and random seeds (2024-2028) (/workspace/scripts/CycleNet/Linear-Input-96/solar.sh:1-9)",
+    "Step 2: Load the Solar-Energy dataset from the specified path and preprocess it by splitting into train/val/test sets and applying standardization (/workspace/data_provider/data_loader.py:1012-1041)",
+    "Step 3: Create the CycleNet model with Linear backbone that uses a RecurrentCycle module to capture and remove cyclical patterns in the data (/workspace/models/CycleNet.py:21-43)",
+    "Step 4: Train the model using MSE loss for 30 epochs with early stopping based on validation loss (/workspace/run.py:115-244)",
+    "Step 5: Evaluate the trained model on the test set and calculate MSE and MAE metrics (/workspace/run.py:246-342)",
+    "Step 6: Repeat steps 1-5 with MLP backbone instead of Linear backbone (/workspace/scripts/CycleNet/MLP-Input-96/solar.sh:8)",
+    "Step 7: Compare the MSE and MAE results between Linear and MLP backbones across all forecast horizons and random seeds to determine which performs better on the Solar-Energy forecasting task (/workspace/run.py:335-342)"
+  ],
+  "agent_instructions": "Your task is to implement a time series forecasting experiment using the CycleNet model on the Solar-Energy dataset. The experiment compares two different backbone architectures: Linear and MLP.\n\nYou need to:\n\n1. Create a script that runs the CycleNet model with a Linear backbone on the Solar-Energy dataset. The script should:\n   - Configure the model to use a sequence length of 96\n   - Test multiple forecast horizons: 96, 192, 336, and 720\n   - Run each configuration with 5 different random seeds (2024-2028)\n   - Use a cycle length of 144 (representing daily patterns in the data)\n   - Train for 30 epochs with early stopping (patience=5)\n   - Use MSE loss for training\n   - Output MSE and MAE metrics to a result file\n\n2. Create a similar script for the CycleNet model with an MLP backbone, keeping all other parameters the same.\n\n3. The CycleNet model should:\n   - Identify and remove cyclical patterns in the data\n   - Process the residuals with either a Linear or MLP backbone\n   - Add back the cyclical component for the final prediction\n\n4. The experiment should load the Solar-Energy dataset, preprocess it appropriately, and evaluate the models using MSE and MAE metrics.\n\nThe goal is to determine which backbone architecture (Linear or MLP) performs better for Solar-Energy forecasting across different prediction horizons.",
+  "masked_source": [
+    "/workspace/scripts/CycleNet/Linear-Input-96/solar.sh",
+    "/workspace/scripts/CycleNet/MLP-Input-96/solar.sh"
+  ]
+}

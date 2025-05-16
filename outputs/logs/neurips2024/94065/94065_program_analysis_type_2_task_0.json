@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, argparse, trimesh, mcubes, and other required modules (/workspace/zoo/extract_surface.py:1-16, /workspace/zoo/mesh_utils.py:13-19)",
+    "Step 2: Set up command-line argument parsing for config file path, output path, resolution, and other mesh extraction parameters (/workspace/zoo/extract_surface.py:66-76)",
+    "Step 3: Load the trained model from the checkpoint specified in the config file (/workspace/zoo/extract_surface.py:18-60, 90-106)",
+    "Step 4: Define the SDF (Signed Distance Function) using the model's field network (/workspace/zoo/extract_surface.py:110)",
+    "Step 5: Create a grid structure for the marching cubes algorithm based on specified bounds and resolution (/workspace/zoo/mesh_utils.py:24-25, 60-92)",
+    "Step 6: Process the grid in blocks to handle memory constraints (/workspace/zoo/mesh_utils.py:26-35)",
+    "Step 7: Apply the marching cubes algorithm to extract the mesh from the SDF (/workspace/zoo/mesh_utils.py:111-125)",
+    "Step 8: Apply dataset-specific post-processing for TNT datasets (scaling, centering) (/workspace/zoo/extract_surface.py:116-175)",
+    "Step 9: Clean up the mesh by removing degenerate faces (/workspace/zoo/extract_surface.py:182)",
+    "Step 10: Save the resulting mesh to a .ply file at the specified output path (/workspace/zoo/extract_surface.py:183-184)"
+  ],
+  "agent_instructions": "Create a script that extracts a high-resolution 3D mesh from a trained NeuRodin model. The script should:\n\n1. Accept command-line arguments for:\n   - Path to the config file of a trained model\n   - Output path for the mesh file\n   - Resolution for the marching cubes algorithm\n   - Additional optional parameters like block resolution and whether to keep only the largest connected component\n\n2. Load the trained NeuRodin model from a checkpoint specified in the config file.\n\n3. Define a Signed Distance Function (SDF) using the model's neural network.\n\n4. Extract a mesh using the marching cubes algorithm:\n   - Create a 3D grid based on specified bounds and resolution\n   - Process the grid in blocks to handle memory constraints\n   - Apply the marching cubes algorithm to extract the mesh from the SDF\n\n5. Handle dataset-specific post-processing:\n   - For TNT datasets, apply appropriate scaling and centering based on metadata\n   - For other datasets, use default bounds\n\n6. Clean up the mesh by removing degenerate faces.\n\n7. Save the resulting mesh as a .ply file.\n\nThe script should work with CUDA if available and handle different dataset types appropriately. The output will be a 3D mesh file (.ply) that represents the surface reconstruction from the trained model."
+}

@@ -1,0 +1,40 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with PyTorch, MMCV, MMDetection, MMDetection3D, and other required dependencies.",
+    "Step 2: Prepare the OpenLane-V2 dataset in the './data' directory with the required structure for subset A.",
+    "Step 3: Create a TopoMLP model architecture that consists of four main components: a backbone network (which will be varied in the experiment), a lane detection head, a traffic element detection head, and two topology heads for lane-lane and lane-traffic element relationships.",
+    "Step 4: Configure the model with a ResNet-50 backbone by setting up the image backbone with ResNet-50 architecture, initializing it with pretrained weights from torchvision, and configuring the Feature Pyramid Network (FPN) to process features from different backbone levels.",
+    "Step 5: Configure the model with a VOV backbone by replacing the ResNet-50 backbone with a VoVNetCP architecture (V-99-eSE variant), initializing it with pretrained weights, and adjusting the FPN input channels accordingly.",
+    "Step 6: Configure the model with a Swin-B backbone by replacing the ResNet-50 backbone with a SwinTransformer_BEVDet architecture, initializing it with pretrained weights, and adjusting the FPN input channels accordingly.",
+    "Step 7: Set up the lane detection head with a transformer-based architecture that uses PETR (Position Embedding Transformation) for 3D lane detection, with focal loss for classification and L1 loss for regression.",
+    "Step 8: Set up the traffic element detection head with a transformer-based architecture that uses deformable DETR for detecting traffic elements, with focal loss for classification, L1 loss for regression, and GIoU loss for bounding box refinement.",
+    "Step 9: Set up the lane-lane topology head to predict relationships between detected lanes, using focal loss for relationship classification and L1 loss for refinement.",
+    "Step 10: Set up the lane-traffic element topology head to predict relationships between lanes and traffic elements, using focal loss for relationship classification.",
+    "Step 11: Configure the data pipeline for training with operations like loading multi-view images, applying photometric distortion, normalizing images, resizing, padding, and parameterizing lanes using Bezier curves with 4 control points.",
+    "Step 12: Configure the data pipeline for testing with similar operations but without data augmentation steps.",
+    "Step 13: Set up the optimizer as AdamW with a learning rate of 2e-4, with a lower learning rate multiplier (0.2 for ResNet-50 and VOV, 0.1 for Swin-B) for the backbone to stabilize training.",
+    "Step 14: Configure the learning rate schedule with cosine annealing policy, linear warmup for 500 iterations, and a minimum learning rate ratio of 1e-3.",
+    "Step 15: Set up the training configuration to run for 24 epochs with evaluation at the end of training, saving checkpoints every epoch and keeping the 3 most recent ones.",
+    "Step 16: Implement distributed training using PyTorch's distributed data parallel with the specified number of GPUs (8 in the usage instructions).",
+    "Step 17: Implement distributed testing that loads a trained checkpoint and evaluates the model on the validation set.",
+    "Step 18: Train the TopoMLP model with ResNet-50 backbone for 24 epochs using 8 GPUs in distributed mode, saving results to the specified work directory.",
+    "Step 19: Train the TopoMLP model with VOV backbone for 24 epochs using 8 GPUs in distributed mode, saving results to the specified work directory.",
+    "Step 20: Train the TopoMLP model with Swin-B backbone for 24 epochs using 8 GPUs in distributed mode, saving results to the specified work directory.",
+    "Step 21: Evaluate each trained model using the test script with the appropriate configuration file and checkpoint path, using 8 GPUs and the 'bbox' evaluation metric.",
+    "Step 22: Compare the evaluation metrics (DET_l, DET_t, TOP_ll, TOP_lt, and OLS) across the different backbone configurations to determine the impact of backbone capacity and complexity on detection and topology performance."
+  ],
+  "masked_source": [
+    "/workspace/tools/dist_train.sh",
+    "/workspace/tools/dist_test.sh",
+    "/workspace/tools/train.py",
+    "/workspace/tools/test.py",
+    "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+    "/workspace/projects/configs/topomlp_setA_vov_wo_yolov8.py",
+    "/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py",
+    "/workspace/projects/topomlp/models/detectors/topomlp.py",
+    "/workspace/projects/topomlp/models/heads/lane_head.py",
+    "/workspace/projects/topomlp/models/heads/traffic_head.py",
+    "/workspace/projects/topomlp/models/heads/topo_ll_head.py",
+    "/workspace/projects/topomlp/models/heads/topo_lt_head.py"
+  ]
+}

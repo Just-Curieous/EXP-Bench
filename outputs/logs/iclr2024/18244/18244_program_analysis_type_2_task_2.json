@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by creating necessary log directories (/workspace/scripts/PDF/720/ettm1.sh:1-7)",
+    "Step 2: Configure the PDF model with the ETTm1 dataset parameters including sequence length of 720 (/workspace/scripts/PDF/720/ettm1.sh:9-17)",
+    "Step 3: Set up the training loop to test different prediction lengths (96, 192, 336, 720) (/workspace/scripts/PDF/720/ettm1.sh:19-50)",
+    "Step 4: Initialize the PDF model with appropriate parameters (encoder layers=3, heads=16, model dimension=48, dropout=0.5, fc_dropout=0.25) (/workspace/scripts/PDF/720/ettm1.sh:32-38, 63-69)",
+    "Step 5: Configure the period parameter with different values for each experiment variant (/workspace/scripts/PDF/720/ettm1.sh:40, 71, /workspace/run_longExp.py:52)",
+    "Step 6: Set up training parameters (epochs=100, patience=20, batch_size=128, learning rate=0.0001) (/workspace/scripts/PDF/720/ettm1.sh:44-47, 75-78)",
+    "Step 7: Train the model using the Exp_Main class from exp.exp_main (/workspace/run_longExp.py:138-162)",
+    "Step 8: Evaluate the model on the test set and collect performance metrics (/workspace/run_longExp.py:163-164)",
+    "Step 9: Generate output logs with model performance results (/workspace/scripts/PDF/720/ettm1.sh:47, 78)"
+  ],
+  "agent_instructions": "Your task is to investigate how different period settings affect the performance of the PDF model on the ETTm1 dataset. Follow these steps:\n\n1. Set up the environment:\n   - Ensure the ETTm1 dataset is available in the ./dataset/ directory\n   - Create necessary directories for logs and checkpoints\n\n2. Create a script to train and evaluate the PDF model with the following base configuration:\n   - Model: PDF (Periodic Decomposition Forecasting)\n   - Dataset: ETTm1\n   - Sequence length (seq_len): 720\n   - Prediction length (pred_len): 96\n   - Features: Multivariate (M)\n   - Encoder layers: 3\n   - Number of heads: 16\n   - Model dimension: 48\n   - Dropout: 0.5\n   - FC dropout: 0.25\n\n3. Implement the experiment to test different period settings while keeping other parameters fixed:\n   - Default: period=[24, 180, 720]\n   - Variant 1: period=[12, 96, 360]\n   - Variant 2: period=[48, 360, 1440]\n   - Variant 3: period=[24]\n\n4. For each variant:\n   - Train the model for 100 epochs with early stopping (patience=10)\n   - Use batch size of 128\n   - Set appropriate learning rate (0.0001 recommended)\n   - Evaluate on the test set and collect performance metrics (MSE, MAE, RSE)\n   - Generate visualizations comparing predicted vs. actual values\n\n5. Analyze and compare the results to determine how different period settings affect the model's forecasting accuracy on the ETTm1 dataset. The optimal period settings should align with the natural periodicities in the dataset.\n\n6. Create a summary report of your findings, highlighting which period settings performed best and why."
+}

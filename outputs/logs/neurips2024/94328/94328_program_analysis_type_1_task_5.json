@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Install necessary Python packages including transformers, torch, datasets, and other dependencies (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Set up the environment by disabling TensorFloat-32 tensor cores to avoid numerical issues (/workspace/fake_quant/utils.py:24-27)",
+    "Step 3: Load a LLAMA-2 model (7B, 13B, or 70B) from Hugging Face using the transformers library (/workspace/fake_quant/main.py:20, /workspace/fake_quant/model_utils.py:40-49)",
+    "Step 4: If rotation is enabled, fuse layer normalization operations into adjacent linear blocks to prepare for rotation (/workspace/fake_quant/main.py:26, /workspace/fake_quant/rotation_utils.py:45-85)",
+    "Step 5: Apply rotation to the model weights using either Hadamard matrix (default) or random orthogonal matrix based on the specified mode (/workspace/fake_quant/main.py:27, /workspace/fake_quant/rotation_utils.py:230-251)",
+    "Step 6: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30-47)",
+    "Step 7: Configure Hadamard transformation for specific layers (down_proj and o_proj) if rotation is enabled (/workspace/fake_quant/main.py:32-45)",
+    "Step 8: If weight quantization is enabled (w_bits < 16), apply either GPTQ or RTN quantization to the model weights (/workspace/fake_quant/main.py:50-75)",
+    "Step 9: Configure input quantization parameters if activation bits or value bits are less than 16 (/workspace/fake_quant/main.py:79-109)",
+    "Step 10: Load the evaluation dataset (wikitext2) for perplexity measurement (/workspace/fake_quant/main.py:127-134, /workspace/fake_quant/data_utils.py:5-16)",
+    "Step 11: Evaluate the model's perplexity on the dataset and print the results (/workspace/fake_quant/main.py:137-139, /workspace/fake_quant/eval_utils.py:10-150)",
+    "Step 12: Optionally perform additional evaluation using the lm_eval harness if specified (/workspace/fake_quant/main.py:141-168)",
+    "Final Step: Compare the perplexity results between different configurations (Hadamard vs. random orthogonal matrices) to assess their impact on model quality under 4-bit quantization (/workspace/fake_quant/main.py:137-139)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment that compares the impact of Hadamard vs. random orthogonal matrices on LLAMA-2 models under 4-bit quantization. You need to run the provided script with different configurations and analyze the results.\n\nSpecifically, you should:\n1. Run the script for LLAMA-2 models (7B, 13B, and 70B) using both Hadamard and random orthogonal matrices with 4-bit weight quantization\n2. Run the script for the same models without quantization to establish baselines\n3. Compare the perplexity values across all configurations\n\nThe experiment evaluates model performance on the wikitext2 dataset. The script handles loading the models, applying rotation matrices, quantizing weights, and measuring perplexity.",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

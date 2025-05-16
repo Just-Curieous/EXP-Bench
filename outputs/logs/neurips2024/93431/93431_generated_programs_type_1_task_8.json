@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py",
+        "/workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py"
+    ],
+    "usage_instructions": "1. First, ensure TextGrad is installed: `pip install textgrad`\n2. For solution optimization comparison, run: `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo trace` for OptoPrime and `python /workspace/examples/textgrad_examples/evals/textgrad_solution_optimization.py --algo ttextgrad` for TextGrad's original implementation\n3. For prompt optimization comparison, run: `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo trace` for OptoPrime and `python /workspace/examples/textgrad_examples/evals/textgrad_prompt_optimization.py --algo textgrad` for TextGrad\n4. The scripts will output timing information in the results JSON files in the 'textgrad_figures' directory, which can be compared to verify that OptoPrime is approximately 3x faster than TextGrad"
+}

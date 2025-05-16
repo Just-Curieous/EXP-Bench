@@ -1,0 +1,3 @@
+{
+    "no_answer": "After thoroughly exploring the repository, I couldn't find scripts that directly compare PDF(720) with CNN-based models like TimesNet and MICN. The repository contains scripts for running experiments with the PDF model using a 720 look-back window (in /workspace/scripts/PDF/720/), but it doesn't include implementations or scripts for CNN-based models like TimesNet and MICN. Additionally, there are no analysis scripts that calculate the percentage reduction in errors (24.61% in MSE and 19.91% in MAE) or scripts that analyze results from Table 1 or Table 2 as mentioned in the experiment question. While the README mentions these performance improvements, the actual scripts to reproduce this analysis are not included in the repository."
+}

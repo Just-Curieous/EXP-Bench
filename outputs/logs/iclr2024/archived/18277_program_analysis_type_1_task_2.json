@@ -1,0 +1,29 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by downloading the MME (Multimodal Evaluation) benchmark datasets and evaluation tool from the MME repository and place them in a directory named 'MME_Benchmark_release_version' (/workspace/llama_adapter_v2_multimodal7b/docs/eval.md:7-28)",
+    "Step 2: Define a function to load and process images from various file formats (JPEG, PNG, etc.) by converting them to RGB format (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:15-31)",
+    "Step 3: Create a dataset class that loads MME benchmark data by reading image paths and corresponding question-answer pairs from text files, handling both directory structures with separate image and question folders and flat structures (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:34-83)",
+    "Step 4: Set up command-line argument parsing to accept paths for the LLaMA model, pretrained checkpoint, and output directory (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:86-95)",
+    "Step 5: Initialize the device for computation (CPU or CUDA) and set up paths for the LLaMA model and tokenizer (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:101-106)",
+    "Step 6: Load the LLaMA-Adapter model weights from the specified checkpoint path (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:108-111)",
+    "Step 7: Configure the model parameters including LoRA (Low-Rank Adaptation) settings (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:113-116)",
+    "Step 8: Initialize the LLaMA-Adapter model with the specified configuration, including CLIP visual encoder, visual embedding dimension, query length, and other parameters (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:117-128, /workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:15-89)",
+    "Step 9: Load the model state dictionary from the checkpoint and move the model to the appropriate device (GPU/CPU) (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:130-136)",
+    "Step 10: Define a prompt format for the model that instructs it to respond with a single word or phrase (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:138-142)",
+    "Step 11: Create a function to generate responses for multimodal inputs by preprocessing images, formatting prompts, and using the model to generate text (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:144-159, /workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py:214-274)",
+    "Step 12: Define the list of MME benchmark dataset categories to evaluate, including perception tasks (artwork, celebrity, color, count, etc.) and cognition tasks (code reasoning, commonsense reasoning, etc.) (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:162-163)",
+    "Step 13: For each dataset category, create a dataset instance and process all samples (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:168-169)",
+    "Step 14: Generate predictions for each sample by passing the image and question to the model (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:172-175)",
+    "Step 15: Save the predictions to output files, with each line containing the image path, question, ground truth answer, and model prediction (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:177-184)",
+    "Step 16: After generating predictions for all dataset categories, use the MME evaluation tool to calculate scores by running the calculation.py script with the results directory (/workspace/llama_adapter_v2_multimodal7b/docs/eval.md:30)",
+    "Final Step: Compare the perception and cognition scores between LLaMA-Adapter V2 and other models (like LLaVA) to evaluate their multimodal understanding capabilities (/workspace/llama_adapter_v2_multimodal7b/docs/eval.md:32-62)"
+  ],
+  "masked_source": [
+    "/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py",
+    "/workspace/llama_adapter_v2_multimodal7b/docs/eval.md",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/llama.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/tokenizer.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/utils.py"
+  ]
+}

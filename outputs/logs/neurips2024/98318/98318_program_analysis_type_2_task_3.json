@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Import necessary modules from benchmarl including Benchmark, ExperimentConfig, MappoConfig, VmasTask, and MlpConfig (/workspace/examples/configuring/configuring_task.py:7-10)",
+    "Step 2: Load the VMAS/balance task configuration from YAML (/workspace/examples/configuring/configuring_task.py:17)",
+    "Step 3: Create multiple configurations of the balance task with different numbers of agents (e.g., 2, 4, 6) by modifying the n_agents parameter (/workspace/examples/configuring/configuring_task.py:20)",
+    "Step 4: Load the MAPPO algorithm configuration from YAML (/workspace/examples/configuring/configuring_task.py:23)",
+    "Step 5: Load the experiment configuration from YAML (/workspace/examples/configuring/configuring_task.py:24)",
+    "Step 6: Configure the experiment parameters including max_n_frames=12000, disabling loggers, and disabling rendering (/workspace/examples/configuring/configuring_task.py:24)",
+    "Step 7: Load MLP model configurations for both actor and critic from YAML (/workspace/examples/configuring/configuring_task.py:25-26)",
+    "Step 8: Create a Benchmark object with the algorithm configuration, modified tasks, seed, and model configurations (/workspace/benchmarl/benchmark/benchmark.py:30-48)",
+    "Step 9: Run the benchmark sequentially to execute all experiments (/workspace/benchmarl/benchmark/benchmark.py:70-79)",
+    "Final Step: Compare the mean returns achieved with different numbers of agents to analyze how the task difficulty scales (/workspace/examples/configuring/configuring_task.py:36)"
+  ],
+  "agent_instructions": "Your task is to create a script that analyzes how changing the number of agents in the VMAS/balance task affects the performance of the MAPPO algorithm. Follow these steps:\n\n1. Import the necessary modules from benchmarl (Benchmark, ExperimentConfig, MappoConfig, VmasTask, MlpConfig).\n\n2. Create multiple configurations of the VMAS/balance task with different numbers of agents:\n   - Load the base configuration for the balance task\n   - Create variations with 2, 4, and 6 agents\n\n3. Set up the MAPPO algorithm configuration.\n\n4. Configure the experiment parameters:\n   - Set max_n_frames to 12000\n   - Disable loggers (for cleaner output)\n   - Disable rendering\n\n5. Set up the model configurations for both actor and critic using MLP configurations.\n\n6. Create a Benchmark object that includes:\n   - The MAPPO algorithm configuration\n   - The different task configurations with varying numbers of agents\n   - A seed value for reproducibility\n   - The model configurations\n\n7. Run the benchmark sequentially to execute all experiments.\n\n8. The output should allow you to compare the mean returns achieved by MAPPO on the VMAS/balance task with different numbers of agents, showing how the task difficulty scales with the number of agents."
+}

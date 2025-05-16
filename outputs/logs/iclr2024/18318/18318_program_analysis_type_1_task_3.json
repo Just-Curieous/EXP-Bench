@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by importing necessary libraries and initializing random seeds for reproducibility (train.py:1-21, test.py:1-24)",
+    "Step 2: Load the AnomalyCLIP model with appropriate parameters including Prompt_length, learnabel_text_embedding_depth, and learnabel_text_embedding_length (train.py:30-32, test.py:41-43)",
+    "Step 3: Configure the DPAM (Dynamic Patch Attention Module) by setting the DPAM_layer parameter which controls how many layers are refined by DPAM (train.py:42, test.py:71)",
+    "Step 4: Initialize the AnomalyCLIP_PromptLearner which handles object-agnostic text prompts and text prompt tuning (train.py:39-40, test.py:66-69)",
+    "Step 5: Load and preprocess training data with appropriate transformations (train.py:35-36)",
+    "Step 6: Extract multi-layer visual features from the input images using the specified features_list (train.py:73, test.py:90)",
+    "Step 7: Generate text embeddings using the prompt learner for normal and anomalous states (train.py:77-80, test.py:73-76)",
+    "Step 8: Compute similarity between image features and text features to detect anomalies (train.py:82-83, test.py:93-95)",
+    "Step 9: Generate similarity maps for each feature layer and compute anomaly maps (train.py:87-94, test.py:96-105)",
+    "Step 10: Calculate losses (focal loss and dice loss) for training or metrics (pixel-level AUROC, AUPRO, image-level AUROC, AP) for evaluation (train.py:96-100, test.py:115-172)",
+    "Step 11: Update model parameters during training or output evaluation results during testing (train.py:102-106, test.py:173)"
+  ],
+  "agent_instructions": "Create a system for anomaly detection using AnomalyCLIP, which combines CLIP with specialized modules for industrial anomaly detection. The system should include two main scripts:\n\n1. A training script that:\n   - Loads a pre-trained CLIP model (ViT-L/14@336px)\n   - Implements a Dynamic Patch Attention Module (DPAM) for refining visual features\n   - Uses object-agnostic text prompts to create normal/anomalous state descriptions\n   - Implements text prompt tuning to adapt to specific domains\n   - Extracts multi-layer visual features from different depths of the vision transformer\n   - Computes similarity between image and text features to detect anomalies\n   - Uses a combination of focal loss and dice loss for training\n   - Saves checkpoints of the trained model\n\n2. A testing script that:\n   - Loads the trained model and applies it to test images\n   - Generates anomaly maps by computing similarity between image patches and text embeddings\n   - Evaluates performance using both pixel-level metrics (AUROC, AUPRO) and image-level metrics (AUROC, AP)\n   - Outputs detailed results for each object category and overall averages\n\nThe system should support ablation studies where individual components can be disabled to measure their contribution:\n- DPAM can be disabled by changing its layer parameter\n- Object-agnostic text prompts can be disabled by setting the prompt length parameter\n- Text prompt tuning can be disabled by setting the tunable text embedding length parameter\n- Multi-layer visual features can be limited to use only the final layer instead of multiple layers\n\nThe scripts should work with industrial anomaly detection datasets like MVTec AD and VisA.",
+  "masked_source": [
+    "/workspace/train.py",
+    "/workspace/test.py"
+  ]
+}

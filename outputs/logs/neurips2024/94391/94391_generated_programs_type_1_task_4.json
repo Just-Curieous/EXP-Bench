@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/scripts/CycleNet/Linear-Input-96/solar.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/solar.sh"
+    ],
+    "usage_instructions": "1. First, run the CycleNet/Linear script to evaluate the Linear backbone on the Solar-Energy dataset: `sh /workspace/scripts/CycleNet/Linear-Input-96/solar.sh`\n2. Then, run the CycleNet/MLP script to evaluate the MLP backbone on the Solar-Energy dataset: `sh /workspace/scripts/CycleNet/MLP-Input-96/solar.sh`\n3. The scripts will automatically run experiments for all forecast horizons (96, 192, 336, 720) with 5 different random seeds (2024-2028) and output MSE and MAE metrics to the result.txt file.\n4. Compare the MSE and MAE values between the Linear and MLP backbones to determine which performs better on the Solar-Energy forecasting task."
+}

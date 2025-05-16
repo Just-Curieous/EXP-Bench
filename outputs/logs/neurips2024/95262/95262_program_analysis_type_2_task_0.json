@@ -1,0 +1,11 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including ArgumentParser, mmengine.fileio.dump, rich.print_json, and mmpretrain.apis.ImageClassificationInferencer (/workspace/demo/image_demo.py:2-7)",
+    "Step 2: Define a main function that parses command-line arguments for image path, model name, and optional parameters like checkpoint path (/workspace/demo/image_demo.py:10-24)",
+    "Step 3: Create an ImageClassificationInferencer with the specified model and checkpoint, handling potential errors if the model is unavailable (/workspace/demo/image_demo.py:27-36)",
+    "Step 4: Run inference on the input image using the created inferencer (/workspace/demo/image_demo.py:37)",
+    "Step 5: Process the inference results by removing verbose prediction scores (/workspace/demo/image_demo.py:39)",
+    "Final Step: Format and display the classification results as JSON (/workspace/demo/image_demo.py:40)"
+  ],
+  "agent_instructions": "Create a Python script that uses the MoE Jetpack framework to perform image classification on a custom image using a pre-trained model. Your script should:\n\n1. Accept command-line arguments for:\n   - Input image path\n   - Model name or configuration\n   - Optional checkpoint path\n   - Optional display settings\n\n2. Use the mmpretrain library's ImageClassificationInferencer to load the specified model and perform inference on the input image.\n\n3. Handle potential errors gracefully, especially if the requested model is unavailable.\n\n4. Process the inference results to make them more readable (e.g., removing overly verbose data).\n\n5. Output the classification results in a well-formatted JSON structure that includes the predicted class and confidence information.\n\nThe script should be user-friendly and provide clear error messages if something goes wrong during model loading or inference."
+}

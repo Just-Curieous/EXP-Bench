@@ -1,0 +1,35 @@
+{
+  "questions": [
+    {
+      "question": "Does the tensor-based RL model achieve higher success rates on minitasks with immediate rewards compared to those with sparse, delayed rewards?",
+      "method": "Select a representative set of minitasks from the evaluation, clearly categorizing tasks into two groups: (1) tasks that provide explicit, immediate rewards (e.g., the 'CityTileWonder' minitask that has demonstrated \u223c90% success rate) and (2) tasks that provide sparse or delayed rewards, requiring longer-term strategic planning. For each task in both groups, train the tensor baseline model from scratch using the same architecture and training hyperparameters for 40,000 steps over 3 random seeds. Record the success rate for each training run. Additionally, analyze training curves and convergence trends as illustrated in Figure 6. Compute the average success rate and standard deviation for both groups, and perform a statistical analysis (e.g., a t-test or ANOVA) to determine if the observed differences are statistically significant. Incorporate summary statistics from Table 1 if applicable, and detail any observed trends or anomalies in performance across training steps.",
+      "expected_outcome": "It is anticipated that minitasks offering immediate rewards will yield significantly higher success rates, as the tensor-based RL model benefits from clear and frequent feedback. In contrast, tasks with sparse, delayed rewards are expected to show markedly lower success rates due to the difficulty in aligning long-term strategic planning with reinforcement signals. The statistical analysis should confirm the significance of these differences, thereby validating the model's relative strengths and weaknesses as depicted in the experimental results (e.g., Figure 6).",
+      "subsection_source": "5.1 T ENSOR -BASED REINFORCEMENT LEARNING",
+      "source": [
+        "/workspace/examples/run.py",
+        "/workspace/examples/parse_tb.py"
+      ],
+      "usage_instructions": "To compare tensor-based RL model performance on minitasks with immediate rewards versus sparse/delayed rewards, follow these steps:\n\n1. First, identify the minitasks that provide immediate rewards (e.g., development_citytile_wonder) and those with sparse/delayed rewards (e.g., battle_* minitasks).\n\n2. Run the experiment using the run.py script with the appropriate minitask configurations:\n   ```bash\n   cd /workspace/examples\n   python run.py --webdir /path/to/freeciv-web\n   ```\n   This will automatically run all minitasks defined in the run_configs directory with 3 random seeds for each, training for 40,000 steps as specified in the default configuration.\n\n3. After training is complete, use parse_tb.py to analyze and visualize the results:\n   ```bash\n   cd /workspace/examples\n   python parse_tb.py\n   ```\n   This will generate plots showing success rates and other metrics for each minitask type, allowing you to compare performance between immediate reward tasks and delayed reward tasks.\n\n4. The plots will be saved in the ./minitask directory, where you can examine the 'success rate' metric specifically to compare performance between the two groups of minitasks.\n\n5. For statistical analysis, you can modify the parse_tb.py script to perform t-tests or ANOVA on the success rates between the two groups of minitasks.",
+      "requirements": [
+        "Step 1: Import necessary libraries including gymnasium, civrealm, ray, and other utilities for logging and configuration (/workspace/src/civrealm/random_game_minitask.py:16-22)",
+        "Step 2: Set up the experiment configuration with parameters for minitask patterns, batch size, and maximum training steps (/workspace/src/civrealm/runners/parallel_tensor_runner.py:12-24)",
+        "Step 3: Initialize the TensorBoard logger to track experiment metrics (/workspace/src/civrealm/runners/parallel_tensor_runner.py:13-17)",
+        "Step 4: Create the tensor-based minitask environment with appropriate wrappers for reward handling (/workspace/src/civrealm/envs/freeciv_tensor_minitask_env.py:26-51)",
+        "Step 5: Configure the environment to use either immediate rewards (MinitaskDenseReward) or delayed/sparse rewards (MinitaskDelayedReward) based on the minitask type (/workspace/src/civrealm/envs/freeciv_wrapper/reward_wrapper.py:37-72)",
+        "Step 6: Run training for each minitask configuration with multiple random seeds (/workspace/src/civrealm/runners/parallel_tensor_runner.py:32-43)",
+        "Step 7: Collect and store metrics including success rates for each minitask type (/workspace/src/civrealm/envs/freeciv_minitask_env.py:233-245)",
+        "Step 8: Parse the TensorBoard logs to extract performance metrics for each minitask type (/workspace/src/civrealm/envs/freeciv_minitask_env.py:123-135)",
+        "Step 9: Generate visualizations comparing performance between immediate reward minitasks and sparse/delayed reward minitasks (/workspace/src/civrealm/random_game_minitask.py:46-49)",
+        "Final Step: Analyze the results to determine the impact of reward structure (immediate vs. delayed) on learning performance (/workspace/src/civrealm/envs/freeciv_minitask_env.py:216-225)"
+      ],
+      "agent_instructions": "Create a system to compare the performance of tensor-based reinforcement learning models on different types of minitasks in the Freeciv game environment. The system should:\n\n1. Set up an experiment that compares performance on two categories of minitasks:\n   - Minitasks with immediate rewards (like development_citytile_wonder)\n   - Minitasks with sparse/delayed rewards (like battle_* minitasks)\n\n2. Create a script that:\n   - Configures the Freeciv environment with appropriate parameters\n   - Sets up TensorBoard logging to track metrics\n   - Runs training on both types of minitasks with multiple random seeds\n   - Uses a consistent training duration (around 40,000 steps)\n\n3. Create a second script that:\n   - Parses the TensorBoard logs after training is complete\n   - Extracts success rates and other relevant metrics for each minitask type\n   - Generates visualizations comparing performance between immediate reward tasks and delayed reward tasks\n   - Saves the plots to a designated directory\n\nThe goal is to analyze whether the RL model performs better on tasks with immediate feedback versus those with delayed rewards.",
+      "masked_source": [
+        "/workspace/src/civrealm/random_game_minitask.py",
+        "/workspace/src/civrealm/envs/freeciv_tensor_minitask_env.py",
+        "/workspace/src/civrealm/envs/freeciv_wrapper/reward_wrapper.py",
+        "/workspace/src/civrealm/envs/freeciv_minitask_env.py",
+        "/workspace/src/civrealm/runners/parallel_tensor_runner.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, transformers, and memory tracking utilities (block_optim.py:1-14)",
+    "Step 2: Define a BlockOptimizer class that wraps a base optimizer (like Adam) to update parameters block by block (block_optim.py:39-131)",
+    "Step 3: Implement the switch_trainable_params method to toggle which parameters are trainable based on the current block (block_optim.py:403-437)",
+    "Step 4: Implement platform-specific parameter switching logic for both single GPU and distributed training scenarios (block_optim.py:439-544)",
+    "Step 5: Implement the step method to perform optimization on the current block and switch blocks periodically (block_optim.py:217-264)",
+    "Step 6: Implement memory-efficient parameter handling by converting between low and high precision (block_optim.py:265-288)",
+    "Step 7: Create a BAdamCallback class to handle integration with training frameworks like Hugging Face Transformers (utils.py:11-38)",
+    "Step 8: Implement custom gradient checkpointing to work efficiently with block-wise optimization (utils.py:41-82)"
+  ],
+  "agent_instructions": "Create a demonstration script that compares the memory efficiency of BAdam (Block-wise Adam) optimizer against standard Adam optimizer. Your script should:\n\n1. Create a simple transformer model with multiple layers (you can use a small custom transformer or a pre-trained model from Hugging Face).\n\n2. Implement the BAdam optimizer that updates parameters block by block:\n   - Divide model parameters into logical blocks (e.g., by transformer layers)\n   - Only update one block of parameters at a time\n   - Switch between blocks periodically during training\n   - Use mixed precision (store parameters in fp16/bf16, compute in fp32)\n   - Reset optimizer state when switching blocks\n\n3. Create a training loop that:\n   - First trains with standard Adam optimizer and measures memory usage\n   - Then trains with BAdam optimizer and measures memory usage\n   - Uses the same model architecture, data, and hyperparameters for both\n\n4. Track and visualize:\n   - Peak memory usage for both optimizers\n   - Training loss curves to show that BAdam achieves similar optimization results\n\n5. Include comments explaining how BAdam achieves memory efficiency compared to standard Adam.\n\nThe key insight is that BAdam reduces memory usage by only keeping optimizer states for the current block of parameters and only computing gradients for the current block, while still eventually updating all parameters."
+}

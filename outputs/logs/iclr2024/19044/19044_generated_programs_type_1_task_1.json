@@ -1,0 +1,3 @@
+{
+    "no_answer": "After thoroughly examining the repository, I couldn't find any scripts or files that directly address the experiment question about comparing AnimateDiff with Text2Video-Zero and Tune-a-Video for domain similarity scores. The repository contains code for training and generating animations using AnimateDiff (primarily in scripts/animate.py and train.py), but doesn't include evaluation scripts for calculating CLIP domain similarity scores or comparing with other methods. There are no files related to Text2Video-Zero or Tune-a-Video baselines, nor any scripts that would calculate the specific metrics mentioned in the question (CLIP domain similarity score of ~87.29 vs. 84.84 and 80.68)."
+}

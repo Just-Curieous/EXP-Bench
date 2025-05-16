@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py"],
+    "usage_instructions": "1. Download the MME benchmark dataset and place it in a directory named 'MME_Benchmark_release_version'. 2. Run the evaluation script with: python util/evaluate_mme.py --pretrained_path [MODEL_PATH] --llama_path [LLAMA_DIR] --output_path [RESULT_FILE_PATH]. 3. Use the MME evaluation tool to calculate scores: python MME_Benchmark_release_version/eval_tool/calculation.py --results_dir [RESULT_FILE_PATH]"
+}

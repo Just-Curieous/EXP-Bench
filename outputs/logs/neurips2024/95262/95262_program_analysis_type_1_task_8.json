@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Load necessary libraries and set up environment variables for the weight generation process (/workspace/moejet/tools/gen_ViT_MoE_weight.py:1-44)",
+    "Step 2: Define utility functions for data preparation and feature analysis to extract activation patterns from the teacher model (/workspace/moejet/tools/gen_ViT_MoE_weight.py:46-143)",
+    "Step 3: Implement graph partitioning algorithms (metis, spectral clustering, louvain) to analyze neuron co-activation patterns (/workspace/moejet/tools/gen_ViT_MoE_weight.py:165-209)",
+    "Step 4: Create functions to generate indices for expert selection using different strategies (random, uniform, L1/L2 norm, activation patterns) (/workspace/moejet/tools/gen_ViT_MoE_weight.py:212-354)",
+    "Step 5: Implement the expert indices generation function that selects which neurons from the teacher model will be assigned to each expert in the MoE model (/workspace/moejet/tools/gen_ViT_MoE_weight.py:357-385)",
+    "Step 6: Create the weight selection function that transforms dense model weights into MoE model weights by selecting and reorganizing parameters (/workspace/moejet/tools/gen_ViT_MoE_weight.py:427-709)",
+    "Step 7: Implement the dual-path conversion function to create specialized core and universal experts with different capacities (/workspace/moejet/tools/gen_ViT_MoE_weight.py:806-857)",
+    "Step 8: Implement the MoE weight stitching function to combine weights from different sources into the final MoE model (/workspace/moejet/tools/gen_ViT_MoE_weight.py:763-803)",
+    "Step 9: In the main function, load the teacher model (ViT), analyze its features, generate expert indices, select weights, and save the transformed MoE checkpoint (/workspace/moejet/tools/gen_ViT_MoE_weight.py:860-957)",
+    "Step 10: Configure the training script to use distributed training with the specified number of GPUs (/workspace/tools/dist_train.sh:1-19)",
+    "Step 11: Set up the MoE model configuration with checkpoint recycling for fine-tuning, including dual-path MoE architecture with core and universal experts (/workspace/moejet/configs/timm/vit_tiny_dual_moe_timm_21k_ft.py:1-196)",
+    "Step 12: Set up the MoE model configuration for training from scratch with the same architecture but without loading pre-trained weights (/workspace/moejet/configs/timm/vit_tiny_dual_moe_timm_scratch.py:1-194)",
+    "Final Step: Train both models and compare the number of epochs required to reach target accuracy thresholds (77% for ImageNet-1K, 76% for CIFAR-100) (/workspace/moejet/configs/timm/vit_tiny_dual_moe_timm_21k_ft.py:168-168, /workspace/moejet/configs/timm/vit_tiny_dual_moe_timm_scratch.py:166-166)"
+  ],
+  "agent_instructions": "Your task is to implement a system for evaluating the convergence speed of MoE (Mixture of Experts) models with checkpoint recycling compared to training from scratch. The system should:\n\n1. Create a weight generation script that transforms dense Vision Transformer (ViT) checkpoints into MoE model weights with SpheroMoE layers. This script should:\n   - Load a pre-trained ViT model\n   - Analyze neuron activation patterns to determine which neurons should be assigned to which experts\n   - Support multiple selection strategies (random, uniform, L1/L2 norm-based, activation pattern-based)\n   - Transform the weights into a dual-path MoE architecture with core experts and universal experts\n   - Save the transformed weights as a checkpoint\n\n2. Create configuration files for two experimental setups:\n   - A MoE model that uses checkpoint recycling (initialized from transformed weights)\n   - A baseline MoE model trained from scratch\n   - Both configurations should use the same architecture: a ViT-Tiny with dual-path MoE layers in the later transformer blocks\n\n3. The configurations should support:\n   - Distributed training across multiple GPUs\n   - Proper learning rate scheduling with warmup\n   - Mixed precision training\n   - Data augmentation techniques like Mixup and CutMix\n   - Evaluation at regular intervals\n\n4. The system should be flexible enough to work with different datasets (ImageNet-1K and CIFAR-100) by changing the base configuration.\n\nThe goal is to demonstrate that MoE models initialized with checkpoint recycling converge significantly faster than those trained from scratch, while achieving the same target accuracy.\n",
+  "masked_source": [
+    "/workspace/moejet/tools/gen_ViT_MoE_weight.py",
+    "/workspace/tools/dist_train.sh",
+    "/workspace/moejet/configs/timm/vit_tiny_dual_moe_timm_21k_ft.py",
+    "/workspace/moejet/configs/timm/vit_tiny_dual_moe_timm_scratch.py"
+  ]
+}

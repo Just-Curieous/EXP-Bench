@@ -1,0 +1,3 @@
+{
+    "no_answer": "After a thorough search of the repository, I couldn't find any scripts that directly answer the experiment question about benchmarking tree mapping operations across various architectures (AlexNet, ResNet, Swin-B, ViT) using TorchOpt's OpTree versus other implementations (JAX XLA, PyTorch, and DM-Tree). The README mentions that OpTree is implemented to enable fast nested structure flattening using C++, but it refers to a separate repository (https://github.com/metaopt/optree) for more guidance and comparison results. The benchmark script that would answer this question appears to be in the separate OpTree repository, not in this TorchOpt repository."
+}

@@ -1,0 +1,28 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment and parse command-line arguments for both PPO-LAG and PPO-Reward-Shaping scripts (/workspace/scripts/ppo-lag.sh:18-110, /workspace/scripts/ppo-reward-shaping.sh:18-103)",
+    "Step 2: Initialize the Lagrange multiplier for PPO-LAG as a learnable parameter with specified initial value, learning rate, and optional maximum value (/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:59-67)",
+    "Step 3: Initialize a fixed lambda value for PPO-Reward-Shaping based on the lambda_init parameter (/workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py:55-56)",
+    "Step 4: Load and initialize actor, reward, cost, and critic models for both approaches (/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:69-138, /workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py:58-82)",
+    "Step 5: Implement post-rollout processing to collect rewards and costs from respective models (/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:146-209, /workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py:84-147)",
+    "Step 6: For PPO-LAG, implement the dynamic lambda update mechanism that adjusts the Lagrange multiplier based on whether the average episode cost exceeds the threshold (/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:311-326)",
+    "Step 7: For PPO-LAG, implement the actor loss function that combines reward and cost advantages using the current lambda value (/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:289-309)",
+    "Step 8: For PPO-Reward-Shaping, directly combine reward and cost using the fixed lambda value: shaped_reward = reward - lambda_value * cost (/workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py:214)",
+    "Step 9: Implement the RL training step for both approaches, including actor and critic model updates (/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:311-442, /workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py:196-303)",
+    "Step 10: Set up logging for training metrics including rewards, costs, and lambda values (/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py:414-442, /workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py:255-303)",
+    "Final Step: Execute the training process with DeepSpeed for distributed training (/workspace/scripts/ppo-lag.sh:148-198, /workspace/scripts/ppo-reward-shaping.sh:138-182)"
+  ],
+  "agent_instructions": "Your task is to implement two different approaches for Safe Reinforcement Learning from Human Feedback (Safe RLHF) that balance reward maximization with safety constraints: (1) a dynamic Lagrangian approach and (2) a fixed reward shaping approach.\n\nFor the Lagrangian approach:\n- Implement a training script that uses Proximal Policy Optimization (PPO) with a Lagrange multiplier\n- The Lagrange multiplier should be initialized to a specified value and dynamically updated during training\n- The multiplier should increase when the average cost exceeds a threshold and decrease otherwise\n- Implement a mechanism to cap the maximum value of the multiplier if specified\n\nFor the reward shaping approach:\n- Implement a training script that uses PPO with a fixed coefficient to combine reward and cost\n- The shaped reward should be calculated as: reward - coefficient * cost\n- The coefficient should remain constant throughout training\n\nBoth approaches should:\n- Load pretrained actor, reward, and cost models\n- Use the PKU-SafeRLHF/train dataset for training\n- Apply KL divergence regularization to prevent the policy from deviating too much from the reference policy\n- Track and log metrics including rewards, costs, and training losses\n- Support distributed training using DeepSpeed\n\nThe implementation should allow for comparing the two approaches by running multiple training rounds with different configurations.",
+  "masked_source": [
+    "/workspace/scripts/ppo-lag.sh",
+    "/workspace/scripts/ppo-reward-shaping.sh",
+    "/workspace/safe_rlhf/algorithms/ppo_lag/__init__.py",
+    "/workspace/safe_rlhf/algorithms/ppo_lag/__main__.py",
+    "/workspace/safe_rlhf/algorithms/ppo_lag/main.py",
+    "/workspace/safe_rlhf/algorithms/ppo_lag/trainer.py",
+    "/workspace/safe_rlhf/algorithms/ppo_reward_shaping/__init__.py",
+    "/workspace/safe_rlhf/algorithms/ppo_reward_shaping/__main__.py",
+    "/workspace/safe_rlhf/algorithms/ppo_reward_shaping/main.py",
+    "/workspace/safe_rlhf/algorithms/ppo_reward_shaping/trainer.py"
+  ]
+}

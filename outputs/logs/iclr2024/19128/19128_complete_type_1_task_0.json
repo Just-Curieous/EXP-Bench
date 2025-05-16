@@ -1,0 +1,174 @@
+{
+  "questions": [
+    {
+      "question": "Does increasing the number of learnable layers in the student model lead to a direct improvement in Top1 accuracy for dense prediction tasks?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Examine the impact of increasing the number of learnable layers in the student model on Top1 accuracy for dense prediction tasks using the CLIPSelf framework.\n\n    - **Objective:** \n    Evaluate if Top1 accuracy improves as more layers in the Student model become learnable.\n\n2. **Evaluation Metrics:**\n    - Primary Metric: Mean Top1 accuracy on COCO val2017.\n    - Optional Additional Metric: Mean Top5 accuracy on COCO val2017.\n\n3. **Comparative Evaluation:**\n    - Model:\n        - Update the last 3 layers of ViT-B/16.\n        - Update the last 6 layers of ViT-B/16.\n        - Update the last 9 layers of ViT-B/16.\n        - Update all 12 layers of ViT-B/16.\n\n4. **Training settings**:\n    - Setup:\n        - Use 8 A100 GPUs with a batch size of 2 per GPU.\n        - Train for 6 epochs.\n    - Optimization Parameters:\n        - Optimizer: AdamW.\n        - Learning Rate: 1e-5.\n        - Weight Decay: 0.1.\n    - Model Configuration:\n        - Employ a frozen CLIP ViT backbone (ViT-B/16 from EV A-CLIP) for the Teacher model with input resolution of 224\u00d7224.\n        - Set the Student model input resolution to 1024\u00d71024 for dense region feature extraction.\n    - Patch Splitting Strategy:\n        - Utilize m\u00d7n patches where m, n are randomly sampled from {1,...,6}.\n    - Model:\n        - ViT-B/16 from EVA-CLIP\n    - Training images:\n        - train2017 split of COCO dataset\n    - Using image patches for self-distillation",
+      "expected_outcome": "It is expected that increasing learnable layers from 3 to 12 boosts Top1 accuracy from 45.0 to 72.1, indicating a strong positive correlation.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "teacher_model": "CLIP ViT backbone (ViT-B/16 from EV A-CLIP) with a fixed input image size of 224*224",
+            "dataset": "COCO dataset (train2017 for training and val2017 for evaluation)",
+            "training_settings": "8 A100 GPUs, batch size of 2 per GPU, training for 6 epochs using AdamW (learning rate 1e-5, weight decay 0.1)",
+            "patch_splitting_strategy": "Using m*n patches where m, n are randomly sampled from {1,...,6} (kept constant)"
+          },
+          "independent_variables": {
+            "number_learnable_layers": [
+              "3",
+              "6",
+              "9",
+              "12"
+            ]
+          },
+          "dependent_variables": {
+            "Top1_accuracy": "Region classification mean Top1 accuracy on COCO val2017",
+            "Top5_accuracy": "Region classification mean Top5 accuracy on COCO val2017 (optional additional metric)"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "input_resolution_of_student": "Although set to 1024*1024 for dense region feature extraction, the specific impact of this resolution relative to other potential resolutions is not fully discussed.",
+            "patch_splitting_details": "The paper mentions random sampling for grid size but does not elaborate on the potential variability this might introduce or its isolated effect."
+          },
+          "possible_modifications": {
+            "modification_X": [
+              "Investigate additional input resolutions for the Student model to separate the effects of input size and learnable layers.",
+              "Control or mask the randomness of the patch splitting strategy by fixing m and n instead of random sampling to assess its influence on the outcome."
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Teacher model: Fixed CLIP ViT backbone (ViT-B/16 from EV A-CLIP) with input resolution 224*224",
+            "Student model: Dense prediction model with variable number of learnable layers and input resolution 1024*1024",
+            "Dataset: COCO (train2017 for training; val2017 for evaluation)",
+            "Hardware: 8 A100 GPUs with batch size of 2 per GPU",
+            "Optimizer: AdamW (learning rate 1e-5, weight decay 0.1)",
+            "Patch splitting mechanism: Splitting images using an m*n grid with m, n randomly sampled from {1,...,6}"
+          ],
+          "setup_steps": [
+            "Prepare COCO train2017 images and validation set (val2017)",
+            "Configure the Teacher model with a fixed input resolution of 224*224",
+            "Configure the Student model to use an input resolution of 1024*1024 for dense region feature extraction",
+            "Set up the Student model training to update the last n attention layers (n = 3, 6, 9, and 12) while keeping all other settings constant",
+            "Implement the patch splitting strategy for dense feature extraction (using a randomly sampled m*n grid with m, n in {1,...,6})",
+            "Set up training parameters: 6 epochs with AdamW optimizer using the specified batch size and learning parameters",
+            "Train the model under the different configurations (varying number of learnable layers) and evaluate performance using Top1 and optionally Top5 accuracy on the COCO val2017 dataset"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Randomness in Patch Splitting Strategy",
+              "description": "The use of a randomly sampled m*n grid for patch splitting introduces variability that may affect reproducibility and interpretation of results."
+            },
+            {
+              "source": "Heavy Computational Requirements",
+              "description": "Training on 8 A100 GPUs with a complex two-model (Teacher/Student) setup demands significant computational resources and careful management of hardware configurations."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Patch Splitting Details: The method for randomly sampling the grid size (m and n from {1,...,6}) is mentioned without detailing how this randomness might impact the outcome."
+          ],
+          "ambiguous_setup_steps": [
+            "Reproducibility of the Patch Splitting: The randomness in patch splitting may lead to inconsistencies, and the exact process of handling this randomness is not clearly specified."
+          ],
+          "possible_modifications": {
+            "modification_X": [
+              "Control the randomness in the patch splitting strategy by fixing m and n instead of sampling from a range, in order to better assess its isolated effect."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Investigate reducing the number of GPUs (for instance, using 4 A100 GPUs instead of 8) to assess whether similar Top1 accuracy improvements can be achieved under more limited computational resources."
+            ],
+            "time_constraints": [
+              "Shorten the training duration (for example, reducing from 6 epochs to 3 epochs) while monitoring if the improvement trend in Top1 accuracy with increasing learnable layers remains consistent."
+            ],
+            "money_constraints": [
+              "Evaluate the performance trade-offs by using a more cost-effective hardware setup, testing if similar accuracy gains can be maintained with less expensive resources."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Randomness in the Patch Splitting Mechanism",
+          "description": "The experiment uses a patch splitting strategy where m and n are randomly sampled from {1, ......, 6} to form the dense feature grid. This random selection introduces variability in how image regions are partitioned, which can lead to unstable gradient updates and fluctuations in the resulting Top1 accuracy even when the only deliberate change is the number of learnable layers.",
+          "impact": "This random variance may make it harder to isolate the true effect of changing the number of learnable layers, as the observed improvements (from Top1 accuracy of 45.0 with 3 layers to 72.1 with 12 layers) might be partially confounded by variability introduced during patch extraction.",
+          "possible_modifications": [
+            "Control the randomness by fixing the values of m and n instead of sampling from a range, so that the patch splitting strategy remains identical across runs.",
+            "Run multiple experiments with different random seeds and average the results to reduce noise from the patch extraction process.",
+            "Introduce a diagnostic experiment where the patch splitting randomness is the only modified factor, to quantify its effect separately from the number of learnable layers."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Fixed Experimental Setup and Dataset Bias",
+          "description": "The design uses a fixed COCO dataset for both training and evaluation and static settings for key variables such as the teacher model (CLIP ViT-B/16 with a fixed 224*224 resolution) and the student model input resolution (1024*1024). This controlled but narrow setup can introduce systematic bias, since the performance gains with increased learnable layers might be tied specifically to the chosen dataset and the fixed model configurations rather than being generally applicable.",
+          "impact": "Such systematic uncertainty could lead to overestimation of the benefits of increasing learnable layers if the results do not generalize beyond the current dataset or if other inter-dependent variables (like input resolution) interact with the number of learnable layers in a consistent, yet biased, manner.",
+          "possible_modifications": [
+            "Evaluate the experiment on additional datasets or use cross-validation to determine if the observed correlation between learnable layers and Top1 accuracy generalizes.",
+            "Vary the student model's input resolution in a controlled experiment to disentangle its influence from that of the number of learnable layers.",
+            "Systematically control other potential confounding factors (like fixed teacher model settings) to ensure that improvements are directly due to increasing the trainable layers."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh",
+        "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh"
+      ],
+      "usage_instructions": "1. Modify the script train_clipself_coco_image_patches_eva_vitb16.sh by changing the --lock-image-unlocked-groups parameter to 3, 6, 9, or 12 to train models with different numbers of learnable layers.\n2. Run the modified script for each configuration: bash train_clipself_coco_image_patches_eva_vitb16.sh\n3. After training, evaluate each model using: bash test_eva_vitb16_macc_boxes_masks.sh test_name path/to/checkpoint.pt\n4. The Top1 accuracy results will be reported in the evaluation output as 'rois.thing.macc1' and 'rois.stuff.macc1' metrics.",
+      "requirements": [
+        "Step 1: Set up a distributed training environment with 8 GPUs using torchrun for both training and testing scripts (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:1-1, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:3-3)",
+        "Step 2: Initialize the EVA02-CLIP-B-16 model with pretrained weights from the 'eva' source (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:2-2, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:4-4)",
+        "Step 3: Configure the training parameters including batch size (2), learning rate (1e-5), weight decay (0.1), training epochs (6), and number of workers (4) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:1-2)",
+        "Step 4: Set up the dataset type as 'grid_distill' for training, which creates a grid of image patches for self-distillation (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:2-2, /workspace/src/training/main.py:139-140)",
+        "Step 5: Configure the test dataset type as 'coco_panoptic' for evaluation (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:3-3, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:4-4)",
+        "Step 6: Specify the training data path (COCO instances_train2017.json) and validation data path (panoptic_val2017.json) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:3-4, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:4-5)",
+        "Step 7: Load pre-computed text embeddings for COCO panoptic categories from the specified embed path (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:5-5, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:6-6)",
+        "Step 8: Set the image directories for training (train2017) and validation (val2017) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:5-6, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:7-7)",
+        "Step 9: Load the pretrained model checkpoint from the cache directory (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:6-6, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:7-7)",
+        "Step 10: Configure the model to lock the image tower and specify the number of unlocked groups (layers) to fine-tune (12 by default, but can be changed to 3, 6, 9 as per instructions) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:7-7, /workspace/src/training/main.py:161-166)",
+        "Step 11: Set the feature extraction type to 'v2' for both training and testing (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:7-7, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:7-7)",
+        "Step 12: Configure the experiment name, checkpoint saving frequency (every 6 epochs), and zero-shot evaluation frequency (every 1 epoch) (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:7-8)",
+        "Step 13: Set the downsample factor to 16 and detection image size to 1024 for both training and testing (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:8-8, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:7-8)",
+        "Step 14: Set the alpha parameter to 0.7 for student-teacher ensemble during training (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:8-9, /workspace/src/training/main.py:282-296)",
+        "Step 15: Initialize the CLIPSelf method for self-distillation training (/workspace/src/training/main.py:140-140, /workspace/src/training/clipself.py:6-49)",
+        "Step 16: Create data loaders for the grid_distill dataset type, which divides images into grids and extracts patches (/workspace/src/training/data.py:135-281)",
+        "Step 17: For each training batch, process images, normalized boxes, and image crops (/workspace/src/training/clipself.py:11-15)",
+        "Step 18: Extract features from image crops using the teacher model (dist_model) (/workspace/src/training/clipself.py:37-38)",
+        "Step 19: Extract features from regions of interest using the student model (/workspace/src/training/clipself.py:39-40)",
+        "Step 20: Calculate the cosine similarity loss between normalized student and teacher features (/workspace/src/training/clipself.py:42-46)",
+        "Step 21: Train the model for the specified number of epochs, saving checkpoints at the specified frequency (/workspace/src/training/main.py:273-342)",
+        "Step 22: Perform zero-shot evaluation at the specified frequency during training (/workspace/src/training/main.py:330-342)",
+        "Step 23: After training, evaluate the model using the test script with the trained checkpoint (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:1-8)",
+        "Step 24: During evaluation, calculate mean accuracy (macc) metrics for 'thing' and 'stuff' categories (/workspace/src/training/zero_shot.py:177-193)",
+        "Final Step: Report the Top1 accuracy results as 'rois.thing.macc1' and 'rois.stuff.macc1' metrics from the evaluation output (/workspace/src/training/zero_shot.py:169-172)"
+      ],
+      "masked_source": [
+        "/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh",
+        "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh",
+        "/workspace/src/training/main.py",
+        "/workspace/src/training/clipself.py",
+        "/workspace/src/training/train.py",
+        "/workspace/src/training/data.py",
+        "/workspace/src/training/zero_shot.py"
+      ]
+    }
+  ]
+}

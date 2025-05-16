@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Load configuration file that defines agents and tasks (/workspace/src/analysis.py:56-71)",
+    "Step 2: Walk through output directory to find benchmark result files (overall.json) (/workspace/src/analysis.py:84-111)",
+    "Step 3: Filter results by timestamp and organize them by agent and task (/workspace/src/analysis.py:96-111)",
+    "Step 4: Map model names to standardized names using a predefined mapping (/workspace/src/analysis.py:102)",
+    "Step 5: Load and parse the benchmark result files (/workspace/src/analysis.py:125-139)",
+    "Step 6: Extract validation statistics from results (/workspace/src/analysis.py:131-139)",
+    "Step 7: Sort tasks by predefined priority order (/workspace/src/analysis.py:305)",
+    "Step 8: Extract main performance metrics for each task using task-specific handlers (/workspace/src/analysis.py:307-316)",
+    "Step 9: Calculate average validation statistics for each agent (/workspace/src/analysis.py:361-379)",
+    "Step 10: Calculate average validation statistics for each task (/workspace/src/analysis.py:361-379)",
+    "Step 11: Generate summary CSV with performance metrics for each agent across tasks (/workspace/src/analysis.py:339-358)",
+    "Step 12: Generate agent validation CSV with average validation outcomes by agent (/workspace/src/analysis.py:381-410)",
+    "Step 13: Generate task validation CSV with average validation outcomes by task (/workspace/src/analysis.py:413-442)",
+    "Final Step: Save all results to specified output directory (/workspace/src/analysis.py:331-444)"
+  ],
+  "agent_instructions": "Create a script that analyzes benchmark results from the AGENT BENCH benchmark to compare API-based LLMs with open-sourced LLMs across different tasks. The script should:\n\n1. Accept command-line arguments for configuration file path, output directory, save directory, and optional time filter.\n\n2. Load a configuration file that defines available agents (LLMs) and tasks.\n\n3. Process benchmark results by:\n   - Walking through the output directory to find result files (overall.json)\n   - Organizing results by agent and task\n   - Mapping model names to standardized display names\n   - Filtering results by timestamp if specified\n\n4. Extract performance metrics using task-specific logic for different benchmark tasks (like operating systems, databases, knowledge graphs, etc.).\n\n5. Calculate validation statistics including completion rates and error types.\n\n6. Generate three CSV output files:\n   - summary.csv: Contains performance metrics for each LLM across different tasks\n   - agent_validation.csv: Shows average validation outcomes for each agent\n   - task_validation.csv: Shows average validation outcomes for each task\n\nThe script should handle various task types with different scoring metrics and provide a comprehensive analysis of how API-based LLMs compare to open-source LLMs on the benchmark.",
+  "masked_source": [
+    "/workspace/src/analysis.py"
+  ]
+}

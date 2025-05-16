@@ -1,0 +1,132 @@
+{
+  "questions": [
+    {
+      "question": "- **Does incorporating a Retrieval-Augmented Generation (RAG) module improve text needle retrieval performance but not improve image needle retrieval in MLLMs like InternVL-1.5?**\n\n\n- **Does incorporating a Retrieval-Augmented Generation (RAG) module improve text needle retrieval performance but not improve image needle retrieval in MLLMs like InternVL-1.5?**",
+      "method": "Use InternVL-1.5 and its RAG-enhanced variant to run evaluations on both text and image needle tasks. First, evaluate text needle retrieval, counting, and reasoning tasks with and without the RAG method, recording the accuracy metrics. Then, perform similar evaluations for image needle tasks. Compare the metrics to determine if RAG significantly boosts performance in text-based queries while leaving image-based tasks unaffected or degraded. Document qualitative failure cases, particularly noting if extracted content for image needles is incomplete due to document chunking in the RAG module.\n  \n1. **Task Setup:**  \n   - **Goal:** Compare Trace and TextGrad for AI workflow optimization.  \n   - **Key Difference Between Methods:**  \n     - **Trace propagates minimal subgraphs** to separate tracing infrastructure from optimization algorithms.  \n     - **TextGrad propagates text feedback**, tightly coupling infrastructure and optimization.   \n\n2. **Experimental Design for Fair Comparison:**  \n   - Applied **Trace directly to the evaluation code released with the TextGrad library**.  \n   - Both frameworks used the **same LLM APIs at around the same time** to ensure fairness.  \n   - **Optimization Tasks Compared:**  \n     - **Solution Optimization** (TextGrad Table 2).  \n     - **Prompt Optimization** (TextGrad Table 3).  \n\n3. **Comparative Evaluation:**  \n   - **OptoPrime (Trace\u2019s optimizer)**  \n   - **TextGrad (original implementation)**",
+      "expected_outcome": "The expected outcome is that the RAG-enhanced model will show a substantial improvement in performance on text needle tasks (as shown by higher accuracy scores) but will not exhibit similar improvements on image needle tasks. This will support the claim that RAG methods might not be suitable when comprehensive image comprehension is required.\n  \n- **OptoPrime should be approximately 3x faster than TextGrad**, since:  \n  - OptoPrime makes **one LLM call per optimization step**.  \n  - TextGrad makes **a number of LLM calls proportional to the graph\u2019s size**.",
+      "experiment_design_complexity": {
+        "constant_variables": {
+          "api_call_timing": "same_time"
+        },
+        "independent_variables": {
+          "optimization_method": [
+            "OptoPrime",
+            "TextGrad"
+          ],
+          "optimization_task": [
+            "Solution Optimization",
+            "Prompt Optimization"
+          ],
+          "llm_model": [
+            "The optimizer is GPT-4o-2024-08-06",
+            "The student model is GPT-35-turbo-1106"
+          ]
+        },
+        "dependent_variables": {
+          "time_in_minutes": "Measured as the total time taken for optimization"
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Trace framework (OptoPrime optimizer)",
+            "TextGrad framework",
+            "LLM APIs (GPT-4o-2024-08-06, GPT-35-turbo-1106)",
+            "Optimization tasks (Solution Optimization, Prompt Optimization)",
+            "Evaluation function (automatic comparison of outputs to ground truth)",
+            "Performance metric (time in minutes)",
+            "Hardware setup (We run the experiments on a standard PC with 16 GB RAM)"
+          ],
+          "setup_steps": [
+            "Configure and initialize the Trace framework",
+            "Integrate TextGrad as an optimizer within Trace",
+            "Ensure LLM API access for both frameworks",
+            "Load dataset for Solution Optimization and Prompt Optimization tasks",
+            "Run optimization trials for OptoPrime and TextGrad using identical conditions",
+            "Collect results: execution time and LLM calls per optimization step",
+            "Compare and analyze results to evaluate efficiency and effectiveness"
+          ],
+          "possible_modifications": {
+            "increase_interconnected_components": [
+              "Introduce additional optimization tasks beyond Solution and Prompt Optimization",
+              "Evaluate optimization performance across multiple LLMs (e.g., GPT-4o, Claude, Gemini)",
+              "Incorporate an additional evaluation metric, such as optimization success rate"
+            ],
+            "add setup dependencies": [
+              "Require integration with external logging frameworks for tracking optimization steps",
+              "Introduce constraints on LLM API usage to evaluate optimization efficiency under token limits"
+            ]
+          }
+        }
+      },
+      "experiment_uncertainty": {
+        "random_uncertainty": {
+          "source": "Variability in LLM API response times",
+          "description": "LLM API responses may have fluctuations in latency, leading to inconsistent time measurements across optimization trials.",
+          "impact": "Results in variations in recorded optimization time, affecting performance comparisons.",
+          "possible_modifications": [
+            "Introduce artificial delays in API response times to test optimizer robustness.",
+            "Randomly drop tokens from API responses to simulate noise in optimization feedback.",
+            "Vary the temperature parameter for LLM calls, injecting randomness into text outputs."
+          ]
+        },
+        "systematic_uncertainty": {}
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "tightening_existing constraints": [
+            "Restrict LLM API usage further by enforcing a stricter token budget.",
+            "Reduce the allowed optimization iterations for all methods to amplify differences in efficiency.",
+            "Enforce model size constraints by requiring performance parity with a smaller model (e.g., using GPT-4o-mini instead of GPT-4o)."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/shells/eval_internvl.sh",
+        "/workspace/shells/prepare_rag.sh",
+        "/workspace/shells/eval_internvl_rag.sh",
+        "/workspace/calculate_scores.py"
+      ],
+      "usage_instructions": "1. First, run the standard InternVL-1.5 evaluation to get baseline performance: `sh shells/eval_internvl.sh`\n2. Then, prepare the RAG segments for evaluation: `sh shells/prepare_rag.sh`\n3. Next, run the RAG-enhanced InternVL-1.5 evaluation: `sh shells/eval_internvl_rag.sh`\n4. Finally, calculate and compare the scores between standard and RAG versions: `python calculate_scores.py --outputs-dir ./outputs/`\n\nThe results will show that the RAG-enhanced model (InternVL-1.5-RAG) performs better on text needle tasks (retrieval-text, counting-text, reasoning-text) but does not show similar improvements on image needle tasks (retrieval-image, counting-image, reasoning-image) compared to the standard InternVL-1.5 model.",
+      "requirements": [
+        "Step 1: Set up environment variables for distributed evaluation (PARTITION, GPUS, etc.) (/workspace/shells/eval_internvl.sh:3-7)",
+        "Step 2: Define output directories for results and logs (/workspace/shells/eval_internvl.sh:9-10)",
+        "Step 3: Define the model to evaluate (InternVL-Chat-V1-5) (/workspace/shells/eval_internvl.sh:12-14)",
+        "Step 4: Define the evaluation tasks (retrieval, counting, reasoning for both text and image) (/workspace/shells/eval_internvl.sh:16-29)",
+        "Step 5: For each model and task combination, run the evaluation script with appropriate parameters (/workspace/shells/eval_internvl.sh:33-54)",
+        "Step 6: Concatenate the distributed output files into a single result file (/workspace/shells/eval_internvl.sh:55)",
+        "Step 7: Set up environment variables for RAG preparation (/workspace/shells/prepare_rag.sh:3-7)",
+        "Step 8: Define output directories for RAG preparation (/workspace/shells/prepare_rag.sh:9-10)",
+        "Step 9: Define the model for RAG preparation (InternVL-14B-224px) (/workspace/shells/prepare_rag.sh:12-14)",
+        "Step 10: Define the tasks for RAG preparation (/workspace/shells/prepare_rag.sh:16-29)",
+        "Step 11: For each model and task combination, run the RAG preparation script (/workspace/shells/prepare_rag.sh:33-53)",
+        "Step 12: Set up environment variables for RAG-enhanced evaluation (/workspace/shells/eval_internvl_rag.sh:3-7)",
+        "Step 13: Define output directories for RAG-enhanced evaluation (/workspace/shells/eval_internvl_rag.sh:9-10)",
+        "Step 14: Define the model for RAG-enhanced evaluation (InternVL-Chat-V1-5) (/workspace/shells/eval_internvl_rag.sh:12-14)",
+        "Step 15: Define the RAG-enhanced tasks (/workspace/shells/eval_internvl_rag.sh:16-29)",
+        "Step 16: For each model and RAG-enhanced task combination, run the evaluation script (/workspace/shells/eval_internvl_rag.sh:33-54)",
+        "Step 17: Concatenate the distributed RAG-enhanced output files (/workspace/shells/eval_internvl_rag.sh:55)",
+        "Step 18: Load the evaluation results from the output directory (/workspace/calculate_scores.py:91-96)",
+        "Step 19: Process each result file to calculate accuracy scores (/workspace/calculate_scores.py:97-137)",
+        "Step 20: Generate heatmaps to visualize performance (/workspace/calculate_scores.py:138-160)",
+        "Step 21: Calculate average scores for each task type (/workspace/calculate_scores.py:162-174)",
+        "Step 22: Save the results to JSON files for comparison (/workspace/calculate_scores.py:69-89, 175-181)",
+        "Step 23: Compare standard model performance with RAG-enhanced model performance across different task types (/workspace/calculate_scores.py:72-78)"
+      ],
+      "agent_instructions": "You need to implement a system to evaluate and compare the performance of InternVL-1.5 with and without Retrieval-Augmented Generation (RAG) on multimodal needle-in-a-haystack tasks.\n\nThe evaluation should be performed on six task types:\n1. Text retrieval (finding specific text in a document)\n2. Image retrieval (finding specific images)\n3. Text counting (counting occurrences of text elements)\n4. Image counting (counting occurrences of visual elements)\n5. Text reasoning (answering questions about text content)\n6. Image reasoning (answering questions about visual content)\n\nYour implementation should:\n\n1. First evaluate the standard InternVL-1.5 model on all task types for both validation and test sets\n2. Prepare RAG-enhanced data using InternVL-14B as the retrieval model\n3. Evaluate the RAG-enhanced InternVL-1.5 on the same tasks\n4. Calculate and compare performance metrics between standard and RAG versions\n\nThe system should support distributed evaluation across multiple GPUs and should organize results in a way that allows for easy comparison between the standard and RAG-enhanced approaches.\n\nThe final output should include performance scores for each task type and visualizations (heatmaps) showing how performance varies with context length and placement depth. The analysis should highlight whether RAG enhancement improves performance on text-based tasks more than on image-based tasks.",
+      "masked_source": [
+        "/workspace/shells/eval_internvl.sh",
+        "/workspace/shells/prepare_rag.sh",
+        "/workspace/shells/eval_internvl_rag.sh",
+        "/workspace/calculate_scores.py",
+        "/workspace/eval_internvl.py",
+        "/workspace/prepare_rag.py",
+        "/workspace/utils/tools.py",
+        "/workspace/utils/conversation.py"
+      ]
+    }
+  ]
+}

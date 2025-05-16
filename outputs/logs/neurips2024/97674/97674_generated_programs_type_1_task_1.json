@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/shells/eval_internvl.sh",
+        "/workspace/calculate_scores.py"
+    ],
+    "usage_instructions": "First, run the evaluation script to evaluate a model on all six tasks (retrieval, counting, and reasoning for both text and image needles): `sh shells/eval_internvl.sh`. This will generate result files in the outputs directory. Then, run the calculation script to compute the scores: `python calculate_scores.py --outputs-dir ./outputs/`. The calculation script will generate heatmaps and scores that directly compare performance between text needle tasks and image needle tasks, showing that models consistently perform worse on image needle tasks relative to text needle tasks. The results will be saved in the outputs/results directory, with separate scores for each task type and an overall comparison between text and image needles."
+}

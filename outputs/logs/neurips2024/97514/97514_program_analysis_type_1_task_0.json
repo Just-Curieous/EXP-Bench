@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Set up configuration by loading default parameters and overriding them with values from command line arguments, function parameters, or a YAML config file (/workspace/src/hest/bench/benchmark.py:392-428)",
+    "Step 2: Set random seed for reproducibility (/workspace/src/hest/bench/benchmark.py:429)",
+    "Step 3: Download benchmark data and model weights from Hugging Face (/workspace/src/hest/bench/benchmark.py:431-435)",
+    "Step 4: Determine which datasets to use for benchmarking (/workspace/src/hest/bench/benchmark.py:438-446)",
+    "Step 5: Set up directory structure for saving results (/workspace/src/hest/bench/benchmark.py:448-455)",
+    "Step 6: Prepare list of encoders to benchmark, including any custom encoder (/workspace/src/hest/bench/benchmark.py:457-465)",
+    "Step 7: For each dataset and encoder combination, extract embeddings from histology image tiles (/workspace/src/hest/bench/benchmark.py:254-273)",
+    "Step 8: Load gene expression data for each sample (/workspace/src/hest/bench/benchmark.py:280-304)",
+    "Step 9: Optionally perform dimensionality reduction (PCA) on embeddings (/workspace/src/hest/bench/benchmark.py:310-315)",
+    "Step 10: Train regression models to predict gene expression from embeddings (/workspace/src/hest/bench/benchmark.py:318)",
+    "Step 11: Calculate Pearson correlation between predicted and ground truth gene expression (/workspace/src/hest/bench/benchmark.py:318-328)",
+    "Step 12: Aggregate results across multiple folds if k-fold validation is used (/workspace/src/hest/bench/benchmark.py:331-382)",
+    "Step 13: Compile and save results for all datasets and encoders, including average performance metrics (/workspace/src/hest/bench/benchmark.py:120-174)",
+    "Final Step: Return dataset performance metrics and average performance per encoder (/workspace/src/hest/bench/benchmark.py:467-469)"
+  ],
+  "agent_instructions": "Create a benchmarking system to compare histology-only models with multimodal models that integrate spatial transcriptomics data. The system should evaluate how well different models can predict gene expression from histology images.\n\nYour implementation should:\n\n1. Accept configuration parameters through command line arguments or a YAML config file, including:\n   - Paths for benchmark data, model weights, embeddings, and results\n   - List of encoders (models) to benchmark\n   - List of datasets to use\n   - Batch size and number of workers for inference\n   - Optional dimensionality reduction settings\n\n2. Download benchmark data and model weights from Hugging Face\n\n3. For each dataset and encoder combination:\n   - Extract embeddings from histology image tiles using the encoder\n   - Load corresponding gene expression data (ground truth)\n   - Optionally perform dimensionality reduction on embeddings\n   - Train a regression model (ridge regression by default) to predict gene expression from embeddings\n   - Evaluate performance using Pearson correlation between predicted and ground truth gene expression\n\n4. Support k-fold cross-validation and aggregate results across folds\n\n5. Compile and save comprehensive results, including:\n   - Per-gene Pearson correlations\n   - Average correlation per encoder and dataset\n   - Overall ranking of encoders\n\n6. The system should be able to compare histology-only models (like ResNet50) with multimodal models (like CONCH) that integrate spatial transcriptomics data\n\nThe expected output should show that multimodal models achieve higher Pearson correlation with ground truth gene expression compared to histology-only models.",
+  "masked_source": [
+    "/workspace/src/hest/bench/benchmark.py",
+    "/workspace/bench_config/bench_config.yaml"
+  ]
+}

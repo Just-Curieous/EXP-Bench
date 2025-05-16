@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Create necessary log directories if they don't exist (/workspace/scripts/PDF/336/etth2.sh:1-7, /workspace/scripts/PDF/336/ettm2.sh:1-7, /workspace/scripts/PDF/336/weather.sh:1-7, /workspace/scripts/PDF/336/electricity.sh:1-7, /workspace/scripts/PDF/720/etth2.sh:1-7, /workspace/scripts/PDF/720/ettm2.sh:1-7, /workspace/scripts/PDF/720/weather.sh:1-7, /workspace/scripts/PDF/720/electricity.sh:1-7)",
+    "Step 2: Define experiment parameters including model name, dataset paths, and sequence length (/workspace/scripts/PDF/336/etth2.sh:9-15, /workspace/scripts/PDF/336/ettm2.sh:9-15, /workspace/scripts/PDF/336/weather.sh:8-15, /workspace/scripts/PDF/336/electricity.sh:8-15, /workspace/scripts/PDF/720/etth2.sh:9-15, /workspace/scripts/PDF/720/ettm2.sh:9-15, /workspace/scripts/PDF/720/weather.sh:8-15, /workspace/scripts/PDF/720/electricity.sh:8-15)",
+    "Step 3: For each prediction length (96, 192, 336, 720), run the time series forecasting model with appropriate dataset-specific parameters (/workspace/scripts/PDF/336/etth2.sh:17-45, /workspace/scripts/PDF/336/ettm2.sh:17-45, /workspace/scripts/PDF/336/weather.sh:17-104, /workspace/scripts/PDF/336/electricity.sh:17-104, /workspace/scripts/PDF/720/etth2.sh:17-45, /workspace/scripts/PDF/720/ettm2.sh:17-45, /workspace/scripts/PDF/720/weather.sh:17-104, /workspace/scripts/PDF/720/electricity.sh:17-104)",
+    "Step 4: Run the model with the default concatenation aggregation method (without the --add flag) (/workspace/run_longExp.py:46, /workspace/scripts/PDF/336/etth2.sh:19-44, /workspace/scripts/PDF/336/ettm2.sh:19-44, /workspace/scripts/PDF/336/weather.sh:19-43, /workspace/scripts/PDF/336/electricity.sh:19-43)",
+    "Step 5: Run the model with the mean aggregation method by adding the --add flag before the --des parameter (/workspace/run_longExp.py:46, usage_instructions)",
+    "Step 6: Log experiment results to appropriate files for later analysis (/workspace/scripts/PDF/336/etth2.sh:44, /workspace/scripts/PDF/336/ettm2.sh:44, /workspace/scripts/PDF/336/weather.sh:43, /workspace/scripts/PDF/336/electricity.sh:43, /workspace/scripts/PDF/720/etth2.sh:44, /workspace/scripts/PDF/720/ettm2.sh:44, /workspace/scripts/PDF/720/weather.sh:43, /workspace/scripts/PDF/720/electricity.sh:43)",
+    "Step 7: Compare MSE and MAE metrics from the results to determine which aggregation method performs better (usage_instructions)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for running an ablation study comparing two aggregation methods (concatenation vs. mean) in a time series forecasting model called PDF. The experiment needs to be run on four datasets (ETTh2, ETTm2, Weather, Electricity) with different prediction horizons (96, 192, 336, 720) and sequence lengths (336, 720).\n\nYou need to:\n\n1. Create a main Python script that can run time series forecasting experiments with the PDF model. This script should accept command-line arguments for configuring the model, including dataset parameters, model architecture, and training settings.\n\n2. Create shell scripts to run experiments for each dataset and sequence length combination. These scripts should:\n   - Create necessary log directories\n   - Define experiment parameters (model name, dataset paths, etc.)\n   - Run the model with different prediction horizons\n   - Log results to appropriate files\n\n3. Implement two aggregation methods in the model:\n   - Concatenation method (default)\n   - Mean aggregation method (activated with a command-line flag)\n\n4. The experiments should be run twice for each configuration:\n   - Once with the default concatenation method\n   - Once with the mean aggregation method (by adding a specific flag to the command)\n\n5. Results should be stored in appropriate directories for later comparison of MSE and MAE metrics.\n\nThe goal is to determine which aggregation method performs better across different datasets and prediction horizons.",
+  "masked_source": [
+    "/workspace/run_longExp.py",
+    "/workspace/scripts/PDF/336/etth2.sh",
+    "/workspace/scripts/PDF/336/ettm2.sh",
+    "/workspace/scripts/PDF/336/weather.sh",
+    "/workspace/scripts/PDF/336/electricity.sh",
+    "/workspace/scripts/PDF/720/etth2.sh",
+    "/workspace/scripts/PDF/720/ettm2.sh",
+    "/workspace/scripts/PDF/720/weather.sh",
+    "/workspace/scripts/PDF/720/electricity.sh"
+  ]
+}

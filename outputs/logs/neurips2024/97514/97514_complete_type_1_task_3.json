@@ -1,0 +1,169 @@
+{
+  "questions": [
+    {
+      "question": "- **Does the reproducibility evaluation via cross-validation across patients yield stable error bars indicating robust model performance?**",
+      "method": "Perform a patient-stratified k-fold cross-validation experiment using the HEST-Benchmark. In this design, each patient is assigned to a separate fold (or in the ccRCC task, folds are merged into k/2 splits due to a large number of patients) to avoid data leakage. For each fold, extract 112\u00d7112 \u00b5m H&E patches (224\u00d7224 pixels at 20\u00d7) and compute patch embeddings using a specific foundation model. Then, train regression models (such as XGBoost with 100 estimators and Ridge regression with a fixed L2 regularization coefficient) to predict the log1p-normalized expression levels of the top 50 most variable genes.\n Detailed experiment setup: \nThe experiment uses the HEST-Benchmark dataset along with 11 foundation models for pathology. The key components of the experimental setup include: (i) using patient-stratified splits to ensure no train/test leakage, where each patient corresponds to one fold (or using k/2 folds in the ccRCC task), (ii) extracting patch embeddings and mapping these via regression models (with hyperparameters as specified in the paper and detailed in Appendix Table A11), and (iii) evaluating prediction performance using the Pearson correlation between predicted and measured gene expression. Error bars (computed as the standard deviation across all cross-validation folds) are reported to quantify variability of the performance, ensuring that each fold is treated as an independent test of the model. All experiments are executed on a single NVIDIA 3090 GPU, with complete training details provided in the paper.",
+      "expected_outcome": "- Since the paper reports error bars computed from cross-validation across all patients, it is expected that the variation is minimal and the model performance is robust against patient heterogeneity.",
+      "experiment_design_complexity": {
+        "constant_variables": {
+          "dataset_and_patch_parameters": "HEST-Benchmark dataset; patch extraction fixed at 112\u00d7112 \u00b5m regions (224\u00d7224 pixels at 20\u00d7 magnification)",
+          "evaluation_parameters": "Use of Pearson correlation and error bars (standard deviation over folds) for performance measurement",
+          "compute_resources": "Execution on a single NVIDIA 3090 GPU"
+        },
+        "independent_variables": {
+          "foundation_model": "11 different foundation models for pathology (e.g., ResNet50 pre-trained on ImageNet, CTransPath, Remedis, Phikon, UNI, CONCH, GigaPath, Virchow, Virchow 2, H-Optimus-0, UNIv1.5)",
+          "regression_model": [
+            "XGBoost with 100 estimators",
+            "Ridge regression with fixed L2 regularization coefficient"
+          ],
+          "cross_validation_scheme": [
+            "Patient-stratified k-fold cross-validation",
+            "Patient-stratified k/2-fold split for ccRCC task"
+          ]
+        },
+        "dependent_variables": {
+          "prediction_performance": "Measured as the Pearson correlation between predicted and measured log1p-normalized expression levels of the top 50 most variable genes",
+          "error_bars": "Standard deviation across all cross-validation folds indicating variability in performance"
+        }
+      },
+      "experiment_design_ambiguity": {
+        "ambiguous_variables": {
+          "ccRCC_split_method": "The exact criteria for merging patients into k/2 folds in the ccRCC task is not fully detailed, potentially affecting reproducibility.",
+          "regression_hyperparameters": "While basic settings (e.g., 100 estimators for XGBoost, fixed L2 for Ridge) are mentioned, finer hyperparameter details and selection criteria are referenced to Appendix Table A11, which may not be fully clear.",
+          "foundation_model_details": "The specific preprocessing and embedding extraction pipeline for each foundation model might vary and is not exhaustively detailed."
+        },
+        "possible_modifications": {
+          "modification_ccRCC": [
+            "Mask or vary the criteria for merging cross-validation folds in the ccRCC task to study its effect on error bars."
+          ],
+          "modification_regression": [
+            "Introduce additional regression models or vary hyperparameter tuning strategies to explore sensitivity in predicting gene expression."
+          ],
+          "modification_embedding": [
+            "Experiment with alternative patch extraction sizes or different embedding extraction methods to examine their impact on model performance."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "HEST-Benchmark dataset",
+          "Patch extraction module (112\u00d7112 \u00b5m patches, 224\u00d7224 pixels at 20\u00d7 magnification)",
+          "Patient-stratified cross-validation framework (k-fold and k/2-fold for ccRCC)",
+          "Foundation models for pathology (11 different models including ResNet50, CTransPath, Remedis, Phikon, UNI, CONCH, GigaPath, Virchow, Virchow 2, H-Optimus-0, UNIv1.5)",
+          "Regression models (XGBoost with 100 estimators; Ridge regression with fixed L2 regularization)",
+          "Pearson correlation evaluation module",
+          "Compute infrastructure (a single NVIDIA 3090 GPU)"
+        ],
+        "setup_steps": [
+          "Prepare the HEST-Benchmark dataset and ensure proper data formatting (including metadata and patch specifications)",
+          "Extract 112\u00d7112 \u00b5m H&E patches (which correspond to 224\u00d7224 pixels at 20\u00d7 magnification)",
+          "Compute patch embeddings using each of the specified foundation models",
+          "Set up patient-stratified splits to prevent data leakage, with a special merging scheme (k/2-fold) for the ccRCC task",
+          "Configure and train regression models using extracted embeddings and gene expression targets",
+          "Determine and apply the hyperparameters as referenced in Appendix Table A11 (e.g., 100 estimators for XGBoost, fixed L2 for Ridge)",
+          "Evaluate performance via Pearson correlation and calculate standard deviation across all folds to report error bars",
+          "Execute the entire experiment on a single NVIDIA 3090 GPU ensuring proper resource management"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Data Preparation and Patch Extraction",
+            "description": "Ensuring the correct extraction of patch sizes and matching these to the spatial transcriptomics data adds complexity."
+          },
+          {
+            "source": "Cross-Validation Strategy",
+            "description": "The need to stratify by patients and, in ccRCC, merge folds (k/2-fold) introduces extra steps and potential pitfalls in setting up the splits."
+          },
+          {
+            "source": "Foundation Model Integration",
+            "description": "Differences in preprocessing pipelines across 11 diverse foundation models may require customized handling and tuning."
+          },
+          {
+            "source": "Hyperparameter Tuning References",
+            "description": "Reliance on Appendix Table A11 for detailed hyperparameter settings may complicate reproducing results if those details are not fully transparent."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "ccRCC cross-validation scheme: The criteria for merging patients into k/2 folds is not fully detailed.",
+          "Regression hyperparameters: Although basic settings are mentioned, finer details and selection criteria are ambiguously referenced to Appendix Table A11.",
+          "Foundation model preprocessing: The pipeline specifics for embedding extraction from each model are not exhaustively detailed."
+        ],
+        "ambiguous_setup_steps": [
+          "Implementation of patient-stratified splits: The process of strictly avoiding train/test leakage, especially with the merging of folds in ccRCC, lacks step-by-step clarification.",
+          "Hyperparameter configuration: The exact method and decision process for selecting or tuning regression model parameters is unclear from the document."
+        ],
+        "possible_modifications": {
+          "modification_ccRCC": [
+            "Mask or vary the criteria for merging cross-validation folds in the ccRCC task to study its effect on error bars and model robustness."
+          ],
+          "modification_regression": [
+            "Introduce additional regression models or vary hyperparameter tuning strategies (beyond the 100 estimators for XGBoost and fixed L2 for Ridge) to explore sensitivity in gene expression prediction."
+          ],
+          "modification_embedding": [
+            "Experiment with alternative patch extraction sizes or adopt different embedding extraction protocols to assess their impact on downstream performance."
+          ]
+        }
+      },
+      "experiment_uncertainty": {
+        "random_uncertainty": {
+          "source": "Variability from patient-stratified cross\u2010validation splits and inherent randomness in regression model training (e.g., random initialization in XGBoost and potential instability if uncontrolled random token or patch perturbations occur).",
+          "description": "Since each patient is assigned to a fold and some tasks (such as random token dropping for reducing pre-training costs) can introduce unplanned noise during gradient updates, there is a possibility of random fluctuations in the computed Pearson correlations across folds. For instance, slight variations in patch extraction or regression model convergence can yield variability in error bars reported as standard deviation across folds. Figures and tables (e.g., the error bar reporting mechanism and detailed setup in Appendix Table A11) highlight this variability.",
+          "impact": "This randomness may lead to inconsistent estimates of prediction performance, thereby affecting the robustness assessment of gene expression prediction. Variability between folds could mask or inflate the actual performance differences across foundation and regression models.",
+          "possible_modifications": [
+            "Fix the random seeds for cross-validation splits and model initialization to limit randomness.",
+            "Perform additional repetitions of the experiment to average out stochastic effects and obtain tighter error bars.",
+            "Eliminate or control any intentional random perturbations (e.g., avoid dropping random tokens in pre-processing) to reduce gradient instabilities."
+          ]
+        },
+        "systematic_uncertainty": {
+          "source": "Consistent biases introduced by the experimental design and data handling, such as the ambiguous merging criteria for ccRCC folds and variable preprocessing pipelines for different foundation models.",
+          "description": "There is potential systematic bias in the way patient splits are merged (using k/2-fold for ccRCC tasks) and how hyperparameters are set (as referenced in Appendix Table A11), which could lead to a predictable but undesired shift in performance metrics. Differences in how patch embeddings are extracted from the 11 foundation models might also introduce a systematic error if not uniformly managed. This issue is compounded by any undisclosed variations in the preprocessing steps across models.",
+          "impact": "Such bias would consistently skew the evaluation outcomes, compromising the reproducibility of the predicted gene expression levels and potentially inflating or deflating the model's robustness as measured by the error bars. This may render cross-validation error bars misleading if the bias is not addressed.",
+          "possible_modifications": [
+            "Standardize the preprocessing pipeline for all foundation models to ensure uniform embedding extraction.",
+            "Refine and document the criteria for merging folds in the ccRCC task, or retrieve a clean, unbiased dataset copy if necessary.",
+            "Incorporate additional cross-dataset or ablation studies to validate that regression hyperparameters and fold merging do not introduce systematic bias."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "experimental_design_modifications": [
+            "For the ccRCC task, adjust the criteria for merging patients into k/2 folds (for example, enforce a stricter merging protocol) to test the sensitivity of error bar variability.",
+            "Vary the regression model hyperparameters\u2014for instance, reducing the number of estimators in XGBoost or modifying the fixed L2 regularization coefficient in Ridge regression\u2014to explore how these changes affect gene expression prediction robustness.",
+            "Experiment with alternative patch extraction sizes or modify the embedding extraction process from the foundation models to assess the impact on downstream performance."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/src/hest/bench/benchmark.py",
+        "/workspace/bench_config/bench_config.yaml"
+      ],
+      "usage_instructions": "1. Ensure HEST is properly installed following the instructions in the README.md. 2. Configure the benchmark by editing the bench_config.yaml file to select the foundation models you want to evaluate (uncomment the desired models in the 'encoders' list) and the datasets to use (uncomment the desired datasets in the 'datasets' list). 3. Run the benchmark using the command: `python /workspace/src/hest/bench/benchmark.py --config /workspace/bench_config/bench_config.yaml`. 4. The benchmark will automatically perform patient-stratified k-fold cross-validation (or k/2-fold for ccRCC) and report error bars as standard deviation across folds. 5. Results will be saved in the directory specified by 'results_dir' in the config file, including Pearson correlations and error bars for each gene and model.",
+      "requirements": [
+        "Step 1: Parse command line arguments and load configuration from YAML file, with priority given to CLI args, then kwargs, then config file (/workspace/src/hest/bench/benchmark.py:392-427)",
+        "Step 2: Set random seed for reproducibility (/workspace/src/hest/bench/benchmark.py:429)",
+        "Step 3: Download foundation model weights and benchmark datasets from HuggingFace Hub (/workspace/src/hest/bench/benchmark.py:431-435)",
+        "Step 4: Set up device (CUDA if available, otherwise CPU) (/workspace/src/hest/bench/benchmark.py:441)",
+        "Step 5: Create directory structure for saving results (/workspace/src/hest/bench/benchmark.py:448-455)",
+        "Step 6: For each dataset and encoder combination, extract embeddings from tissue patches (/workspace/src/hest/bench/benchmark.py:467, /workspace/src/hest/bench/benchmark.py:244-273)",
+        "Step 7: Load gene expression data and match with extracted embeddings (/workspace/src/hest/bench/benchmark.py:279-304)",
+        "Step 8: Optionally perform dimensionality reduction (PCA) on embeddings (/workspace/src/hest/bench/benchmark.py:310-315)",
+        "Step 9: Train regression model (Ridge by default) to predict gene expression from embeddings (/workspace/src/hest/bench/trainer.py:7-22)",
+        "Step 10: Evaluate model performance using Pearson correlation between predicted and actual gene expression (/workspace/src/hest/bench/trainer.py:61-84)",
+        "Step 11: Perform k-fold cross-validation by repeating steps 6-10 for each fold (/workspace/src/hest/bench/benchmark.py:355-375)",
+        "Step 12: Aggregate results across folds, calculating mean and standard deviation of Pearson correlations (/workspace/src/hest/bench/benchmark.py:331-352)",
+        "Step 13: Save results to JSON and CSV files (/workspace/src/hest/bench/benchmark.py:164-172)"
+      ],
+      "agent_instructions": "Create a benchmarking system for evaluating foundation models on spatial transcriptomics data. The system should:\n\n1. Accept a configuration file that specifies which foundation models to evaluate and which datasets to use\n\n2. For each model and dataset combination:\n   - Extract embeddings from histology image patches using the specified foundation model\n   - Load corresponding gene expression data\n   - Optionally perform dimensionality reduction on embeddings (PCA)\n   - Train a regression model (Ridge regression by default) to predict gene expression from embeddings\n   - Evaluate performance using Pearson correlation between predicted and actual gene expression\n\n3. Implement patient-stratified k-fold cross-validation:\n   - Split data by patient to ensure no data leakage\n   - Train on k-1 folds and test on the remaining fold\n   - Repeat for all k folds\n   - Calculate mean and standard deviation of performance metrics across folds\n\n4. Save results in a structured format:\n   - Per-gene Pearson correlations\n   - Mean and standard deviation across genes and folds\n   - Organized by dataset and model\n\nThe system should support multiple regression methods (Ridge, Random Forest, XGBoost) and handle downloading of model weights and datasets from HuggingFace Hub.",
+      "masked_source": [
+        "/workspace/src/hest/bench/benchmark.py",
+        "/workspace/bench_config/bench_config.yaml"
+      ]
+    }
+  ]
+}

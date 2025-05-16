@@ -1,0 +1,169 @@
+{
+  "questions": [
+    {
+      "question": "How does the inclusion of QuaRot's Hadamard transformation improve the quality of weight-only quantized models under low-precision settings? Can QuaRot stabilize and improve performance at 2\u20134 bit weight precision where traditional quantization methods like RTN and GPTQ often fail?",
+      "method": "#### Models\n\n- LLAMA2-7B\n- LLAMA2-13B\n- LLAMA2-70B\n\n#### Setup\n\n- **Quantization Type**: **Weight-only**\n- **Quantized Modules**:\n  - Quantize only the weights of the model\n  - Inputs and KV caches remain in FP16\n- **Quantization Scheme**: Per-column asymmetric quantization\n- **Precision Configurations**:\n  - W bits \u2208 {4, 3, 2}\n  - Inputs are fixed at A16 (no activation quantization)\n\n#### Quantization Variants\n\n| Method          | Description                                               |\n| --------------- | --------------------------------------------------------- |\n| **RTN**         | Round-to-Nearest quantization, no calibration             |\n| **GPTQ**        | Error-minimizing quantization using Hessian approximation |\n| **QuaRot-RTN**  | RTN quantization with Hadamard transformation             |\n| **QuaRot-GPTQ** | GPTQ quantization with Hadamard transformation            |\n\n> Note: NaN/Inf results represent failure to converge or unstable output (e.g., exploding loss or division by zero)\n\n#### Experiment Steps\n\n1. **Setup Environment**\n\n   - Use QuaRot with support for Hadamard matrix fusion\n   - Build weight-only quantized transformer blocks\n   - Load pretrained LLAMA2 models in FP16\n\n2. **Apply Weight-Only Quantization**\n\n   - For each bit-width (W2, W3, W4):\n     - Apply quantization on all linear layer weights only\n     - Leave input activations and KV caches unquantized (A16)\n\n3. **Apply QuaRot Transformation**\n\n   - Multiply the Hadamard matrix into weight matrix before quantization:\n\n     ```python\n     W = W @ H  # where H is a Hadamard matrix\n     ```\n     \n   - Use this transformed weight matrix in GPTQ or RTN quantization routines\n   \n4. **Run Perplexity Evaluation**\n\n   - Use WikiText-2 with sequence length = 2048\n\n   - Ensure forward pass uses only weight-quantized layers\n\n   - Measure PPL with:\n\n     ```python\n     from evaluate import load\n     perplexity = load(\"perplexity\")\n     result = perplexity.compute(model=quantized_model, dataset=wikitext2)\n     ```\n   \n5. **Log Failures**\n\n   - Record NaN if the model outputs contain `inf/nan`\n   - Record `Inf` if perplexity exceeds 100",
+      "expected_outcome": "Result should look similar to table 7 in the paper ablation study.\n\n| Method      | Precision | 7B    | 13B   | 70B   |\n| ----------- | --------- | ----- | ----- | ----- |\n| Baseline    | A16W16    | 5.47  | 4.88  | 3.32  |\n| RTN         | A16W4     | 6.99  | Inf   | 4.45  |\n|             | A16W3     | Inf   | Inf   | 42.11 |\n|             | A16W2     | Inf   | Inf   | Inf   |\n| GPTQ        | A16W4     | 8.25  | 5.65  | 3.87  |\n|             | A16W3     | NaN   | 9.51  | 5.91  |\n|             | A16W2     | NaN   | Inf   | 25.30 |\n| QuaRot-RTN  | A16W4     | 6.76  | 5.48  | 3.66  |\n|             | A16W3     | Inf   | 48.89 | 5.25  |\n|             | A16W2     | Inf   | Inf   | Inf   |\n| QuaRot-GPTQ | A16W4     | 5.60  | 5.00  | 3.41  |\n|             | A16W3     | 6.09  | 5.37  | 3.72  |\n|             | A16W2     | 22.07 | 10.41 | 5.60  |\n\n- QuaRot + GPTQ significantly improves performance, especially at 2- and 3-bit precision.\n- RTN without QuaRot fails at low precision (Inf/NaN in most cases).\n- QuaRot stabilizes RTN to some degree and yields 0.24\u20132.65 lower perplexity depending on setting.\n- 70B benefits most from QuaRot-GPTQ, reducing PPL at W2 from 25.30 \u2192 5.60.",
+      "design_complexity": {
+        "constant_variables": {
+          "quantization_type": "Weight-only quantization is applied (only weights are quantized while inputs and KV caches remain in FP16)",
+          "quantization_scheme": "Per-column asymmetric quantization is used for all experiments",
+          "dataset": "WikiText-2 with a fixed sequence length of 2048",
+          "baseline_configuration": "Baseline is the unquantized FP16 model (A16W16)"
+        },
+        "independent_variables": {
+          "llama_model": [
+            "LLAMA2-7B",
+            "LLAMA2-13B",
+            "LLAMA2-70B"
+          ],
+          "weight_precision": [
+            "4-bit",
+            "3-bit",
+            "2-bit"
+          ],
+          "quantization_method": [
+            "RTN",
+            "GPTQ",
+            "QuaRot-RTN",
+            "QuaRot-GPTQ"
+          ]
+        },
+        "dependent_variables": {
+          "perplexity": "WikiText-2 perplexity measured after the forward pass",
+          "stability": "Model output stability (detection of Inf/NaN as failure indicators)"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "hadamard_transformation_implementation": "The specific details of the Hadamard matrix (e.g., its precision, scaling factors, or exact formulation) are not fully specified.",
+          "failure_logging_threshold": "While Inf/NaN results are mentioned to indicate failures, the threshold for labeling a result as a failure (other than >100 perplexity) is not clearly delineated.",
+          "baseline_labeling": "The relationship between the baseline (A16W16) and the quantized configurations is implied but not explicitly defined in terms of experimental control."
+        },
+        "possible_modifications": {
+          "new_variable_precision_methods": [
+            "Extend the quantization study by including additional bit-widths (e.g., 5-bit or 1-bit) to test the limits of QuaRot."
+          ],
+          "masking_or_alternative_logging": [
+            "Introduce modified conditions where failure logging criteria are masked or set to alternative thresholds to study sensitivity to instability."
+          ],
+          "detailed_hadamard_specs": [
+            "Specify the Hadamard transformation details (such as FP16 vs FP32 implementation or different normalizations) to reduce ambiguity."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "LLAMA2 models (7B, 13B, 70B)",
+          "Quantized transformer blocks (with weight-only quantization)",
+          "Quantization routines (RTN, GPTQ, QuaRot-RTN, QuaRot-GPTQ)",
+          "Hadamard transformation module (for matrix fusion)",
+          "Per-column asymmetric quantization scheme",
+          "WikiText-2 dataset (with fixed sequence length of 2048)",
+          "Python evaluation tools (using the evaluate library for perplexity calculation)",
+          "Failure logging mechanism (logging NaN/Inf outcomes)"
+        ],
+        "setup_steps": [
+          "Set up the environment with QuaRot support for Hadamard matrix fusion and build weight-only quantized transformer blocks",
+          "Load pretrained LLAMA2 models in FP16",
+          "Apply weight-only quantization on linear layer weights for each bit-width (4, 3, 2) while keeping inputs and KV caches unquantized",
+          "Apply the QuaRot transformation by multiplying the weight matrix with the Hadamard matrix (W = W @ H) before quantization",
+          "Execute the quantization routines (RTN, GPTQ, QuaRot-RTN, QuaRot-GPTQ) on the quantized models",
+          "Run perplexity evaluation on WikiText-2 using a forward pass with sequence length 2048",
+          "Log failures by detecting NaN/Inf outputs and marking results accordingly"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Integration of Hadamard Transformation",
+            "description": "Incorporating the Hadamard matrix multiplication into established quantization pipelines adds complexity in ensuring numerical stability and consistency across different precision settings."
+          },
+          {
+            "source": "Multiple Quantization Methods",
+            "description": "Using several quantization methods (RTN, GPTQ, and their QuaRot versions) requires careful management of independent variables and comparison against the baseline, increasing overall experimental complexity."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Hadamard transformation implementation: The precise details (e.g., its formulation, scaling, precision level) are not fully specified.",
+          "Failure logging mechanism: The threshold criteria for detecting failures (beyond just NaN/Inf or perplexity > 100) remain somewhat ambiguous."
+        ],
+        "ambiguous_setup_steps": [
+          "The process for integrating the Hadamard transformation in the quantization routine is outlined via a short code snippet but lacks detailed explanation on normalization or precision choices.",
+          "Baseline comparison: The experimental control between the unquantized FP16 baseline (A16W16) and the quantized configurations is implied rather than explicitly defined."
+        ],
+        "possible_modifications": {
+          "mask_existing_instructions": [
+            "Omit detailed implementation of the Hadamard transformation, requiring users to infer or explore alternative configurations.",
+            "Mask precise logging thresholds for failure detection to evaluate how practitioners set these parameters in practice."
+          ],
+          "imply_need_for_new_setup_steps": [
+            "Introduce explicit documentation for the Hadamard matrix specifications (e.g., FP16 vs FP32, normalization factors) to reduce ambiguity.",
+            "Add more detailed explanation for baseline configuration and control setups to reinforce accurate comparisons."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Enforce model size constraints by requiring the quantized performance (e.g., perplexity improvements with QuaRot) to be achieved using a smaller variant of the model (e.g., using LLAMA2-7B instead of LLAMA2-70B), simulating limited hardware resources."
+          ],
+          "time_constraints": [
+            "Restrict the allowable time for quantization procedures (such as limiting the number of iterations for the quantization algorithms or Hadamard transformation computations), which may force quicker convergence and potentially impact stability."
+          ],
+          "money_constraints": [
+            "Impose a computational budget by requiring the experiments to run on less expensive compute options, which could limit hyper-parameter tuning or the repetition of experiments, thereby simulating monetary constraints."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Variability in quantization outcomes due to random initialization and unstable convergence when using methods like GPTQ and random orthogonal matrices.",
+        "description": "In the experiments, aspects such as the initialization of the quantization process, the potential random choice within the Hadamard transformation (e.g., when using a randomly generated orthogonal matrix), and the inherent randomness in gradient behaviors during weight-only quantization introduce random uncertainty. This can lead to instability (NaN/Inf results) or subtle variations in perplexity measurements, especially at lower bit-widths.",
+        "impact": "Results such as perplexity values and failure logs (NaN/Inf detections) may vary across independent experimental runs. Such variation can obscure the true performance gains of QuaRot, as the experiments are conducted only once due to computational cost, thereby underestimating inherent variability.",
+        "possible_modifications": [
+          "Perform multiple runs with different random seeds to capture the variation in quantized outcomes.",
+          "Apply bootstrap methods to estimate error bars for perplexity scores and other metrics.",
+          "Introduce systematic random perturbations in the Hadamard transformation (e.g., random orthogonal matrix variants) to evaluate the robustness of the quantization method."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Methodological choices and experimental setup biases, such as the fixed use of the WikiText-2 dataset, the single baseline definition (A16W16), and ambiguous details in the Hadamard transformation implementation (e.g., scaling, precision).",
+        "description": "Systematic uncertainty arises from the design choices that could bias the results. For instance, evaluating on only WikiText-2 with a fixed sequence length may not represent all language tasks. Moreover, the lack of detailed specification for the Hadamard matrix (its normalization or precision) can consistently skew performance in a particular direction. This type of uncertainty leads to persistent biases in the measurement of perplexity and stability, potentially misrepresenting the benefits of QuaRot over traditional methods like RTN and GPTQ.",
+        "impact": "The observed improvements (e.g., lower perplexity with QuaRot-GPTQ over GPTQ and RTN at low precisions) might partly be a result of systematic biases in the experimental design rather than solely the robustness of the transformation. Such biases could affect the comparability across models and precision configurations.",
+        "possible_modifications": [
+          "Introduce additional evaluation datasets to mitigate dataset-specific biases.",
+          "Standardize and clearly document the Hadamard transformation details (e.g., specifying whether FP16 vs FP32 is used, scaling factors, etc.) to ensure consistent application.",
+          "Expand baseline experiments to include multiple control configurations or different quantization schemes.",
+          "Modify the experiment by including alternative logging thresholds or failure criteria to assess stability from a different systematic perspective."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "Execute the main.py script with different configurations to compare QuaRot vs traditional quantization methods at low bit precision. For the experiment comparing RTN, GPTQ, QuaRot-RTN, and QuaRot-GPTQ at different weight precisions (2-4 bits), use the following commands:\n\n1. For RTN (traditional round-to-nearest):\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --w_bits 4 --w_rtn\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --w_bits 4 --w_rtn\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --w_bits 4 --w_rtn\n   ```\n   Repeat with --w_bits 3 and --w_bits 2 for each model.\n\n2. For GPTQ (error-minimizing quantization):\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --w_bits 4\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --w_bits 4\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --w_bits 4\n   ```\n   Repeat with --w_bits 3 and --w_bits 2 for each model.\n\n3. For QuaRot-RTN (RTN with Hadamard transformation):\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --w_bits 4 --w_rtn --rotate\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --w_bits 4 --w_rtn --rotate\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --w_bits 4 --w_rtn --rotate\n   ```\n   Repeat with --w_bits 3 and --w_bits 2 for each model.\n\n4. For QuaRot-GPTQ (GPTQ with Hadamard transformation):\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --w_bits 4 --rotate\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --w_bits 4 --rotate\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --w_bits 4 --rotate\n   ```\n   Repeat with --w_bits 3 and --w_bits 2 for each model.\n\nThe script will automatically evaluate perplexity on WikiText-2 dataset and report the results, which can be compared to see how QuaRot improves quantization quality at low bit precision.",
+      "requirements": [
+        "Step 1: Set up the environment with required dependencies including PyTorch, transformers, datasets, and other necessary libraries (main.py:1-10)",
+        "Step 2: Obtain access to Hugging Face token for downloading Llama-2 models (main.py:20)",
+        "Step 3: Load the specified Llama-2 model (7B, 13B, or 70B) from Hugging Face (main.py:20)",
+        "Step 4: For QuaRot methods, apply Hadamard transformation to the model weights by fusing layer norms and rotating the model (main.py:25-27)",
+        "Step 5: Add activation quantization wrappers to the model (main.py:30-47)",
+        "Step 6: For GPTQ quantization, load calibration data from WikiText-2 dataset (main.py:62-66)",
+        "Step 7: Apply GPTQ weight quantization using the calibration data if not using RTN (main.py:67-68)",
+        "Step 8: Apply RTN weight quantization if specified (main.py:69-71)",
+        "Step 9: Configure input quantization parameters if specified (main.py:78-109)",
+        "Step 10: Configure key-cache quantization if specified (main.py:111-124)",
+        "Step 11: Load the WikiText-2 evaluation dataset (main.py:127-134)",
+        "Step 12: Evaluate the quantized model on WikiText-2 to measure perplexity (main.py:137-139)",
+        "Step 13: Run the experiment with different configurations to compare RTN, GPTQ, QuaRot-RTN, and QuaRot-GPTQ at different weight precisions (2-4 bits) across different model sizes (usage_instructions)",
+        "Step 14: Compare the perplexity results to determine how QuaRot improves quantization quality at low bit precision (usage_instructions)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment comparing different quantization methods for Llama-2 models. You need to run the main.py script with various configurations to evaluate how QuaRot (a Hadamard transformation-based approach) compares to traditional quantization methods (RTN and GPTQ) at low bit precision (2-4 bits).\n\nYou should:\n1. Understand what the main.py script does and how it implements different quantization methods\n2. Set up the environment with necessary dependencies\n3. Obtain access to Llama-2 models (7B, 13B, and 70B variants)\n4. Run the script with different configurations as specified in the usage instructions:\n   - RTN (traditional round-to-nearest)\n   - GPTQ (error-minimizing quantization)\n   - QuaRot-RTN (RTN with Hadamard transformation)\n   - QuaRot-GPTQ (GPTQ with Hadamard transformation)\n5. For each method, test with different weight precisions (2, 3, and 4 bits)\n6. Analyze the perplexity results on WikiText-2 dataset to determine how QuaRot improves quantization quality\n\nThe experiment aims to demonstrate that QuaRot methods provide better quantization quality compared to traditional methods, especially at lower bit precision.",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

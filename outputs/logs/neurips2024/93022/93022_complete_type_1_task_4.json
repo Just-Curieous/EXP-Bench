@@ -1,0 +1,148 @@
+{
+  "questions": [
+    {
+      "question": "Does the MDGEN model accurately recover the fast timestep dynamics (e.g., oscillations in torsion angles) that are missing in subsampled molecular dynamics trajectories?",
+      "method": "#### Problem Setup\n\nEvaluate whether MDGEN can reconstruct fine-grained (100 fs) dynamics\u2014specifically fast oscillations in torsion angles\u2014that are lost when MD trajectories are subsampled at 10 ps intervals.\n\n#### Independent Variables\n\n- **Trajectory Type**:\n  - Ground truth MD trajectories sampled at **100 fs**\n  - Subsampled trajectories at **10 ps**\n  - MDGEN-generated **upsampled trajectories** (from 10 ps \u2192 100 fs)\n\n#### Dependent Variables (Evaluation Metrics)\n\n- **Autocorrelation Function**:\n   \u27e8cos(\u03b8\u209c \u2212 \u03b8\u209c\u208a\u0394\u209c)\u27e9 for torsion angles over lag times from **100 fs to 100 ps**.\n- **Dynamic Content**:\n   The **negative derivative** of the autocorrelation with respect to **log-timescale**, used to assess how much fast dynamical relaxation is captured.\n\n#### Experiment Setup\n\n- Data Preparation:\n  - Use test peptide trajectories (30k frames pooled).\n  - Ground truth MD data: sampled every **100 fs**.\n  - Generate **10 ps subsampled** versions by downsampling ground truth.\n- Model Upsampling:\n  - Input: 10 ps subsampled data.\n  - Output: Reconstructed trajectories at **100 fs resolution** using MDGEN.\n  - Note: Model trained with **random crops (\u2264256 residues)** and **subsampling every 40 frames**, but inference is done on **full proteins**.\n- Computation:\n  - For every torsion angle:\n    1. Compute autocorrelation over \u0394t = 100 fs to 100 ps.\n    2. Derive the dynamic content curve.\n- Analysis:\n  - Compare autocorrelation curves of:\n    - Ground truth\n    - Subsampled\n    - Upsampled (MDGEN)\n  - Look for **oscillatory behavior** at sub-ps scales present in upsampled but not subsampled data.",
+      "expected_outcome": "MDGEN-upsampled trajectories are expected to:\n\n- Reproduce oscillatory dynamics at sub-ps timescales.\n- Closely match ground truth autocorrelation curves.\n- Exhibit non-monotonic dynamic content profiles, indicating fast relaxation recovery.\n\nSubsampled trajectories will lack these fine-grained features, validating the upsampling model\u2019s effectiveness.",
+      "design_complexity": {
+        "constant_variables": {
+          "Data Preparation": "Test peptide trajectories are used with 30k frames pooled; ground truth MD data is sampled every 100 fs and subsampled to 10 ps, and the model training settings (random crops of up to 256 residues, subsample every 40 frames with inference on full proteins) remain constant",
+          "Model Settings": "The MDGEN model is trained under fixed conditions regarding crop size and frame selection and always processes full protein sequences at inference"
+        },
+        "independent_variables": {
+          "Trajectory Type": [
+            "Ground truth MD trajectories sampled at 100 fs",
+            "Subsampled trajectories at 10 ps",
+            "MDGEN-generated upsampled trajectories (input: 10 ps; output: 100 fs resolution)"
+          ]
+        },
+        "dependent_variables": {
+          "Autocorrelation Function": "Computed as \u27e8cos(\u03b8\u209c \u2212 \u03b8\u209c\u208a\u0394\u209c)\u27e9 for torsion angles over lag times ranging from 100 fs to 100 ps",
+          "Dynamic Content": "Calculated as the negative derivative of the autocorrelation with respect to the log-timescale to assess captured fast dynamical relaxation"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "Autocorrelation Function": "The precise method for computing the autocorrelation (e.g., sampling resolution, windowing details) is not explicitly defined",
+          "Dynamic Content": "The calculation details for the negative derivative with respect to log-timescale (such as differentiation method or smoothing parameters) are not fully specified",
+          "Oscillatory Dynamics": "The criteria for what qualifies as recovered oscillatory dynamics (e.g., amplitude threshold, frequency range) are not clearly delineated"
+        },
+        "possible_modifications": {
+          "modification1": [
+            "Provide a detailed formula and computational procedure for the autocorrelation function, including how lag times are sampled and normalized"
+          ],
+          "modification2": [
+            "Clarify the exact method for computing the negative derivative of the autocorrelation with respect to log-timescale, possibly with parameter choices or smoothing techniques"
+          ],
+          "modification3": [
+            "Introduce additional trajectory types or sampling intervals as new independent variables to test sensitivity and robustness of MDGEN in capturing fast oscillatory dynamics"
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Data Preparation (Test peptide trajectories, ground truth MD at 100 fs, and 10 ps subsampled versions)",
+          "MDGEN Model (trained with random crops of up to 256 residues and subsampling every 40 frames, but inference on full proteins)",
+          "Trajectory Types (Ground truth, subsampled, and MDGEN-generated upsampled trajectories)",
+          "Computation Modules (Autocorrelation function calculation and dynamic content derivation)",
+          "Analysis Framework (Comparison of autocorrelation curves and evaluation of oscillatory dynamics)"
+        ],
+        "setup_steps": [
+          "Prepare and pool test peptide trajectories (30k frames)",
+          "Generate ground truth MD data sampled every 100 fs",
+          "Create 10 ps subsampled trajectories from the ground truth",
+          "Run MDGEN to upsample the 10 ps data to 100 fs resolution",
+          "Compute autocorrelation functions for torsion angles over lag times from 100 fs to 100 ps",
+          "Compute the negative derivative of the autocorrelation with respect to log-timescale",
+          "Compare and analyze the autocorrelation curves to assess recovery of fast oscillatory dynamics"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Training and Inference Settings",
+            "description": "The nuances of training (random cropping and frame subsampling) versus inference (full protein trajectories) add complexity to ensuring consistency across different stages."
+          },
+          {
+            "source": "Computation Parameters",
+            "description": "The need to discretize lag times (from 100 fs to 100 ps) and compute derivatives for dynamic content evaluation introduces additional parameter tuning complexity."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Autocorrelation Function: The precise computation details (e.g., sampling resolution, windowing, normalization) are not fully defined",
+          "Dynamic Content Calculation: The method for computing the negative derivative with respect to log-timescale (including choice of differentiation method or smoothing parameters) is unclear",
+          "Oscillatory Dynamics Criterion: The threshold or criteria for what qualifies as recovered oscillatory dynamics (e.g., specific amplitude or frequency range) is not clearly delineated"
+        ],
+        "ambiguous_setup_steps": [
+          "Preprocessing details for the trajectory data (e.g., handling noise or outlier frames) are not specified",
+          "The exact process and parameters for downsampling (subsampling to 10 ps) and its impact on temporal resolution remain ambiguous"
+        ],
+        "possible_modifications": {
+          "modification1": [
+            "Provide a detailed mathematical formulation for the autocorrelation function, including sampling resolution, windowing, and normalization procedures"
+          ],
+          "modification2": [
+            "Clarify the computational method for obtaining the negative derivative with respect to log-timescale, specifying the differentiation technique and any smoothing parameters used"
+          ],
+          "modification3": [
+            "Define explicit criteria or thresholds for determining successful recovery of oscillatory dynamics, such as amplitude or frequency range benchmarks"
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {}
+      },
+      "random_uncertainty": {
+        "source": "Random cropping and subsampling variability",
+        "description": "The MDGEN model training uses random crops (up to 256 residues) and random subsampling (every 40 frames), which introduces randomness in the selection of trajectory segments. This randomness can lead to variability in the recovery of fast oscillatory dynamics during upsampling.",
+        "impact": "This variability may result in inconsistent autocorrelation function estimates and dynamic content calculations across different runs, potentially leading to fluctuations in the observed recovery of fast oscillatory features.",
+        "possible_modifications": [
+          "Replace random cropping with fixed cropping during training to reduce variability.",
+          "Employ deterministic subsampling instead of random subsampling to minimize random fluctuations.",
+          "Conduct multiple runs and average the results to mitigate the influence of random sampling variability."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Ambiguity in evaluation metric computations",
+        "description": "There is a lack of precise definitions for how the autocorrelation function (including sampling resolution, windowing, and normalization) and the negative derivative of the autocorrelation with respect to the log-timescale are computed. Additionally, the criteria for what constitutes recovered oscillatory dynamics (e.g., amplitude thresholds or frequency ranges) remain ambiguous.",
+        "impact": "These unspecified details can lead to systematic biases in measuring how well the MDGEN model recovers fast dynamics. The evaluation might consistently overestimate or underestimate the recovery of oscillatory behavior, affecting the comparison between ground truth, subsampled, and upsampled trajectories.",
+        "possible_modifications": [
+          "Provide explicit mathematical formulations and computational procedures for both the autocorrelation function and the derivative (dynamic content) calculations.",
+          "Clearly define thresholds or criteria for determining recovered oscillatory dynamics (such as amplitude or frequency range benchmarks).",
+          "Introduce additional sampling intervals or independent trajectory types to test the sensitivity and robustness of the recovery evaluation."
+        ]
+      },
+      "source": [
+        "/workspace/upsampling_inference.py",
+        "/workspace/scripts/analyze_upsampling.py"
+      ],
+      "usage_instructions": "1. First, run the upsampling inference script to generate upsampled trajectories from subsampled data:\n   ```\n   python upsampling_inference.py --ckpt upsampling.ckpt --data_dir data/4AA_data_implicit --split splits/4AA_implicit_test.csv --batch_size 10 --xtc --out_dir [OUTPUT_DIRECTORY]\n   ```\n   This will generate upsampled trajectories at 100 fs resolution from 10 ps subsampled data.\n\n2. Then, run the analysis script to compute and visualize the autocorrelation functions and dynamic content:\n   ```\n   python -m scripts.analyze_upsampling --mddir data/4AA_sims_implicit --pdbdir [OUTPUT_DIRECTORY] --plot --save\n   ```\n   This script compares three trajectory types: ground truth MD trajectories (100 fs), subsampled trajectories (10 ps), and MDGEN-upsampled trajectories. It calculates autocorrelation functions for torsion angles and visualizes them on a log-timescale from 0.1 ps to 100 ps, allowing direct comparison of oscillatory behavior at sub-ps timescales.",
+      "requirements": [
+        "Step 1: Parse command line arguments for the upsampling script, including checkpoint path, data directory, batch size, output directory, and split file (/workspace/upsampling_inference.py:1-10)",
+        "Step 2: Import necessary libraries for molecular dynamics processing and tensor operations (/workspace/upsampling_inference.py:12-19)",
+        "Step 3: Create output directory if it doesn't exist (/workspace/upsampling_inference.py:24)",
+        "Step 4: Implement function to load and process trajectory data from numpy files, converting atom positions to frames, torsions, and other required representations (/workspace/upsampling_inference.py:28-45)",
+        "Step 5: Implement function to split trajectory data into batches with appropriate conditioning intervals (/workspace/upsampling_inference.py:47-66)",
+        "Step 6: Implement inference function that processes trajectory data through the model and saves results as PDB and XTC files (/workspace/upsampling_inference.py:68-90)",
+        "Step 7: Load the pre-trained model from checkpoint and run inference on all trajectories in the split file (/workspace/upsampling_inference.py:92-105)",
+        "Step 8: Parse command line arguments for the analysis script, including paths to upsampled trajectories and reference MD trajectories (/workspace/scripts/analyze_upsampling.py:1-6)",
+        "Step 9: Import libraries for analysis and visualization (/workspace/scripts/analyze_upsampling.py:8-13)",
+        "Step 10: Implement function to load and featurize both reference and upsampled trajectories (/workspace/scripts/analyze_upsampling.py:15-17)",
+        "Step 11: Calculate autocorrelation functions for torsion angles in reference MD trajectories, subsampled trajectories, and upsampled trajectories (/workspace/scripts/analyze_upsampling.py:20-26)",
+        "Step 12: Set up visualization parameters for log-timescale plots (/workspace/scripts/analyze_upsampling.py:28-31)",
+        "Step 13: Create plots comparing autocorrelation functions for sidechain torsion angles across the three trajectory types (/workspace/scripts/analyze_upsampling.py:33-47)",
+        "Step 14: Create plots comparing autocorrelation functions for backbone torsion angles across the three trajectory types (/workspace/scripts/analyze_upsampling.py:49-64)",
+        "Step 15: Save the visualization plots (/workspace/scripts/analyze_upsampling.py:66)",
+        "Step 16: Process all PDB IDs in the directory, running the analysis for each one (/workspace/scripts/analyze_upsampling.py:68-79)"
+      ],
+      "agent_instructions": "You need to implement two Python scripts for molecular dynamics trajectory upsampling and analysis:\n\n1. First script: Trajectory Upsampling Tool\nCreate a script that takes subsampled molecular dynamics trajectories (at 10ps intervals) and generates upsampled trajectories (at 100fs resolution) using a pre-trained model. The script should:\n- Accept command line arguments for checkpoint path, data directory, output directory, and other parameters\n- Load trajectory data from numpy files\n- Process the data through a pre-trained model (MDGenWrapper) to generate upsampled trajectories\n- Save the results as both PDB and XTC files\n\nThe script should handle batching of data for efficient processing and properly transform the molecular representations between different formats (atom positions, frames, torsions).\n\n2. Second script: Trajectory Analysis Tool\nCreate a script that analyzes and compares three types of molecular dynamics trajectories:\n- Ground truth MD trajectories (100fs resolution)\n- Subsampled trajectories (10ps resolution)\n- Upsampled trajectories (generated by the first script)\n\nThe script should:\n- Calculate autocorrelation functions for torsion angles in all three trajectory types\n- Create visualization plots comparing the dynamic content of the trajectories\n- Generate separate plots for sidechain and backbone torsion angles\n- Display the data on a log-timescale from 0.1ps to 100ps\n- Save the visualization plots as PDF files\n\nThe analysis should help evaluate how well the upsampling model preserves the dynamic properties of the original trajectories, particularly the oscillatory behavior at sub-picosecond timescales.",
+      "masked_source": [
+        "/workspace/upsampling_inference.py",
+        "/workspace/scripts/analyze_upsampling.py"
+      ]
+    }
+  ]
+}

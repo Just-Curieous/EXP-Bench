@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Set up a CUDA-enabled environment with PyTorch to run the benchmark (/workspace/benchmarks/qlinear_benchmark.py:1-6)",
+    "Step 2: Define the model sizes for Llama-2 models (7B, 13B, and 70B) with their respective hidden dimensions (/workspace/benchmarks/qlinear_benchmark.py:8-11)",
+    "Step 3: Define the MLP sizes for Llama-2 models with their respective input and output dimensions (/workspace/benchmarks/qlinear_benchmark.py:14-17)",
+    "Step 4: Set the benchmark to use float16 precision (/workspace/benchmarks/qlinear_benchmark.py:19)",
+    "Step 5: Configure the benchmark parameters with 50-100 warmup steps and 1000 benchmark steps (as per usage instructions) (/workspace/benchmarks/qlinear_benchmark.py:20-21)",
+    "Step 6: Create a benchmarking function that measures execution time in milliseconds for a given module and input (/workspace/benchmarks/qlinear_benchmark.py:24-40)",
+    "Step 7: Create a function to benchmark different linear layer implementations (FP16, INT4, INT4+FP32 Hadamard, INT4+FP16 Hadamard) (/workspace/benchmarks/qlinear_benchmark.py:42-115)",
+    "Step 8: Generate random input tensors with the specified batch size and sequence length (/workspace/benchmarks/qlinear_benchmark.py:56-58)",
+    "Step 9: Create a baseline FP16 linear layer for comparison (/workspace/benchmarks/qlinear_benchmark.py:60-65)",
+    "Step 10: Create an INT4 quantized linear layer using the Quantizer and Linear4bit modules (/workspace/benchmarks/qlinear_benchmark.py:67-71)",
+    "Step 11: Create an INT4 quantized linear layer with FP32 Hadamard transform (/workspace/benchmarks/qlinear_benchmark.py:72-76)",
+    "Step 12: Create an INT4 quantized linear layer with FP16 Hadamard transform (/workspace/benchmarks/qlinear_benchmark.py:80-84)",
+    "Step 13: Run each implementation 10 times and calculate the mean execution time and confidence interval (/workspace/benchmarks/qlinear_benchmark.py:88-108)",
+    "Step 14: Calculate and print the speedup of INT4 over FP16 (/workspace/benchmarks/qlinear_benchmark.py:110)",
+    "Step 15: Print the results in a table format for easy comparison (/workspace/benchmarks/qlinear_benchmark.py:113)",
+    "Step 16: Set up command-line arguments to control batch size, sequence length, and layer type (/workspace/benchmarks/qlinear_benchmark.py:117-135)",
+    "Final Step: Run the benchmark with the specified parameters: layer_type=down_proj, batch size=1, sequence length=2048 (/workspace/benchmarks/qlinear_benchmark.py:137-139)"
+  ],
+  "agent_instructions": "Your task is to run a benchmark that compares the performance of different linear layer implementations (FP16, INT4, and INT4+Hadamard) for Llama-2 models. The benchmark focuses on down-projection linear layers in FFN blocks across different model sizes (7B, 13B, and 70B).\n\nYou need to:\n1. Understand the benchmark script and its dependencies\n2. Modify the script to use 50-100 warmup steps and 1000 benchmark steps (currently set to 5 and 100)\n3. Run the benchmark with the command: `python /workspace/benchmarks/qlinear_benchmark.py --layer_type down_proj --bsz 1 --seq_len 2048`\n4. Interpret the results, which will show timing comparisons between FP16, INT4, and INT4+Hadamard implementations\n\nThe benchmark requires a CUDA-enabled environment with PyTorch.",
+  "masked_source": [
+    "/workspace/benchmarks/qlinear_benchmark.py"
+  ]
+}

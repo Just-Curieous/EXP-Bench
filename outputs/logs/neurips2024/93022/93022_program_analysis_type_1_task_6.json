@@ -1,0 +1,32 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments for training including data paths, model configuration, and training parameters (/workspace/train.py:1-4)",
+    "Step 2: Initialize wandb logging if specified (/workspace/train.py:15-22)",
+    "Step 3: Load training and validation datasets from specified paths (/workspace/train.py:25-30)",
+    "Step 4: Create data loaders for training and validation sets (/workspace/train.py:32-43)",
+    "Step 5: Initialize the SiT model with Hyena operator (/workspace/train.py:44)",
+    "Step 6: Configure PyTorch Lightning trainer with specified parameters and callbacks (/workspace/train.py:46-68)",
+    "Step 7: Train the model and validate at specified intervals (/workspace/train.py:74-77)",
+    "Step 8: Parse command line arguments for inference including checkpoint path, data paths, and output options (/workspace/sim_inference.py:1-14)",
+    "Step 9: Load the trained model from checkpoint (/workspace/sim_inference.py:129-130)",
+    "Step 10: Load test data from specified split file (/workspace/sim_inference.py:133-134)",
+    "Step 11: For each molecule in the test set, extract initial coordinates/frames (/workspace/sim_inference.py:32-59, 101-104)",
+    "Step 12: Perform rollout simulations using the trained model (/workspace/sim_inference.py:61-98, 108-117)",
+    "Step 13: Save the generated trajectories in PDB format and optionally XTC format (/workspace/sim_inference.py:118-125)",
+    "Step 14: Parse command line arguments for trajectory analysis (/workspace/scripts/analyze_peptide_sim.py:1-17)",
+    "Step 15: Load generated trajectories and reference (ground truth) trajectories (/workspace/scripts/analyze_peptide_sim.py:44-46)",
+    "Step 16: Calculate Jensen-Shannon divergence between torsion angle distributions (/workspace/scripts/analyze_peptide_sim.py:50-59)",
+    "Step 17: Compute torsional autocorrelation functions for both reference and generated trajectories (/workspace/scripts/analyze_peptide_sim.py:65-101)",
+    "Step 18: Perform dimensionality reduction using TICA (time-lagged independent component analysis) (/workspace/scripts/analyze_peptide_sim.py:104-110)",
+    "Step 19: Compare TICA projections between reference and generated trajectories (/workspace/scripts/analyze_peptide_sim.py:118-124)",
+    "Step 20: Optionally build Markov state models to analyze dynamics (/workspace/scripts/analyze_peptide_sim.py:153-197)",
+    "Step 21: Generate plots comparing the simulated trajectories with reference data (/workspace/scripts/analyze_peptide_sim.py:31-202)",
+    "Final Step: Save analysis results to a pickle file (/workspace/scripts/analyze_peptide_sim.py:225-227)"
+  ],
+  "agent_instructions": "Your task is to implement a workflow for training a molecular dynamics generative model, generating trajectories, and analyzing them. The workflow consists of three main scripts:\n\n1. A training script that:\n   - Trains a Simulation Transformer (SiT) model with the Hyena operator on molecular dynamics data\n   - Takes command line arguments for data paths, model configuration, and training parameters\n   - Uses PyTorch Lightning for the training loop\n   - Supports wandb logging\n   - Saves model checkpoints at specified intervals\n\n2. An inference script that:\n   - Loads a trained model checkpoint\n   - Generates molecular dynamics trajectories for molecules in a test set\n   - Takes command line arguments for checkpoint path, data paths, and output options\n   - Saves the generated trajectories in PDB format and optionally XTC format\n\n3. An analysis script that:\n   - Compares generated trajectories with reference (ground truth) trajectories\n   - Calculates torsional autocorrelation functions\n   - Computes Jensen-Shannon divergence between torsion angle distributions\n   - Performs dimensionality reduction using TICA (time-lagged independent component analysis)\n   - Optionally builds Markov state models to analyze dynamics\n   - Generates plots comparing the simulated trajectories with reference data\n   - Saves analysis results to a pickle file\n\nThe workflow should support the following command sequence as described in the usage instructions:\n1. Train the model: `python train.py --sim_condition --train_split splits/4AA_train.csv --val_split splits/4AA_val.csv --data_dir data/4AA_data/ --num_frames 1000 --prepend_ipa --abs_pos_emb --crop 4 --ckpt_freq 40 --val_repeat 25 --suffix _i100 --epochs 10000 --hyena --wandb --run_name [NAME]`\n2. Generate trajectories: `python sim_inference.py --sim_ckpt [PATH_TO_HYENA_MODEL_CHECKPOINT] --data_dir data/4AA_data --split splits/4AA_test.csv --num_rollouts 1 --num_frames 1000 --xtc --out_dir [OUTPUT_DIR]`\n3. Analyze trajectories: `python -m scripts.analyze_peptide_sim --mddir data/4AA_sims --pdbdir [OUTPUT_DIR] --plot --save --num_workers 1`",
+  "masked_source": [
+    "/workspace/train.py",
+    "/workspace/sim_inference.py",
+    "/workspace/scripts/analyze_peptide_sim.py"
+  ]
+}

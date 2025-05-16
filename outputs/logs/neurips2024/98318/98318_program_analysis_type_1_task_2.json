@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Set up a hyperparameter sweep configuration for Q-learning algorithms (IQL, VDN, QMIX) that defines the optimization method (Bayesian), metric to maximize (episode reward mean), and parameters to tune (/workspace/examples/sweep/wandb/sweepconfig.yaml:5-49)",
+    "Step 2: Configure key hyperparameters for tuning including learning rate, discount factor, exploration parameters, batch size, loss function, and algorithm-specific parameters like mixing network dimensions (/workspace/examples/sweep/wandb/sweepconfig.yaml:11-40)",
+    "Step 3: Set up early termination criteria using hyperband to efficiently stop underperforming runs (/workspace/examples/sweep/wandb/sweepconfig.yaml:42-49)",
+    "Step 4: Define the command structure to execute the BenchMARL run script with the sweep parameters (/workspace/examples/sweep/wandb/sweepconfig.yaml:51-55)",
+    "Step 5: Load experiment configuration from Hydra, extracting task and algorithm names from the configuration (/workspace/benchmarl/run.py:14-31)",
+    "Step 6: Initialize and run the experiment with the configured parameters (/workspace/benchmarl/run.py:37-38)",
+    "Final Step: Execute the main function when the script is run directly (/workspace/benchmarl/run.py:41-42)"
+  ],
+  "agent_instructions": "Create a system for hyperparameter tuning of Q-learning algorithms (IQL, VDN, QMIX) using Weights & Biases (W&B) sweeps and comparing their performance with actor-critic methods in multi-agent reinforcement learning tasks.\n\nYou need to implement:\n\n1. A hyperparameter sweep configuration file for W&B that:\n   - Uses Bayesian optimization to maximize the mean episode reward\n   - Tunes key hyperparameters for Q-learning algorithms including:\n     * Learning rate (experiment.lr)\n     * Discount factor (experiment.gamma)\n     * Exploration parameters (experiment.exploration_eps_init and experiment.exploration_eps_end)\n     * Batch size (experiment.off_policy_train_batch_size)\n     * Loss function type (algorithm.loss_function)\n     * For QMIX specifically: mixing network dimensions (algorithm.mixing_embed_dim)\n   - Implements early termination using hyperband to stop underperforming runs\n   - Defines the command structure to execute the BenchMARL run script with the sweep parameters\n\n2. A main script that:\n   - Uses Hydra for configuration management\n   - Loads experiment configurations based on specified algorithm and task\n   - Runs the experiment with the configured parameters\n   - Supports running multiple algorithms on multiple tasks with multiple seeds\n\nThe system should allow users to:\n1. Run hyperparameter sweeps for Q-learning algorithms\n2. Compare the performance of tuned Q-learning algorithms with actor-critic methods (MAPPO, MASAC) on continuous multi-robot control tasks from BenchMARL",
+  "masked_source": [
+    "/workspace/benchmarl/run.py",
+    "/workspace/examples/sweep/wandb/sweepconfig.yaml"
+  ]
+}

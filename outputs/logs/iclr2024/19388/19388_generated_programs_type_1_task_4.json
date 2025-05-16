@@ -1,0 +1,10 @@
+{
+    "source": [
+        "/workspace/tools/docta_rlhf.sh",
+        "/workspace/tools/diagnose_rlhf.py",
+        "/workspace/tools/cure_hh_rlhf.py",
+        "/workspace/tools/cure_red_team_rlhf.py",
+        "/workspace/docta/apis/train.py"
+    ],
+    "usage_instructions": "1. First run the docta_rlhf.sh script to diagnose and clean the datasets: `bash ./tools/docta_rlhf.sh`. This script will identify label errors in both the Anthropic Harmless dataset and Red Team dataset, and create cleaned versions with corrected labels. 2. After cleaning the data, fine-tune BERT and GPT-2 models on both the raw and cleaned datasets using the train_model function in docta/apis/train.py. 3. Evaluate the models on both the ChatGPT Cleaned test set and Human Sampled test set to compare F1-scores between models trained on raw data versus models trained on Docta-cleaned data. The evaluation should show that models trained on Docta-cleaned data achieve higher F1-scores on both test sets, validating the hypothesis that Docta-cleaned labels have higher credibility."
+}

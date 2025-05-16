@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including poison_type (badnet, blend, trojan), poison_rate, alpha, and trigger parameters (/workspace/create_poisoned_set_imagenet.py:11-23)",
+    "Step 2: Set up the dataset name as 'imagenet' and initialize random seed (/workspace/create_poisoned_set_imagenet.py:23-24)",
+    "Step 3: Use default trigger if none is specified (/workspace/create_poisoned_set_imagenet.py:26-27)",
+    "Step 4: Validate that the poison_type is supported for ImageNet (badnet, trojan, blend) (/workspace/create_poisoned_set_imagenet.py:35-36)",
+    "Step 5: Create necessary directories for storing poisoned dataset (/workspace/create_poisoned_set_imagenet.py:41-51)",
+    "Step 6: Randomly select a subset of images to poison based on poison_rate (/workspace/create_poisoned_set_imagenet.py:56-61)",
+    "Step 7: Load ImageNet dataset structure (classes, paths) (/workspace/create_poisoned_set_imagenet.py:66-69)",
+    "Step 8: Define image transformation to resize images to 256x256 and convert to tensor (/workspace/create_poisoned_set_imagenet.py:71-74)",
+    "Step 9: Get the appropriate poison transform based on poison_type (/workspace/create_poisoned_set_imagenet.py:77-81)",
+    "Step 10: Apply poison transform to selected images and save them to the poisoned dataset directory (/workspace/create_poisoned_set_imagenet.py:84-98)",
+    "Step 11: Save the indices of poisoned samples for future reference (/workspace/create_poisoned_set_imagenet.py:102-104)",
+    "Step 12: Parse command line arguments for defense evaluation including dataset, poison_type, poison_rate, and defense method (/workspace/other_defense.py:6-33)",
+    "Step 13: Set up environment (GPU devices, logging) (/workspace/other_defense.py:40-70)",
+    "Step 14: Initialize timing for performance measurement (/workspace/other_defense.py:72)",
+    "Step 15: Initialize and run the BaDExpert defense method on the poisoned dataset (/workspace/other_defense.py:257-260)",
+    "Step 16: Record and report elapsed time (/workspace/other_defense.py:264-265)"
+  ],
+  "agent_instructions": "Your task is to implement a system to evaluate the BaDExpert defense against backdoor attacks on ImageNet across multiple model architectures. You need to create two main scripts:\n\n1. A script to create poisoned ImageNet datasets with the following capabilities:\n   - Support for different backdoor attack types: BadNet, Blend, and TrojanNN\n   - Configurable poison rate (percentage of training images to poison)\n   - Proper handling of ImageNet's directory structure and image transformations\n   - The script should resize images to 256x256, apply the appropriate trigger based on attack type, and save the poisoned images\n   - Track and save the indices of poisoned samples\n\n2. A script to evaluate the BaDExpert defense method with the following capabilities:\n   - Take parameters for dataset (ImageNet), poison type, poison rate, and defense method\n   - Set up proper logging to record results\n   - Initialize and run the BaDExpert defense on the poisoned dataset\n   - Measure and report performance metrics (time, AUROC, ASR, Clean Accuracy)\n\nThe system should work with different model architectures (ResNet18, ResNet101, ViT-B/16) as specified in the configuration. The evaluation should be performed on each combination of model architecture and attack type.",
+  "masked_source": [
+    "/workspace/create_poisoned_set_imagenet.py",
+    "/workspace/other_defense.py"
+  ]
+}

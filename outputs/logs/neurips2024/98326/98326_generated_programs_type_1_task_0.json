@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/examples/few-shot/maml_omniglot.py",
+        "/workspace/examples/distributed/few-shot/maml_omniglot.py"
+    ],
+    "usage_instructions": "First, run the sequential training script on a single GPU with: `python /workspace/examples/few-shot/maml_omniglot.py`. Then, run the distributed training script on 8 GPUs with: `torchrun --nnode 1 --nproc_per_node 8 /workspace/examples/distributed/few-shot/maml_omniglot.py`. Both scripts implement MAML on the Omniglot dataset with the same hyperparameters and will output training accuracy and wall time metrics. The distributed version uses TorchOpt's RPC-based distributed training framework to parallelize computation across 8 GPUs, which should achieve similar training accuracy but with significantly reduced wall time as shown in Figure 7 of the paper."
+}

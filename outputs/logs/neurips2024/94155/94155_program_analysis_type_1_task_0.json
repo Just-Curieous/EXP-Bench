@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Generate Hilbert curve templates required for the Voxel Mamba model with three different bit sizes (9, 8, 7) and corresponding z-max values (41, 17, 9) (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:144-219)",
+    "Step 2: Load configuration from YAML file for either Voxel Mamba or DSVT model (/workspace/tools/test.py:21-55)",
+    "Step 3: Build the test dataloader with the Waymo dataset configuration (/workspace/tools/test.py:194-199)",
+    "Step 4: Build the 3D object detection network (either Voxel Mamba or DSVT) based on the loaded configuration (/workspace/tools/test.py:201)",
+    "Step 5: Load the model checkpoint specified by the user (/workspace/tools/test.py:58-62)",
+    "Step 6: Run evaluation on the test dataset using the loaded model (/workspace/tools/test.py:64-68)",
+    "Step 7: Calculate and report Level 1 (L1) and Level 2 (L2) mAPH metrics for the evaluated model (/workspace/tools/test.py:123-126)",
+    "Final Step: Compare the evaluation metrics between Voxel Mamba and DSVT models to verify the performance improvement claimed in the paper (/workspace/tools/test.py:123-135)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for comparing the performance of Voxel Mamba and DSVT-based backbones on the Waymo Open Dataset for 3D object detection. The experiment involves the following steps:\n\n1. Create a script to generate Hilbert curve templates that are required for the Voxel Mamba model. These templates should be generated for three different resolutions (bit sizes 9, 8, and 7) with corresponding z-max values (41, 17, 9). The templates should be saved as PyTorch files in a 'hilbert' directory.\n\n2. Implement a testing script that can evaluate 3D object detection models on the Waymo dataset. The script should:\n   - Accept command-line arguments for configuration file path and model checkpoint path\n   - Support distributed testing across multiple GPUs\n   - Load model configurations from YAML files\n   - Build the appropriate model architecture (either Voxel Mamba or DSVT) based on the configuration\n   - Load the specified model checkpoint\n   - Evaluate the model on the Waymo validation set\n   - Calculate and report Level 1 (L1) and Level 2 (L2) mAPH metrics\n\n3. Create configuration files for both models:\n   - Voxel Mamba configuration should specify a 3D backbone that uses Hilbert curve-based sequence modeling\n   - DSVT configuration should specify a Dynamic Sparse Voxel Transformer backbone\n   - Both configurations should use the same detection head (CenterPoint) and be set up for the Waymo dataset with the same point cloud range and voxel size\n\n4. Create a shell script that wraps the testing script to enable distributed evaluation across multiple GPUs\n\nThe goal is to verify that the Voxel Mamba model achieves approximately +1.4 improvement in Level 1 mAPH and +1.5 improvement in Level 2 mAPH compared to the DSVT backbone on the Waymo Open Dataset.",
+  "masked_source": [
+    "/workspace/tools/test.py",
+    "/workspace/tools/scripts/dist_test.sh",
+    "/workspace/tools/cfgs/voxel_mamba_models/voxel_mamba_waymo.yaml",
+    "/workspace/tools/cfgs/waymo_models/dsvt_voxel.yaml",
+    "/workspace/tools/hilbert_curves/create_hilbert_curve_template.py"
+  ]
+}

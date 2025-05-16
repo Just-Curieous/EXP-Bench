@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/scripts/infinitebench.sh", "/workspace/config/mistral-inf-llm.yaml", "/workspace/config/mistral-infinite-lm.yaml"],
+    "usage_instructions": "1. First download the InfiniteBench datasets by running 'bash scripts/download.sh'. 2. Run the InfLLM evaluation by executing 'bash scripts/infinitebench.sh' with the default config (config/mistral-inf-llm.yaml). 3. Run the LM-Infinite baseline evaluation by modifying the infinitebench.sh script to use the LM-Infinite config (config=config/mistral-infinite-lm.yaml) and execute it. 4. Compare the results in the benchmark/infinite-bench-result directory, focusing on the passkey task accuracy across different sequence lengths."
+}

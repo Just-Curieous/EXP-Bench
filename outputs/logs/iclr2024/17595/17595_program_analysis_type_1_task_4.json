@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Check for required dependencies (libibverbs) before running the experiment (/workspace/examples/test_all_schedules.sh:3-8)",
+    "Step 2: Define the scheduling methods to be tested, including 1F1B, 1F1B-I, ZB-2p, ZB-H1, ZB-H2 (/workspace/examples/test_all_schedules.sh:10-19)",
+    "Step 3: Set up distributed training environment variables if not already set (/workspace/examples/test_all_schedules.sh:22-34)",
+    "Step 4: Wait for GPUs to be available before starting the experiment (/workspace/examples/test_all_schedules.sh:38-59)",
+    "Step 5: Set common environment variables for all experiments (CUDA settings, logging parameters) (/workspace/examples/test_all_schedules.sh:61-65)",
+    "Step 6: Determine the number of GPUs available for pipeline parallelism (/workspace/examples/test_all_schedules.sh:67)",
+    "Step 7: For each scheduling method, configure the model parameters (hidden size, layers, attention heads) according to the target model size (/workspace/examples/test_all_schedules.sh:71-86)",
+    "Step 8: For each scheduling method, set the pipeline size and calculate appropriate batch sizes (/workspace/examples/test_all_schedules.sh:77-82)",
+    "Step 9: Configure method-specific parameters for each scheduling algorithm (/workspace/examples/test_all_schedules.sh:88-142)",
+    "Step 10: Create log directories and prepare output files (/workspace/examples/test_all_schedules.sh:144-152)",
+    "Step 11: Execute the appropriate training script based on the scheduling method (/workspace/examples/test_all_schedules.sh:154-158)",
+    "Step 12: Monitor the training process and handle completion (/workspace/examples/test_all_schedules.sh:159-174)",
+    "Step 13: Download and prepare the sample dataset if not already available (/workspace/examples/pretrain_zero_bubble.sh:13-20)",
+    "Step 14: Configure model architecture parameters (layers, hidden size, attention heads) (/workspace/examples/pretrain_zero_bubble.sh:72-84)",
+    "Step 15: Set up method-specific command line options for each scheduling algorithm (/workspace/examples/pretrain_zero_bubble.sh:124-149)",
+    "Step 16: Launch distributed training with torchrun and the appropriate parameters (/workspace/examples/pretrain_zero_bubble.sh:151-168)"
+  ],
+  "agent_instructions": "Create a script to compare the bubble rates of different pipeline parallelism scheduling algorithms for large language model training. The script should test five scheduling methods: 1F1B (One Forward One Backward), 1F1B-I (Interleaved), ZB-2p (Zero Bubble with 2 pending backward passes), ZB-H1 (Zero Bubble Handcrafted 1), and ZB-H2 (Zero Bubble Handcrafted 2).\n\nThe script should:\n\n1. Test each scheduling method with four different model sizes corresponding to 1.5B, 6.2B, 14.6B, and 28.3B parameters by configuring appropriate hidden sizes, attention heads, and number of layers.\n\n2. For each model configuration, set the appropriate number of pipeline stages and test with different micro-batch sizes (e.g., 24, 32, 64).\n\n3. Configure method-specific parameters for each scheduling algorithm:\n   - For 1F1B: Use the standard pipeline parallelism approach\n   - For 1F1B-I: Enable interleaved scheduling\n   - For ZB-2p: Enable zero bubble scheduling with appropriate memory limits\n   - For ZB-H1: Enable zero bubble scheduling with a 'half' memory setup\n   - For ZB-H2: Enable zero bubble scheduling with a 'min' memory setup\n\n4. Execute the training for each configuration and collect logs in a structured directory.\n\n5. The script should handle downloading a sample dataset if not already available.\n\n6. Ensure proper environment setup for distributed training, including CUDA configurations.\n\n7. The bubble rate can be calculated from the logs using the formula: bubble rate = (cost - m*(TF+TB+TW)) / cost, where cost is the total execution time, m is the number of microbatches, and TF, TB, TW are the times for forward pass, backward pass, and weight update respectively.\n\nMake sure to check for required dependencies before running the experiment and implement proper error handling.",
+  "masked_source": [
+    "/workspace/examples/test_all_schedules.sh",
+    "/workspace/examples/pretrain_zero_bubble.sh",
+    "/workspace/examples/pretrain_offload.sh"
+  ]
+}

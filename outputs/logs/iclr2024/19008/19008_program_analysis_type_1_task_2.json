@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including model name, questionnaire name, shuffle count, test count, experiment name, significance level, and OpenAI API key (run_psychobench.py:7-25)",
+    "Step 2: Load the specified questionnaire (ICB) from questionnaires.json file, which contains questions, scoring scales, and human baseline data (utils.py:13-29)",
+    "Step 3: Create results directories if they don't exist (utils.py:491-492)",
+    "Step 4: Generate test files with questions in specified order, including original order and optional shuffled orders (utils.py:61-88)",
+    "Step 5: Set up API credentials for the language model (example_generator.py:78)",
+    "Step 6: For each question order (original and shuffled), run the language model multiple times according to test_count (example_generator.py:102-157)",
+    "Step 7: Format prompts with appropriate instructions for the ICB questionnaire and send to the language model (example_generator.py:113-126)",
+    "Step 8: Parse model responses to extract numerical scores (example_generator.py:62-70)",
+    "Step 9: Save prompts and responses to files for reference (example_generator.py:132-138)",
+    "Step 10: Convert raw responses into structured data for analysis (utils.py:92-137)",
+    "Step 11: Compute statistics (mean and standard deviation) for each category in the questionnaire (utils.py:141-164)",
+    "Step 12: Perform hypothesis testing to compare model results with human baseline data (utils.py:168-239)",
+    "Step 13: Generate visualizations of the results (utils.py:33-57)",
+    "Step 14: Save results in markdown format with statistical analysis (utils.py:449-474)"
+  ],
+  "agent_instructions": "Create a system to evaluate language models on the Implicit Person Theory of Ethnocultural Beliefs (ICB) questionnaire, which measures beliefs about whether ethnocultural characteristics are fixed or malleable. The system should:\n\n1. Accept command line arguments for model selection (e.g., llama-2-7b, gpt-3.5-turbo), questionnaire type (ICB), number of test runs, and API credentials when needed.\n\n2. Load the ICB questionnaire, which contains 8 statements about ethnocultural beliefs that are rated on a 6-point scale from 'strongly disagree' to 'strongly agree'.\n\n3. Generate prompts for the language model that instruct it to respond with numerical scores (1-6) for each statement.\n\n4. Send the prompts to the specified language model and collect responses, handling different model types appropriately (OpenAI API for GPT models, etc.).\n\n5. Parse the responses to extract numerical scores, handling potential formatting issues.\n\n6. Calculate statistics (mean and standard deviation) from the collected scores, applying reverse scoring where needed (statements 5-8 in ICB are reverse-scored).\n\n7. Compare the model's results with human baseline data (the human average ICB score is approximately 3.7).\n\n8. Perform statistical analysis (t-tests) to determine if the model's responses differ significantly from human responses.\n\n9. Generate visualizations and save results in a readable format.\n\nThe system should be able to run multiple tests with the same or different question orders to ensure reliability of the results.",
+  "masked_source": [
+    "/workspace/run_psychobench.py",
+    "/workspace/utils.py",
+    "/workspace/example_generator.py"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by configuring random seeds for reproducibility (/workspace/test.py:18-24)",
+    "Step 2: Parse command line arguments for dataset path, model parameters, and evaluation settings (/workspace/test.py:176-196)",
+    "Step 3: Initialize the logger to record evaluation results (/workspace/test.py:38)",
+    "Step 4: Load the AnomalyCLIP model with specified parameters (prompt length, text embedding depth, etc.) (/workspace/test.py:41-44)",
+    "Step 5: Prepare data transformations and load the test dataset with appropriate preprocessing (/workspace/test.py:46-48)",
+    "Step 6: Initialize data structures to store evaluation results for each object class (/workspace/test.py:52-64)",
+    "Step 7: Load the prompt learner with pre-trained weights from the checkpoint (/workspace/test.py:66-71)",
+    "Step 8: Generate text features for normal and abnormal classes using the prompt learner (/workspace/test.py:73-76)",
+    "Step 9: For each test image, extract image features and patch features using the model (/workspace/test.py:80-90)",
+    "Step 10: Compute similarity between image features and text features to generate anomaly scores (/workspace/test.py:92-95)",
+    "Step 11: Generate anomaly maps by computing similarity between patch features and text features (/workspace/test.py:96-109)",
+    "Step 12: Apply Gaussian filtering to smooth the anomaly maps (/workspace/test.py:111)",
+    "Step 13: Calculate evaluation metrics based on the specified metrics parameter (image-level, pixel-level, or both) (/workspace/test.py:115-152)",
+    "Step 14: Compute mean performance across all object classes (/workspace/test.py:154-172)",
+    "Step 15: Output the evaluation results in a tabular format (/workspace/test.py:173)",
+    "Final Step: Execute the test script with appropriate parameters for each dataset as specified in the shell script (/workspace/test.sh:14-17, 33-36)"
+  ],
+  "agent_instructions": "Your task is to implement a system for evaluating anomaly detection models on various datasets. The system should evaluate AnomalyCLIP against other methods (CLIP, CLIP-AC, WinCLIP, V AND, and CoOp) on industrial and medical datasets.\n\nImplement a Python script that:\n1. Takes command-line arguments for dataset path, model parameters, and evaluation settings\n2. Loads a pre-trained AnomalyCLIP model\n3. Processes test data from the specified dataset\n4. Uses prompt learning to generate text features for normal and abnormal classes\n5. Computes image features and patch features from test images\n6. Calculates similarity between image/patch features and text features to generate anomaly scores and maps\n7. Applies appropriate post-processing (like Gaussian filtering) to the anomaly maps\n8. Calculates evaluation metrics at both image level (AUROC, AP) and pixel level (AUROC, AUPRO)\n9. Outputs results in a tabular format\n\nAlso implement a shell script that:\n1. Sets up parameters like model depth and context length\n2. Runs the evaluation script for different datasets with appropriate parameters\n3. Uses the correct checkpoint paths for each dataset\n\nThe system should work with various industrial datasets (MVTec AD, VisA, MPDD, BTAD, SDD, TextureDAGM, DTD-Synthetic) and medical datasets (BrainHeadCT, BrainMRI, Br35H, Chest COVID-19, ISIC, ColonCVC-ClinicDB, Kvasir, Endo, TN3K).",
+  "masked_source": [
+    "/workspace/test.py",
+    "/workspace/test.sh"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including RDKit, selfies, pandas, and any other required dependencies (simple_generate.py:1-10)",
+    "Step 2: Define a function to load a sample of molecules from the ZINC dataset (simple_generate.py:12-20)",
+    "Step 3: Define a function to convert SMILES strings to SELFIES representation using the selfies library (simple_generate.py:22-30)",
+    "Step 4: Define a function to calculate QED (Quantitative Estimation of Drug-likeness) for each molecule using RDKit (simple_generate.py:32-40)",
+    "Step 5: Create a main function that processes a batch of molecules by loading them, converting representations, and calculating properties (simple_generate.py:42-60)",
+    "Step 6: Display information about each molecule including SMILES, SELFIES, and QED score (simple_generate.py:62-70)",
+    "Step 7: Save the processed molecules to a CSV file for further analysis (simple_generate.py:72-80)",
+    "Final Step: Execute the main function when the script is run directly (simple_generate.py:82-85)"
+  ],
+  "agent_instructions": "Create a Python script that analyzes molecular properties from the ZINC dataset. The script should:\n\n1. Load a sample of molecules from the ZINC dataset (you can use a small subset for demonstration purposes)\n2. For each molecule:\n   - Extract the SMILES notation\n   - Convert SMILES to SELFIES representation using the 'selfies' library\n   - Calculate the QED (Quantitative Estimation of Drug-likeness) value using RDKit\n3. Display information about each processed molecule, showing its SMILES string, SELFIES representation, and QED score\n4. Save all the processed data to a CSV file for further analysis\n\nRequired libraries:\n- RDKit for molecular processing and QED calculation\n- selfies for SMILES to SELFIES conversion\n- pandas for data handling and CSV export\n\nThe script should be modular with separate functions for data loading, SMILES-to-SELFIES conversion, and property calculation. Make sure to include appropriate error handling for invalid molecules."
+}

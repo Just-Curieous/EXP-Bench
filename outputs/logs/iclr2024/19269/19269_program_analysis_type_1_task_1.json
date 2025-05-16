@@ -1,0 +1,27 @@
+{
+  "requirements": [
+    "Step 1: Set up the experiment configuration with different MSM sampling strategies (min, max, mean) and hybrid approaches (30%+min, 30%+max, 30%+mean) (/workspace/scripts/run_msm_ablation_study.sh:15-22)",
+    "Step 2: Define datasets to test (MVTec AD and VisA) (/workspace/scripts/run_msm_ablation_study.sh:7)",
+    "Step 3: Parse command line arguments including MSM strategy parameters (msm_strategy, topmin_min, topmin_max) (/workspace/examples/musc_ablation_main.py:11-32)",
+    "Step 4: Load configuration and override with command line arguments (/workspace/examples/musc_ablation_main.py:35-87)",
+    "Step 5: Initialize the MuSc model with the ablation parameters (/workspace/examples/musc_ablation_main.py:97)",
+    "Step 6: Load the appropriate backbone model (ViT/CLIP) (/workspace/models/musc_ablation.py:70-82)",
+    "Step 7: For each dataset category, load test data (/workspace/models/musc_ablation.py:85-98)",
+    "Step 8: Extract features from the backbone model (/workspace/models/musc_ablation.py:156-186)",
+    "Step 9: Process features through LNAMD (Local Neighborhood Anomaly Matrix Decomposition) (/workspace/models/musc_ablation.py:190-209)",
+    "Step 10: Apply MSM with the specified strategy (min, max, or mean) and topmin parameters (/workspace/models/musc_ablation.py:212-225)",
+    "Step 11: Compute anomaly maps by interpolating the results (/workspace/models/musc_ablation.py:232-237)",
+    "Step 12: Apply RsCIN (Robust Score Calibration with Image Neighborhood) for image-level anomaly detection (/workspace/models/musc_ablation.py:246-254)",
+    "Step 13: Compute evaluation metrics (AUROC, F1, AP, AUPRO) for both image-level and pixel-level detection (/workspace/models/musc_ablation.py:256-266)",
+    "Step 14: Calculate mean performance across all categories (/workspace/models/musc_ablation.py:295-309)",
+    "Step 15: Save results to Excel files with strategy information in the filename (/workspace/models/musc_ablation.py:312-348)",
+    "Final Step: Run the experiment for all combinations of datasets and strategies (/workspace/scripts/run_msm_ablation_study.sh:25-51)"
+  ],
+  "agent_instructions": "Create a system to perform an ablation study on different sampling strategies for anomaly detection. The goal is to evaluate how different strategies for computing anomaly scores affect detection performance.\n\nYour implementation should:\n\n1. Support multiple sampling strategies for anomaly detection:\n   - Minimum score strategy: Using the minimum value of anomaly scores\n   - Maximum score strategy: Using the maximum value of anomaly scores\n   - Mean score strategy: Using the mean value of anomaly scores\n   - Hybrid approaches that first select the top N% minimum distances and then apply min/max/mean\n\n2. Run experiments on anomaly detection datasets (MVTec AD and VisA)\n\n3. Use a pre-trained vision model (like ViT or CLIP) as the feature extractor\n\n4. Process the extracted features through:\n   - A local neighborhood feature aggregation mechanism\n   - A mutual scoring mechanism that computes anomaly scores using the specified strategy\n   - A score calibration component for image-level anomaly detection\n\n5. Evaluate performance using standard metrics:\n   - Image-level: AUROC, F1 score, Average Precision\n   - Pixel-level: AUROC, F1 score, Average Precision, AUPRO\n\n6. Save results to Excel files for easy comparison between strategies\n\n7. Support command-line arguments to specify:\n   - The sampling strategy (min, max, mean)\n   - The percentage range for hybrid approaches (e.g., 0-30%)\n   - Dataset paths and names\n   - Model configuration (backbone, feature layers, etc.)\n\nThe default strategy should be '30% + mean' (selecting top 30% minimum distances and taking their mean), which is expected to perform best according to prior research.",
+  "masked_source": [
+    "/workspace/scripts/run_msm_ablation_study.sh",
+    "/workspace/examples/musc_ablation_main.py",
+    "/workspace/models/musc_ablation.py",
+    "/workspace/models/modules/_MSM_ablation.py"
+  ]
+}

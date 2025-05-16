@@ -1,0 +1,17 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including jax and jaxmarl modules (/workspace/jaxmarl/tutorials/mpe_introduction.py:5-7)",
+    "Step 2: Set up parameters including the number of steps (25) and initialize random keys (/workspace/jaxmarl/tutorials/mpe_introduction.py:10-12)",
+    "Step 3: Initialize the MPE environment using the make function with 'MPE_simple_reference_v3' (/workspace/jaxmarl/tutorials/mpe_introduction.py:15)",
+    "Step 4: Reset the environment to get initial observations and state (/workspace/jaxmarl/tutorials/mpe_introduction.py:16)",
+    "Step 5: Create a list to store the sequence of states (/workspace/jaxmarl/tutorials/mpe_introduction.py:25)",
+    "Step 6: Run a loop for the specified number of steps (25) (/workspace/jaxmarl/tutorials/mpe_introduction.py:26-34)",
+    "Step 7: Within each loop iteration, store the current state in the sequence (/workspace/jaxmarl/tutorials/mpe_introduction.py:27)",
+    "Step 8: Generate new random keys for each step and agent (/workspace/jaxmarl/tutorials/mpe_introduction.py:29-30)",
+    "Step 9: Sample random actions for each agent using their respective action spaces (/workspace/jaxmarl/tutorials/mpe_introduction.py:31)",
+    "Step 10: Step the environment forward using the actions and get updated observations, state, rewards, etc. (/workspace/jaxmarl/tutorials/mpe_introduction.py:34)",
+    "Step 11: Create a visualizer using the MPEVisualizer class with the environment and state sequence (/workspace/jaxmarl/tutorials/mpe_introduction.py:37)",
+    "Step 12: Generate and display an animation of the agent movements (/workspace/jaxmarl/tutorials/mpe_introduction.py:38)"
+  ],
+  "agent_instructions": "Create a program that demonstrates how to use the Multi-Particle Environment (MPE) in JaxMarl to run a simple simulation with random agent actions and visualize the results. Your program should:\n\n1. Import the necessary libraries from jax and jaxmarl, particularly the 'make' function and the MPEVisualizer class.\n\n2. Set up the simulation parameters, including a fixed number of steps (25) and initialize random keys for reproducibility.\n\n3. Create the MPE environment using the 'MPE_simple_reference_v3' environment type.\n\n4. Reset the environment to get the initial state and observations.\n\n5. Run a simulation loop for the specified number of steps where you:\n   - Store each state in a sequence for later visualization\n   - Generate random actions for each agent in the environment\n   - Step the environment forward using these actions\n   - Collect the updated observations, state, rewards, and other information\n\n6. After completing the simulation, create a visualizer using the MPEVisualizer class and generate an animation showing how the agents moved throughout the simulation.\n\nThe final output should be a visualization of the MPE environment showing the agents moving randomly over the course of the simulation."
+}

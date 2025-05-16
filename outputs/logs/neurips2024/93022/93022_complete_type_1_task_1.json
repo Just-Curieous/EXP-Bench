@@ -1,0 +1,160 @@
+{
+  "questions": [
+    {
+      "question": "Does the model accurately capture the dynamical content of MD trajectories, specifically in terms of torsion angle relaxation times, autocorrelation behavior at sub-picosecond timescales, and state transition fluxes between metastable states?",
+      "method": "#### Problem Setup\n\n- **Objective**: Evaluate the dynamic fidelity of MDGEN-sampled trajectories compared to ground-truth MD, focusing on torsional relaxation timescales, autocorrelation behaviors, and state-level dynamics via MSM fluxes.\n- **System**: Tetrapeptide trajectories from all-atom explicit-solvent MD.\n\n#### Independent Variables\n\n- **Trajectory Type**:\n  - Ground-truth MD trajectory (100 ns)\n  - Model-generated trajectory (100 ns from 10 \u00d7 10 ns segments)\n- **Torsion Angle Category**:\n  - Sidechain torsions\n  - Backbone torsions\n- **Lag Time Range**:\n  - 100 fs to 100 ps\n\n#### Dependent Variables (Evaluation Metrics)\n\n- **Relaxation Times**: Extracted from torsional autocorrelation functions.\n- **Autocorrelation Profile**: Including negative derivatives with respect to log-timescale to capture fast dynamic features.\n- **MSM Flux Matrix Correlation**: Spearman correlation between flux matrices from MSMs built on MD vs. generated data.\n\n#### Experiment Components\n\n- **Trajectory Generation**:\n  - Generate both MD and MDGEN-sampled 100 ns trajectories for a test set of tetrapeptides.\n- **Autocorrelation Analysis**:\n  1. For each torsion angle (\u03c8, \u03c6, \u03c7), compute:\n      \u27e8cos(\u03b8(t) \u2212 \u03b8(t + \u0394t))\u27e9\n      where \u0394t spans 100 fs to 100 ps.\n  2. Estimate **relaxation times** as the lag time where the autocorrelation drops below 1/e of its initial value.\n  3. Separate results for:\n     - Sidechain torsions\n     - Backbone torsions\n  4. Compute the **negative derivative** of the autocorrelation with respect to log-timescale to highlight fine dynamic relaxations and sub-picosecond oscillations.\n- **Markov State Model (MSM) Flux Comparison**:\n  1. Build MSMs by clustering torsion features (via TICA + k-means + PCCA+) from:\n     - Ground-truth MD trajectories\n     - Model-generated trajectories\n  2. Construct **flux matrices** (transition fluxes between metastable states).\n  3. Calculate **Spearman correlation** between MD and MDGEN flux matrices.",
+      "expected_outcome": "Torsion Relaxation Times: Strong correlation (close agreement) for sidechain torsions. Reasonable correlation for backbone torsions.\n\nAutocorrelation Behavior: MDGEN should recover sub-picosecond oscillations and detailed dynamic features not captured in sparsely sampled MD.\n\nMSM Flux Matrix: Spearman correlation \u2248 0.67 \u00b1 0.01 between MD and MDGEN flux matrices, indicating effective recovery of high-flux state transitions.",
+      "design_complexity": {
+        "constant_variables": {
+          "system": "Tetrapeptide trajectories simulated via all-atom explicit-solvent MD"
+        },
+        "independent_variables": {
+          "Trajectory Type": [
+            "Ground-truth MD trajectory (100 ns)",
+            "Model-generated trajectory (100 ns via 10 \u00d7 10 ns segments)"
+          ],
+          "Torsion Angle Category": [
+            "Sidechain torsions",
+            "Backbone torsions"
+          ],
+          "Lag Time Range": "Continuous range from 100 fs to 100 ps"
+        },
+        "dependent_variables": {
+          "Relaxation Times": "Estimated as the lag time where the autocorrelation drops below 1/e of its initial value",
+          "Autocorrelation Profile": "Profile of autocorrelation functions and its negative derivative over a log-timescale to capture fast dynamic features",
+          "MSM Flux Matrix Correlation": "Spearman correlation between flux matrices derived from MSMs built on ground-truth MD and model-generated data"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "Trajectory Composition": "It is not fully specified how the 10 \u00d7 10 ns segments are constructed (e.g., whether they are contiguous or sampled randomly) for the model-generated trajectory.",
+          "Autocorrelation Computation Details": "The exact method for computing the negative derivative of the autocorrelation with respect to the log-timescale is not fully detailed.",
+          "MSM Construction Parameters": "Details such as TICA settings, k-means clustering parameters, and PCCA+ implementation choices are not explicitly described."
+        },
+        "possible_modifications": {
+          "modification_TrajectoryComposition": [
+            "Clarify if the 10 \u00d7 10 ns segments for the model-generated trajectory are contiguous, overlapping, or randomly sampled."
+          ],
+          "modification_AutocorrelationDetails": [
+            "Provide explicit formulations or methodological details on how the negative derivative of the autocorrelation is computed."
+          ],
+          "modification_MSMParameters": [
+            "Include specific parameters (e.g., number of clusters, TICA lag times, etc.) used in the MSM construction to improve reproducibility and clarity."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Ground-truth MD trajectory generation (explicit-solvent MD simulation of tetrapeptides)",
+          "Model-generated trajectory creation (assembling 10 \u00d7 10 ns segments)",
+          "Extraction of torsion angles (\u03c8, \u03c6, \u03c7) for both sidechain and backbone",
+          "Autocorrelation analysis over lag times ranging from 100 fs to 100 ps",
+          "Estimation of relaxation times (lag time at 1/e drop)",
+          "Computation of the negative derivative of autocorrelation with respect to log-timescale",
+          "MSM construction using TICA, k-means clustering, and PCCA+",
+          "Computation of MSM flux matrices and Spearman correlation analysis"
+        ],
+        "setup_steps": [
+          "Simulate the 100 ns ground-truth MD trajectory using all-atom explicit-solvent MD for tetrapeptides",
+          "Generate the model-generated 100 ns trajectory by combining 10 separate 10 ns segments",
+          "Extract torsion angle data from both trajectories",
+          "Compute autocorrelation functions for each torsion angle over continuous lag times from 100 fs to 100 ps",
+          "Estimate relaxation times based on the lag time where the autocorrelation drops below 1/e of its initial value",
+          "Calculate the negative derivative of the autocorrelation function with respect to the log-timescale to capture fast dynamics",
+          "Perform dimensionality reduction (TICA) and cluster the torsion features using k-means followed by PCCA+ to construct MSMs",
+          "Construct flux matrices from the MSMs and compute the Spearman correlation between the ground-truth and model-generated data"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Multiple Analysis Metrics",
+            "description": "Integrating both time-domain analyses (autocorrelation and relaxation times) and state-space analyses (MSM flux matrices) increases the experimental complexity."
+          },
+          {
+            "source": "Trajectory Segmentation",
+            "description": "Assembling a long model-generated trajectory from several 10 ns segments adds complexity regarding the continuity and representativeness of the dynamics."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Trajectory Composition",
+          "Autocorrelation Computation Details",
+          "MSM Construction Parameters"
+        ],
+        "ambiguous_setup_steps": [
+          "The method for assembling 10 \u00d7 10 ns segments into a continuous 100 ns trajectory is not clearly specified (e.g., whether the segments are contiguous, overlapping, or randomly sampled)",
+          "The exact procedure or formulation for computing the negative derivative of the autocorrelation with respect to the log-timescale is not provided",
+          "Key parameters for the MSM construction, including TICA settings, k-means clustering parameters, and PCCA+ implementation details, are not explicitly described"
+        ],
+        "possible_modifications": {
+          "modification_TrajectoryComposition": [
+            "Clarify if the 10 \u00d7 10 ns segments used in the model-generated trajectory are contiguous, overlapping, or randomly sampled to ensure reproducibility"
+          ],
+          "modification_AutocorrelationDetails": [
+            "Provide explicit formulas or step-by-step methodological details on how the negative derivative of the autocorrelation is computed"
+          ],
+          "modification_MSMParameters": [
+            "Include specific settings such as TICA lag times, number of clusters for k-means, and PCCA+ parameters to improve clarity and reproducibility"
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "experiment_design": {
+            "modifications": [
+              "Clarify how the 10 \u00d7 10 ns segments are assembled into a continuous 100 ns trajectory (specify if segments are contiguous, overlapping, or randomly sampled) to avoid ambiguity in the dynamic continuity.",
+              "Provide explicit methodological details and formulas for computing the negative derivative of the autocorrelation function with respect to the log-timescale to capture fast dynamic features accurately.",
+              "Specify the parameters used in the MSM construction, such as the TICA lag time, number of k-means clusters, and PCCA+ settings, to improve the reproducibility and clarity of the analysis."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "source": "Random selection of trajectory segments and stochastic elements in autocorrelation computation",
+        "description": "The construction of the model-generated 100 ns trajectory from 10 \u00d7 10 ns segments may involve random sampling or ordering of segments. This randomness can result in discontinuities in the dynamic evolution of the trajectory, leading to variability in the computed torsion angle autocorrelation functions and relaxation times. Additionally, if certain aspects of the negative derivative computation of the autocorrelation depend on stochastic numerical approximations, this further contributes to random uncertainty.",
+        "impact": "Variability in the observed torsion relaxation times, sub-picosecond dynamic features, and MSM flux matrix correlations. This can affect the reproducibility of the results and may induce fluctuations between experimental runs.",
+        "possible_modifications": [
+          "Standardize the assembly of the 10 \u00d7 10 ns segments by ensuring they are contiguous or using a fixed random seed for segment selection.",
+          "Run multiple independent reconstructions of the model-generated trajectory to quantify random uncertainty via error bars on the evaluation metrics.",
+          "Clarify and fix the numerical procedure for computing the negative derivative of the autocorrelation to reduce stochastic variations."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Ambiguities in experimental design parameters and potential biases in MSM construction",
+        "description": "Systematic uncertainty arises from the ambiguous specification of key experimental details such as the method for constructing the model-generated trajectory (e.g., whether segments are contiguous, overlapping, or randomly sampled) and the lack of complete details on the autocorrelation computation and MSM parameter settings. These omissions may introduce consistent biases in the evaluation metrics like torsion relaxation times and flux matrix correlations.",
+        "impact": "Results may be systematically skewed if the trajectory assembly method or the MSM construction parameters (e.g., TICA lag time, k-means clustering settings, PCCA+ parameters) are suboptimal or do not faithfully capture the true dynamical properties. This could lead to over- or underestimation of fast dynamic features and transition fluxes, thereby reducing the fidelity of the experimental conclusions.",
+        "possible_modifications": [
+          "Explicitly define the trajectory assembly method, specifying if segments are contiguous, overlapping, or randomly sampled to avoid ambiguity.",
+          "Provide detailed formulas and step-by-step methodological descriptions for computing the negative derivative of the autocorrelation.",
+          "Include comprehensive details of the MSM construction parameters (e.g., TICA lag times, number of k-means clusters, PCCA+ settings) and conduct sensitivity analyses to assess the impact of these choices on the results."
+        ]
+      },
+      "source": [
+        "/workspace/sim_inference.py",
+        "/workspace/scripts/analyze_peptide_sim.py"
+      ],
+      "usage_instructions": "1. First, generate model trajectories using sim_inference.py with the forward simulation model: `python sim_inference.py --sim_ckpt forward_sim.ckpt --data_dir data/4AA_sims --split splits/4AA_test.csv --num_rollouts 10 --num_frames 1000 --xtc --out_dir [OUTPUT_DIRECTORY]`\n\n2. Then analyze both the ground-truth MD and model-generated trajectories using analyze_peptide_sim.py: `python -m scripts.analyze_peptide_sim --mddir data/4AA_sims --pdbdir [OUTPUT_DIRECTORY] --plot --save --num_workers 1`\n\n3. The script will produce a pickle file in the output directory containing all the analysis results, including:\n   - Torsion angle autocorrelation functions for both backbone and sidechain torsions\n   - Relaxation times (derived from when autocorrelation drops below 1/e)\n   - MSM flux matrices and their correlation between ground-truth and generated trajectories\n\nThe analysis script automatically separates backbone and sidechain torsions, computes autocorrelation functions over lag times from sub-picosecond to longer timescales (using log scale), and builds MSMs to analyze state transition fluxes.",
+      "requirements": [
+        "Step 1: Load a pre-trained simulation model from a checkpoint file (/workspace/sim_inference.py:129-130)",
+        "Step 2: Read sequence data from a CSV file containing peptide sequences to simulate (/workspace/sim_inference.py:133)",
+        "Step 3: For each peptide sequence, load initial structure data from the specified data directory (/workspace/sim_inference.py:32-59)",
+        "Step 4: Generate multiple trajectory rollouts by repeatedly applying the simulation model to predict new conformations (/workspace/sim_inference.py:108-116)",
+        "Step 5: Save the generated trajectories as PDB files and optionally as XTC files for visualization and analysis (/workspace/sim_inference.py:118-125)",
+        "Step 6: Load both ground-truth MD trajectories and model-generated trajectories for analysis (/workspace/scripts/analyze_peptide_sim.py:44-46, 106)",
+        "Step 7: Calculate Jensen-Shannon divergence between torsion angle distributions of ground-truth and generated trajectories (/workspace/scripts/analyze_peptide_sim.py:50-59)",
+        "Step 8: Compute torsion angle autocorrelation functions for both backbone and sidechain torsions (/workspace/scripts/analyze_peptide_sim.py:65-101)",
+        "Step 9: Perform time-lagged independent component analysis (TICA) on both trajectory sets (/workspace/scripts/analyze_peptide_sim.py:108-110)",
+        "Step 10: Build Markov state models (MSMs) from the trajectories and compute transition matrices (/workspace/scripts/analyze_peptide_sim.py:154-197)",
+        "Step 11: Save all analysis results to a pickle file in the output directory (/workspace/scripts/analyze_peptide_sim.py:225-227)"
+      ],
+      "agent_instructions": "Your task is to implement a system for generating and analyzing molecular dynamics trajectories of peptides. The system consists of two main components:\n\n1. A trajectory generation script that:\n   - Takes a pre-trained simulation model checkpoint as input\n   - Loads peptide sequence data from a CSV file\n   - Generates multiple trajectory rollouts for each peptide sequence\n   - Saves the generated trajectories in PDB and XTC formats\n\n2. A trajectory analysis script that:\n   - Compares ground-truth MD trajectories with model-generated trajectories\n   - Calculates metrics including:\n     - Jensen-Shannon divergence between torsion angle distributions\n     - Torsion angle autocorrelation functions (separated for backbone and sidechain)\n     - Time-lagged independent component analysis (TICA)\n     - Markov state models (MSMs) and their transition matrices\n   - Optionally generates plots visualizing the comparisons\n   - Saves all analysis results to a pickle file\n\nThe system should use libraries like MDTraj for trajectory manipulation, PyEMMA for Markov modeling, and standard scientific Python libraries (NumPy, Matplotlib) for calculations and visualization. The analysis should focus on both structural features (torsion angles) and dynamic properties (autocorrelation, state transitions) to evaluate how well the generated trajectories match the ground-truth MD simulations.",
+      "masked_source": [
+        "/workspace/sim_inference.py",
+        "/workspace/scripts/analyze_peptide_sim.py"
+      ]
+    }
+  ]
+}

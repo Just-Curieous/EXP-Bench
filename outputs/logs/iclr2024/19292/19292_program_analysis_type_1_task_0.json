@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Set up the Zipformer ASR model architecture with configurable downsampling factors (/workspace/egs/librispeech/ASR/zipformer/train.py:643-663)",
+    "Step 2: Parse command-line arguments including downsampling-factor parameter (/workspace/egs/librispeech/ASR/zipformer/train.py:139-143, 315-554)",
+    "Step 3: Load and preprocess LibriSpeech dataset for training (/workspace/egs/librispeech/ASR/zipformer/train.py:1372-1425)",
+    "Step 4: Create data loaders for training and validation sets (/workspace/egs/librispeech/ASR/zipformer/train.py:1434-1440)",
+    "Step 5: Initialize model, optimizer, and learning rate scheduler (/workspace/egs/librispeech/ASR/zipformer/train.py:1314-1349)",
+    "Step 6: Train the model for specified number of epochs with specified parameters (/workspace/egs/librispeech/ASR/zipformer/train.py:1457-1496)",
+    "Step 7: Save model checkpoints and average them for evaluation (/workspace/egs/librispeech/ASR/zipformer/train.py:1487-1496)",
+    "Step 8: Load trained model checkpoints for evaluation (/workspace/egs/librispeech/ASR/zipformer/decode.py:877-956)",
+    "Step 9: Load test datasets (test-clean and test-other) (/workspace/egs/librispeech/ASR/zipformer/decode.py:1045-1049)",
+    "Step 10: Perform decoding using the specified method (/workspace/egs/librispeech/ASR/zipformer/decode.py:1054-1066)",
+    "Step 11: Calculate and report Word Error Rate (WER) metrics (/workspace/egs/librispeech/ASR/zipformer/decode.py:1074-1079)",
+    "Final Step: Compare results between models with and without temporal downsampling (/workspace/egs/librispeech/ASR/zipformer/decode.py:1054-1079)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for training and evaluating a Zipformer-based Automatic Speech Recognition (ASR) model on the LibriSpeech dataset, with a focus on comparing the effect of temporal downsampling on model performance.\n\nYou need to create two main scripts:\n\n1. A training script that:\n   - Implements a Zipformer ASR model architecture with configurable downsampling factors\n   - Accepts command-line arguments for model configuration and training parameters\n   - Supports distributed training across multiple GPUs\n   - Processes the LibriSpeech dataset for training\n   - Implements the training loop with appropriate optimization and learning rate scheduling\n   - Saves model checkpoints and supports model averaging\n\n2. An evaluation script that:\n   - Loads trained model checkpoints\n   - Implements various decoding methods (at minimum greedy search)\n   - Evaluates the model on LibriSpeech test-clean and test-other sets\n   - Calculates and reports Word Error Rate (WER) metrics\n\nThe experiment should compare two configurations:\n   - A baseline Zipformer-M model with temporal downsampling (using downsampling factors [1,2,4,8,4,2])\n   - A modified Zipformer-M model without temporal downsampling (using downsampling factors [1,1,1,1,1,1])\n\nThe scripts should be designed to verify the hypothesis that removing temporal downsampling increases model parameters (from ~65.6M to ~94.2M) and slightly degrades performance (WER on test-clean increasing from ~2.21% to ~2.23% and on test-other from ~4.79% to ~5.09%).",
+  "masked_source": [
+    "/workspace/egs/librispeech/ASR/zipformer/train.py",
+    "/workspace/egs/librispeech/ASR/zipformer/decode.py"
+  ]
+}

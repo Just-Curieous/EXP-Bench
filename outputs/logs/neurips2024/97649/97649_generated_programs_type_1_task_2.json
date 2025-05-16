@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/jaxmarl/tutorials/JaxMARL_Walkthrough.ipynb"],
+    "usage_instructions": "1. Open the JaxMARL_Walkthrough.ipynb notebook.\n2. Change the MPE_ENV variable to \"MPE_simple_spread_v3\" (line ~583).\n3. Run the benchmark section of the notebook (Part 2) which compares JaxMARL and PettingZoo implementations.\n4. The script will automatically measure and compare steps-per-second for both implementations across different parallelization levels (1, 100, 1000, 10000 environments).\n5. Results will be displayed showing the performance comparison between JaxMARL (GPU-accelerated) and the original CPU-based PettingZoo implementation."
+}

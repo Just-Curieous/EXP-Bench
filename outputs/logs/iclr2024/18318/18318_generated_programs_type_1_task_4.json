@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/train_ablation.py",
+        "/workspace/test_ablation.py",
+        "/workspace/run_ablation_study.sh"
+    ],
+    "usage_instructions": "1. First, update the data paths in run_ablation_study.sh to point to your MVTec AD and VisA datasets. 2. Make the script executable with 'chmod +x run_ablation_study.sh'. 3. Execute the script with './run_ablation_study.sh'. This will train and evaluate four configurations of the AnomalyCLIP model: (1) without any context optimization, (2) with only global context optimization, (3) with only local context optimization, and (4) with both local and global context optimization. The script will automatically save checkpoints and results for each configuration, and will output both pixel-level and image-level AUROC scores for comparison. The results will show whether combining local and global context optimization yields better performance than using only one context mode."
+}

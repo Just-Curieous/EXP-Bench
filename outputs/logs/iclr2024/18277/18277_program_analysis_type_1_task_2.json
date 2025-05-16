@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Set up a new conda environment with Python 3.8 (/workspace/llama_adapter_v2_multimodal7b/README.md:12-14)",
+    "Step 2: Install required packages from requirements.txt (/workspace/llama_adapter_v2_multimodal7b/README.md:14)",
+    "Step 3: Obtain the LLaMA backbone weights from the official source and organize them in the specified directory structure (/workspace/llama_adapter_v2_multimodal7b/README.md:17-25)",
+    "Step 4: Download the MME benchmark dataset and evaluation tool from the MME repository (/workspace/llama_adapter_v2_multimodal7b/docs/eval.md:7-28)",
+    "Step 5: Organize the MME benchmark dataset in a directory named 'MME_Benchmark_release_version' with the specified folder structure (/workspace/llama_adapter_v2_multimodal7b/docs/eval.md:8-28)",
+    "Step 6: Prepare the LLaMA-Adapter V2 model checkpoint for evaluation (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:108-112)",
+    "Step 7: Run the evaluation script with the appropriate parameters to generate results for each MME subtask (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:167-184)",
+    "Step 8: For each image in the MME benchmark, process the image and generate a response to the associated question (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:173-175)",
+    "Step 9: Save the prediction results to text files in the specified output directory (/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py:177-184)",
+    "Step 10: Use the MME evaluation tool to calculate perception and cognition scores based on the generated results (/workspace/llama_adapter_v2_multimodal7b/docs/eval.md:30)"
+  ],
+  "usage_instructions": "# LLaMA-Adapter V2 MME Benchmark Evaluation Instructions\n\n## Prerequisites\n1. Set up a conda environment with Python 3.8:\n   ```bash\n   conda create -n llama_adapter_v2 python=3.8 -y\n   conda activate llama_adapter_v2\n   pip install -r requirements.txt\n   ```\n\n2. Obtain the LLaMA backbone weights from the official source (https://forms.gle/jk851eBVbX1m5TAv5) and organize them in the following structure:\n   ```\n   /path/to/llama_model_weights\n   ├── 7B\n   │   ├── checklist.chk\n   │   ├── consolidated.00.pth\n   │   └── params.json\n   └── tokenizer.model\n   ```\n\n3. Download the MME benchmark dataset and evaluation tool from the [MME repository](https://github.com/bradyfu/awesome-multimodal-large-language-models#our-mllm-works) and place them in a directory named 'MME_Benchmark_release_version' with the following structure:\n   ```\n   MME_Benchmark_release_version\n       ├── artwork\n       ├── celebrity\n       ├── code_reasoning\n       ├── color\n       ├── commonsense_reasoning\n       ├── count\n       ├── eval_tool\n       │   ├── calculation.py\n       │   └── ...\n       ├── existence\n       ├── landmark\n       ├── numerical_calculation\n       ├── OCR\n       ├── position\n       ├── posters\n       ├── scene\n       └── text_translation\n   ```\n\n## Evaluation Steps\n1. Run the evaluation script to generate results for the MME benchmark:\n   ```bash\n   python util/evaluate_mme.py --pretrained_path [MODEL_PATH] --llama_path [LLAMA_DIR] --output_path [RESULT_FILE_PATH]\n   ```\n   - `[MODEL_PATH]`: Path to the LLaMA-Adapter V2 model checkpoint\n   - `[LLAMA_DIR]`: Directory containing the LLaMA backbone weights\n   - `[RESULT_FILE_PATH]`: Directory where the evaluation results will be saved\n\n2. Calculate the MME benchmark scores using the evaluation tool:\n   ```bash\n   python MME_Benchmark_release_version/eval_tool/calculation.py --results_dir [RESULT_FILE_PATH]\n   ```\n\nThe evaluation will generate scores for both perception tasks (existence, count, position, color, posters, celebrity, scene, landmark, artwork, OCR) and cognition tasks (commonsense reasoning, numerical calculation, text translation, code reasoning).",
+  "masked_source": [
+    "/workspace/llama_adapter_v2_multimodal7b/util/evaluate_mme.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/llama_adapter.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/utils.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/tokenizer.py",
+    "/workspace/llama_adapter_v2_multimodal7b/llama/llama.py"
+  ]
+}

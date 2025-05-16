@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/scripts/PDF/336/etth2.sh",
+        "/workspace/scripts/PDF/720/etth2.sh"
+    ],
+    "usage_instructions": "To compare the performance of PDF models with different look-back windows (t = 336 vs t = 720), execute the following steps:\n\n1. First, run the PDF(336) model on the ETTh2 dataset with various prediction horizons:\n   ```\n   sh /workspace/scripts/PDF/336/etth2.sh\n   ```\n   This script will train and evaluate the PDF model with a look-back window of 336 on prediction horizons T ∈ {96, 192, 336, 720}.\n\n2. Then, run the PDF(720) model on the same dataset with the same prediction horizons:\n   ```\n   sh /workspace/scripts/PDF/720/etth2.sh\n   ```\n   This script will train and evaluate the PDF model with a look-back window of 720 on prediction horizons T ∈ {96, 192, 336, 720}.\n\n3. After execution, the results will be available in the following locations:\n   - Trained models: ./checkpoints/\n   - Visualization outputs: ./test_results/\n   - Numerical results: ./results/\n   - Summary metrics: ./result.txt\n\n4. Compare the MSE and MAE metrics from both runs to verify if PDF(720) consistently achieves lower error rates compared to PDF(336) across all prediction horizons, as hypothesized in the experiment question."
+}

@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Parse command-line arguments to configure the experiment, including target model, defense type, attack method, and evaluation options (/workspace/main.py:402-407)",
+    "Step 2: Load the target language model and tokenizer based on the specified model path (/workspace/main.py:273-277)",
+    "Step 3: Load harmful instructions from a CSV file containing 'goal' and 'target' columns (/workspace/main.py:328)",
+    "Step 4: Apply defense transformations to the input prompts (e.g., self_reminder, RPO, smoothLLM) (/workspace/main.py:212-220)",
+    "Step 5: Execute the selected attack method (e.g., GCG, AutoDAN, PAIR) on the defended prompts (/workspace/main.py:255-257)",
+    "Step 6: Determine if the attack was successful using regex-based detection of rejection phrases (/workspace/utils/test_utils.py:350-355)",
+    "Step 7: Save attack results to JSON files with appropriate naming conventions (/workspace/main.py:263-265)",
+    "Step 8: If smoothLLM defense is selected, apply additional perturbation-based defense and re-evaluate (/workspace/main.py:370-374)",
+    "Step 9: If agent evaluation is enabled, use GPT-4 to evaluate if the attack successfully bypassed the model's safety guardrails (/workspace/main.py:377-398)",
+    "Step 10: Load experiment results from saved JSON files for analysis (/workspace/analysis/report_trick.py:57-130)",
+    "Step 11: Calculate both ASRPrefix (regex-based) and ASRAgent (GPT-4-based) success rates (/workspace/analysis/report_trick.py:94-115)",
+    "Step 12: Generate a comparison table showing both metrics side by side for each experiment (/workspace/analysis/report_trick.py:175-193)",
+    "Final Step: Display the results table with color formatting to highlight differences between metrics (/workspace/analysis/report_trick.py:244-248)"
+  ],
+  "agent_instructions": "Create a system to evaluate and compare the effectiveness of jailbreak attack and defense methods for language models. The system should implement two evaluation metrics: a regex-based metric that detects rejection phrases, and a GPT-4-based agent evaluation that determines if an attack successfully bypassed safety guardrails.\n\nThe system should:\n\n1. Accept command-line arguments for configuring experiments, including target model path, defense type, attack method, and input harmful instructions.\n\n2. Support multiple attack methods (like GCG, AutoDAN, PAIR) that attempt to make language models generate harmful content.\n\n3. Implement defense methods including:\n   - No defense (baseline)\n   - Self-reminder (prepending safety instructions)\n   - RPO (appending special tokens)\n   - SmoothLLM (applying text perturbations)\n\n4. For each combination of model, attack, and defense:\n   - Load the target model\n   - Apply the defense to the input prompts\n   - Execute the attack\n   - Evaluate success using regex-based detection\n   - Save results to files\n\n5. Optionally perform agent-based evaluation using GPT-4 to determine if attacks truly bypassed safety guardrails.\n\n6. Analyze results by loading experiment files and calculating:\n   - ASRPrefix: Attack success rate based on regex detection\n   - ASRAgent: Attack success rate based on GPT-4 evaluation\n\n7. Generate a comparison table showing both metrics side by side for each experiment configuration.\n\nThe system should be able to process harmful instruction datasets in CSV format with 'goal' and 'target' columns, where 'goal' contains the harmful instruction and 'target' contains the expected harmful response.",
+  "masked_source": [
+    "/workspace/main.py",
+    "/workspace/analysis/report_trick.py",
+    "/workspace/GPTEvaluatorAgent/agent_eval.py",
+    "/workspace/GPTEvaluatorAgent/main.py",
+    "/workspace/defense.py"
+  ]
+}

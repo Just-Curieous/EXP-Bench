@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Load and preprocess the RLHF datasets (Anthropic Harmless and Red Team datasets) (/workspace/tools/diagnose_rlhf.py:31-36)",
+    "Step 2: Encode features using a sentence transformer model (/workspace/tools/diagnose_rlhf.py:39-41)",
+    "Step 3: Detect label errors in the datasets using the Docta framework (/workspace/tools/diagnose_rlhf.py:49-53)",
+    "Step 4: Save detection reports for each dataset (/workspace/tools/diagnose_rlhf.py:55-56)",
+    "Step 5: For Anthropic Harmless datasets, load the detection reports and identify samples with high confidence of label errors (/workspace/tools/cure_hh_rlhf.py:42-56)",
+    "Step 6: For Anthropic Harmless datasets, correct labels based on confidence threshold (>0.55) (/workspace/tools/cure_hh_rlhf.py:61-76)",
+    "Step 7: For Anthropic Harmless datasets, save the cleaned datasets with corrected labels (/workspace/tools/cure_hh_rlhf.py:80-85)",
+    "Step 8: For Red Team datasets, combine detection results from multiple preprocessing methods (raw and QA) (/workspace/tools/cure_red_team_rlhf.py:69-85)",
+    "Step 9: For Red Team datasets, calculate confidence scores for label corrections (/workspace/tools/cure_red_team_rlhf.py:88-113)",
+    "Step 10: For Red Team datasets, apply label corrections based on confidence threshold (>0.4) (/workspace/tools/cure_red_team_rlhf.py:115-136)",
+    "Step 11: For Red Team datasets, save the cleaned datasets with corrected labels (/workspace/tools/cure_red_team_rlhf.py:145-149)",
+    "Step 12: Train models (BERT and GPT-2) on both original and Docta-cleaned datasets (/workspace/docta/apis/train.py:56-102)",
+    "Step 13: Evaluate trained models on test datasets (ChatGPT Cleaned and Human Sampled) (/workspace/docta/apis/train.py:27-54)",
+    "Final Step: Compare F1-scores between models trained on raw data versus models trained on Docta-cleaned data (/workspace/docta/apis/train.py:99-101)"
+  ],
+  "agent_instructions": "Your task is to implement a system that improves the quality of RLHF (Reinforcement Learning from Human Feedback) datasets by detecting and correcting label errors. The system should work with two types of datasets: Anthropic Harmless/Helpful datasets and Red Team datasets.\n\nThe system should:\n\n1. Process multiple RLHF datasets including:\n   - Anthropic Harmless datasets (harmless-base, helpful-base, helpful-online, helpful-rejection-sampled)\n   - Red Team datasets\n\n2. For each dataset:\n   - Load the dataset\n   - Preprocess the text data\n   - Encode features using a sentence transformer model\n   - Detect potential label errors using similarity-based methods\n   - Generate a report of detected errors\n\n3. For Anthropic Harmless/Helpful datasets:\n   - Process the error detection reports\n   - Identify samples with high confidence of label errors\n   - Correct labels for samples above a confidence threshold\n   - Save the cleaned datasets with corrected labels\n\n4. For Red Team datasets:\n   - Process error detection reports from multiple preprocessing methods\n   - Combine the results to get more reliable error detection\n   - Calculate confidence scores for label corrections\n   - Apply corrections based on confidence threshold\n   - Save the cleaned datasets with corrected labels\n\n5. Implement a training and evaluation pipeline that:\n   - Trains models (like BERT and GPT-2) on both original and cleaned datasets\n   - Evaluates the models on test datasets (ChatGPT Cleaned and Human Sampled)\n   - Compares performance metrics (F1-scores) between models trained on raw data versus models trained on cleaned data\n\nThe goal is to demonstrate that models trained on datasets cleaned by your system achieve higher F1-scores on test sets compared to models trained on the original datasets, validating that the cleaning process improves label quality.",
+  "masked_source": [
+    "/workspace/tools/docta_rlhf.sh",
+    "/workspace/tools/diagnose_rlhf.py",
+    "/workspace/tools/cure_hh_rlhf.py",
+    "/workspace/tools/cure_red_team_rlhf.py",
+    "/workspace/docta/apis/train.py"
+  ]
+}

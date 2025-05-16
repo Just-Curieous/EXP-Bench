@@ -1,0 +1,114 @@
+{
+  "questions": [
+    {
+      "question": "Does the RCF technique, a more powerful STD approach, outperform the existing STD technique, LD from Leddam, on the ETTh1 forecasting task?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Compare the effectiveness of RCF-based and LD-based trend estimation techniques in time-series forecasting.\n    - **Objective:** \n    Determine whether RCF offers superior performance to LD in capturing temporal patterns.\n\n2. **Testing Dataset:** \n    - ETTh1 (time series forecasting tasks)\n    - Preprocessing operations on the datasets, such as dataset splitting and normalization methods, remained consistent with prior works (e.g., Autoformer [Haixu Wu, Jiehui Xu, Jianmin Wang, and Mingsheng Long. Autoformer: Decomposition transformers with auto-correlation for long-term series forecasting. Advances in neural information processing systems, 34:22419\u201322430, 2021.], iTransformer [Yong Liu, Tengge Hu, Haoran Zhang, Haixu Wu, Shiyu Wang, Lintao Ma, and Mingsheng Long. itransformer: Inverted transformers are effective for time series forecasting. In The Twelfth International Conference on Learning Representations, 2024.], etc.).\n3. **Comparative Evaluation:**  \n    - Models:\n        - CLinear (RCF + Linear)\n        - LDLinear (LD + Linear)\n    - Ensure no normalization is applied to isolate the effect of the STD method.\n\n4. **Training Detail:**\n    - Fixed look-back window (L=96)\n    - Forecast horizons (H \u2208 {96, 192, 336, 720})\n    - Use PyTorch and Adam optimizer for training\n    - Utilize an NVIDIA GeForce RTX 4090 GPU for training\n\n5. **Normalization detail:**\n    - no additional instance normalization\n\n6. **Loss Function:**\n    - CycleNet defaults to using Mean Squared Error (MSE) as the loss function to ensure fair comparison with other methods, formulated as:\n        - Loss = \\( \\| x_{t+1:t+H} - \\bar{x}_{t+1:t+H} \\|_2^2 \\)\n\n7. **Evaluation Metrics:**\n    - MSE (Mean Squared Error)\n    - MAE (Mean Absolute Error)\n    - Compute the average performance across all forecast horizons.\n\n8. **Experiment Detail:**\n- We utilized widely used benchmark datasets for LTSF tasks, including the ETT series, Electricity, Solar-Energy, Traffic, and Weather. Following prior works such as Autoformer and iTransformer, we split the ETTs dataset into training, validation, and test sets with a ratio of 6:2:2, while the other datasets were split in a ratio of 7:1:2. \n- We implemented CycleNet using PyTorch and conducted experiments on a single NVIDIA RTX 4090 GPU with 24GB of memory. CycleNet was trained for 30 epochs with early stopping based on a patience of 5 on the validation set. The batch size was set uniformly to 256 for ETTs and the Weather dataset, and 64 for the remaining datasets. This adjustment was made because the latter datasets have a larger number of channels, requiring a relatively smaller batch size to avoid out-of-memory issues. The learning rate was selected from the range {0.002, 0.005, 0.01} based on the performance on the validation set. The hyperparameter W was set consistently to the pre-inferred cycle length. Additionally, the hidden layer size of CycleNet/MLP was uniformly set to 512. By default, CycleNet uses RevIN without learnable affine parameters. However, we found that on the Solar dataset, using RevIN leads to a significant performance drop. The primary reason for this may be that photovoltaic power generation data contains continuous segments of zero values (no power generation at night). When the look-back windows are not an integer multiple of a day, the calculation of means in RevIN can be significantly affected, leading to decreased performance. Therefore, for this dataset, we did not apply the RevIN strategy.\n\n\n9. **Addtional Note:**\nTo directly compare the effects of STD, the configuration used here is consistent with that of DLinear, with a sufficient look-back window length of 336 and no additional instance normalization strategies. Thus, CLinear here refers to CycleNet/Linear without RevIN.",
+      "expected_outcome": "RCF significantly outperforms other STD methods. LD-based STD methods achieve trend estimation by sliding aggregation within the look-back window, which suffers from inherent issues",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "dataset": "ETTh1",
+            "look_back_window": "Fixed at 336",
+            "other_configurations": "No normalization and all remaining configurations held constant"
+          },
+          "independent_variables": {
+            "std_technique": [
+              "RCF (in CLinear configuration)",
+              "LD (in LDLinear configuration)"
+            ],
+            "forecast_horizon": [
+              "96",
+              "192",
+              "336",
+              "720"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": [
+              "MSE",
+              "MAE"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "ETTh1 dataset",
+            "Fixed look-back window (L=336)",
+            "Forecast horizon settings (H in {96,192,336,720})",
+            "Two forecasting configurations: CLinear (RCF+Linear) and LDLinear (LD+Linear)",
+            "Performance metrics evaluation module (MSE and MAE)",
+            "Statistical comparison procedure for aggregated results"
+          ],
+          "setup_steps": [
+            "Prepare the ETTh1 dataset and set the look-back window to 336",
+            "Configure forecasting experiments with fixed forecast horizons (96, 192, 336, 720)",
+            "Run experiments in two settings: one using RCF (in CLinear configuration) and one using LD (in LDLinear configuration)",
+            "Ensure all other configurations (such as no normalization and constant remaining settings) remain unchanged",
+            "Compute performance metrics (MSE and MAE) for each experiment",
+            "Aggregate the results across the different forecast horizons",
+            "Perform a statistical comparison of the aggregated results to evaluate the effectiveness of the STD techniques"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Ablation study design",
+              "description": "The experiment involves varying the STD technique and forecast horizons while holding other variables constant, which adds complexity in ensuring controlled conditions."
+            },
+            {
+              "source": "Documentation and reproducibility requirements",
+              "description": "The detailed experimental settings (as seen in Table 4) and the requirement to replicate forecasting results add layers to setting up the experiment properly."
+            }
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {}
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Random training dynamics and initialization",
+          "description": "In the forecasting experiments, although a fixed look-back window and multiple forecast horizons are used, inherent randomness in model initialization, data shuffling, and training dynamics (e.g., gradient updates) can introduce variability. This variability might influence performance metrics such as MSE and MAE across repetitions.",
+          "impact": "Uncontrolled random variations may obscure the true comparative performance between RCF and LD methods, leading to fluctuating aggregated results and potentially affecting the statistical significance of the differences reported.",
+          "possible_modifications": [
+            "Set fixed random seeds for all experiments to control for random initialization and data shuffling.",
+            "Increase the number of runs and report confidence intervals or standard deviations to better capture the effect of random variability.",
+            "Use consistent conditions across experiments to minimize randomness impacting the performance metrics."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {}
+      },
+      "source": [
+        "/workspace/run_std.sh"
+      ],
+      "usage_instructions": "Execute the run_std.sh script which will run both CycleNet (RCF) and LDLinear (LD) models on the ETTh1 dataset with a fixed look-back window of 336 and forecast horizons of 96, 192, 336, and 720. The script disables normalization for both models to isolate the effect of the STD method. The results will show that RCF significantly outperforms LD on the ETTh1 forecasting task.",
+      "requirements": [
+        "Step 1: Set up the experiment by configuring the CycleNet (RCF) model with a fixed look-back window of 336 and forecast horizons of 96, 192, 336, and 720 on the ETTh1 dataset (/workspace/run_std.sh:3)",
+        "Step 2: Set up the experiment by configuring the LDLinear (LD) model with the same parameters on the ETTh1 dataset (/workspace/run_std.sh:4)",
+        "Step 3: Disable normalization for both models by setting use_revin=0 to isolate the effect of the STD method (/workspace/scripts/CycleNet/STD/CycleNet.sh:28, /workspace/scripts/CycleNet/STD/LDLinear.sh:25)",
+        "Step 4: For CycleNet, implement the RecurrentCycle module that learns cyclic patterns in the data (/workspace/models/CycleNet.py:4-18)",
+        "Step 5: For CycleNet, implement the forward pass that removes cyclic patterns from input data, applies a linear/MLP model, and adds back the cyclic patterns to the output (/workspace/models/CycleNet.py:45-67)",
+        "Step 6: For LDLinear, implement the Learnable Decomposition (LD) module that decomposes time series into trend and seasonal components (/workspace/models/LDLinear.py:12-41)",
+        "Step 7: For LDLinear, implement the forward pass that applies the LD module to decompose the input, processes trend and seasonal components separately with linear layers, and combines them for the final prediction (/workspace/models/LDLinear.py:61-72)",
+        "Step 8: Train both models using MSE loss and Adam optimizer with early stopping based on validation performance (/workspace/exp/exp_main.py:115-244)",
+        "Step 9: Evaluate both models on the test set using metrics like MSE and MAE to compare their performance (/workspace/exp/exp_main.py:246-348)",
+        "Final Step: Compare the results to show that RCF (CycleNet) significantly outperforms LD (LDLinear) on the ETTh1 forecasting task (/workspace/exp/exp_main.py:335-342)"
+      ],
+      "agent_instructions": "Create a script to compare two time series forecasting models (CycleNet/RCF and LDLinear/LD) on the ETTh1 dataset. The experiment should:\n\n1. Set up both models with a fixed look-back window of 336 and test them on multiple forecast horizons (96, 192, 336, and 720).\n\n2. Disable normalization for both models to isolate the effect of the STD (Seasonal-Trend Decomposition) method.\n\n3. Implement CycleNet with the following key components:\n   - A RecurrentCycle module that learns cyclic patterns in time series data\n   - A mechanism to remove these cyclic patterns before forecasting and add them back afterward\n   - Support for either linear or MLP-based forecasting on the cycle-removed data\n\n4. Implement LDLinear with the following key components:\n   - A Learnable Decomposition (LD) module that separates time series into trend and seasonal components\n   - Separate linear layers to process trend and seasonal components\n   - A mechanism to combine these components for the final prediction\n\n5. Train both models using MSE loss and Adam optimizer with early stopping based on validation performance.\n\n6. Evaluate and compare the models using metrics like MSE and MAE on the test set.\n\nThe experiment should demonstrate that CycleNet significantly outperforms LDLinear on the ETTh1 forecasting task.",
+      "masked_source": [
+        "/workspace/run_std.sh",
+        "/workspace/scripts/CycleNet/STD/CycleNet.sh",
+        "/workspace/scripts/CycleNet/STD/LDLinear.sh",
+        "/workspace/models/CycleNet.py",
+        "/workspace/models/LDLinear.py"
+      ]
+    }
+  ]
+}

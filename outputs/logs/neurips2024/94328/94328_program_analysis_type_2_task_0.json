@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, transformers, and custom utility modules for quantization, rotation, and evaluation (main.py:1-10)",
+    "Step 2: Set up argument parsing to control model parameters, quantization settings, and evaluation options (utils.py:71-222)",
+    "Step 3: Initialize the LLaMa-2-7B model from Hugging Face and set it to evaluation mode (main.py:19-21)",
+    "Step 4: For the rotation-based quantization approach, fuse layer normalization operations into adjacent linear layers to simplify the model architecture (rotation_utils.py:44-85, main.py:26)",
+    "Step 5: When rotation is enabled, apply rotation transformations to the model weights using Hadamard matrices (rotation_utils.py:229-251, main.py:27)",
+    "Step 6: Add activation quantization wrappers to the model's linear layers to enable quantization of activations (quant_utils.py:367-393, main.py:30-31)",
+    "Step 7: For rotated models, configure special Hadamard-based processing for down_proj and o_proj layers (main.py:32-45)",
+    "Step 8: Apply weight quantization to the model using either GPTQ or RTN methods based on the specified parameters (main.py:50-75)",
+    "Step 9: Configure input quantization for activations and value projections based on the specified bit precision (main.py:79-109)",
+    "Step 10: Set up key quantization if specified, with appropriate bit precision and grouping (main.py:111-124)",
+    "Step 11: Load the evaluation dataset (wikitext2) for perplexity calculation (main.py:127-134)",
+    "Step 12: Evaluate the model on the dataset to calculate perplexity, which measures how well the model predicts the text (eval_utils.py:10-150, main.py:137-139)",
+    "Step 13: Optionally run additional language model evaluation tasks if specified (main.py:141-168)",
+    "Final Step: Compare the perplexity results between the standard quantized model and the rotation-based quantized model to determine the effectiveness of the rotation approach (main.py:137-139)"
+  ],
+  "agent_instructions": "Your task is to evaluate how QuaRot's 4-bit quantization with rotation affects the perplexity of a LLaMa-2-7B model compared to standard quantization. Follow these steps:\n\n1. Install the required dependencies from requirements.txt\n2. Run the main.py script in the fake_quant directory with the LLaMa-2-7B model using standard 4-bit quantization (without rotation)\n   - Use these parameters: --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip\n3. Run the same script again but with rotation enabled\n   - Use these parameters: --rotate --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip\n4. Compare the perplexity results between the two runs\n5. Analyze whether the rotation-based quantization improves model performance at 4-bit precision\n\nThe perplexity metric will be reported after each run - lower perplexity indicates better performance."
+}

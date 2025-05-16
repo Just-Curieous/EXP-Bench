@@ -1,0 +1,164 @@
+{
+  "questions": [
+    {
+      "question": "Does the precision (FP32 vs FP16) used for the online Hadamard transformation during inference affect the perplexity and zero-shot task performance of QuaRot-quantized LLAMA-2 models?",
+      "method": "#### Models\n\n- LLAMA2-7B\n- LLAMA2-13B\n\n#### Components\n\n- Full model is quantized using QuaRot (GPTQ for weights, group-wise for activations and KV caches)\n- Down-projection and out-projection layers apply **online Hadamard transform**\n- The only difference: **Hadamard transform is done in FP32 vs FP16**\n\n#### Evaluation Scope\n\n- **Perplexity**: WikiText-2\n- **Zero-shot accuracy**:\n  - PIQA (PQ)\n  - WinoGrande (WG)\n  - HellaSwag (HS)\n  - ARC-Easy (A-e)\n  - ARC-Challenge (A-c)\n  - LAMBADA (LA)\n- **Average score** = mean of above six task accuracies\n\n#### Dataset and Tools\n\n- WikiText-2 (perplexity)\n- [LM Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness) for zero-shot tasks\n- Sequence length: 2048 tokens\n\n#### Experiment Steps\n\n1. **Prepare Models**\n\n   - Use QuaRot setup for LLAMA2-7B and LLAMA2-13B\n   - Ensure weight and activation quantization is consistent\n\n2. **Configure Hadamard Precision**\n\n   - Modify online transform to run either in FP32 or FP16:\n\n     ```python\n     def hadamard_fp32(x): return hadamard(x.to(torch.float32)).to(x.dtype)\n     def hadamard_fp16(x): return hadamard(x.to(torch.float16)).to(x.dtype)\n     ```\n   \n3. **Inference: Perplexity Measurement**\n\n   - Evaluate on WikiText-2 with sequence length 2048\n   - Log perplexity scores for both FP32 and FP16 Hadamard configurations\n\n4. **Inference: Zero-Shot Tasks**\n\n   - Use EleutherAI\u2019s LM Evaluation Harness\n   - Run the following tasks with both configurations:\n     - PIQA (`piqa`)\n     - WinoGrande (`winogrande`)\n     - HellaSwag (`hellaswag`)\n     - ARC-Easy (`arc_easy`)\n     - ARC-Challenge (`arc_challenge`)\n     - LAMBADA (`lambada_openai`)\n   - Compute average accuracy over all six tasks",
+      "expected_outcome": "Result should look similar to table 10 in the paper ablation study.\n\n| Model | Method   | Hadamard Precision | PPL \u2193 | PQ \u2191  | WG \u2191  | HS \u2191  | A-e \u2191 | A-c \u2191 | LA \u2191  | Avg. \u2191 |\n| ----- | -------- | ------------------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ------ |\n| 7B    | Baseline | -                  | 5.47  | 79.11 | 69.06 | 75.99 | 74.58 | 46.25 | 73.90 | 69.82  |\n|       | QuaRot   | FP32               | 6.10  | 76.77 | 63.77 | 72.16 | 69.87 | 40.87 | 70.39 | 65.64  |\n|       | QuaRot   | FP16               | 6.08  | 76.99 | 66.46 | 72.59 | 69.07 | 41.21 | 70.59 | 66.21  |\n| 13B   | Baseline | -                  | 4.88  | 80.47 | 72.22 | 79.39 | 77.48 | 49.23 | 76.75 | 72.59  |\n|       | QuaRot   | FP32               | 5.40  | 78.89 | 70.24 | 76.37 | 72.98 | 46.59 | 73.67 | 69.79  |\n|       | QuaRot   | FP16               | 5.40  | 77.69 | 70.09 | 75.75 | 73.95 | 47.61 | 73.22 | 69.72  |\n\n- Switching Hadamard transform from FP32 \u2192 FP16 has **<0.1 PPL and <0.6% accuracy impact**\n- Difference is considered **noise**, indicating robustness of QuaRot to precision choice\n- FP16 Hadamard allows faster and more memory-efficient inference with no quality degradation",
+      "design_complexity": {
+        "constant_variables": {
+          "quantization_method": "QuaRot is used across all experiments with consistent weight (GPTQ) and activation/KV cache quantization",
+          "evaluation_dataset": "WikiText-2 for perplexity and EleutherAI LM Evaluation Harness for zero-shot tasks",
+          "sequence_length": "2048 tokens"
+        },
+        "independent_variables": {
+          "llama_model": [
+            "LLAMA2-7B",
+            "LLAMA2-13B"
+          ],
+          "hadamard_precision": [
+            "FP32",
+            "FP16"
+          ]
+        },
+        "dependent_variables": {
+          "perplexity": "Measured on WikiText-2 (lower is better)",
+          "zero_shot_task_accuracies": [
+            "PIQA",
+            "WinoGrande",
+            "HellaSwag",
+            "ARC-Easy",
+            "ARC-Challenge",
+            "LAMBADA"
+          ],
+          "average_accuracy": "Mean of the six zero-shot task accuracies"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "baseline_definition": "The paper describes a baseline with FP16 precision but does not clarify if other settings, aside from the Hadamard precision, differ from the QuaRot configurations.",
+          "hardware_configuration": "The specific hardware settings for timing or performance (e.g., inference speed details) are not mentioned, yet may be relevant for practical extension."
+        },
+        "possible_modifications": {
+          "masking_existing_variables": [
+            "Hide the exact model names (LLAMA2-7B and LLAMA2-13B) to test if new models show similar trends."
+          ],
+          "adding_new_variables": [
+            "Introduce additional Hadamard precision options (e.g., FP64) or alternative transformation kernels.",
+            "Include other quantization methods (e.g., RTN vs GPTQ) as additional independent variables."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "LLAMA2-7B model",
+          "LLAMA2-13B model",
+          "QuaRot quantization system (GPTQ for weights, group-wise for activations and KV caches)",
+          "Online Hadamard transform module",
+          "WikiText-2 dataset for perplexity evaluation",
+          "LM Evaluation Harness for zero-shot tasks",
+          "Configuration for sequence length (2048 tokens)"
+        ],
+        "setup_steps": [
+          "Prepare the models using the QuaRot setup ensuring consistent weight and activation quantization",
+          "Configure the online Hadamard transform to operate in either FP32 or FP16 by modifying the corresponding function",
+          "Run inference to measure perplexity on the WikiText-2 dataset under both precision settings",
+          "Execute zero-shot tasks (PIQA, WinoGrande, HellaSwag, ARC-Easy, ARC-Challenge, LAMBADA) using the LM Evaluation Harness",
+          "Log the perplexity and accuracy results and compute the average score across the six tasks"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Integration of quantization and transformation",
+            "description": "Coordinating the QuaRot quantization settings with the online Hadamard transform (which can operate in FP32 or FP16) adds a layer of complexity, as it requires ensuring that all quantization and transformation pipelines remain consistent."
+          },
+          {
+            "source": "Evaluation metric aggregation",
+            "description": "Aggregating diverse metrics (perplexity and multiple zero-shot task accuracies) into a single average score introduces additional complexity in harmonizing and interpreting results."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Baseline configuration: It is not explicitly clear if the baseline only differs in Hadamard precision or if there are other minor settings differences compared to the QuaRot configuration.",
+          "Hardware configuration: Specific details on the compute resources, such as the type of GPU/CPU, memory specifications, or runtime details, are not provided."
+        ],
+        "ambiguous_setup_steps": [
+          "Modification of the online Hadamard transform: The provided code snippet indicates how to switch precision but lacks details on integration points or dependency management with the rest of the model pipeline.",
+          "Synchronization of quantization and transformation: The process to ensure that quantization remains consistent while switching transformation precision might require deeper clarification."
+        ],
+        "possible_modifications": {
+          "mask_existing_instructions": [
+            "Remove exact model identifiers (LLAMA2-7B and LLAMA2-13B) to challenge whether new models yield similar trends."
+          ],
+          "imply_need_for_new_setup_steps": [
+            "Introduce additional Hadamard precision options (for example, FP64) to test sensitivity to a wider range of precision settings.",
+            "Include other quantization methods (e.g., round-to-nearest (RTN) versus GPTQ) as further independent variables to broaden the experiment's scope."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "For an extended task, one could enforce using a smaller model (e.g., a 'mini' version of LLAMA2) to simulate limited hardware resources while still maintaining performance parity with the FP16 Hadamard configuration."
+          ],
+          "time_constraints": [
+            "A possible modification is to restrict the allowed inference time or optimization iterations, forcing the experiment to meet similar performance under tighter time budgets."
+          ],
+          "money_constraints": [
+            "Another modification could be to impose a GPU-hour budget constraint that limits computational expenditure, thereby requiring the model to maintain accuracy while operating on more cost-efficient hardware setups."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Floating-point precision variability in the online Hadamard transformation",
+        "description": "Switching the Hadamard transform between FP32 and FP16 introduces minor numerical noise. This type of random uncertainty is inherent to lower-precision computations, where rounding differences lead to small variations in the inference outputs such as perplexity and zero-shot accuracies.",
+        "impact": "The observed differences (<0.1 in perplexity and <0.6% in averaged accuracy) are considered as noise-level variations due to random precision effects, which may be amplified by any additional random perturbations in the quantization or transformation process.",
+        "possible_modifications": [
+          "Inject additional random noise into the Hadamard transformation output to test the model's robustness to increased numerical imprecision.",
+          "Randomly adjust rounding parameters or perturb a fraction of the computed values in the quantization pipeline to simulate further random uncertainty.",
+          "Experiment with stochastic rounding schemes in FP16 computations, introducing more variability across inference runs."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Potential biases in the data preprocessing or transformation pipeline configuration",
+        "description": "Systematic uncertainty may arise if there is a constant or one-time modification in the experimental setup\u2014for example, consistently misconfiguring the Hadamard transformation (such as applying a fixed incorrect scaling factor) or using a corrupted version of the evaluation dataset that introduces bias. Such changes would uniformly affect all measurements instead of just introducing random noise.",
+        "impact": "A systematic error would lead to consistent shifts in performance metrics across all tasks (e.g., uniformly higher perplexity or lower zero-shot accuracy), making the model appear biased. This would mask the true impact of the precision change and could lead to incorrect conclusions about the robustness of the QuaRot quantization method.",
+        "possible_modifications": [
+          "Include a systematic bias by applying a fixed scalar multiplier in the Hadamard transformation to simulate a consistent error in the computation.",
+          "Alter the evaluation dataset in a controlled way (for example, modifying token distributions or introducing a one-time error in preprocessing) to observe the effect of systematic bias on the performance metrics.",
+          "Introduce a consistent modification in the quantization parameters across all experiments, such as a persistent offset, to study how slight systematic changes affect overall model behavior."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "To compare FP32 vs FP16 precision for Hadamard transformation, run the following commands:\n\n1. For LLAMA2-7B with FP32 Hadamard:\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --fp32_had --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n\n2. For LLAMA2-7B with FP16 Hadamard (default):\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n\n3. For LLAMA2-13B with FP32 Hadamard:\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --rotate --fp32_had --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n\n4. For LLAMA2-13B with FP16 Hadamard (default):\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --rotate --a_bits 4 --v_bits 4 --k_bits 4 --w_bits 4 --w_clip --lm_eval --tasks piqa winogrande hellaswag arc_easy arc_challenge lambada\n\nEach command will output perplexity on WikiText-2 and zero-shot accuracy on the six tasks, which can be compiled into a table similar to the expected outcome.",
+      "requirements": [
+        "Step 1: Set up the environment with required dependencies including PyTorch, transformers, datasets, and lm_eval libraries (/workspace/fake_quant/main.py:1-10)",
+        "Step 2: Obtain Hugging Face API token for accessing the LLaMA models (/workspace/fake_quant/utils.py:80)",
+        "Step 3: Load the specified LLaMA model (either LLaMA-2-7b-hf or LLaMA-2-13b-hf) from Hugging Face (/workspace/fake_quant/main.py:20)",
+        "Step 4: Apply layer normalization fusion to the model by merging linear operations in LayerNorm into adjacent linear blocks (/workspace/fake_quant/main.py:26)",
+        "Step 5: Apply Hadamard rotation to the model weights using either FP32 precision (when --fp32_had flag is set) or FP16 precision (default) (/workspace/fake_quant/main.py:27-45)",
+        "Step 6: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30)",
+        "Step 7: Configure Hadamard transformation for down_proj and o_proj layers with the specified precision (/workspace/fake_quant/main.py:32-45)",
+        "Step 8: Apply weight quantization to the model using either GPTQ or RTN method with the specified bit-width (4 bits) (/workspace/fake_quant/main.py:50-75)",
+        "Step 9: Apply input quantization to the model with the specified bit-width for activations and value projections (/workspace/fake_quant/main.py:79-109)",
+        "Step 10: Apply key quantization to the model if specified (/workspace/fake_quant/main.py:111-124)",
+        "Step 11: Load the WikiText-2 dataset for perplexity evaluation (/workspace/fake_quant/main.py:127-134)",
+        "Step 12: Evaluate the model's perplexity on the WikiText-2 dataset (/workspace/fake_quant/main.py:137-139)",
+        "Step 13: Prepare the model for zero-shot evaluation by loading the lm_eval library and moving the model to the appropriate device (/workspace/fake_quant/main.py:141-155)",
+        "Step 14: Load the tokenizer for the model (/workspace/fake_quant/main.py:157)",
+        "Step 15: Create an HFLM (Hugging Face Language Model) wrapper for evaluation (/workspace/fake_quant/main.py:158)",
+        "Step 16: Evaluate the model on the specified zero-shot tasks (piqa, winogrande, hellaswag, arc_easy, arc_challenge, lambada) (/workspace/fake_quant/main.py:160-161)",
+        "Step 17: Calculate and display the average accuracy across all tasks (/workspace/fake_quant/main.py:163-165)",
+        "Final Step: Compare the results between FP32 and FP16 Hadamard transformation to determine the impact on model performance (/workspace/fake_quant/main.py:137-168)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment comparing FP32 vs FP16 precision for Hadamard transformation in quantized language models. You need to run the provided script with different configurations and analyze the results.\n\nYou'll need to:\n1. Understand the purpose of the experiment (comparing FP32 vs FP16 precision for Hadamard transformation)\n2. Set up the necessary environment with required dependencies\n3. Obtain access to the LLaMA models (you'll need a Hugging Face token)\n4. Run the script with the specified configurations for both LLaMA-2-7B and LLaMA-2-13B models\n5. Compare the results between FP32 and FP16 Hadamard transformation\n\nThe script applies quantization to the models and evaluates them on perplexity (WikiText-2) and zero-shot accuracy on multiple tasks (piqa, winogrande, hellaswag, arc_easy, arc_challenge, lambada).",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "questions": [
+    {
+      "question": "Will the CycleNet model leveraging the RCF technique outperform existing state-of-the-art models iTransformer on ETTh1 & ETTh2 forecasting tasks?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Compare the performance of CycleNet leveraging the RCF technique against the iTransformer model on time series forecasting tasks.\n    - **Objective:** \n    Determine whether the CycleNet model achieves better forecasting accuracy as measured by MSE and MAE on the ETTh1 & ETTh2 datasets.\n\n2. **Testing Dataset:** \n    - ETTh1 & ETTh2 (time series forecasting tasks)\n    - Preprocessing operations on the datasets, such as dataset splitting and normalization methods, remained consistent with prior works (e.g., Autoformer [Haixu Wu, Jiehui Xu, Jianmin Wang, and Mingsheng Long. Autoformer: Decomposition transformers with auto-correlation for long-term series forecasting. Advances in neural information processing systems, 34:22419\u201322430, 2021.], iTransformer [Yong Liu, Tengge Hu, Haoran Zhang, Haixu Wu, Shiyu Wang, Lintao Ma, and Mingsheng Long. itransformer: Inverted transformers are effective for time series forecasting. In The Twelfth International Conference on Learning Representations, 2024.], etc.).\n3. **Comparative Evaluation:**  \n    - Models:\n        - iTransformer (Baseline model)\n        - CycleNet (Proposed model with MLP and Linear backbones)\n\n4. **Training Detail:**\n    - Fixed look-back window (L=96)\n    - Forecast horizons (H \u2208 {96, 192, 336, 720})\n    - Use PyTorch and Adam optimizer for training\n    - Utilize an NVIDIA GeForce RTX 4090 GPU for training\n\n5. **Normalization detail:**\n    - Normalization is a technique used to standardize the range of independent variables or features of data. In the context of time series, it addresses distributional shifts by removing varying statistical properties such as mean and standard deviation from the data. This helps to prevent models from performing poorly due to changes in the data distribution over time. The technique standardizes the input data within a window and later reverts it back to its original scale for predictions. In CycleNet, this is implemented outside of the input and output steps using instance normalization, inspired by methods like RevIN.\n\n    1. Normalize the input window \\( x_{t-L+1:t} \\):\n    \\[\n   x_{t-L+1:t} = \\frac{x_{t-L+1:t} - \\mu}{\\sqrt{\\sigma + \\epsilon}}\n   \\]\n   where \\(\\mu\\) is the mean of the input window, \\(\\sigma\\) is the standard deviation of the input window, and \\(\\epsilon\\) is a small constant for numerical stability.\n\n    2. Re-normalize the prediction \\( \\hat{x}_{t+1:t+H} \\):\n   \\[\n   \\hat{x}_{t+1:t+H} = \\hat{x}_{t+1:t+H} \\times \\sqrt{\\sigma + \\epsilon} + \\mu\n   \\]\n   Here, \\( \\hat{x}_{t+1:t+H} \\) is the model's predicted output, \\(\\mu\\) and \\(\\sigma\\) are the mean and standard deviation of the input window, and \\(\\epsilon\\) ensures numerical stability.\n\n\n6. **Loss Function:**\n    - CycleNet defaults to using Mean Squared Error (MSE) as the loss function to ensure fair comparison with other methods, formulated as:\n        - Loss = \\( \\| x_{t+1:t+H} - \\bar{x}_{t+1:t+H} \\|_2^2 \\)\n\n7. **Evaluation Metrics:**\n    - MSE (Mean Squared Error)\n    - MAE (Mean Absolute Error)\n\n8. **Experiment Detail:**\n- We utilized widely used benchmark datasets for LTSF tasks, including the ETT series, Electricity, Solar-Energy, Traffic, and Weather. Following prior works such as Autoformer and iTransformer, we split the ETTs dataset into training, validation, and test sets with a ratio of 6:2:2, while the other datasets were split in a ratio of 7:1:2. \n- We implemented CycleNet using PyTorch and conducted experiments on a single NVIDIA RTX 4090 GPU with 24GB of memory. CycleNet was trained for 30 epochs with early stopping based on a patience of 5 on the validation set. The batch size was set uniformly to 256 for ETTs and the Weather dataset, and 64 for the remaining datasets. This adjustment was made because the latter datasets have a larger number of channels, requiring a relatively smaller batch size to avoid out-of-memory issues. The learning rate was selected from the range {0.002, 0.005, 0.01} based on the performance on the validation set. The hyperparameter W was set consistently to the pre-inferred cycle length. Additionally, the hidden layer size of CycleNet/MLP was uniformly set to 512. By default, CycleNet uses RevIN without learnable affine parameters. However, we found that on the Solar dataset, using RevIN leads to a significant performance drop. The primary reason for this may be that photovoltaic power generation data contains continuous segments of zero values (no power generation at night). When the look-back windows are not an integer multiple of a day, the calculation of means in RevIN can be significantly affected, leading to decreased performance. Therefore, for this dataset, we did not apply the RevIN strategy.",
+      "expected_outcome": "It is expected that CycleNet (especially CycleNet/MLP) will achieve significantly lower error metrics (MSE and MAE) than the compared state-of-the-art iTransformer model on ETTh1 & ETTh2, demonstrating the effectiveness of the RCF technique in improving forecasting performance.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "dataset": [
+              "ETTh1",
+              "ETTh2"
+            ],
+            "look_back_window": [
+              "96"
+            ],
+            "compute_resource": [
+              "NVIDIA GeForce RTX 4090 GPU"
+            ],
+            "preprocessing_and_normalization": "Fixed preprocessing, normalization, and hyperparameter setups as described in the experiment setup"
+          },
+          "independent_variables": {
+            "forecast_horizon": [
+              "96",
+              "192",
+              "336",
+              "720"
+            ],
+            "model_variant": [
+              "CycleNet/MLP",
+              "CycleNet/Linear"
+            ],
+            "baseline_model": [
+              "iTransformer"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": [
+              "MSE",
+              "MAE"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Benchmark datasets (ETTh1 and ETTh2)",
+            "Look-back window (L=96) and forecast horizons (96, 192, 336, 720)",
+            "Model variants (CycleNet/MLP, CycleNet/Linear) and baseline models (iTransformer and others)",
+            "Preprocessing and normalization procedures",
+            "Hyperparameter setups",
+            "Implementation framework (PyTorch)",
+            "Optimizer (Adam)",
+            "Compute resource (NVIDIA GeForce RTX 4090 GPU)"
+          ],
+          "setup_steps": [
+            "Obtain and load the ETTh1 and ETTh2 benchmark datasets",
+            "Apply the fixed preprocessing and normalization procedures as described",
+            "Set up the experiment with a fixed look-back window of 96",
+            "Define forecast horizons for experiments (96, 192, 336, 720)",
+            "Implement CycleNet with both MLP and Linear backbones",
+            "Configure the experiments to use PyTorch with the Adam optimizer on an NVIDIA GeForce RTX 4090 GPU",
+            "Run experiments for each forecast horizon and collect performance results using MSE and MAE metrics",
+            "Aggregate results across experiments and statistically compare the performance to confirm if CycleNet/MLP and CycleNet/Linear outperform the baselines"
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Restrict the computational resources by using a lower-end GPU (e.g., NVIDIA GeForce RTX 3080 instead of RTX 4090), which may require adjustments in training settings or longer training times to achieve comparable performance.",
+              "Limit available GPU memory to test the robustness of CycleNet implementations under tighter hardware constraints."
+            ],
+            "time_constraints": [
+              "Enforce a strict training time limit per experiment, for instance by reducing the maximum training epochs, to evaluate if CycleNet variants can meet the performance targets within a shorter time frame."
+            ],
+            "money_constraints": []
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Random initialization and stochastic optimization in training",
+          "description": "Due to inherent randomness in weight initialization, mini-batch sampling, and gradient updates with the Adam optimizer, the resulting model performance (measured via MSE and MAE) can vary between runs. This fluctuation introduces random uncertainty in the experimental outcomes.",
+          "impact": "These random variations can lead to instability during training and cause discrepancies in performance measurements, potentially affecting the aggregated results and the statistical comparisons against the baseline models.",
+          "possible_modifications": [
+            "Fix random seeds and use deterministic training modes in PyTorch to reduce random fluctuations.",
+            "Average outcomes over multiple runs to mitigate the impact of randomness on performance metrics.",
+            "Conduct experiments with controlled noise injection to understand the sensitivity of the model and improve robustness."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {}
+      },
+      "source": [
+        "/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh",
+        "/workspace/scripts/CycleNet/Linear-Input-96/etth2.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/etth2.sh",
+        "/workspace/run.py"
+      ],
+      "usage_instructions": "1. First, create two new scripts for iTransformer on ETTh1 and ETTh2 datasets:\n\nFor ETTh1, create a file named `/workspace/scripts/iTransformer/etth1.sh` with the following content:\n```bash\nmodel_name=Transformer\n\nroot_path_name=./dataset/\ndata_path_name=ETTh1.csv\nmodel_id_name=ETTh1\ndata_name=ETTh1\n\nseq_len=96\nfor pred_len in 96 192 336 720\ndo\nfor random_seed in 2024 2025 2026 2027 2028\ndo\n    python -u run.py \\\n      --is_training 1 \\\n      --root_path $root_path_name \\\n      --data_path $data_path_name \\\n      --model_id $model_id_name'_'$seq_len'_'$pred_len \\\n      --model $model_name \\\n      --data $data_name \\\n      --features M \\\n      --seq_len $seq_len \\\n      --pred_len $pred_len \\\n      --enc_in 7 \\\n      --d_model 512 \\\n      --d_ff 512 \\\n      --dropout 0.1 \\\n      --e_layers 3 \\\n      --train_epochs 30 \\\n      --patience 5 \\\n      --itr 1 --batch_size 256 --learning_rate 0.0001 --random_seed $random_seed\ndone\ndone\n```\n\nFor ETTh2, create a file named `/workspace/scripts/iTransformer/etth2.sh` with the following content:\n```bash\nmodel_name=Transformer\n\nroot_path_name=./dataset/\ndata_path_name=ETTh2.csv\nmodel_id_name=ETTh2\ndata_name=ETTh2\n\nseq_len=96\nfor pred_len in 96 192 336 720\ndo\nfor random_seed in 2024 2025 2026 2027 2028\ndo\n    python -u run.py \\\n      --is_training 1 \\\n      --root_path $root_path_name \\\n      --data_path $data_path_name \\\n      --model_id $model_id_name'_'$seq_len'_'$pred_len \\\n      --model $model_name \\\n      --data $data_name \\\n      --features M \\\n      --seq_len $seq_len \\\n      --pred_len $pred_len \\\n      --enc_in 7 \\\n      --d_model 512 \\\n      --d_ff 512 \\\n      --dropout 0.1 \\\n      --e_layers 3 \\\n      --train_epochs 30 \\\n      --patience 5 \\\n      --itr 1 --batch_size 256 --learning_rate 0.0001 --random_seed $random_seed\ndone\ndone\n```\n\n2. Then, run the following commands to execute the experiments:\n\n   a. Run CycleNet with Linear backbone on ETTh1 and ETTh2:\n      ```\n      sh scripts/CycleNet/Linear-Input-96/etth1.sh\n      sh scripts/CycleNet/Linear-Input-96/etth2.sh\n      ```\n\n   b. Run CycleNet with MLP backbone on ETTh1 and ETTh2:\n      ```\n      sh scripts/CycleNet/MLP-Input-96/etth1.sh\n      sh scripts/CycleNet/MLP-Input-96/etth2.sh\n      ```\n\n   c. Run iTransformer on ETTh1 and ETTh2:\n      ```\n      sh scripts/iTransformer/etth1.sh\n      sh scripts/iTransformer/etth2.sh\n      ```\n\n3. The scripts will run experiments with different forecast horizons (96, 192, 336, 720) and multiple random seeds for statistical significance. The results will include MSE and MAE metrics for each model, allowing you to compare the performance of CycleNet (with both Linear and MLP backbones) against iTransformer on ETTh1 and ETTh2 datasets.",
+      "requirements": [
+        "Step 1: Set up the experiment configuration for CycleNet with Linear backbone on ETTh1 dataset, including model name, dataset paths, model type, sequence length, prediction lengths, and random seeds (/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh:1-13)",
+        "Step 2: Run CycleNet with Linear backbone on ETTh1 dataset with appropriate parameters including cycle length of 24 and learning rate of 0.01 (/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh:14-31)",
+        "Step 3: Set up the experiment configuration for CycleNet with Linear backbone on ETTh2 dataset, including model name, dataset paths, model type, sequence length, prediction lengths, and random seeds (/workspace/scripts/CycleNet/Linear-Input-96/etth2.sh:1-12)",
+        "Step 4: Run CycleNet with Linear backbone on ETTh2 dataset with appropriate parameters including cycle length of 24 and learning rate of 0.01 (/workspace/scripts/CycleNet/Linear-Input-96/etth2.sh:13-30)",
+        "Step 5: Set up the experiment configuration for CycleNet with MLP backbone on ETTh1 dataset, including model name, dataset paths, model type, sequence length, prediction lengths, and random seeds (/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh:1-13)",
+        "Step 6: Run CycleNet with MLP backbone on ETTh1 dataset with appropriate parameters including cycle length of 24 and learning rate of 0.005 (/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh:14-31)",
+        "Step 7: Set up the experiment configuration for CycleNet with MLP backbone on ETTh2 dataset, including model name, dataset paths, model type, sequence length, prediction lengths, and random seeds (/workspace/scripts/CycleNet/MLP-Input-96/etth2.sh:1-12)",
+        "Step 8: Run CycleNet with MLP backbone on ETTh2 dataset with appropriate parameters including cycle length of 24 and learning rate of 0.005 (/workspace/scripts/CycleNet/MLP-Input-96/etth2.sh:13-30)",
+        "Step 9: Load the appropriate model based on the model name specified in the configuration (/workspace/exp/exp_main.py:28-49)",
+        "Step 10: Prepare data loaders for training, validation, and testing (/workspace/exp/exp_main.py:51-53)",
+        "Step 11: Train the model with early stopping based on validation loss (/workspace/exp/exp_main.py:115-244)",
+        "Step 12: Test the model and calculate performance metrics (MSE, MAE) (/workspace/exp/exp_main.py:246-348)",
+        "Final Step: Record and save the evaluation results for comparison (/workspace/exp/exp_main.py:335-342)"
+      ],
+      "agent_instructions": "Your task is to create scripts to run time series forecasting experiments comparing CycleNet (with both Linear and MLP backbones) against iTransformer on ETTh1 and ETTh2 datasets. You need to:\n\n1. Create shell scripts to run experiments for:\n   - CycleNet with Linear backbone on ETTh1 and ETTh2\n   - CycleNet with MLP backbone on ETTh1 and ETTh2\n   - iTransformer on ETTh1 and ETTh2\n\n2. Each script should:\n   - Set appropriate model configurations (model name, dataset paths, etc.)\n   - Run experiments with multiple forecast horizons (96, 192, 336, 720)\n   - Use multiple random seeds (2024-2028) for statistical significance\n   - Configure appropriate hyperparameters for each model\n\n3. For CycleNet:\n   - Use a cycle length of 24 (representing daily patterns)\n   - For Linear backbone: use learning rate of 0.01\n   - For MLP backbone: use learning rate of 0.005\n   - Enable RevIN normalization\n\n4. For iTransformer:\n   - Use appropriate transformer configurations (d_model=512, d_ff=512, etc.)\n   - Set e_layers=3 and learning rate of 0.0001\n\n5. All experiments should:\n   - Use a sequence length (input length) of 96\n   - Train for up to 30 epochs with early stopping (patience=5)\n   - Use MSE as the loss function\n   - Evaluate using MSE and MAE metrics\n\nThe goal is to compare the forecasting performance of these models across different prediction horizons on the ETT datasets.",
+      "masked_source": [
+        "/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh",
+        "/workspace/scripts/CycleNet/Linear-Input-96/etth2.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/etth2.sh",
+        "/workspace/run.py"
+      ]
+    }
+  ]
+}

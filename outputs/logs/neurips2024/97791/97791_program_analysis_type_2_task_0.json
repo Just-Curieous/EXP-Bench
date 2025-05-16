@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries (datasets, numpy, matplotlib) (/workspace/notebooks/plasticc_demo.ipynb:10-11, /workspace/notebooks/getting_started.ipynb:97-98)",
+    "Step 2: Load the PLAsTiCC dataset from the Multimodal Universe collection with streaming enabled (/workspace/notebooks/plasticc_demo.ipynb:23, /workspace/notebooks/getting_started.ipynb:348-351)",
+    "Step 3: Extract a light curve example from the dataset (/workspace/notebooks/plasticc_demo.ipynb:35, /workspace/notebooks/getting_started.ipynb:376)",
+    "Step 4: Identify unique bands in the light curve data (/workspace/notebooks/plasticc_demo.ipynb:47-48, /workspace/notebooks/getting_started.ipynb:416)",
+    "Step 5: Determine the sequence length for each band (/workspace/notebooks/plasticc_demo.ipynb:49-51)",
+    "Step 6: Find non-padding timestamps to determine the unpadded sequence length (/workspace/notebooks/plasticc_demo.ipynb:64-66)",
+    "Step 7: Reshape the time, flux, and flux error data to remove padding (/workspace/notebooks/plasticc_demo.ipynb:79-81)",
+    "Step 8: Create a visualization with different colors for each band, error bars for flux measurements, and proper axis labels (/workspace/notebooks/plasticc_demo.ipynb:93-107)",
+    "Final Step: Display metadata about the astronomical object including its type and redshift information (/workspace/notebooks/getting_started.ipynb:419-421)"
+  ],
+  "agent_instructions": "Create a program that visualizes astronomical light curves from the PLAsTiCC dataset. Your program should:\n\n1. Install and import the necessary libraries: datasets (from Hugging Face), numpy, and matplotlib.\n\n2. Load the PLAsTiCC dataset from the Multimodal Universe collection using the Hugging Face datasets library with streaming enabled.\n\n3. Extract a light curve example from the dataset. The light curve data will be stored in a 'lightcurve' field of the example.\n\n4. Process the light curve data to prepare it for visualization:\n   - Identify the unique bands (different wavelength filters) in the data\n   - Determine the sequence length for each band\n   - Find non-padding timestamps to determine the actual data points (the dataset uses padding with zeros or negative values)\n   - Reshape the time, flux, and flux error data to remove padding\n\n5. Create a visualization of the light curve that includes:\n   - Different colors for each band (u, g, r, i, z, Y)\n   - Error bars for flux measurements\n   - Proper axis labels (time in MJD for x-axis, flux for y-axis)\n   - A legend identifying each band\n\n6. Display metadata about the astronomical object, including its object ID, type (e.g., supernova type), and redshift information.\n\nThe goal is to create an informative visualization that shows how the brightness of an astronomical object changes over time across different wavelength bands, which is crucial for identifying and classifying transient astronomical phenomena."
+}

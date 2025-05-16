@@ -1,0 +1,17 @@
+{
+  "requirements": [
+    "Step 1: Set up the training environment by initializing the PDEModel and PDEDataModule with appropriate configuration (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:19-34)",
+    "Step 2: Create a model from the registry based on the model name, configuring it with appropriate parameters for the PDE type (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:35-42, /workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:24-49)",
+    "Step 3: Train the model using PyTorch Lightning, with appropriate loss functions for scalar and vector components (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:167-202)",
+    "Step 4: Normalize input data before passing to the model and denormalize outputs (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:147-165)",
+    "Step 5: Implement the SineNet architecture with configurable number of waves (8 or 16) and other hyperparameters (/workspace/OpenPDE/SineNet/pdearena/pdearena/modules/sinenet_dual.py:111-220)",
+    "Step 6: Perform rollout evaluation by using the trained model to predict multiple steps into the future (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:203-243, /workspace/OpenPDE/SineNet/pdearena/pdearena/rollout.py:12-51)",
+    "Step 7: Calculate and log evaluation metrics for both one-step prediction and multi-step rollout (/workspace/OpenPDE/SineNet/pdearena/pdearena/models/pdemodel.py:245-314)",
+    "Final Step: Test the trained model and compare performance between SineNet-8 and SineNet-16 across different datasets (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:43-45)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for training and testing SineNet models on partial differential equation (PDE) datasets. The goal is to compare the performance of SineNet with 8 waves versus SineNet with 16 waves across three datasets: Incompressible Navier-Stokes (INS), Compressible Navier-Stokes (CNS), and Shallow Water Equations (SWE).\n\nYou need to create:\n\n1. A training script that:\n   - Takes command-line arguments for configuration file, data directory, model name, and other hyperparameters\n   - Sets up the training environment and directories for checkpoints and logs\n   - Initializes a PDE model and data module based on the configuration\n   - Trains the model using PyTorch Lightning\n   - Automatically runs testing after training is complete\n\n2. A testing script that:\n   - Takes similar command-line arguments as the training script\n   - Loads a trained model from a checkpoint\n   - Evaluates the model on test data\n\nThe SineNet model should:\n- Be configurable with different numbers of waves (8 or 16)\n- Use a U-Net style architecture with down and up sampling paths\n- Support both scalar and vector components of the PDE data\n- Include normalization of inputs and outputs\n- Implement rollout evaluation for multi-step prediction\n\nThe evaluation should measure both one-step prediction errors and rollout errors (predicting multiple steps into the future). The scripts should log these metrics for comparison between SineNet-8 and SineNet-16 across all three datasets.",
+  "masked_source": [
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/train.py",
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/test.py"
+  ]
+}

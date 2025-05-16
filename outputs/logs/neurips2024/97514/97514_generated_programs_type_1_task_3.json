@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/src/hest/bench/benchmark.py", "/workspace/bench_config/bench_config.yaml"],
+    "usage_instructions": "1. Ensure HEST is properly installed following the instructions in the README.md. 2. Configure the benchmark by editing the bench_config.yaml file to select the foundation models you want to evaluate (uncomment the desired models in the 'encoders' list) and the datasets to use (uncomment the desired datasets in the 'datasets' list). 3. Run the benchmark using the command: `python /workspace/src/hest/bench/benchmark.py --config /workspace/bench_config/bench_config.yaml`. 4. The benchmark will automatically perform patient-stratified k-fold cross-validation (or k/2-fold for ccRCC) and report error bars as standard deviation across folds. 5. Results will be saved in the directory specified by 'results_dir' in the config file, including Pearson correlations and error bars for each gene and model."
+}

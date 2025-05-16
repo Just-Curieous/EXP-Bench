@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments to configure the experiment, including dataset path, dataset name, class name, backbone model, feature layers, image resize dimensions, aggregation degrees (r_list), batch size, output directory, visualization and excel saving options (/workspace/examples/musc_main.py:11-30)",
+    "Step 2: Load configuration from YAML file and override with command line arguments (/workspace/examples/musc_main.py:32-78)",
+    "Step 3: Initialize the MuSc model with the configuration (/workspace/examples/musc_main.py:85-86)",
+    "Step 4: Load the specified backbone model (ViT-L-14-336 with OpenAI pretrained weights) (/workspace/models/musc.py:64-76)",
+    "Step 5: For each category in the dataset, load test data and extract features from the specified layers of the backbone model (/workspace/models/musc.py:127-179)",
+    "Step 6: Apply the LNAMD (Local Neighborhood Aggregation with Multiple Degrees) module with the specified aggregation degrees (r_list) to process features (/workspace/models/musc.py:183-202)",
+    "Step 7: Apply the MSM (Mutual Similarity Measurement) module to compute anomaly scores for each layer (/workspace/models/musc.py:204-217)",
+    "Step 8: Average the anomaly scores across different aggregation degrees and layers (/workspace/models/musc.py:218-220)",
+    "Step 9: Interpolate the anomaly maps to match the original image size (/workspace/models/musc.py:222-227)",
+    "Step 10: Apply the RsCIN (Robust Score Calibration with Image Neighborhood) module to refine the anomaly scores (/workspace/models/musc.py:242-248)",
+    "Step 11: Compute evaluation metrics for both image-level and pixel-level anomaly detection (/workspace/models/musc.py:250-260)",
+    "Step 12: Generate visualizations of anomaly maps if requested (/workspace/models/musc.py:262-264)",
+    "Step 13: Calculate and report mean performance metrics across all categories (/workspace/models/musc.py:289-303)",
+    "Final Step: Save results to Excel file if requested (/workspace/models/musc.py:306-340)"
+  ],
+  "agent_instructions": "Create a script for anomaly detection using the MuSc (Multi-Scale Contrastive) framework. The script should implement an experiment to study the effect of different aggregation degrees in the LNAMD (Local Neighborhood Aggregation with Multiple Degrees) module on both MVTec AD and VisA datasets.\n\nThe script should:\n\n1. Accept command line arguments for configuring the experiment, including:\n   - Dataset path and name (MVTec AD or VisA)\n   - Class name (or 'ALL' for all categories)\n   - Backbone model (ViT-L-14-336 with OpenAI pretrained weights)\n   - Feature extraction layers (5, 11, 17, 23)\n   - Image resize dimensions (518)\n   - Aggregation degrees (r_list) for the LNAMD module (1, 3, 5, or combinations)\n   - Batch size, output directory, visualization and excel saving options\n\n2. Implement the core MuSc framework with the following components:\n   - Feature extraction from a pretrained vision transformer\n   - LNAMD module that aggregates local neighborhood features with different aggregation degrees\n   - MSM (Mutual Similarity Measurement) module that computes anomaly scores by comparing patch features\n   - RsCIN (Robust Score Calibration with Image Neighborhood) module for refining anomaly scores\n\n3. Process each category in the dataset by:\n   - Loading test data\n   - Extracting features from the backbone model\n   - Applying the LNAMD module with the specified aggregation degrees\n   - Computing anomaly scores using the MSM module\n   - Averaging scores across different aggregation degrees\n   - Generating anomaly maps and interpolating to match the original image size\n\n4. Evaluate performance using standard metrics:\n   - Image-level: AUROC, F1 score, Average Precision\n   - Pixel-level: AUROC, F1 score, Average Precision, AUPRO\n\n5. Generate visualizations of anomaly maps and save results to Excel if requested\n\nThe experiment should be able to run with different aggregation degree configurations (1, 3, 5, 1+3, 3+5, or 1+3+5) to study their impact on anomaly detection performance.",
+  "masked_source": [
+    "/workspace/examples/musc_main.py"
+  ]
+}

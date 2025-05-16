@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/sota-implementations/impala/impala_multi_node_ray.py",
+        "/workspace/sota-implementations/impala/config_multi_node_ray.yaml"
+    ],
+    "usage_instructions": "1. Modify the config_multi_node_ray.yaml file to set the desired Atari environments (e.g., change 'env_name: PongNoFrameskip-v4' to other environments like 'FreewayNoFrameskip-v4', 'BoxingNoFrameskip-v4', or 'BreakoutNoFrameskip-v4'). 2. Make sure the 'total_frames' parameter is set to 200,000,000 in the config file (which is already the default). 3. Run the script with 'python impala_multi_node_ray.py' for each environment. 4. For Pong and Boxing, you can evaluate rewards using only the first 50M frames by setting 'total_frames: 50_000_000' in the config file. 5. To run with multiple seeds, execute the script 5 times with different random seeds by adding 'seed=X' where X is 1-5."
+}

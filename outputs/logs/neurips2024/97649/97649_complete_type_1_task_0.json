@@ -1,0 +1,186 @@
+{
+  "questions": [
+    {
+      "question": "How does JaxMARL\u2019s PPO compare to Q-Learning in SMAX environments in terms of training time and normalized score?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Evaluate and compare PPO (Proximal Policy Optimization) and Q-Learning for multi-agent reinforcement learning (MARL) in the SMAX (StarCraft Multi-Agent Challenge in JAX) environment, focusing on training efficiency and performance.\n    - **Simulator:**\n    JaxMARL, a JAX-based MARL library that enables large-scale parallelization and efficient GPU-accelerated training.\n    - **Algorithm used:**\n        - PPO Algorithm Used: Multi-Agent PPO (MAPPO)\n        - Q-Learning Algorithm Used: QMIX\n    - **Objective:** \n        - Compare training time required for both algorithms to reach convergence.\n        - Analyze normalized score to evaluate policy effectiveness in cooperative multi-agent tasks.\n\n2. **Running Enviornment:** \n    - SMAX: A JAX-based reimplementation of the StarCraft Multi-Agent Challenge (SMAC), designed for multi-agent micromanagement tasks.\n    -  9 SMAX tasks, excluding the two maps with more than 10 units.\n\n3. **Comparative Evaluation:**  \n   - Compare PPO and Q-Learning on multiple SMAX tasks, ensuring fair comparisons by running experiments under the same computational resources.\n\n4. **Evaluation Metrics:**\n    - Training Time (Minutes): Measure the time required for each algorithm to reach a predefined convergence criterion (e.g., stable performance over multiple evaluations).\n    - Normalized Score:\n    Normalize performance across different SMAX scenarios by scaling scores relative to the best-performing algorithm in each scenario.\n        - Calculation: Normalized\u00a0Score = Algorithm\u00a0Score/max (Best\u00a0Score\u00a0in\u00a0Scenario) \n        - Metrics used for scoring:\n            - Inter-Quartile Mean (IQM): Robust measure of central tendency for performance across multiple seeds.\n            - Mean Episode Reward: Measures the cumulative reward obtained per episode.",
+      "expected_outcome": "- Training Time: PPO is expected to train 6\u00d7 faster than Q-Learning in SMAX.\n\n- Normalized Score: PPO is expected to outperform Q-Learning in most SMAX scenarios due to better stability in training and more effective policy optimization.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "simulator": "JaxMARL with the SMAX environment remains constant across experiments",
+            "computational_resources": "Same hardware acceleration and computational setup as detailed in the Appendix"
+          },
+          "independent_variables": {
+            "algorithm": [
+              "MAPPO (for PPO)",
+              "QMIX (for Q-Learning)"
+            ],
+            "SMAX_task": "9 specific SMAX maps (selected by excluding the 2 maps with more than 10 units)"
+          },
+          "dependent_variables": {
+            "training_time": "Measured in minutes required to reach the convergence criterion",
+            "normalized_score": "Calculated as the algorithm score divided by the maximum score per SMAX scenario (using IQM and Mean Episode Reward for evaluation)"
+          }
+        }
+      },
+      "design_ambiguity": {
+        "design_ambiguity": {
+          "ambiguous_variables": {
+            "convergence_criterion": "The exact threshold or definition of 'stable performance' for convergence is not explicitly defined",
+            "SMAX_task_selection": "While 9 tasks are used, the specific maps or criteria for their selection (aside from excluding maps with >10 units) is not detailed",
+            "normalization_method": "The procedure for normalizing scores across different scenarios (beyond the formula provided) could be further elaborated"
+          },
+          "possible_modifications": {
+            "modification_1": [
+              "Explicitly define the convergence threshold (e.g., performance over a set number of episodes) for better reproducibility"
+            ],
+            "modification_2": [
+              "Include additional independent variables such as varying hyperparameters for each algorithm to assess robustness"
+            ],
+            "modification_3": [
+              "Mask or vary additional performance metrics (e.g., variance or error bars in the normalized score) to explore their impact on the outcome"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Simulator: JaxMARL with SMAX environment",
+            "Algorithms: MAPPO for PPO and QMIX for Q-Learning",
+            "SMAX Tasks: 9 specific maps (excluding maps with >10 units)",
+            "Evaluation Metrics: Training Time (in minutes) and Normalized Score (using IQM and Mean Episode Reward)",
+            "Computational Resources: Same hardware and configuration across experiments as detailed in the Appendix"
+          ],
+          "setup_steps": [
+            "Define the problem setup and task objective for comparing PPO and Q-Learning",
+            "Configure and initialize the JaxMARL simulator with the SMAX environment",
+            "Select and prepare the 9 chosen SMAX maps",
+            "Set up the two algorithms: MAPPO for PPO and QMIX for Q-Learning, ensuring proper hyperparameter configuration",
+            "Run the experiments under identical computational resources",
+            "Measure training time until convergence and compute normalized scores across scenarios",
+            "Aggregate evaluation metrics using methods such as the Inter-Quartile Mean and Mean Episode Reward"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Convergence Criterion Definition",
+              "description": "The process of determining when an algorithm has reached a stable performance level is not explicitly defined, adding complexity to measuring training time."
+            },
+            {
+              "source": "Score Normalization Procedure",
+              "description": "Although a formula is provided for normalized score calculation, details on scaling and handling variations across different SMAX scenarios add complexity."
+            },
+            {
+              "source": "Algorithm Specific Tuning",
+              "description": "Different algorithms (MAPPO vs QMIX) may require algorithm-specific hyperparameter tuning and adjustments, increasing the overall setup complexity."
+            }
+          ]
+        }
+      },
+      "experiment_setup_ambiguity": {
+        "experiment_setup_ambiguity": {
+          "ambiguous_components": [
+            "Convergence Criterion: The exact threshold or definition of 'stable performance' is not explicitly provided.",
+            "SMAX Task Selection: While 9 tasks are used, the specific criteria or identities of these maps (aside from excluding maps with >10 units) are ambiguous.",
+            "Normalization Method: The detailed procedure for normalizing scores across various scenarios is not fully elaborated beyond the provided formula."
+          ],
+          "ambiguous_setup_steps": [
+            "Defining and implementing the convergence criterion: Which performance metric thresholds or episode counts signal convergence is unclear.",
+            "Selection criteria for specific SMAX maps: Additional details on how the remaining maps are chosen after exclusion are not specified.",
+            "Execution of score normalization: The method for handling outlier results or variance across seeds may require further clarification."
+          ],
+          "possible_modifications": {
+            "modification_1": [
+              "Explicitly define the convergence threshold, such as a specific performance metric maintained over a fixed number of episodes, to improve reproducibility."
+            ],
+            "modification_2": [
+              "Include additional independent variables, like varying hyperparameters for each algorithm, to assess robustness across different settings."
+            ],
+            "modification_3": [
+              "Provide more detailed instructions or mask certain performance metrics (such as variance or error bar reporting) to explore their impact on the comparison outcome."
+            ]
+          }
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Consider restricting available computational resources (for example, using fewer GPUs or lower-performance hardware) to explore how resource limitations affect training efficiency and normalized scores."
+            ],
+            "time_constraints": [
+              "Explicitly define the convergence threshold (e.g., requiring stable performance over a set number of episodes) to tighten the measurement of training time differences between PPO and Q-Learning.",
+              "Reduce the allowed optimization iterations to more clearly expose differences in time efficiency between the two algorithms."
+            ],
+            "money_constraints": []
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic training dynamics and random initialization",
+          "description": "Reinforcement learning experiments, particularly with algorithms like PPO and Q-Learning, are sensitive to random seeds, initialization, and stochastic gradient updates. In this experiment, variability in randomly sampled episodes, differing starting conditions, and potential instability in gradient updates (e.g., from stochastic choices in learning) can lead to fluctuations in training time and normalized score across runs.",
+          "impact": "These random variations can manifest as error bars in performance metrics (such as IQM and Mean Episode Reward) and may skew the apparent advantages of one algorithm over the other, leading to uncertainty in the comparative results.",
+          "possible_modifications": [
+            "Increase the number of runs (seeds) to average out the randomness and provide tighter error bars.",
+            "Implement controlled randomization by fixing seed values across experiments to isolate algorithm performance from stochastic noise.",
+            "Use additional uncertainty quantification measures, such as confidence intervals or bootstrapped error estimates, to explicitly account for training variability."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Ambiguous convergence criterion and task selection bias",
+          "description": "The experiment does not define a precise threshold for 'stable performance' (the convergence criterion), and the selection of 9 specific SMAX maps (after excluding maps with >10 units) might introduce a bias if these maps are not representative of the overall environment. This one-time methodological decision could systematically favor one algorithm if, for example, its performance characteristics align better with the chosen convergence definition or map characteristics.",
+          "impact": "This type of systematic uncertainty can result in consistent over- or under-estimation of training efficiency and normalized scores for one algorithm relative to the other. It compromises the reproducibility of the experiment when varying the mapping selection or convergence conditions.",
+          "possible_modifications": [
+            "Explicitly define the convergence threshold, e.g., requiring stable performance over a fixed number of episodes, to remove ambiguity in measuring training time.",
+            "Diversify the selection of SMAX tasks by either randomly sampling maps from the full set or validating the chosen set\u2019s representativeness of the overall environment.",
+            "Provide detailed normalization procedures and consider additional performance metrics (such as variance or additional robust statistical measures) to further mitigate bias."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/baselines/MAPPO/mappo_rnn_smax.py",
+        "/workspace/baselines/QLearning/qmix_rnn.py"
+      ],
+      "usage_instructions": "To compare PPO to Q-Learning in SMAX environments in terms of training time and normalized score, run the following scripts:\n\n1. First, run the MAPPO (PPO) implementation on SMAX environments:\n   ```\n   python baselines/MAPPO/mappo_rnn_smax.py\n   ```\n\n2. Then, run the QMIX (Q-Learning) implementation on the same SMAX environments:\n   ```\n   python baselines/QLearning/qmix_rnn.py +alg=ql_rnn_smax\n   ```\n\n3. To ensure a fair comparison across the 9 SMAX maps (excluding the two with more than 10 units), modify the MAP_NAME parameter in each run. For MAPPO, you can modify it directly in the command line:\n   ```\n   python baselines/MAPPO/mappo_rnn_smax.py MAP_NAME=<map_name>\n   ```\n   For QMIX, use:\n   ```\n   python baselines/QLearning/qmix_rnn.py +alg=ql_rnn_smax alg.MAP_NAME=<map_name>\n   ```\n\n   The 9 SMAX maps to use (excluding maps with >10 units) are: '2s3z', '3s5z', '5m_vs_6m', '3s5z_vs_3s6z', '3s_vs_5z', '6h_vs_8z', 'smacv2_5_units', 'smacv2_10_units', and one other map.\n\n4. Both scripts will output training time metrics and normalized scores that can be compared. The MAPPO implementation is expected to train approximately 6x faster than QMIX while achieving better normalized scores across most SMAX scenarios.",
+      "requirements": [
+        "Step 1: Import necessary libraries including JAX, Flax, Optax, NumPy, and DistrAX for both algorithms (/workspace/baselines/MAPPO/mappo_rnn_smax.py:5-19, /workspace/baselines/QLearning/qmix_rnn.py:1-18)",
+        "Step 2: Create a wrapper for SMAX environments that provides a world state observation for the centralized critic (/workspace/baselines/MAPPO/mappo_rnn_smax.py:24-79)",
+        "Step 3: Implement a recurrent neural network (GRU) module for both algorithms to handle sequential data (/workspace/baselines/MAPPO/mappo_rnn_smax.py:81-107, /workspace/baselines/QLearning/qmix_rnn.py:31-59)",
+        "Step 4: For PPO, implement actor network with RNN that outputs action distributions (/workspace/baselines/MAPPO/mappo_rnn_smax.py:110-137)",
+        "Step 5: For PPO, implement critic network with RNN that outputs state value estimates (/workspace/baselines/MAPPO/mappo_rnn_smax.py:140-162)",
+        "Step 6: For QMIX, implement Q-network with RNN that outputs Q-values for each action (/workspace/baselines/QLearning/qmix_rnn.py:62-86)",
+        "Step 7: For QMIX, implement mixing network that combines individual agent Q-values into a team value (/workspace/baselines/QLearning/qmix_rnn.py:89-157)",
+        "Step 8: Define data structures to store transitions for both algorithms (/workspace/baselines/MAPPO/mappo_rnn_smax.py:164-174, /workspace/baselines/QLearning/qmix_rnn.py:160-166)",
+        "Step 9: Implement utility functions to convert between batched and unbatched data formats (/workspace/baselines/MAPPO/mappo_rnn_smax.py:177-185, /workspace/baselines/QLearning/qmix_rnn.py:220-224)",
+        "Step 10: For PPO, implement environment setup with appropriate wrappers (/workspace/baselines/MAPPO/mappo_rnn_smax.py:188-205)",
+        "Step 11: For QMIX, implement epsilon-greedy exploration strategy (/workspace/baselines/QLearning/qmix_rnn.py:187-218)",
+        "Step 12: For PPO, initialize actor and critic networks with appropriate parameters (/workspace/baselines/MAPPO/mappo_rnn_smax.py:216-261)",
+        "Step 13: For QMIX, initialize Q-network and mixing network with appropriate parameters (/workspace/baselines/QLearning/qmix_rnn.py:268-324)",
+        "Step 14: For QMIX, implement experience replay buffer for storing and sampling transitions (/workspace/baselines/QLearning/qmix_rnn.py:327-335)",
+        "Step 15: For PPO, implement trajectory collection by stepping through the environment (/workspace/baselines/MAPPO/mappo_rnn_smax.py:275-332)",
+        "Step 16: For PPO, calculate advantages using Generalized Advantage Estimation (GAE) (/workspace/baselines/MAPPO/mappo_rnn_smax.py:352-376)",
+        "Step 17: For PPO, implement actor loss with clipped objective function (/workspace/baselines/MAPPO/mappo_rnn_smax.py:384-414)",
+        "Step 18: For PPO, implement critic loss with value function clipping (/workspace/baselines/MAPPO/mappo_rnn_smax.py:418-432)",
+        "Step 19: For QMIX, implement Q-learning update with target networks (/workspace/baselines/QLearning/qmix_rnn.py:444-495)",
+        "Step 20: For PPO, update networks using minibatch updates (/workspace/baselines/MAPPO/mappo_rnn_smax.py:459-502)",
+        "Step 21: For QMIX, implement target network updates with soft updates (/workspace/baselines/QLearning/qmix_rnn.py:524-536)",
+        "Step 22: For both algorithms, track and log metrics including returns and win rates (/workspace/baselines/MAPPO/mappo_rnn_smax.py:538-554, /workspace/baselines/QLearning/qmix_rnn.py:540-572)",
+        "Step 23: For QMIX, implement greedy evaluation during training (/workspace/baselines/QLearning/qmix_rnn.py:578-636)",
+        "Step 24: For both algorithms, implement the main training loop that runs for a specified number of updates (/workspace/baselines/MAPPO/mappo_rnn_smax.py:571-574, /workspace/baselines/QLearning/qmix_rnn.py:645-647)",
+        "Step 25: For both algorithms, implement command-line interface to run experiments with different maps (/workspace/baselines/MAPPO/mappo_rnn_smax.py:578-597, /workspace/baselines/QLearning/qmix_rnn.py:780-791)",
+        "Final Step: Compare the training time and normalized scores between PPO and Q-Learning across the 9 SMAX maps (/workspace/baselines/MAPPO/mappo_rnn_smax.py:538-554, /workspace/baselines/QLearning/qmix_rnn.py:540-572)"
+      ],
+      "agent_instructions": "Your task is to implement and compare two multi-agent reinforcement learning algorithms - Multi-Agent PPO (MAPPO) and QMIX (Q-Learning with mixing network) - on StarCraft Multi-Agent Challenge (SMAX) environments. The goal is to evaluate their performance in terms of training time and normalized scores.\n\nYou need to implement:\n\n1. A MAPPO algorithm with:\n   - Recurrent neural networks (GRU) for handling sequential data\n   - Actor network that outputs action distributions\n   - Centralized critic network that takes a global state\n   - PPO-specific clipped objective function\n   - Generalized Advantage Estimation (GAE)\n\n2. A QMIX algorithm with:\n   - Recurrent neural networks (GRU) for handling sequential data\n   - Q-network that outputs Q-values for each action\n   - Mixing network that combines individual agent Q-values into a team value\n   - Epsilon-greedy exploration strategy\n   - Experience replay buffer\n   - Target networks with soft updates\n\nBoth implementations should:\n- Work with SMAX environments\n- Track metrics including returns and win rates\n- Support running experiments on different SMAX maps\n- Log results for comparison\n\nThe experiment should compare these algorithms across 9 SMAX maps (excluding maps with more than 10 units): '2s3z', '3s5z', '5m_vs_6m', '3s5z_vs_3s6z', '3s_vs_5z', '6h_vs_8z', 'smacv2_5_units', 'smacv2_10_units', and one other map.\n\nThe comparison should focus on:\n1. Training time (MAPPO is expected to train approximately 6x faster)\n2. Normalized scores across the different scenarios",
+      "masked_source": [
+        "/workspace/baselines/MAPPO/mappo_rnn_smax.py",
+        "/workspace/baselines/QLearning/qmix_rnn.py"
+      ]
+    }
+  ]
+}

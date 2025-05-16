@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Import the chess library (/workspace/test_templates.py:31-31)",
+    "Step 2: Define a function to preprocess the input string by removing move numbers and periods (/workspace/test_templates.py:61-69)",
+    "Step 3: Define a function that takes a list of chess moves in SAN format (/workspace/test_templates.py:33-59)",
+    "Step 4: Initialize a new chess board (/workspace/test_templates.py:40-40)",
+    "Step 5: Apply each move from the input to update the board state, handling invalid moves (/workspace/test_templates.py:43-48)",
+    "Step 6: Generate all possible legal moves from the current position (/workspace/test_templates.py:51-51)",
+    "Step 7: For each legal move, create a copy of the board and apply the move (/workspace/test_templates.py:52-53)",
+    "Step 8: Check if the move results in checkmate (/workspace/test_templates.py:56-57)",
+    "Step 9: Return the first move that results in checkmate in SAN format, or a message if none is found (/workspace/test_templates.py:57-59)",
+    "Final Step: Process input and call the function with a sequence of chess moves (/workspace/test_templates.py:72-75)"
+  ],
+  "agent_instructions": "Create a chess program that can find a checkmate-in-one move given a sequence of previous moves in Standard Algebraic Notation (SAN). Your program should:\n\n1. Use the Python chess library to handle chess logic\n2. Include a function to preprocess input strings by removing move numbers and periods (e.g., convert '1. e4 e5 2. Nf3' to ['e4', 'e5', 'Nf3'])\n3. Create a main function that:\n   - Takes a list of chess moves in SAN format\n   - Sets up a new chess board\n   - Applies each input move to update the board state\n   - Handles invalid moves appropriately\n   - Examines all legal moves from the current position\n   - For each potential move, tests if it would result in checkmate\n   - Returns the first move that results in checkmate (in SAN format)\n   - Returns an appropriate message if no checkmate-in-one exists\n\nThe program should be able to process a string of chess moves and output either the checkmate move or a message indicating no checkmate move was found. Test your implementation with sample chess positions where a checkmate-in-one is possible."
+}

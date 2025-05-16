@@ -1,0 +1,45 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you visualize batch effects in spatial transcriptomics data from the HEST-1k dataset?",
+    "method": "Use the HEST-Library to load and filter spatial transcriptomics data from multiple samples, then visualize batch effects using UMAP and calculate silhouette scores.",
+    "expected_outcome": "A UMAP visualization showing the distribution of spots from different samples and a silhouette score indicating the degree of batch effect (values closer to -1 indicate less batch effect, values closer to 1 indicate stronger batch effect).",
+    "source": [
+      "/workspace/tutorials/5-Batch-effect-visualization.ipynb"
+    ],
+    "usage_instructions": "1. Import necessary libraries including pandas and batch effect visualization functions from HEST.\n2. Load the metadata from the HEST dataset and filter for specific samples (e.g., Visium samples with IDC oncotree code from human species).\n3. Use the filter_hest_stromal_housekeeping function to filter spots, keeping only the most stable housekeeping genes and spots under the stroma.\n4. Calculate the silhouette score using get_silhouette_score to quantify the batch effect between samples.\n5. Generate a UMAP visualization using plot_umap to show the distribution of spots from different samples, which helps visualize the batch effect."
+  },
+  {
+    "mode": "A",
+    "question": "How can you download and interact with specific samples from the HEST-1k dataset based on their metadata attributes?",
+    "method": "Use the HEST-Library to query and download specific samples from the HEST-1k dataset based on metadata attributes like organ type or oncotree code, then interact with the downloaded data.",
+    "expected_outcome": "Successfully downloaded spatial transcriptomics data for specific samples matching the query criteria, and the ability to access and print information about these samples.",
+    "source": [
+      "/workspace/tutorials/1-Downloading-HEST-1k.ipynb",
+      "/workspace/tutorials/2-Interacting-with-HEST-1k.ipynb"
+    ],
+    "usage_instructions": "1. Install and import the datasets library from HuggingFace.\n2. Authenticate with HuggingFace using your token.\n3. Load the HEST metadata CSV file to identify samples with specific attributes.\n4. Filter the metadata dataframe based on desired attributes (e.g., oncotree_code='IDC' and organ='Breast').\n5. Create a list of sample IDs from the filtered metadata.\n6. Generate file patterns for each sample ID to use in the download query.\n7. Download the selected samples using the datasets.load_dataset function with the appropriate patterns.\n8. Use the iter_hest function to iterate through the downloaded samples and interact with them."
+  },
+  {
+    "mode": "A",
+    "question": "How can you run the HEST-Benchmark to evaluate a foundation model's ability to predict gene expression from histology images?",
+    "method": "Configure and run the HEST-Benchmark to evaluate a pre-trained foundation model (e.g., ResNet50) on its ability to predict gene expression from histology image patches.",
+    "expected_outcome": "Benchmark results showing the Pearson correlation between predicted and actual gene expression values across different cancer types/organs.",
+    "source": [
+      "/workspace/tutorials/4-Running-HEST-Benchmark.ipynb",
+      "/workspace/bench_config/bench_config.yaml"
+    ],
+    "usage_instructions": "1. Ensure HEST is properly installed according to the installation instructions.\n2. Configure the benchmark by editing the bench_config.yaml file to specify:\n   - The directory for benchmark data (bench_data_root)\n   - Where results will be saved (results_dir)\n   - Where embeddings will be stored (embed_dataroot)\n   - The location of model weights (weights_root)\n   - Batch size and number of workers for inference\n   - Which encoder model to use (e.g., uncomment 'resnet50')\n   - Which datasets/cancer types to evaluate (e.g., uncomment 'IDC')\n3. Run the benchmark using the command line interface by executing the benchmark.py script with the configured YAML file.\n4. Alternatively, use the Python API to run the benchmark with a custom model by providing the model, transforms, and precision."
+  },
+  {
+    "mode": "B",
+    "question": "How can you convert a Visium spatial transcriptomics sample into a HEST-compatible format?",
+    "method": "Download a Visium sample from a public repository and use the HEST-Library's VisiumReader to convert it into a HEST-compatible format.",
+    "expected_outcome": "A HEST-compatible data object saved to disk, containing the spatial transcriptomics data aligned with the histology image, and a visualization showing the spots overlaid on the tissue image.",
+    "source": [
+      "/workspace/tutorials/3-Assembling-HEST-Data.ipynb",
+      "/workspace/src/hest/readers.py"
+    ],
+    "usage_instructions": "1. Download a Visium sample from a public repository (e.g., NCBI GEO) that includes both the high-resolution image and the filtered feature barcode matrix.\n2. Import the VisiumReader class from the HEST library.\n3. Use the VisiumReader().read() method to create a HESTData object, providing paths to the full-resolution image and the filtered feature barcode matrix.\n4. Enable the save_autoalign parameter to visualize the fiducial autodetection process.\n5. Save the created HESTData object to disk using the save() method.\n6. Generate and save a visualization showing the aligned spots overlaid on the downscaled whole-slide image using the save_spatial_plot() method."
+  }
+]

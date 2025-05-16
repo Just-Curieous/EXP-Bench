@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Create a list of scene names from a directory of 3D scenes for batch processing (split_scene_to_txt.py:3-36)",
+    "Step 2: Set up the data loader to load low-quality 3D Gaussian Splatting renderings and their camera parameters (inference_svd.py:26-318)",
+    "Step 3: Load the pre-trained Stable Video Diffusion model components (image encoder, VAE, UNet) (inference_svd.py:520-551)",
+    "Step 4: Initialize the StableFlowVideoDiffusionPipeline with the loaded model components (inference_svd.py:548-551)",
+    "Step 5: Process each scene in the batch, loading its low-quality renderings and camera parameters (inference_svd.py:628-642)",
+    "Step 6: Use the first and last frames from high-quality reference images as conditioning (inference_svd.py:644-646)",
+    "Step 7: Convert input images to latent space using the VAE encoder (inference_svd.py:650)",
+    "Step 8: Run the SVD pipeline on the low-quality renderings with camera pose information (inference_svd.py:681-690)",
+    "Step 9: Save the enhanced renderings to the output directory with the same structure as the input (inference_svd.py:692-703)"
+  ],
+  "agent_instructions": "Your task is to create a script that enhances low-quality 3D Gaussian Splatting renderings using a pre-trained Stable Video Diffusion (SVD) model. The script should:\n\n1. Process a list of 3D scenes for batch processing. Create a utility to generate text files containing scene names from a directory of 3D scenes.\n\n2. Load low-quality 3D Gaussian Splatting renderings along with their camera parameters (poses and field of view).\n\n3. Set up a data loader that can process these renderings and their associated camera information.\n\n4. Load a pre-trained Stable Video Diffusion model, including its components: image encoder, VAE (Variational Autoencoder), and UNet.\n\n5. Initialize the SVD pipeline with the loaded model components.\n\n6. For each scene in the batch:\n   - Load its low-quality renderings and camera parameters\n   - Use high-quality reference images for the first and last frames as conditioning\n   - Process the renderings through the SVD pipeline, providing camera pose information\n   - Save the enhanced renderings to the specified output directory\n\n7. Maintain the same directory structure in the output as in the input.\n\nThe script should accept command-line arguments for:\n- Path to a text file containing scene names\n- Path to the pre-trained SVD model\n- Output directory for enhanced renderings\n- Number of reference views to use\n- Path to the folder containing low-quality renderings\n- Path to the folder containing reference high-quality images\n\nThe enhanced renderings should have improved visual quality compared to the input low-quality renderings."
+}

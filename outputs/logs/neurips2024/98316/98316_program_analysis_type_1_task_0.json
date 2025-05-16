@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries (numpy, urllib.request, io.StringIO) (/workspace/causallearn/utils/Dataset.py:1-3)",
+    "Step 2: Define a function that loads datasets from remote URLs (/workspace/causallearn/utils/Dataset.py:5-17)",
+    "Step 3: Create a mapping of dataset names to their corresponding URLs, including the Sachs dataset which contains protein signaling network data (/workspace/causallearn/utils/Dataset.py:19-23)",
+    "Step 4: Validate that the requested dataset name is supported (/workspace/causallearn/utils/Dataset.py:25-26)",
+    "Step 5: Fetch the dataset content from the appropriate URL (/workspace/causallearn/utils/Dataset.py:28-30)",
+    "Step 6: Parse the first row as column labels using numpy's genfromtxt (/workspace/causallearn/utils/Dataset.py:33)",
+    "Step 7: Load the numerical data starting from the second row using numpy's loadtxt (/workspace/causallearn/utils/Dataset.py:34)",
+    "Step 8: Convert the labels array to a list of strings, handling the case where there's only one label (/workspace/causallearn/utils/Dataset.py:37-39)",
+    "Step 9: Return both the data array and labels list (/workspace/causallearn/utils/Dataset.py:41)",
+    "Final Step: Implement test cases that use the dataset loading function with the PC algorithm to discover causal relationships and evaluate against known ground truth (/workspace/tests/TestPC.py:304-331)"
+  ],
+  "agent_instructions": "Create a utility function that can load causal discovery benchmark datasets from remote sources. The function should:\n\n1. Accept a dataset name parameter (such as 'sachs', which is a protein signaling network dataset with known causal relationships)\n2. Download the dataset from a remote URL (the datasets are hosted on GitHub in the cmu-phil/example-causal-datasets repository)\n3. Parse the first row as column labels and the remaining rows as numerical data\n4. Return both the numerical data as a numpy array and the column labels as a list of strings\n\nThe function should handle error cases (like invalid dataset names) and properly process the downloaded content. The Sachs dataset is particularly important as it represents protein signaling networks with known ground truth causal relationships.\n\nThis utility will be used in conjunction with causal discovery algorithms like PC (Peter-Clark) to evaluate how well these algorithms can recover known causal relationships in genomic datasets. Users will load the dataset, apply the PC algorithm with appropriate parameters (like using Fisher's Z test for continuous data), and then compare the discovered causal graph with the known ground truth.",
+  "masked_source": [
+    "/workspace/causallearn/utils/Dataset.py",
+    "/workspace/tests/TestPC.py"
+  ]
+}

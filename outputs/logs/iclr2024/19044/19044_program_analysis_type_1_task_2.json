@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Set up the Python environment with the required dependencies including torch, diffusers, transformers, and other libraries needed for the AnimateDiff project (/workspace/scripts/animate.py:1-29)",
+    "Step 2: Create a configuration YAML file that specifies the inference parameters, including the path to the inference configuration file, motion module checkpoint, and multiple MotionLoRA weights with their respective alpha values (/workspace/scripts/animate.py:40-54)",
+    "Step 3: Load the tokenizer, text encoder, and VAE models from the pretrained model path (/workspace/scripts/animate.py:44-46)",
+    "Step 4: Load the UNet model with the specified inference configuration (/workspace/scripts/animate.py:55)",
+    "Step 5: Load the motion module checkpoint specified in the configuration file (/workspace/scripts/animate.py:127-130)",
+    "Step 6: Load multiple MotionLoRA weights with their respective alpha values as specified in the configuration file (/workspace/scripts/animate.py:172-182)",
+    "Step 7: Load any additional models specified in the configuration, such as DreamBooth models or LoRA models (/workspace/scripts/animate.py:124-158)",
+    "Step 8: Process the text prompts and negative prompts from the configuration file (/workspace/scripts/animate.py:141-142)",
+    "Step 9: Set the random seed for reproducibility if specified in the configuration (/workspace/scripts/animate.py:144-154)",
+    "Step 10: Generate the animation using the AnimationPipeline with the specified parameters such as guidance scale, number of inference steps, width, height, and video length (/workspace/scripts/animate.py:158-169)",
+    "Step 11: Save the generated animation as a GIF file in the samples directory (/workspace/scripts/animate.py:173-174)",
+    "Step 12: Save the combined samples as a grid in a single GIF file (/workspace/scripts/animate.py:178-179)",
+    "Final Step: Save the configuration used for the generation for reproducibility (/workspace/scripts/animate.py:181)"
+  ],
+  "agent_instructions": "Your task is to understand and reproduce an experiment from the AnimateDiff project, which allows for generating animations using text-to-image diffusion models. You need to analyze the animate.py script and create a configuration file that specifies multiple MotionLoRA weights with their respective alpha values. The configuration file should include paths to the inference configuration, motion module checkpoint, MotionLoRA weights, DreamBooth model, and other parameters like seed, steps, guidance scale, and prompts. Then, you need to run the animate.py script with this configuration to generate animations that combine different motion patterns based on the alpha values of the MotionLoRA weights.",
+  "masked_source": [
+    "/workspace/scripts/animate.py"
+  ]
+}

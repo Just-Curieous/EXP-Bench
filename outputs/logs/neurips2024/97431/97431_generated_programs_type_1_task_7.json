@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/scripts/2_trick_atk_ability_pair.sh"],
+    "usage_instructions": "Execute the script with `bash /workspace/scripts/2_trick_atk_ability_pair.sh`. This script runs the PAIR attack using four different attacker models (Vicuna-13B, Llama-2-13B, GPT-3.5, and GPT-4) against a fixed victim model (Llama-2-7B). The script evaluates each attacker model's effectiveness using both ASRPrefix (string/regex matching) and ASRAgent (GPT-4 judge) metrics. Results will be saved to `/workspace/exp_results/trick_atk_ability_pair/`. After execution, you can analyze the results using the analysis script at `/workspace/analysis/report_trick.py` with the command `python /workspace/analysis/report_trick.py --exp a` to see the attack success rates for each model."
+}

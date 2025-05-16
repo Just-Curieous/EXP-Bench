@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, pandas, and Docta modules (/workspace/tools/docta_tabular_rare_pattern.py:1-13)",
+    "Step 2: Parse command-line arguments to specify feature type and dataset suffix (/workspace/tools/docta_tabular_rare_pattern.py:17-24)",
+    "Step 3: Load configuration from the appropriate file based on the dataset suffix (/workspace/tools/docta_tabular_rare_pattern.py:25)",
+    "Step 4: Set the device to use (CPU or CUDA if available) (/workspace/tools/docta_tabular_rare_pattern.py:26)",
+    "Step 5: Set the feature type based on the command-line argument (/workspace/tools/docta_tabular_rare_pattern.py:27)",
+    "Step 6: Load the tabular dataset using TabularDataset class with the specified root path (/workspace/tools/docta_tabular_rare_pattern.py:28-33)",
+    "Step 7: Initialize a Preprocess object with the configuration and dataset (/workspace/tools/docta_tabular_rare_pattern.py:37)",
+    "Step 8: Extract features from the dataset (for tabular data, use the raw features) (/workspace/tools/docta_tabular_rare_pattern.py:39-47)",
+    "Step 9: Calculate long-tail scores using the lt_score function with the extracted features and specified number of neighbors (/workspace/tools/docta_tabular_rare_pattern.py:52)",
+    "Step 10: Create a pandas DataFrame with the instance indices and their corresponding long-tail scores (/workspace/tools/docta_tabular_rare_pattern.py:53-54)",
+    "Step 11: Create the output directory if it doesn't exist (/workspace/tools/docta_tabular_rare_pattern.py:55)",
+    "Step 12: Save the DataFrame to a CSV file at the specified path (/workspace/tools/docta_tabular_rare_pattern.py:56-57)",
+    "Step 13: Print a message confirming that the long-tail scores have been saved (/workspace/tools/docta_tabular_rare_pattern.py:58)"
+  ],
+  "agent_instructions": "Your task is to create a script that identifies rare patterns in tabular datasets using Docta's rare pattern detection functionality. The script should calculate long-tail scores for instances in a tabular dataset, which helps identify data points with uncommon feature patterns.\n\nThe script should:\n\n1. Accept command-line arguments to specify the feature type and dataset suffix\n2. Load configuration settings from a configuration file\n3. Load a tabular dataset from a specified path\n4. Process the dataset to extract features\n5. Calculate long-tail scores for each instance in the dataset using Docta's lt_score function\n6. Save the results (instance indices and their corresponding long-tail scores) to a CSV file\n7. Output a confirmation message when the process is complete\n\nYou'll need to use several Docta modules including:\n- Config from docta.utils.config for loading configuration\n- TabularDataset from docta.datasets for loading tabular data\n- Preprocess from docta.core.preprocess for preprocessing the dataset\n- lt_score from docta.core.get_lr_score for calculating the long-tail scores\n\nThe configuration should include settings for:\n- Dataset type and path\n- Output directory for saving results\n- Feature extraction parameters\n- Number of neighbors to consider when calculating long-tail scores\n\nThe final output should be a CSV file containing the index of each instance and its corresponding long-tail score, where higher scores indicate rarer patterns in the dataset."
+}

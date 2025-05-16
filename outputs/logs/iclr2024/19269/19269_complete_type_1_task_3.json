@@ -1,0 +1,36 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Does the zero-shot MuSc method outperform existing zero/few-shot and many-shot methods on industrial anomaly detection tasks?",
+      "method": "Perform a comprehensive comparative analysis by evaluating the zero-shot MuSc method alongside several state-of-the-art zero/few-shot methods (e.g., WinCLIP, APRIL-GAN, RegAD, GraphCore) as well as representative many-shot methods (e.g., CutPaste, IGD) on the MVTec AD and VisA datasets. Use identical evaluation metrics across methods, including image-level metrics (AUROC, F1-max, AP) and pixel-level segmentation metrics (AUROC, F1-max, AP, PRO). Ensure that the experimental setup remains consistent for all methods by using the same pre-trained backbone and image resolution. Additionally, assess the inference efficiency by dividing the test set into subsets (referencing Tables 6 and 7) to analyze per-image inference time and maximum GPU memory cost under different subset sizes. Compile the results into detailed tables (e.g., Tables 1, 2, 16, and 17 for category-wise analyses) and conduct a statistical analysis of the relative improvements achieved by MuSc over competing methods.",
+      "expected_outcome": "MuSc is expected to demonstrate a significant improvement in performance metrics over existing zero-shot and few-shot methods while maintaining competitive or superior results compared to many-shot methods. For instance, based on prior results, MuSc should achieve notable gains such as a 21.9% improvement in AP over the second-best zero-shot method on the MVTec AD dataset. Moreover, it is anticipated that MuSc will report high classification AUROC values (e.g., around 97.8% for classification on MVTec AD) and perform robustly on segmentation tasks (e.g., achieving segmentation AUROC values of roughly 98.8%). Efficiency improvements are also expected, with reduced inference time and lower GPU memory usage when test images are processed in smaller subsets, as highlighted in Tables 6 and 7. These findings will reinforce that MuSc achieves competitive anomaly detection performance without using any labeled images.",
+      "subsection_source": "4.1 QUANTITATIVE AND QUALITATIVE RESULTS",
+      "source": [
+        "/workspace/scripts/musc.sh",
+        "/workspace/examples/musc_main.py"
+      ],
+      "usage_instructions": "To evaluate the zero-shot MuSc method against other methods on industrial anomaly detection tasks, execute the script 'scripts/musc.sh'. This script runs the MuSc method on both MVTec AD and VisA datasets with the optimal configuration (ViT-L-14-336 backbone, image size 518, aggregation degrees [1,3,5]). The script will automatically evaluate all categories in both datasets and compute all the required metrics (image-level AUROC, F1-max, AP and pixel-level AUROC, F1-max, AP, PRO). Results will be saved in Excel format in the output directory. To evaluate inference efficiency with different test set sizes, modify the '--divide_num' parameter in the script to divide the test set into different subsets (e.g., '--divide_num 2' or '--divide_num 4'). The script outputs per-image inference time in milliseconds, which can be used to analyze efficiency. For GPU memory usage analysis, the script already uses memory-efficient implementations by default, but you can monitor GPU memory usage externally during execution.",
+      "requirements": [
+        "Step 1: Parse command line arguments and load configuration from YAML file (/workspace/examples/musc_main.py:11-83)",
+        "Step 2: Initialize the MuSc model with configuration parameters including backbone model, image size, batch size, feature layers, and aggregation degrees (/workspace/examples/musc_main.py:85-86)",
+        "Step 3: Load the specified backbone model (ViT-L-14-336 with OpenAI pretrained weights) (/workspace/models/musc.py:64-76)",
+        "Step 4: For each category in the dataset (MVTec AD, VisA, or BTAD), process test images (/workspace/models/musc.py:269-278)",
+        "Step 5: Load test dataset with specified parameters (image size, divide_num) (/workspace/models/musc.py:79-93)",
+        "Step 6: Extract features from multiple layers of the backbone model (/workspace/models/musc.py:154-179)",
+        "Step 7: Apply Local Neighborhood Aggregation with Multiple Degrees (LNAMD) to aggregate features with specified aggregation degrees [1,3,5] (/workspace/models/musc.py:183-202)",
+        "Step 8: Apply Mutual Scoring Module (MSM) to compute anomaly scores (/workspace/models/musc.py:204-217)",
+        "Step 9: Interpolate anomaly maps to match original image size (/workspace/models/musc.py:222-227)",
+        "Step 10: Apply Robust Score Calibration with Image Neighborhood (RsCIN) for final scoring (/workspace/models/musc.py:242-248)",
+        "Step 11: Compute evaluation metrics: image-level AUROC, F1-max, AP and pixel-level AUROC, F1-max, AP, PRO (/workspace/models/musc.py:250-257)",
+        "Step 12: Optionally visualize anomaly maps if specified (/workspace/models/musc.py:262-264)",
+        "Step 13: Calculate mean metrics across all categories (/workspace/models/musc.py:289-303)",
+        "Final Step: Save results in Excel format if specified (/workspace/models/musc.py:306-340)"
+      ],
+      "agent_instructions": "Implement a zero-shot industrial anomaly detection system using the MuSc (Mutual Scoring) method. Your implementation should:\n\n1. Create a command-line interface that accepts parameters for dataset path, dataset name (MVTec AD, VisA, BTAD), category name, device ID, output directory, visualization options, and model configuration.\n\n2. Support loading a pretrained vision transformer model (ViT-L-14-336 with OpenAI weights) as the feature extractor backbone.\n\n3. Implement a feature extraction pipeline that:\n   - Processes test images from industrial anomaly detection datasets\n   - Extracts features from multiple transformer layers (layers 5, 11, 17, 23)\n   - Supports dividing the test set into subsets for efficiency analysis\n\n4. Implement the core MuSc anomaly detection algorithm with three key components:\n   - Local Neighborhood Aggregation with Multiple Degrees (LNAMD) that aggregates features with different neighborhood sizes (1, 3, 5)\n   - Mutual Scoring Module (MSM) that computes anomaly scores by comparing patch features\n   - Robust Score Calibration with Image Neighborhood (RsCIN) for final anomaly scoring\n\n5. Implement comprehensive evaluation metrics:\n   - Image-level: AUROC, F1-max, AP\n   - Pixel-level: AUROC, F1-max, AP, PRO\n\n6. Add functionality to:\n   - Save results in Excel format with metrics for each category and mean values\n   - Visualize anomaly maps with heatmap overlays\n   - Measure and report inference time per image\n\n7. Create a shell script that runs the implementation on MVTec AD, VisA, and BTAD datasets with the optimal configuration (ViT-L-14-336 backbone, image size 518, aggregation degrees [1,3,5]).",
+      "masked_source": [
+        "/workspace/scripts/musc.sh",
+        "/workspace/examples/musc_main.py"
+      ]
+    }
+  ]
+}

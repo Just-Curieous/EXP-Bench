@@ -1,0 +1,154 @@
+{
+  "questions": [
+    {
+      "question": "- **Does integrating spatial transcriptomics data with histopathological images (multimodal fine-tuning) improve the correlation with ground truth biomarker expression compared to using histology alone?**",
+      "method": "Design a controlled experiment comparing a histology-only deep learning model with a multimodal model that integrates spatial transcriptomics data. Two pipelines will be developed: one that uses only H&E image patches to predict biomarker expression (e.g., using a patch encoder and aggregation network similar to hist2RNA) and another pipeline that leverages paired H&E images and spatial transcriptomics profiles. In the multimodal pipeline, a pretrained vision transformer (ViT-Base) is further fine-tuned via contrastive learning (e.g., following the CONCH framework) on paired data from, for example, five Xenium invasive breast cancer cases (four ductal and one lobular). Both pipelines will tessellate tissue sections into 256\u00d7256 patches, compress them into patch embeddings, and then aggregate these to form a slide-level representation. The ground truth biomarker expression is derived from the spatial transcriptomics profiles measured on the same tissue samples.\n Detailed experiment setup: \nDatasets: Use a cohort similar to HEST-1k and Xenium invasive breast cancer cases where both H&E images and spatial transcriptomics (ST) data are available. Models: For the histology-only model, use a pretrained patch encoder (e.g., one trained on ImageNet) followed by an attention-based aggregator to predict biomarker levels. For the multimodal model, start from the same image encoder but add a fine-tuning stage using a multimodal contrastive learning framework (such as CONCH). The contrastive learning setup aligns the morphologic features from the image patches with the corresponding gene expression profiles from ST. The experiment should include training both pipelines under similar configurations (same number of training patches, epochs, and hyperparameters where applicable) while ensuring that integration of ST data is the only difference in the multimodal approach. Evaluation: After training, assess each model by computing correlation coefficients (e.g., Pearson\u2019s R) between the model-predicted biomarker expressions and the ground truth measurements drawn from the spatial transcriptomics data. Figures and tables (e.g., Figure 38 which shows correlations such as R=0.47, p<10e-4 for biomarker FOXA1) can be referenced to compare the performance of both approaches.",
+      "expected_outcome": "- Based on the reported improvement in biomarker exploration and the noted correlation (e.g., R = 0.47, p < 10e-4 in Figure 38), it is expected that multimodal integration will yield a stronger correlation with true biomarker expression levels.",
+      "experiment_design_complexity": {
+        "constant_variables": {
+          "tissue_processing": "Tissue sections are tessellated into 256\u00d7256 patches for both pipelines",
+          "training_configuration": "Same number of training patches, epochs, and hyperparameters used across both pipelines",
+          "pretrained_encoder": "Both pipelines start with the same ImageNet-pretrained patch encoder"
+        },
+        "independent_variables": {
+          "pipeline_type": [
+            "histology-only",
+            "multimodal (integrating spatial transcriptomics data with H&E images)"
+          ],
+          "fine_tuning_method": [
+            "No additional fine-tuning beyond standard training (histology-only)",
+            "Contrastive learning based fine-tuning (e.g. using the CONCH framework)"
+          ]
+        },
+        "dependent_variables": {
+          "biomarker_expression_prediction": "Predicted biomarker expression values obtained from the pipeline",
+          "correlation_performance": "Measured as Pearson\u2019s correlation (e.g., R values such as R = 0.47 and corresponding p-values) between predicted and ground truth spatial transcriptomics biomarker expression"
+        }
+      },
+      "experiment_design_ambiguity": {
+        "ambiguous_variables": {
+          "cohort_selection": "The exact criteria for selecting a cohort similar to HEST-1k and the Xenium invasive breast cancer cases (e.g., number and subtype distribution) are not fully detailed",
+          "biomarker_choice": "While biomarkers like FOXA1 and TPD52 are mentioned, it is ambiguous whether these are the only targets or if a wider range of biomarkers is expected to be evaluated",
+          "contrastive_learning_settings": "The specifics of the contrastive learning fine-tuning (e.g., choice and tuning of hyperparameters for CONCH) are not explicitly defined"
+        },
+        "possible_modifications": {
+          "modification_X": [
+            "Provide a detailed definition of the patient/cohort selection criteria and numbers",
+            "Clarify which biomarkers will be targeted and whether additional biomarker evaluation is intended",
+            "Specify hyperparameter choices and training regime details for the contrastive learning framework",
+            "Consider introducing additional variables such as patch size variations or alternative data augmentation schemes"
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "H&E image patch encoder (pretrained on ImageNet)",
+          "Spatial transcriptomics integration module",
+          "Contrastive learning fine-tuning stage (e.g., using the CONCH framework)",
+          "Attention-based aggregator to compute slide-level representations",
+          "Tessellation module for generating 256\u00d7256 image patches from tissue sections",
+          "Evaluation module to compute Pearson\u2019s correlation coefficients"
+        ],
+        "setup_steps": [
+          "Collect and select datasets from cohorts similar to HEST-1k and Xenium invasive breast cancer cases with paired H&E images and spatial transcriptomics profiles",
+          "Preprocess tissue sections by tessellating into 256\u00d7256 patches and aligning these patches with their corresponding spatial transcriptomics data",
+          "Initialize both pipelines with the same pretrained patch encoder and configure the attention-based aggregation network",
+          "Implement two pipelines: one as a histology-only model and one as a multimodal model incorporating contrastive learning fine-tuning on paired data",
+          "Train both pipelines under identical configurations (same number of patches, epochs, and hyperparameters) except for the contrastive learning process in the multimodal pipeline",
+          "Evaluate the trained models by correlating the predicted biomarker expression with ground truth spatial transcriptomics measurements (referencing metrics such as Figure 38 which shows R = 0.47, p < 10e-4 for FOXA1)"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Dataset integration",
+            "description": "Combining heterogeneous data sources (HEST-1k and Xenium) involves aligning formats and handling differences in data preprocessing."
+          },
+          {
+            "source": "Contrastive learning tuning",
+            "description": "Implementing and fine-tuning the contrastive learning framework (CONCH) adds complexity due to hyperparameter selection and integration with spatial data."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Cohort selection criteria: Exact numbers, subtype distributions, and inclusion/exclusion principles are not fully specified",
+          "Biomarker selection: It is unclear if biomarkers like FOXA1 and TPD52 are the only targets or if a wider range will be evaluated",
+          "Contrastive learning settings: Specific hyperparameters and fine-tuning details for the CONCH framework are under-specified"
+        ],
+        "ambiguous_setup_steps": [
+          "Data preprocessing: The exact alignment steps between the spatial transcriptomics data and H&E image patches need clarification",
+          "Contrastive fine-tuning procedure: The detailed implementation steps for the multimodal pipeline (e.g., hyperparameter tuning and training regime) are not explicitly defined"
+        ],
+        "possible_modifications": {
+          "modification_X": [
+            "Provide explicit patient/cohort selection criteria including numbers and subtype distribution details",
+            "Clarify the biomarker evaluation pipeline by specifying which targets will be analyzed and if additional biomarkers are intended",
+            "Detail the hyperparameter choices and training regime for the contrastive learning fine-tuning stage",
+            "Include comprehensive preprocessing instructions to explicitly describe how spatial transcriptomics data are aligned with image patches"
+          ]
+        }
+      },
+      "experiment_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic behavior in contrastive fine-tuning and data augmentation",
+          "description": "Random uncertainty is introduced during stochastic contrastive learning fine-tuning on the paired H&E and spatial transcriptomics data. This includes random initialization, stochastic gradient updates, and possible random patch dropout or other data augmentation techniques. Such randomness may lead to fluctuation in the learned patch embeddings and thus variability in the predicted biomarker expression values (e.g., variations similar to those observed in Figure 38 with R = 0.47, p < 10e-4).",
+          "impact": "Random variations in training could result in inconsistent convergence between runs, leading to variability in the correlation performance when predicting biomarker expression. This instability might make it challenging to attribute performance gains purely to multimodal integration rather than random noise in the learning process.",
+          "possible_modifications": [
+            "Introduce a controlled random patch dropout during training to simulate increased noise and assess model robustness.",
+            "Systematically vary the random seed for contrastive learning to evaluate the effects of stochastic variability on performance."
+          ]
+        },
+        "systematic_uncertainty": {
+          "source": "Dataset bias and one-time preprocessing/alignment modifications",
+          "description": "Systematic uncertainty may arise from an unrepresentative cohort selection and from potential one-time errors during spatial transcriptomics alignment with H&E patches. For instance, if the cohort (similar to HEST-1k or the Xenium invasive breast cancer cases) is biased toward certain subtypes or if the alignment procedure between the two modalities introduces a consistent error, the resulting performance metrics could be systematically skewed. This is analogous to introducing a systematic bias like labeling based on a fixed character count in sentiment analysis.",
+          "impact": "The systematic bias could lead to over-optimistic or pessimistic correlations between the predicted biomarker expression and the ground truth, thus misrepresenting the true benefit of multimodal integration over histology-only pipelines.",
+          "possible_modifications": [
+            "Explicitly redefine and expand patient/cohort selection criteria by incorporating additional cases with varied subtype distributions to mitigate dataset bias.",
+            "Retrieve and reprocess a new copy of clean spatial transcriptomics data to ensure that any one-time alignment errors are corrected and systematic bias is minimized."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Replace the pretrained ViT-Base model with a smaller variant (e.g., a ViT-Base-mini or ViT-Tiny) to reduce GPU memory usage and overall compute requirements, while still aiming for similar correlation performance on biomarker prediction."
+          ],
+          "time_constraints": [
+            "Reduce the number of training epochs for the contrastive learning fine-tuning stage, thereby decreasing the total training time while assessing if the multimodal integration still results in improved biomarker expression correlation."
+          ],
+          "money_constraints": [
+            "Restrict the experiments to a single GPU setup (as indicated by prior experiments) to lower computational costs, potentially scaling down the dataset size or contrastive learning iterations if necessary."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/src/hest/bench/benchmark.py",
+        "/workspace/bench_config/bench_config.yaml"
+      ],
+      "usage_instructions": "To compare histology-only models with multimodal models that integrate spatial transcriptomics data, follow these steps:\n\n1. First, ensure HEST is properly installed following the README instructions.\n\n2. Request access to the CONCH model weights from Hugging Face (https://huggingface.co/MahmoodLab/CONCH) and install the CONCH package with `pip install git+https://github.com/Mahmoodlab/CONCH.git`.\n\n3. Edit the bench_config.yaml file to include both histology-only and multimodal models:\n   - For histology-only: uncomment 'resnet50' (already included by default)\n   - For multimodal: uncomment 'conch_v1' (which uses contrastive learning with spatial transcriptomics data)\n\n4. Run the benchmark script with the following command:\n   ```\n   python src/hest/bench/benchmark.py --config bench_config/bench_config.yaml\n   ```\n\n5. The script will automatically download the benchmark data, run both models, and output results showing Pearson correlation coefficients between predicted and ground truth biomarker expression. The results will be saved in the directory specified by 'results_dir' in the config file.\n\n6. Compare the Pearson correlation values between the histology-only model (resnet50) and the multimodal model (conch_v1) to determine if integrating spatial transcriptomics data improves correlation with ground truth biomarker expression.\n\nNote: According to the benchmark results in the README, the multimodal CONCH model achieves a higher average Pearson correlation (R=0.3709) compared to the histology-only ResNet50 model (R=0.326), confirming that multimodal fine-tuning does improve correlation with ground truth biomarker expression.",
+      "requirements": [
+        "Step 1: Set up configuration by loading default parameters and overriding them with values from command line arguments, function parameters, or a YAML config file (/workspace/src/hest/bench/benchmark.py:392-428)",
+        "Step 2: Set random seed for reproducibility (/workspace/src/hest/bench/benchmark.py:429)",
+        "Step 3: Download benchmark data and model weights from Hugging Face (/workspace/src/hest/bench/benchmark.py:431-435)",
+        "Step 4: Determine which datasets to use for benchmarking (/workspace/src/hest/bench/benchmark.py:438-446)",
+        "Step 5: Set up directory structure for saving results (/workspace/src/hest/bench/benchmark.py:448-455)",
+        "Step 6: Prepare list of encoders to benchmark, including any custom encoder (/workspace/src/hest/bench/benchmark.py:457-465)",
+        "Step 7: For each dataset and encoder combination, extract embeddings from histology image tiles (/workspace/src/hest/bench/benchmark.py:254-273)",
+        "Step 8: Load gene expression data for each sample (/workspace/src/hest/bench/benchmark.py:280-304)",
+        "Step 9: Optionally perform dimensionality reduction (PCA) on embeddings (/workspace/src/hest/bench/benchmark.py:310-315)",
+        "Step 10: Train regression models to predict gene expression from embeddings (/workspace/src/hest/bench/benchmark.py:318)",
+        "Step 11: Calculate Pearson correlation between predicted and ground truth gene expression (/workspace/src/hest/bench/benchmark.py:318-328)",
+        "Step 12: Aggregate results across multiple folds if k-fold validation is used (/workspace/src/hest/bench/benchmark.py:331-382)",
+        "Step 13: Compile and save results for all datasets and encoders, including average performance metrics (/workspace/src/hest/bench/benchmark.py:120-174)",
+        "Final Step: Return dataset performance metrics and average performance per encoder (/workspace/src/hest/bench/benchmark.py:467-469)"
+      ],
+      "agent_instructions": "Create a benchmarking system to compare histology-only models with multimodal models that integrate spatial transcriptomics data. The system should evaluate how well different models can predict gene expression from histology images.\n\nYour implementation should:\n\n1. Accept configuration parameters through command line arguments or a YAML config file, including:\n   - Paths for benchmark data, model weights, embeddings, and results\n   - List of encoders (models) to benchmark\n   - List of datasets to use\n   - Batch size and number of workers for inference\n   - Optional dimensionality reduction settings\n\n2. Download benchmark data and model weights from Hugging Face\n\n3. For each dataset and encoder combination:\n   - Extract embeddings from histology image tiles using the encoder\n   - Load corresponding gene expression data (ground truth)\n   - Optionally perform dimensionality reduction on embeddings\n   - Train a regression model (ridge regression by default) to predict gene expression from embeddings\n   - Evaluate performance using Pearson correlation between predicted and ground truth gene expression\n\n4. Support k-fold cross-validation and aggregate results across folds\n\n5. Compile and save comprehensive results, including:\n   - Per-gene Pearson correlations\n   - Average correlation per encoder and dataset\n   - Overall ranking of encoders\n\n6. The system should be able to compare histology-only models (like ResNet50) with multimodal models (like CONCH) that integrate spatial transcriptomics data\n\nThe expected output should show that multimodal models achieve higher Pearson correlation with ground truth gene expression compared to histology-only models.",
+      "masked_source": [
+        "/workspace/src/hest/bench/benchmark.py",
+        "/workspace/bench_config/bench_config.yaml"
+      ]
+    }
+  ]
+}

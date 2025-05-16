@@ -1,0 +1,3 @@
+{
+    "no_answer": "After thoroughly searching the repository, I couldn't find any scripts or code that specifically address the experiment question about the correlation between CLIP metrics for text alignment and user study Average User Ranking (AUR) scores. The repository contains code for generating animations using the AnimateDiff model, but lacks evaluation scripts that would analyze this specific correlation. The codebase focuses on model implementation, training, and inference, but doesn't include user study evaluation tools or CLIP-based alignment metrics correlation analysis."
+}

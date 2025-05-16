@@ -1,0 +1,3 @@
+{
+    "no_answer": "After a thorough search of the repository, I couldn't find any specific scripts that directly address the experiment question about applying the label cleaning process to enhance the data credibility of the Civil Comment dataset. The repository contains general tools for detecting and fixing label errors in various datasets (like the Docta framework), but there doesn't appear to be a specific implementation for the Civil Comment dataset as described in Sections 3 and 4.1 of the paper. While the repository includes functionality for computing noise transition matrices and data credibility metrics, there are no scripts specifically tailored to the Civil Comment dataset that would allow for the comparison described in the experiment question."
+}

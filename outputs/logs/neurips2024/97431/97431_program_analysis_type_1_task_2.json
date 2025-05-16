@@ -1,0 +1,33 @@
+{
+  "requirements": [
+    "Step 1: Load command-line arguments to configure the experiment, including target model path, defense type, attack method, and evaluation settings (/workspace/main.py:402-407)",
+    "Step 2: Set random seed and initialize experiment parameters including device, timestamp, and data paths (/workspace/main.py:320-326)",
+    "Step 3: Load harmful prompts and targets from the specified dataset (/workspace/main.py:328)",
+    "Step 4: Determine data range to process based on split configuration (/workspace/main.py:330-340)",
+    "Step 5: Apply the specified defense mechanism to the input prompts by modifying them according to the defense type (self_reminder, RPO, smoothLLM, etc.) (/workspace/defense.py:44-70)",
+    "Step 6: Load appropriate models for the selected attack method (/workspace/main.py:273-311)",
+    "Step 7: For each prompt in the dataset, generate an attack result by applying the selected attack method to the defended prompt (/workspace/main.py:231-257)",
+    "Step 8: Save intermediate results to file for later analysis (/workspace/main.py:261-266)",
+    "Step 9: If using smoothLLM defense, apply additional testing by running the attack outputs through the smoothed model (/workspace/main.py:370-374)",
+    "Step 10: If agent evaluation is enabled, use GPT-4 to evaluate whether each attack was successful in bypassing the defense (/workspace/main.py:377-399)",
+    "Step 11: Save final evaluation results to file (/workspace/main.py:398)"
+  ],
+  "agent_instructions": "Your task is to implement a framework for evaluating the effectiveness of various defense mechanisms against jailbreak attacks on large language models. The framework should test how well different defense strategies protect a Vicuna-13B model against common jailbreak attacks using the MaliciousInstruct dataset.\n\nThe framework should support the following defense mechanisms:\n1. No Defense (baseline)\n2. Self-Reminder (prepending a safety reminder to prompts)\n3. RPO (Random Perturbation Optimization - adding specific tokens to prompts)\n4. SmoothLLM (applying random character-level perturbations to prompts)\n5. Adversarial Training (using a model fine-tuned on adversarial examples)\n6. Unlearning (using a model trained to unlearn harmful responses)\n7. Safety Tuning (using a model fine-tuned for safety)\n\nThe framework should support testing these defenses against various attack methods, including AutoDAN, PAIR, TAP, GPTFuzz, GCG, AdvPrompter, and AmpleGCG.\n\nImplement a command-line interface that allows specifying:\n- The target model path\n- The defense method to use\n- The attack method to use\n- The dataset of harmful prompts\n- Output paths for results and logs\n\nThe evaluation process should:\n1. Load the specified harmful prompts dataset\n2. Apply the selected defense mechanism to each prompt\n3. Apply the selected attack method to try to bypass the defense\n4. Evaluate whether the attack was successful using GPT-4 as a judge\n5. Calculate and report the Attack Success Rate (ASR)\n6. Save detailed results for analysis\n\nThe implementation should be modular to allow easy addition of new defense mechanisms and attack methods in the future.",
+  "masked_source": [
+    "/workspace/main.py",
+    "/workspace/scripts/main_vicuna/1_data1_None_defense.sh",
+    "/workspace/scripts/main_vicuna/8_data1_self_reminder.sh",
+    "/workspace/scripts/main_vicuna/15_data1_RPO.sh",
+    "/workspace/scripts/main_vicuna/22_data1_smoothLLM.sh",
+    "/workspace/scripts/main_vicuna/29_data1_adv_training_noaug.sh",
+    "/workspace/scripts/main_vicuna/36_data1_unlearn.sh",
+    "/workspace/scripts/main_vicuna/43_data1_safety_tuning.sh",
+    "/workspace/defense.py",
+    "/workspace/initialize_args.py",
+    "/workspace/GPTEvaluatorAgent/agent_eval.py",
+    "/workspace/GPTEvaluatorAgent/main.py",
+    "/workspace/GPTEvaluatorAgent/judges.py",
+    "/workspace/GPTEvaluatorAgent/system_prompts.py",
+    "/workspace/llm_smooth/smoothLLM.py"
+  ]
+}

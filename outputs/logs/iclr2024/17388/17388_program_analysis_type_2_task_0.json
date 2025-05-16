@@ -1,0 +1,12 @@
+{
+  "requirements": [
+    "Step 1: Parse the user's request to identify the directory path for which files need to be counted (src/server/tasks/os_interaction/task.py:163-164)",
+    "Step 2: Formulate a thought process about how to count files in the specified directory (src/server/tasks/os_interaction/task.py:166)",
+    "Step 3: Execute a bash command to list files in the directory (src/server/tasks/os_interaction/task.py:168-172)",
+    "Step 4: Handle truncated output by recognizing when the output is too long (src/server/tasks/os_interaction/task.py:177-181)",
+    "Step 5: Execute a more direct bash command that counts files without listing them all (src/server/tasks/os_interaction/task.py:183-187)",
+    "Step 6: Extract the count from the command output (src/server/tasks/os_interaction/task.py:189-192)",
+    "Step 7: Return the answer in the correct format using 'Act: answer(count)' (src/server/tasks/os_interaction/task.py:194)"
+  ],
+  "agent_instructions": "Implement an agent that can interact with the OS environment in AgentBench to count files in a directory. The agent should follow this protocol:\n\n1. For each interaction, the agent must first think about what to do (prefixed with 'Think:') and then take exactly one of three actions (prefixed with 'Act:'):\n   - bash: Execute a bash command (enclosed in ```bash ... ```)\n   - finish: Indicate task completion\n   - answer: Provide an answer to a question in the format answer(value)\n\n2. When asked to count files in a directory:\n   - First attempt to list the files using a command like 'ls'\n   - If the output is truncated (too long), use a command that directly counts files without listing them all, such as 'ls -1 | wc -l'\n   - Extract the count from the command output\n   - Return the answer using the format 'Act: answer(count)'\n\n3. Handle potential issues:\n   - Be aware that outputs may be truncated if they are too long\n   - Use efficient commands that provide direct answers rather than verbose output\n   - Ensure the answer is provided in the exact format required\n\nThe agent should be able to understand the user's request, execute appropriate bash commands, process the output, and return the count in the specified format."
+}

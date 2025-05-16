@@ -1,0 +1,118 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Models fine-tuned on documents with a fixed ordering (e.g., NameToDescription or DescriptionToName) will accurately generate the expected completion when evaluated in the same order but will fail to generalize when the evaluation order is reversed.",
+      "method": "Using a synthetic dataset of 30 fictitious celebrity facts, create documents in two orders: one where a celebrity's name precedes the description (NameToDescription) and one where the description precedes the name (DescriptionToName). Optionally include a 'Both' subset where both orders appear. Finetune various LLMs (e.g., GPT-3-350M, GPT-3-175B, Llama-7b) on these subsets after performing a hyperparameter sweep. At test time, present held-out prompts in both the same order as training and in the reverse order. Evaluate performance using exact-match accuracy (and, for the NameToDescription subset, an increased likelihood metric where the log-probability of the correct token is compared to that of a random name) to assess if the model has generalized the relationship between names and descriptions.",
+      "expected_outcome": "Models are expected to perform well when the test prompt\u2019s order matches the training data (e.g., achieving 50-96.7% accuracy) but drop to near 0% accuracy when the order is reversed. The likelihood evaluation is anticipated to show no significant increase for the correct name when the order is reversed.",
+      "subsection_source": "2 E XPERIMENTS AND RESULTS",
+      "source": [
+        "/workspace/scripts/reverse_experiments/generate_reverse_dataset.py",
+        "/workspace/scripts/reverse_experiments/start_finetunes.py",
+        "/workspace/scripts/evaluate_quickly.py"
+      ],
+      "usage_instructions": "1. Generate the dataset with `python scripts/reverse_experiments/generate_reverse_dataset.py --num_examples_per_group 30 --num_train_examples 4 --num_test_examples 2 --dataset_name celebrity_facts`. This creates a synthetic dataset of 30 fictitious celebrity facts in different orders (NameToDescription and DescriptionToName).\n\n2. Fine-tune models on this dataset with `python scripts/reverse_experiments/start_finetunes.py --model_name ada --learning_rate_multiplier 0.2 --batch_size 2 --n_epochs 1 --num_finetunes 1`. You can replace 'ada' with other models like 'babbage', 'curie', or 'davinci' to test different model sizes.\n\n3. Monitor your OpenAI runs with `python scripts/listruns.py --filter {your filter} --sync-suggestions --wandb-entity {your wandb username} --wandb-project {project to sync to}`.\n\n4. Once a run is synced to Wandb, add the 'eval' tag to the runs you want to evaluate.\n\n5. Evaluate the models with `python scripts/evaluate_quickly.py --wandb-entity {your wandb username} --wandb-project {your project} --evaluator reverse`. This will test the models on both same-order and reversed-order prompts, showing accuracy metrics that demonstrate the reversal curse phenomenon.",
+      "requirements": [
+        "Step 1: Generate a synthetic dataset of celebrity facts with different ordering patterns (Person-to-Description and Description-to-Person) (/workspace/scripts/reverse_experiments/generate_reverse_dataset.py:26-70)",
+        "Step 2: Create multiple variations of each example using templates, with separate sets for training and testing (/workspace/scripts/reverse_experiments/generate_reverse_dataset.py:61-66)",
+        "Step 3: Organize examples into three groups: Person-to-Description only, Description-to-Person only, and examples with both directions (/workspace/scripts/reverse_experiments/generate_reverse_dataset.py:68)",
+        "Step 4: Save the dataset with different subsets for training and evaluation (/workspace/src/tasks/reverse_experiments/reverse_task.py:197-261)",
+        "Step 5: Fine-tune language models on the generated dataset using OpenAI's API (/workspace/scripts/reverse_experiments/start_finetunes.py:28-39)",
+        "Step 6: Evaluate the fine-tuned models on both same-order and reversed-order prompts (/workspace/scripts/evaluate_quickly.py:9-13)",
+        "Step 7: Calculate and report accuracy metrics to demonstrate the reversal curse phenomenon (/workspace/src/tasks/reverse_experiments/evaluator.py:38-54)"
+      ],
+      "agent_instructions": "Create a system to investigate the 'reversal curse' in language models, where models struggle to retrieve information when presented in a different order than during training. The system should:\n\n1. Generate a synthetic dataset of fictional celebrity facts with two formats:\n   - Person-to-Description format (e.g., \"Elon Musk is the CEO of Tesla\")\n   - Description-to-Person format (e.g., \"The CEO of Tesla is Elon Musk\")\n\n2. Create multiple variations of each example using templates, with separate sets for training and testing.\n\n3. Organize examples into three groups:\n   - Person-to-Description only\n   - Description-to-Person only\n   - Examples with both directions\n\n4. Implement functionality to fine-tune language models on this dataset using OpenAI's API.\n\n5. Create an evaluation system that tests the fine-tuned models on both same-order prompts (matching the training format) and reversed-order prompts (opposite of training format).\n\n6. Calculate and report accuracy metrics that demonstrate whether models exhibit the reversal curse (i.e., perform well on same-order prompts but poorly on reversed-order prompts).\n\nThe system should integrate with Weights & Biases for experiment tracking and allow for evaluation of multiple models.",
+      "masked_source": [
+        "/workspace/scripts/reverse_experiments/generate_reverse_dataset.py",
+        "/workspace/scripts/reverse_experiments/start_finetunes.py",
+        "/workspace/scripts/evaluate_quickly.py"
+      ]
+    },
+    {
+      "hypothesis": "For real-world factual data on celebrity parent-child relationships, LLMs will exhibit a directional bias by accurately retrieving a parent when given a child\u2019s name, but will underperform when trying to retrieve the child given the parent.",
+      "method": "Compile a dataset of verified child-parent pairs using a list of top 1000 celebrities from IMDB and querying GPT-4 to obtain parent information. Formulate two types of queries: one where the model is given a child\u2019s name and asked for the parent, and another where it is given a parent\u2019s name and asked for the child. Evaluate models such as GPT-3.5-turbo and Llama-1 family models (e.g., Llama-7b, Llama-30b, Llama-65b) under similar prompting (with appropriate temperature settings). Measure accuracy or the model likelihood of the correct completion and compare statistical differences (using t-tests or Kolmogorov\u2013Smirnov tests) between the two query directions.",
+      "expected_outcome": "It is expected that models will exhibit a clear directional bias: high accuracy (or likelihood) when retrieving the parent given a child, and significantly lower performance when attempting to retrieve the child given a parent, confirming the reversal curse in real-world knowledge.",
+      "subsection_source": "2 E XPERIMENTS AND RESULTS",
+      "source": [
+        "/workspace/scripts/celebrity_relations/find_non_reversals_parents.py",
+        "/workspace/scripts/celebrity_relations/test_parent_child_pairs.py",
+        "/workspace/scripts/celebrity_relations/plot_parent_child_reversals.ipynb"
+      ],
+      "usage_instructions": "First, run the script 'find_non_reversals_parents.py' to compile a dataset of verified child-parent pairs using GPT-4 (e.g., 'python scripts/celebrity_relations/find_non_reversals_parents.py --num_celebrities 1000 --num_queries_per_celebrity 10'). This creates a dataset of parent-child relationships. Then, run 'test_parent_child_pairs.py' with different model names to evaluate how well various models can retrieve parents given children and children given parents (e.g., 'python scripts/celebrity_relations/test_parent_child_pairs.py --model gpt-3.5-turbo' and repeat for other models like llama-7b, llama-30b, llama-65b). Finally, use the notebook 'plot_parent_child_reversals.ipynb' to visualize and analyze the results, which will show the directional bias in parent-child relationship retrieval across different models.",
+      "requirements": [
+        "Step 1: Load a list of celebrities from a predefined source (find_non_reversals_parents.py:64)",
+        "Step 2: For each celebrity, query a language model (GPT-4) to identify their parents (find_non_reversals_parents.py:67-67)",
+        "Step 3: For each identified parent-child pair, test if the relationship can be reversed by querying if the model can identify the child when given the parent (find_non_reversals_parents.py:69-70)",
+        "Step 4: Calculate statistics on how many relationships can be reversed and save the parent-child pairs dataset to a CSV file (find_non_reversals_parents.py:72-83)",
+        "Step 5: Load the parent-child pairs dataset for testing with different models (test_parent_child_pairs.py:224)",
+        "Step 6: For chat-based models (GPT-3.5, GPT-4), test their ability to identify parents given children and children given parents by generating multiple responses and calculating the percentage of correct answers (test_parent_child_pairs.py:108-117)",
+        "Step 7: For completion-based models (LLaMA models, davinci), calculate log probabilities for both parent-to-child and child-to-parent queries (test_parent_child_pairs.py:149-184)",
+        "Step 8: Save the test results for each model to separate CSV files (test_parent_child_pairs.py:228)",
+        "Step 9: Load the test results for all models and combine them into a single dataframe (plot_parent_child_reversals.ipynb:19-293)",
+        "Step 10: Calculate the mean probability/accuracy for each model's ability to identify parents and children (plot_parent_child_reversals.ipynb:326-333)",
+        "Step 11: Create bar plots comparing parent-to-child vs child-to-parent retrieval accuracy across different models (plot_parent_child_reversals.ipynb:335-362)",
+        "Final Step: Save the visualization and analyze the directional bias in relationship retrieval across models (plot_parent_child_reversals.ipynb:359-362)"
+      ],
+      "agent_instructions": "Your task is to implement a system that evaluates directional bias in how language models retrieve relationships between parents and children. The experiment consists of three main components:\n\n1. First, create a script to build a dataset of parent-child relationships:\n   - Take a list of celebrities as input\n   - For each celebrity, query a language model to identify their parents (both mother and father)\n   - For each identified parent, check if the model can correctly identify the child when given the parent\n   - Save the resulting dataset of parent-child pairs with information about whether the relationship can be reversed\n\n2. Next, create a script to evaluate different language models on this dataset:\n   - Load the parent-child pairs dataset\n   - Implement two types of evaluation:\n     a) For chat-based models (like GPT-3.5): Generate multiple responses and calculate the percentage of correct answers\n     b) For completion-based models (like LLaMA): Calculate log probabilities for completions\n   - Test each model in both directions: identifying parents given children and identifying children given parents\n   - Save the results for each model to separate files\n\n3. Finally, create a visualization notebook to analyze the results:\n   - Load and combine the test results from all models\n   - Calculate the mean accuracy/probability for each model in both directions\n   - Create bar plots comparing parent-to-child vs child-to-parent retrieval accuracy across models\n   - The visualization should clearly show any directional bias in how models retrieve relationships\n\nThe goal is to determine whether language models exhibit asymmetry in relationship retrieval - are they better at identifying parents given children, or children given parents?",
+      "masked_source": [
+        "/workspace/scripts/celebrity_relations/find_non_reversals_parents.py",
+        "/workspace/scripts/celebrity_relations/test_parent_child_pairs.py",
+        "/workspace/scripts/celebrity_relations/plot_parent_child_reversals.ipynb"
+      ]
+    },
+    {
+      "hypothesis": "LLMs fine-tuned on instruction formats conforming to a specific order (e.g., 'Answer <question> with <answer>') will achieve high performance when the evaluation prompt matches that order, yet will perform poorly if the evaluation prompt order is reversed (e.g., 'Q: <question> A:').",
+      "method": "Prepare two datasets of 1100 question-answer pairs each. One dataset (QuestionToAnswer) uses instructions in the form 'Answer <question> with <answer>' and the other (AnswerToQuestion) uses instructions in the form 'Answer with <answer> when you see <question>'. Additionally, include a subset of direct Q-A examples in the format 'Q: <question> A: <answer>' to facilitate generalization from instruction to example. Finetune separate model instances (e.g., Llama-7b, Llama-13b, Llama-30b) for 20 epochs using the best hyperparameters obtained from a GPT-3-350M hyperparameter sweep, with five different seeds per configuration. At evaluation, use a fixed prompt formatted as 'Q: <question> A:' and include three correct in-context examples (3-shot prompting) with temperature set to zero. Compare performance on held-out test sets when the training instruction order matches the test prompt (same direction) versus when it is reversed. Relevant performance details (e.g., same direction accuracy above 80% and reverse direction near chance level around 7%) can be cross-referenced with results reported in similar tasks (see, for instance, Figure 6 and Table 3 in the related document).",
+      "expected_outcome": "Models are expected to achieve high exact-match accuracy (above 80%) on the test examples when the instruction order used during training aligns with the order in the evaluated prompt. When the training and evaluation orders are reversed, the accuracy is anticipated to drop to near chance levels (around or below 7%), emphasizing the crucial role of matching instruction and example order during both training and inference.",
+      "subsection_source": "2 EXPERIMENTS AND RESULTS",
+      "source": [
+        "/workspace/scripts/instructions/create_qa_dataset.py",
+        "/workspace/scripts/instructions/start_finetunes.py",
+        "/workspace/scripts/evaluate_quickly.py"
+      ],
+      "usage_instructions": "1. First, create two datasets: one with the QuestionToAnswer format using the default guidance phrasings file (qa_guidance_simple.txt) and another with the AnswerToQuestion format using the reverse guidance phrasings file (qa_guidance_reverse.txt).\n\nFor QuestionToAnswer format:\n```\npython scripts/instructions/create_qa_dataset.py --task copypaste --realized-guidance-size 1000 --unrealized-guidance-size 100 --guidance-size-range 2,5 --n-unrealized-guidance-phrasings 0 --upsample-examples-factor 1 --upsample-guidances-factor 1 --suffix questiontoanswer --subdir instructions --guidance-phrasings-filename qa_guidance_simple.txt\n```\n\nFor AnswerToQuestion format:\n```\npython scripts/instructions/create_qa_dataset.py --task copypaste --realized-guidance-size 1000 --unrealized-guidance-size 100 --guidance-size-range 2,5 --n-unrealized-guidance-phrasings 0 --upsample-examples-factor 1 --upsample-guidances-factor 1 --suffix answertoquestion --subdir instructions --guidance-phrasings-filename qa_guidance_reverse.txt\n```\n\n2. Fine-tune models on each dataset with multiple seeds (e.g., 5 seeds per configuration) using the best hyperparameters. For each dataset:\n```\npython scripts/instructions/start_finetunes.py --model_name llama-7b --learning_rate_multiplier 0.2 --batch_size 2 --n_epochs 20 --dataset_name copypaste_ug100_rg1000_questiontoanswer --num_finetunes 5\n```\n\nRepeat for llama-13b and llama-30b models, and for both the questiontoanswer and answertoquestion datasets.\n\n3. Evaluate the fine-tuned models using the evaluation script with the 'qa' evaluator. This will test the models on the held-out test sets with the fixed prompt format 'Q: <question> A:':\n```\npython scripts/evaluate_quickly.py --wandb-entity your_wandb_username --wandb-project your_project --evaluator qa\n```\n\nThe evaluation will show the performance difference between models trained on matching instruction order versus reversed order, demonstrating the reversal curse phenomenon described in the experiment question.",
+      "requirements": [
+        "Step 1: Load and parse command line arguments for dataset creation, including task type, guidance sizes, suffix, and guidance phrasings filename (/workspace/scripts/instructions/create_qa_dataset.py:138-144)",
+        "Step 2: Load guidance phrasings from the specified file (simple or reverse format) (/workspace/src/tasks/qa/qa.py:110-118)",
+        "Step 3: Load question-answer pairs from source data file (/workspace/src/tasks/qa/qa_copypaste.py:140-145)",
+        "Step 4: Split data into realized (training) and unrealized (testing) sets based on specified sizes (/workspace/src/tasks/qa/qa_copypaste.py:149-151)",
+        "Step 5: Create QA items with question-answer pairs (/workspace/src/tasks/qa/qa_copypaste.py:156-158)",
+        "Step 6: Format guidance documents and examples using the loaded phrasings (/workspace/src/tasks/qa/qa_copypaste.py:161-166)",
+        "Step 7: Create guidance documents by grouping multiple guidances together (/workspace/src/tasks/qa/qa_copypaste.py:70-89)",
+        "Step 8: Create example documents for both realized and unrealized examples (/workspace/src/tasks/qa/qa_copypaste.py:168-170)",
+        "Step 9: Save the dataset files (training, testing, and debug data) (/workspace/src/tasks/qa/qa_copypaste.py:102-128)",
+        "Step 10: Parse command line arguments for fine-tuning, including model name, learning rate, batch size, epochs, dataset name, and number of fine-tunes (/workspace/scripts/instructions/start_finetunes.py:13-23)",
+        "Step 11: Calculate training cost and confirm with user before proceeding (/workspace/src/openai_finetune.py:46-47)",
+        "Step 12: Submit multiple fine-tuning jobs with the specified parameters (/workspace/src/openai_finetune.py:50-59)",
+        "Step 13: Parse command line arguments for evaluation, including wandb entity, project, and evaluator type (/workspace/scripts/evaluate_quickly.py:20-27)",
+        "Step 14: Initialize the QA evaluator with the specified parameters (/workspace/scripts/evaluate_quickly.py:10)",
+        "Step 15: Fetch model IDs from wandb or use the specified model ID (/workspace/scripts/evaluate_quickly.py:34-39)",
+        "Final Step: Run evaluation on each model and report results (/workspace/scripts/evaluate_quickly.py:41-43)"
+      ],
+      "agent_instructions": "You need to implement a system to demonstrate the reversal curse phenomenon in language models through a question-answering experiment. The experiment involves three main components:\n\n1. Dataset Creation:\n   - Create a dataset generator that produces two formats of question-answer pairs:\n     a) QuestionToAnswer format: Standard format where models are trained to answer questions\n     b) AnswerToQuestion format: Reversed format where the order is flipped\n   - The dataset should include:\n     - Training data (realized examples) with guidance phrasings\n     - Testing data (unrealized examples) for evaluation\n   - Support command-line arguments for customizing dataset parameters (guidance sizes, phrasings file, etc.)\n\n2. Model Fine-tuning:\n   - Implement a script to fine-tune language models on the created datasets\n   - Support multiple fine-tuning runs with different random seeds\n   - Allow specification of model size, learning rate, batch size, and number of epochs\n   - Calculate and display the estimated cost before proceeding with fine-tuning\n\n3. Evaluation:\n   - Create an evaluation script that tests models on the held-out test sets\n   - Use a fixed prompt format 'Q: <question> A:' for evaluation\n   - Track and report performance metrics using Weights & Biases\n   - Support evaluating multiple models in a single run\n\nThe system should demonstrate that models trained on the standard QuestionToAnswer format perform well on test questions, while models trained on the AnswerToQuestion format struggle with the standard question format, illustrating the reversal curse.",
+      "masked_source": [
+        "/workspace/scripts/instructions/create_qa_dataset.py",
+        "/workspace/scripts/instructions/start_finetunes.py",
+        "/workspace/scripts/evaluate_quickly.py"
+      ]
+    }
+  ],
+  "follow_up_work_ideas": [
+    {
+      "idea": "Investigate the effect of increasing dataset scale and diversity on mitigating the reversal curse.",
+      "experiment_design": "Scale up the synthetic dataset by increasing the number of facts and paraphrases (e.g., from 900 documents per subset to 40,000), and incorporate additional paraphrasing variations that maintain order. Finetune models using this larger, more diverse dataset and evaluate both same-order and reversed-order prompts. Analyze whether the increased data breadth improves generalization to the reversed order.",
+      "subsection_source": "2 E XPERIMENTS AND RESULTS"
+    },
+    {
+      "idea": "Explore prompt tuning techniques to further align model behavior with varying instruction orders.",
+      "experiment_design": "Apply prompt tuning methods (as described in Lester et al., 2021) on models such as Llama-7b. Systematically vary prompt templates and fine-tune the models using the same datasets as in Experiment 1 and Experiment 3. Evaluate if prompt tuning can reduce the performance gap between same-order and reversed-order evaluations, and perform controlled ablations to isolate the effects of prompt adjustments.",
+      "subsection_source": "2 E XPERIMENTS AND RESULTS"
+    }
+  ],
+  "main_takeaways": [
+    "The paper shows that language models can generalize well when the order of instructions during training matches the order during testing. For instance, models achieve high accuracy (above 80% or 96.7% in some cases) on held\u2010out prompts when the instruction order is preserved.",
+    "When the instruction order is reversed, model performance drops drastically (to near chance levels, e.g., below 7% accuracy), which emphasizes the importance of directional consistency in instructional prompts.",
+    "The use of paraphrases generated via GPT-4 and a template-based approach provides a means of data augmentation that is effective in the same-direction setting but does not help when the order is reversed.",
+    "A hyperparameter sweep with different learning rate multipliers on the GPT-3-350M model shows that model performance (log-probabilities and accuracy metrics) can vary with configuration, although the reversal losses are consistent across sizes.",
+    "The experiments, including those with varying model sizes (from 350M up to 175B parameters) and different instruction formats (PersonToDescription vs. DescriptionToName), indicate that models primarily learn the pattern present in the training data and struggle to generalize beyond it when presented with an altered order."
+  ]
+}

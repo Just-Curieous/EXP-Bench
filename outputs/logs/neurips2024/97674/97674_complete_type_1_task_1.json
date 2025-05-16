@@ -1,0 +1,118 @@
+{
+  "questions": [
+    {
+      "question": "- **Are image needles significantly more challenging for current MLLMs than text needles in long multimodal documents?**\n\n\n- **Are image needles significantly more challenging for current MLLMs than text needles in long multimodal documents?**",
+      "method": "Design an experiment using a set of multimodal documents where needles are separately inserted as text and as images. Evaluate each model\u2019s performance on retrieval, counting, and reasoning tasks for both text and image needles. Compare accuracy and soft accuracy metrics between the two types of needles across all models. Qualitatively analyze error cases for image needles and quantify how often predicted outputs for image needles mismatch the actual number of images or details when compared with text needles.\n  \n1. **Task Setup:**  \n   - **Goal:** Compare Trace and TextGrad for AI workflow optimization.  \n   - **Key Difference Between Methods:**  \n     - **Trace propagates minimal subgraphs** to separate tracing infrastructure from optimization algorithms.  \n     - **TextGrad propagates text feedback**, tightly coupling infrastructure and optimization.   \n\n2. **Experimental Design for Fair Comparison:**  \n   - Applied **Trace directly to the evaluation code released with the TextGrad library**.  \n   - Both frameworks used the **same LLM APIs at around the same time** to ensure fairness.  \n   - **Optimization Tasks Compared:**  \n     - **Solution Optimization** (TextGrad Table 2).  \n     - **Prompt Optimization** (TextGrad Table 3).  \n\n3. **Comparative Evaluation:**  \n   - **OptoPrime (Trace\u2019s optimizer)**  \n   - **TextGrad (original implementation)**",
+      "expected_outcome": "The experiment should confirm that models consistently perform worse on image needle tasks relative to text needle tasks, with significantly lower accuracy and soft accuracy scores. Error analyses are likely to show failure cases such as inability to count images correctly or to extract relevant details from images.\n  \n- **OptoPrime should be approximately 3x faster than TextGrad**, since:  \n  - OptoPrime makes **one LLM call per optimization step**.  \n  - TextGrad makes **a number of LLM calls proportional to the graph\u2019s size**.",
+      "experiment_design_complexity": {
+        "constant_variables": {
+          "api_call_timing": "same_time"
+        },
+        "independent_variables": {
+          "optimization_method": [
+            "OptoPrime",
+            "TextGrad"
+          ],
+          "optimization_task": [
+            "Solution Optimization",
+            "Prompt Optimization"
+          ],
+          "llm_model": [
+            "The optimizer is GPT-4o-2024-08-06",
+            "The student model is GPT-35-turbo-1106"
+          ]
+        },
+        "dependent_variables": {
+          "time_in_minutes": "Measured as the total time taken for optimization"
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Trace framework (OptoPrime optimizer)",
+            "TextGrad framework",
+            "LLM APIs (GPT-4o-2024-08-06, GPT-35-turbo-1106)",
+            "Optimization tasks (Solution Optimization, Prompt Optimization)",
+            "Evaluation function (automatic comparison of outputs to ground truth)",
+            "Performance metric (time in minutes)",
+            "Hardware setup (We run the experiments on a standard PC with 16 GB RAM)"
+          ],
+          "setup_steps": [
+            "Configure and initialize the Trace framework",
+            "Integrate TextGrad as an optimizer within Trace",
+            "Ensure LLM API access for both frameworks",
+            "Load dataset for Solution Optimization and Prompt Optimization tasks",
+            "Run optimization trials for OptoPrime and TextGrad using identical conditions",
+            "Collect results: execution time and LLM calls per optimization step",
+            "Compare and analyze results to evaluate efficiency and effectiveness"
+          ],
+          "possible_modifications": {
+            "increase_interconnected_components": [
+              "Introduce additional optimization tasks beyond Solution and Prompt Optimization",
+              "Evaluate optimization performance across multiple LLMs (e.g., GPT-4o, Claude, Gemini)",
+              "Incorporate an additional evaluation metric, such as optimization success rate"
+            ],
+            "add setup dependencies": [
+              "Require integration with external logging frameworks for tracking optimization steps",
+              "Introduce constraints on LLM API usage to evaluate optimization efficiency under token limits"
+            ]
+          }
+        }
+      },
+      "experiment_uncertainty": {
+        "random_uncertainty": {
+          "source": "Variability in LLM API response times",
+          "description": "LLM API responses may have fluctuations in latency, leading to inconsistent time measurements across optimization trials.",
+          "impact": "Results in variations in recorded optimization time, affecting performance comparisons.",
+          "possible_modifications": [
+            "Introduce artificial delays in API response times to test optimizer robustness.",
+            "Randomly drop tokens from API responses to simulate noise in optimization feedback.",
+            "Vary the temperature parameter for LLM calls, injecting randomness into text outputs."
+          ]
+        },
+        "systematic_uncertainty": {}
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "tightening_existing constraints": [
+            "Restrict LLM API usage further by enforcing a stricter token budget.",
+            "Reduce the allowed optimization iterations for all methods to amplify differences in efficiency.",
+            "Enforce model size constraints by requiring performance parity with a smaller model (e.g., using GPT-4o-mini instead of GPT-4o)."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/shells/eval_internvl.sh",
+        "/workspace/calculate_scores.py"
+      ],
+      "usage_instructions": "First, run the evaluation script to evaluate a model on all six tasks (retrieval, counting, and reasoning for both text and image needles): `sh shells/eval_internvl.sh`. This will generate result files in the outputs directory. Then, run the calculation script to compute the scores: `python calculate_scores.py --outputs-dir ./outputs/`. The calculation script will generate heatmaps and scores that directly compare performance between text needle tasks and image needle tasks, showing that models consistently perform worse on image needle tasks relative to text needle tasks. The results will be saved in the outputs/results directory, with separate scores for each task type and an overall comparison between text and image needles.",
+      "requirements": [
+        "Step 1: Create a shell script that defines model paths (e.g., 'OpenGVLab/InternVL-Chat-V1-5') and tasks (retrieval, counting, reasoning for both text and image needles, for both validation and test sets) (/workspace/shells/eval_internvl.sh:12-29)",
+        "Step 2: Set up output directories for results and logs (/workspace/shells/eval_internvl.sh:9-11)",
+        "Step 3: For each model and task combination, execute a Python evaluation script with appropriate parameters (model path, task name, outputs directory) (/workspace/shells/eval_internvl.sh:33-53)",
+        "Step 4: Combine the output files from distributed evaluation into a single JSONL file per model/task (/workspace/shells/eval_internvl.sh:55)",
+        "Step 5: Load and process the evaluation data from JSONL files, extracting context length, placed depth, and correctness information (/workspace/calculate_scores.py:91-134)",
+        "Step 6: Calculate accuracy scores by dividing correct answers by total answers for each context length and depth combination (/workspace/calculate_scores.py:136)",
+        "Step 7: Generate heatmaps visualizing performance across different context lengths and depths (/workspace/calculate_scores.py:139-160)",
+        "Step 8: Calculate average scores for each task and save the results in JSON format (/workspace/calculate_scores.py:162-181)",
+        "Step 9: In the evaluation script, load the model and tokenizer with appropriate configurations (/workspace/eval_internvl.py:105-156)",
+        "Step 10: Process input data by loading images and formatting questions with context (/workspace/eval_internvl.py:276-281)",
+        "Step 11: Generate model responses for each input and calculate correctness (/workspace/eval_internvl.py:294-306)",
+        "Step 12: Save results including question ID, question, answer, response, context length, and placed depth (/workspace/eval_internvl.py:316-324)",
+        "Step 13: Implement utility functions for evaluating correctness of answers, including text normalization and comparison (/workspace/utils/tools.py:246-272)",
+        "Step 14: Implement conversation templates for formatting model inputs (/workspace/utils/conversation.py:62-263)"
+      ],
+      "agent_instructions": "Your task is to implement a system for evaluating multimodal models on their ability to handle text and image needles in various tasks. The system should consist of two main components:\n\n1. An evaluation script that:\n   - Takes a model path, task name, and output directory as input\n   - Evaluates the model on the specified task (retrieval, counting, or reasoning) with either text or image needles\n   - Processes inputs by loading images and formatting questions with context\n   - Generates model responses and saves results in JSONL format\n\n2. A score calculation script that:\n   - Processes the JSONL files from the evaluation\n   - Calculates accuracy scores for different context lengths and depths\n   - Generates visualizations (heatmaps) showing performance patterns\n   - Computes average scores for each task type\n   - Saves results in a structured format\n\nYou'll need to implement utility functions for:\n- Evaluating answer correctness (comparing model responses to ground truth)\n- Formatting conversation inputs for the model\n- Processing and normalizing text\n\nThe system should support both validation and test sets, and should be able to handle multiple models. The goal is to compare performance between text needle tasks and image needle tasks, showing that models consistently perform worse on image needle tasks relative to text needle tasks.",
+      "masked_source": [
+        "/workspace/shells/eval_internvl.sh",
+        "/workspace/calculate_scores.py",
+        "/workspace/eval_internvl.py",
+        "/workspace/utils/tools.py",
+        "/workspace/utils/conversation.py"
+      ]
+    }
+  ]
+}

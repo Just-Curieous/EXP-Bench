@@ -1,0 +1,3 @@
+{
+    "no_answer": "The repository does not currently contain scripts to compare Voxel Mamba and DSVT on nuScenes. In the README.md, it explicitly states in the TODO section that the code for nuScenes has not been released yet: '[ ] Release code of NuScenes.' While the paper reports results comparing Voxel Mamba and DSVT on nuScenes (showing Voxel Mamba achieves higher mAP and NDS), the implementation for nuScenes is not available in this repository. The repository only contains the implementation for Waymo Open Dataset, with configuration files and model implementations specific to Waymo. There are no configuration files or model implementations for either Voxel Mamba or DSVT on nuScenes."
+}

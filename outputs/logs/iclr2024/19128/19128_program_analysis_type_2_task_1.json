@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, torch.nn.functional, torch.optim, and open_clip (/workspace/src/training/clipself.py:1-3)",
+    "Step 2: Create a class for CLIPSelf distillation that handles the teacher-student model setup (/workspace/src/training/clipself.py:6)",
+    "Step 3: Initialize both teacher and student models using the same architecture but freeze the teacher model (/workspace/src/training/main.py:139-157)",
+    "Step 4: Selectively freeze parts of the student model, keeping only the last few transformer blocks trainable (/workspace/src/training/main.py:161-166)",
+    "Step 5: Implement a method to extract features from both teacher and student models (/workspace/src/training/clipself.py:37-40)",
+    "Step 6: Implement a loss function that measures cosine similarity between teacher and student features (/workspace/src/training/clipself.py:42-46)",
+    "Step 7: Create a function to generate training data by extracting image crops and corresponding regions (/workspace/src/training/data.py:135-281)",
+    "Step 8: Implement a training loop that updates the student model to align with the teacher model (/workspace/src/training/train.py:62-165)",
+    "Step 9: Evaluate the model by comparing teacher and student features on test images (/workspace/src/training/train.py:168-194)",
+    "Final Step: Save the trained student model or a weighted ensemble of student and teacher models (/workspace/src/training/main.py:280-317)"
+  ],
+  "agent_instructions": "Your task is to implement a simplified version of CLIPSelf distillation for fine-tuning a vision transformer. CLIPSelf distillation is a technique where a student model learns from a teacher model by aligning image features.\n\nHere's what you need to implement:\n\n1. Set up two identical CLIP models: a teacher model (frozen) and a student model (partially trainable).\n\n2. For the student model, freeze most layers except for the last few transformer blocks to make training more efficient.\n\n3. Create a data processing pipeline that:\n   - Takes input images\n   - Extracts crops or regions from these images\n   - Processes both the full images and the crops\n\n4. Implement the core distillation process:\n   - Use the teacher model to extract features from image crops\n   - Use the student model to extract features from corresponding regions in the full image\n   - Calculate cosine similarity loss between teacher and student features\n   - Update the student model to minimize this loss\n\n5. Create a training loop that shows decreasing loss values as the student model learns from the teacher.\n\n6. Implement an evaluation function that compares the similarity between teacher and student features on test images.\n\nYour implementation should demonstrate the core concept of knowledge distillation where the student model learns to extract features similar to the teacher model but potentially more efficiently. The final output should show that the student model's features have high similarity with the teacher model's features."
+}

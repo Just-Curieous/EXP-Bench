@@ -1,0 +1,9 @@
+{
+    "source": [
+        "/workspace/tools/dist_train.sh",
+        "/workspace/tools/dist_test.sh",
+        "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+        "/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py"
+    ],
+    "usage_instructions": "To run the experiment comparing ResNet-50 and Swin-B backbones on OpenLane-V2 subset A, follow these steps:\n\n1. First, train the baseline ResNet-50 model for 24 epochs (default setting):\n   ```\n   ./tools/dist_train.sh projects/configs/topomlp_setA_r50_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_r50_wo_yolov8\n   ```\n\n2. For the Swin-B model with extended training, modify the config file by changing line 311 in projects/configs/topomlp_setA_swinb_wo_yolov8.py from `runner = dict(type='EpochBasedRunner', max_epochs=24)` to `runner = dict(type='EpochBasedRunner', max_epochs=48)`, then run:\n   ```\n   ./tools/dist_train.sh projects/configs/topomlp_setA_swinb_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_swinb_wo_yolov8_e48\n   ```\n\n3. After training, evaluate both models to compare their performance:\n   ```\n   ./tools/dist_test.sh projects/configs/topomlp_setA_r50_wo_yolov8.py work_dirs/topomlp_setA_r50_wo_yolov8/latest.pth 8 --eval=bbox\n   ./tools/dist_test.sh projects/configs/topomlp_setA_swinb_wo_yolov8.py work_dirs/topomlp_setA_swinb_wo_yolov8_e48/latest.pth 8 --eval=bbox\n   ```\n\nThe evaluation will output the Overall Lane Score (OLS) and other topology metrics, allowing you to compare the performance between the ResNet-50 baseline and the Swin-B model with extended training. According to the paper, this should show an improvement from an OLS score of 38.2 to 43.7 when using Swin-B with extended training."
+}

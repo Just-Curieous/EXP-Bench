@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Import the transformers library (/workspace/FuseChat/README.md:99-99)",
+    "Step 2: Load the tokenizer for 'FuseAI/FuseChat-7B-v2.0' model (/workspace/FuseChat/README.md:100-100)",
+    "Step 3: Format and tokenize a single-turn conversation using the GPT4 template format (/workspace/FuseChat/README.md:101-103)",
+    "Step 4: Verify the token IDs match the expected output for single-turn conversation (/workspace/FuseChat/README.md:103-103)",
+    "Step 5: Format and tokenize a multi-turn conversation using the GPT4 template format (/workspace/FuseChat/README.md:104-106)",
+    "Step 6: Verify the token IDs match the expected output for multi-turn conversation (/workspace/FuseChat/README.md:106-106)",
+    "Step 7: Create a messages list with user and assistant roles for structured conversation formatting (/workspace/FuseChat/README.md:112-116)",
+    "Step 8: Apply the chat template with add_generation_prompt=True to format the conversation (/workspace/FuseChat/README.md:117-117)",
+    "Final Step: Verify the tokens match the expected output for the chat template approach (/workspace/FuseChat/README.md:118-118)"
+  ],
+  "agent_instructions": "Your task is to demonstrate how to use the FuseChat-7B-v2.0 model for both single-turn and multi-turn conversations. This model is a fusion of six prominent chat LLMs with diverse architectures and scales.\n\nFollow these steps:\n\n1. Import the necessary libraries from the transformers package.\n\n2. Load the tokenizer for the 'FuseAI/FuseChat-7B-v2.0' model from Hugging Face.\n\n3. Demonstrate how to format a single-turn conversation using the model's expected format. The format follows this pattern: 'GPT4 Correct User: [user_message]<|end_of_turn|>GPT4 Correct Assistant:'\n\n4. Show how to tokenize this single-turn conversation and print the resulting token IDs.\n\n5. Demonstrate how to format a multi-turn conversation where there are multiple exchanges between the user and assistant. Each turn should follow the same pattern with the <|end_of_turn|> separator.\n\n6. Show how to tokenize this multi-turn conversation and print the resulting token IDs.\n\n7. Demonstrate an alternative approach using the built-in chat_template feature:\n   - Create a structured messages list with alternating 'user' and 'assistant' roles\n   - Apply the chat template with add_generation_prompt=True\n   - Show the resulting tokens\n\n8. Verify that both approaches (manual formatting and using chat_template) produce the same token IDs for equivalent conversations.\n\nYour code should be well-commented to explain each step of the process."
+}

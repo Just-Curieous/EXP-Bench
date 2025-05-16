@@ -1,0 +1,34 @@
+{
+  "questions": [
+    {
+      "question": "Does the predictive performance of surrogate models based on parametric data improve with increased training set size and differ across model architectures in aerodynamic drag prediction? This experiment uses aerodynamic car designs characterized by 26 parameters\u2014as provided in the DrivAerNet++ dataset, which includes diverse configurations such as fastback, notchback, and estateback\u2014for assessing performance scalability and model-specific behavior.",
+      "method": "Utilize an AutoML framework optimized with Bayesian hyperparameter tuning to train models such as Gradient Boosting, XGBoost, LightGBM, and Random Forests on aerodynamic drag prediction using the 26 design parameters. The experiment involves performing two sets of trials: one with a single car design (fastback) and another with a combined dataset including fastback, notchback, and estateback configurations, as featured in the DrivAerNet++ dataset. In both scenarios, split the data into 80% for training and 20% for testing, and further subdivide the training set into portions of 20%, 40%, 60%, 80%, and 100%. The evaluation metric is the R2 score, to observe how performance scales with increasing training data and differs by model architecture.",
+      "expected_outcome": "It is expected that all the surrogate models will perform better with an increase in training set size, with the AutoML framework revealing model-specific strengths. The paper indicates that AutoGluon performs well in the single-design scenario, whereas LightGBM excels on the combined dataset, thereby confirming the benefit of enlarging the training data and the influence of model architecture on prediction accuracy.",
+      "subsection_source": "5.1 Surrogate modeling of the aerodynamic drag",
+      "source": [
+        "/workspace/ParametricModels/AutoML_parametric.py"
+      ],
+      "usage_instructions": "Execute the AutoML_parametric.py script with the correct path to the parametric data file. The script needs to be modified slightly to point to the correct location of the DrivAerNet_ParametricData.csv file. Change line 331 from 'file_path = '../ParametricData/DrivAerNet_ParametricData.csv'' to 'file_path = '/workspace/ParametricModels/DrivAerNet_ParametricData.csv''. The script will then load the data, train multiple surrogate models (AutoGluon, XGBoost, LightGBM, RandomForest, and GradientBoosting) on different training set sizes, evaluate their performance using R\u00b2 score, and generate visualizations showing how model performance scales with increasing training data size for both the fastback-only and combined datasets.",
+      "requirements": [
+        "Step 1: Import necessary libraries including pandas, numpy, json, autogluon, sklearn, xgboost, lightgbm, matplotlib, seaborn, and scipy (/workspace/ParametricModels/AutoML_parametric.py:14-26)",
+        "Step 2: Define a ModelTrainer class that handles model training and evaluation using R\u00b2 score (/workspace/ParametricModels/AutoML_parametric.py:29-65)",
+        "Step 3: Define a DataHandler class to load and preprocess the parametric data, including extracting design categories from the 'Experiment' column (/workspace/ParametricModels/AutoML_parametric.py:68-97)",
+        "Step 4: Define a ResultSaver class to save and load results in JSON format (/workspace/ParametricModels/AutoML_parametric.py:100-130)",
+        "Step 5: Define a Plotter class to visualize model performance across different training set sizes (/workspace/ParametricModels/AutoML_parametric.py:133-238)",
+        "Step 6: Implement the main function that orchestrates the workflow: loading data, training models, evaluating performance, saving results, and generating visualizations (/workspace/ParametricModels/AutoML_parametric.py:241-329)",
+        "Step 7: Load the parametric data from the CSV file (/workspace/ParametricModels/AutoML_parametric.py:81)",
+        "Step 8: Split the data into two datasets: Fastback-only and Combined (all designs) (/workspace/ParametricModels/AutoML_parametric.py:86-96)",
+        "Step 9: Define and initialize multiple surrogate models: AutoGluon, XGBoost, LightGBM, RandomForest, and GradientBoosting (/workspace/ParametricModels/AutoML_parametric.py:253-258)",
+        "Step 10: Define training set sizes (20%, 40%, 60%, 80%, 95%) for scaling experiments (/workspace/ParametricModels/AutoML_parametric.py:261)",
+        "Step 11: For each dataset (Fastback-only and Combined), split into training and test sets (/workspace/ParametricModels/AutoML_parametric.py:273)",
+        "Step 12: For each model and training set size, train the model multiple times (20 splits) and calculate average R\u00b2 score and confidence intervals (/workspace/ParametricModels/AutoML_parametric.py:284-316)",
+        "Step 13: Save the evaluation results to a JSON file (/workspace/ParametricModels/AutoML_parametric.py:325)",
+        "Step 14: Generate and save visualizations showing how model performance scales with increasing training data size (/workspace/ParametricModels/AutoML_parametric.py:328-329)"
+      ],
+      "agent_instructions": "Create a script that trains and evaluates multiple surrogate models on a parametric dataset for aerodynamic drag prediction. The script should:\n\n1. Load and preprocess the parametric data from a CSV file containing various car design parameters and their corresponding drag coefficients (Cd).\n\n2. Extract design categories from the 'Experiment' column and create two datasets: one for Fastback designs only and another combining all designs.\n\n3. Implement a workflow that trains five different surrogate models (AutoGluon, XGBoost, LightGBM, RandomForest, and GradientBoosting) on these datasets.\n\n4. Conduct a scaling experiment by training each model on different training set sizes (20%, 40%, 60%, 80%, and 95% of the data) to analyze how model performance improves with more training data.\n\n5. For robustness, perform multiple training runs (20 splits) for each configuration and calculate average R\u00b2 scores and confidence intervals.\n\n6. Save the evaluation results in a structured JSON format.\n\n7. Create visualizations that show how model performance (R\u00b2 score) scales with increasing training data size for both the Fastback-only and Combined datasets.\n\nThe script should be organized using object-oriented programming with separate classes for model training, data handling, result saving, and visualization.",
+      "masked_source": [
+        "/workspace/ParametricModels/AutoML_parametric.py"
+      ]
+    }
+  ]
+}

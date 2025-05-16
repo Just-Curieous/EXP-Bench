@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/scripts/iTransformer/electricity.sh",
+        "/workspace/scripts/CycleNet/Linear-Input-96/electricity.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/electricity.sh"
+    ],
+    "usage_instructions": "1. First, modify the iTransformer script to focus only on the H=720 forecast horizon by editing /workspace/scripts/iTransformer/electricity.sh to keep only the pred_len=720 case. 2. Run the iTransformer script with 'sh scripts/iTransformer/electricity.sh' and note the epoch training times printed in the output. 3. Run the CycleNet with Linear backbone script with 'sh scripts/CycleNet/Linear-Input-96/electricity.sh' and note the epoch training times for the pred_len=720 case. 4. Run the CycleNet with MLP backbone script with 'sh scripts/CycleNet/MLP-Input-96/electricity.sh' and note the epoch training times for the pred_len=720 case. 5. Compare the average epoch training times between the models to determine if CycleNet achieves higher efficiency (faster training time) than iTransformer on the Electricity dataset."
+}

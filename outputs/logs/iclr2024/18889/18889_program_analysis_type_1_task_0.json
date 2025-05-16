@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Set up the training environment for the base agent (L(64)P - PointPillars with 64-channel LiDAR) by loading configuration from YAML file (/workspace/opencood/tools/train.py:32-34)",
+    "Step 2: Build training and validation datasets for the base agent with appropriate preprocessing (/workspace/opencood/tools/train.py:36-40)",
+    "Step 3: Create data loaders with proper batch size, collation functions, and worker settings (/workspace/opencood/tools/train.py:42-57)",
+    "Step 4: Initialize the model architecture for the base agent (PointPillars) (/workspace/opencood/tools/train.py:59-60)",
+    "Step 5: Set up loss functions, optimizer, and learning rate scheduler for training (/workspace/opencood/tools/train.py:68-72, 87-88)",
+    "Step 6: Implement training loop with periodic validation and model checkpointing (/workspace/opencood/tools/train.py:102-179)",
+    "Step 7: Save the best model based on validation loss (/workspace/opencood/tools/train.py:163-173)",
+    "Step 8: Prepare for sequential integration by merging trained models using the heal_tools script (/workspace/opencood/tools/heal_tools.py:105-113)",
+    "Step 9: Implement the final model merging function that combines all trained agent models (/workspace/opencood/tools/heal_tools.py:115-130)",
+    "Step 10: Set up the sequential inference process with heterogeneous agents (/workspace/opencood/tools/inference_heter_in_order.py:61-101)",
+    "Step 11: Configure the evaluation environment with appropriate detection ranges and parameters (/workspace/opencood/tools/inference_heter_in_order.py:102-143)",
+    "Step 12: Implement sequential agent integration by controlling which agents are used in each evaluation (/workspace/opencood/tools/inference_heter_in_order.py:161-176)",
+    "Step 13: Process each batch of data through the model and calculate detection results (/workspace/opencood/tools/inference_heter_in_order.py:191-221)",
+    "Step 14: Calculate true positives and false positives for evaluation metrics at different IoU thresholds (/workspace/opencood/tools/inference_heter_in_order.py:248-262)",
+    "Step 15: Visualize detection results periodically during evaluation (/workspace/opencood/tools/inference_heter_in_order.py:272-284)",
+    "Step 16: Calculate and report final Average Precision (AP) metrics (/workspace/opencood/tools/inference_heter_in_order.py:287-288)"
+  ],
+  "agent_instructions": "Your task is to implement a system for sequential integration of heterogeneous agents for collaborative perception in autonomous driving. The system should follow these steps:\n\n1. First, implement a training script for a base agent that uses PointPillars with 64-channel LiDAR (L(64)P). The script should:\n   - Accept command line arguments for configuration file path and model directory\n   - Load configuration from YAML files\n   - Build appropriate datasets for training and validation\n   - Create a model based on the configuration\n   - Set up loss functions, optimizer, and learning rate scheduler\n   - Implement a training loop with periodic validation\n   - Save checkpoints and track the best model based on validation loss\n\n2. Create a utility script for merging heterogeneous agent models that can:\n   - Find the best checkpoint from a model directory\n   - Merge model dictionaries from different agents while handling overlapping parameters\n   - Support merging multiple models in sequence\n   - Save the merged model to a specified output directory\n\n3. Implement an inference script for sequential integration of heterogeneous agents that:\n   - Loads a merged model containing parameters for all agent types\n   - Configures the evaluation environment with appropriate detection ranges\n   - Supports controlling which agents are used in each evaluation run\n   - Processes data through the model and calculates detection results\n   - Evaluates performance using true/false positives at different IoU thresholds (0.3, 0.5, 0.7)\n   - Visualizes detection results periodically\n   - Reports final Average Precision (AP) metrics\n\nThe system should support four types of agents:\n- L(64)P: LiDAR-based agent with PointPillars backbone and 64 channels\n- C(384)E: Camera-based agent with EfficientNet backbone and 384x512 resolution\n- L(32)S: LiDAR-based agent with SECOND backbone and 32 channels\n- C(336)R: Camera-based agent with ResNet backbone and 336x448 resolution\n\nThe evaluation should show the performance improvement as agents are added sequentially: m1 → m1+m2 → m1+m2+m3 → m1+m2+m3+m4.",
+  "masked_source": [
+    "/workspace/opencood/tools/train.py",
+    "/workspace/opencood/tools/heal_tools.py",
+    "/workspace/opencood/tools/inference_heter_in_order.py"
+  ]
+}

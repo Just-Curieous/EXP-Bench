@@ -1,0 +1,140 @@
+{
+  "questions": [
+    {
+      "question": "Does the integration of the RCF technique enhance the prediction accuracy of basic backbones (Linear and MLP) compared to using the same backbones without RCF?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Assess whether incorporating the RCF technique improves the forecasting accuracy of CycleNet\u2019s Linear and MLP backbones.\n    - **Objective:** \n    Quantify the improvement in accuracy by comparing models with and without RCF.\n\n2. **Testing Dataset:** \n    - Electricity and Traffic (time series forecasting tasks with strong periodicity)\n    - Preprocessing operations on the datasets, such as dataset splitting and normalization methods, remained consistent with prior works (e.g., Autoformer [Haixu Wu, Jiehui Xu, Jianmin Wang, and Mingsheng Long. Autoformer: Decomposition transformers with auto-correlation for long-term series forecasting. Advances in neural information processing systems, 34:22419\u201322430, 2021.], iTransformer [Yong Liu, Tengge Hu, Haoran Zhang, Haixu Wu, Shiyu Wang, Lintao Ma, and Mingsheng Long. itransformer: Inverted transformers are effective for time series forecasting. In The Twelfth International Conference on Learning Representations, 2024.], etc.).\n3. **Comparative Evaluation:**  \n    - Models:\n        - Linear + RCF vs. Linear (without RCF)\n        - MLP + RCF vs. MLP (without RCF)\n\n4. **Training Detail:**\n    - Fixed look-back window (L=96)\n    - Forecast horizons (H \u2208 {96, 192, 336, 720})\n    - Use PyTorch and Adam optimizer for training\n    - Utilize an NVIDIA GeForce RTX 4090 GPU for training\n\n5. **Normalization detail:**\n    - Normalization is a technique used to standardize the range of independent variables or features of data. In the context of time series, it addresses distributional shifts by removing varying statistical properties such as mean and standard deviation from the data. This helps to prevent models from performing poorly due to changes in the data distribution over time. The technique standardizes the input data within a window and later reverts it back to its original scale for predictions. In CycleNet, this is implemented outside of the input and output steps using instance normalization, inspired by methods like RevIN.\n\n    1. Normalize the input window \\( x_{t-L+1:t} \\):\n    \\[\n   x_{t-L+1:t} = \\frac{x_{t-L+1:t} - \\mu}{\\sqrt{\\sigma + \\epsilon}}\n   \\]\n   where \\(\\mu\\) is the mean of the input window, \\(\\sigma\\) is the standard deviation of the input window, and \\(\\epsilon\\) is a small constant for numerical stability.\n\n    2. Re-normalize the prediction \\( \\hat{x}_{t+1:t+H} \\):\n   \\[\n   \\hat{x}_{t+1:t+H} = \\hat{x}_{t+1:t+H} \\times \\sqrt{\\sigma + \\epsilon} + \\mu\n   \\]\n   Here, \\( \\hat{x}_{t+1:t+H} \\) is the model's predicted output, \\(\\mu\\) and \\(\\sigma\\) are the mean and standard deviation of the input window, and \\(\\epsilon\\) ensures numerical stability.\n\n\n6. **Loss Function:**\n    - CycleNet defaults to using Mean Squared Error (MSE) as the loss function to ensure fair comparison with other methods, formulated as:\n        - Loss = \\( \\| x_{t+1:t+H} - \\bar{x}_{t+1:t+H} \\|_2^2 \\)\n\n7. **Evaluation Metrics:**\n    - MSE (Mean Squared Error)\n    - MAE (Mean Absolute Error)\n\n8. **Experiment Detail:**\n- We utilized widely used benchmark datasets for LTSF tasks, including the ETT series, Electricity, Solar-Energy, Traffic, and Weather. Following prior works such as Autoformer and iTransformer, we split the ETTs dataset into training, validation, and test sets with a ratio of 6:2:2, while the other datasets were split in a ratio of 7:1:2. \n- We implemented CycleNet using PyTorch and conducted experiments on a single NVIDIA RTX 4090 GPU with 24GB of memory. CycleNet was trained for 30 epochs with early stopping based on a patience of 5 on the validation set. The batch size was set uniformly to 256 for ETTs and the Weather dataset, and 64 for the remaining datasets. This adjustment was made because the latter datasets have a larger number of channels, requiring a relatively smaller batch size to avoid out-of-memory issues. The learning rate was selected from the range {0.002, 0.005, 0.01} based on the performance on the validation set. The hyperparameter W was set consistently to the pre-inferred cycle length. Additionally, the hidden layer size of CycleNet/MLP was uniformly set to 512. By default, CycleNet uses RevIN without learnable affine parameters. However, we found that on the Solar dataset, using RevIN leads to a significant performance drop. The primary reason for this may be that photovoltaic power generation data contains continuous segments of zero values (no power generation at night). When the look-back windows are not an integer multiple of a day, the calculation of means in RevIN can be significantly affected, leading to decreased performance. Therefore, for this dataset, we did not apply the RevIN strategy.",
+      "expected_outcome": "The results are expected to demonstrate that integrating RCF significantly enhances prediction accuracy for both Linear and MLP backbones. The anticipated improvement ranges from 10% to 20% across different forecast horizons, reinforcing the importance of modeling global periodic patterns through the RCF technique. Consistent performance gains across Electricity and Traffic datasets would further validate its effectiveness.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "instance_normalization": "Same instance normalization configuration as used in the CycleNet baseline is applied in all experiments",
+            "other_training_configurations": "All training details (e.g., hyperparameters, optimizer settings) are kept constant across conditions"
+          },
+          "independent_variables": {
+            "backbone": [
+              "Linear",
+              "MLP"
+            ],
+            "RCF_module": [
+              "with_RCF",
+              "without_RCF"
+            ],
+            "dataset": [
+              "Electricity",
+              "Traffic"
+            ],
+            "forecast_horizon": [
+              "96",
+              "192",
+              "336",
+              "720"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": [
+              "MSE",
+              "MAE"
+            ],
+            "percentage_improvement": "Improvement in prediction accuracy computed as the percentage difference when using RCF versus not using it"
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Linear backbone (single-layer)",
+            "MLP backbone (two-layer)",
+            "RCF module integration",
+            "Datasets (Electricity and Traffic)",
+            "Forecast horizon parameter (96, 192, 336, 720)",
+            "Instance normalization configuration (as used in the CycleNet baseline)",
+            "Constant training configurations (hyperparameters, optimizer settings)"
+          ],
+          "setup_steps": [
+            "Prepare and load the Electricity and Traffic datasets",
+            "Configure the experimental conditions by setting up two backbone types (Linear and MLP)",
+            "Integrate the RCF module into one set of experiments while keeping an identical setup for the non-RCF condition",
+            "Apply instance normalization as per the CycleNet baseline details across all conditions",
+            "Run experiments over varied forecast horizons (96, 192, 336, and 720)",
+            "Record and compute performance metrics (MSE and MAE) for each setup",
+            "Calculate the percentage improvement between the RCF and non-RCF conditions",
+            "Analyze the consistency of improvement across the two datasets"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Ablation study design",
+              "description": "Varying multiple independent variables (backbone type, presence of RCF, dataset, forecast horizon) adds layers of complexity in both running the experiments and analyzing the interactions among these variables."
+            }
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Enforce a resource constraint by restricting available compute power\u2014for example, limit GPU memory usage or use a single GPU instance\u2014in order to evaluate whether the RCF integration can still yield 10\u201320% improvement under reduced computational capacity."
+            ],
+            "time_constraints": [
+              "Impose a strict training time limit (such as reducing the number of epochs or forecast horizons) to simulate real-time deployment and assess if the RCF module maintains its performance gains within a tighter time budget."
+            ],
+            "money_constraints": []
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Random training dynamics and initialization",
+          "description": "The training process is subject to inherent randomness\u2014from weight initialization, stochastic gradient descent, and potential random perturbations (e.g., random variations in instance normalization parameters) when integrating the RCF module. These can lead to variability in gradient updates and inconsistency in performance metrics (MSE and MAE) across experiments, especially given different forecast horizons and datasets.",
+          "impact": "This randomness may result in fluctuations in the measured percentage improvements between the RCF and non-RCF setups, potentially obscuring the true impact of RCF integration.",
+          "possible_modifications": [
+            "Vary the random seed across training runs to assess the stability of the observed improvements.",
+            "Introduce controlled perturbations (similar to randomly dropping tokens) in the instance normalization or weight initialization to simulate noise in the training process.",
+            "Analyze the variance in results by running the ablation study multiple times to statistically quantify the effect of random uncertainty on prediction accuracy."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Dataset biases and ambiguous configuration details",
+          "description": "Systematic uncertainties may arise from ambiguous aspects of the experimental setup, such as the exact instance normalization configuration, incomplete details of backbone architectures, and hyperparameter selection process. Additionally, if the datasets (Electricity and Traffic) contain inherent biases or have been modified (e.g., data preprocessing decisions that are not clearly described), this can introduce persistent systematic errors.",
+          "impact": "Such biases can consistently skew the performance metrics in one direction, leading to either overestimated or underestimated improvements from the RCF module. This may compromise the reliability and generalizability of the experimental conclusions across different conditions.",
+          "possible_modifications": [
+            "Evaluate the experiments on additional clean datasets or reprocess the existing datasets to remove potential biases.",
+            "Explicitly test variations in instance normalization parameters or backbone architectural details to determine their individual contributions.",
+            "Conduct controlled experiments where only one systematic factor is varied at a time, ensuring that the reported improvements are genuinely due to the RCF integration."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/scripts/CycleNet/STD/Linear.sh",
+        "/workspace/scripts/CycleNet/Linear-Input-96/electricity.sh",
+        "/workspace/scripts/CycleNet/Linear-Input-96/traffic.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/electricity.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/traffic.sh"
+      ],
+      "usage_instructions": "To evaluate whether the RCF technique enhances prediction accuracy of basic backbones, follow these steps:\n\n1. First, run the Linear model without RCF on Electricity and Traffic datasets:\n   ```\n   # Extract only the Electricity and Traffic parts from the Linear.sh script\n   python -u run.py --is_training 1 --root_path ./dataset/ --data_path electricity.csv --model_id Electricity_96_96 --model Linear --data custom --features M --seq_len 96 --pred_len 96 --enc_in 321 --train_epochs 30 --patience 5 --itr 1 --batch_size 64 --learning_rate 0.01 --random_seed 2024\n   \n   # Repeat for other prediction lengths (192, 336, 720) and for Traffic dataset\n   python -u run.py --is_training 1 --root_path ./dataset/ --data_path traffic.csv --model_id traffic_96_96 --model Linear --data custom --features M --seq_len 96 --pred_len 96 --enc_in 862 --train_epochs 30 --patience 5 --itr 1 --batch_size 64 --learning_rate 0.01 --random_seed 2024\n   ```\n\n2. Next, run the MLP model without RCF on both datasets:\n   ```\n   # For Electricity dataset\n   python -u run.py --is_training 1 --root_path ./dataset/ --data_path electricity.csv --model_id Electricity_96_96 --model RMLP --data custom --features M --seq_len 96 --pred_len 96 --enc_in 321 --d_model 512 --train_epochs 30 --patience 5 --itr 1 --batch_size 64 --learning_rate 0.005 --random_seed 2024\n   \n   # For Traffic dataset\n   python -u run.py --is_training 1 --root_path ./dataset/ --data_path traffic.csv --model_id traffic_96_96 --model RMLP --data custom --features M --seq_len 96 --pred_len 96 --enc_in 862 --d_model 512 --train_epochs 30 --patience 5 --itr 1 --batch_size 64 --learning_rate 0.002 --random_seed 2024\n   \n   # Repeat for other prediction lengths (192, 336, 720)\n   ```\n\n3. Then, run the Linear model with RCF (CycleNet with linear backbone):\n   ```\n   sh scripts/CycleNet/Linear-Input-96/electricity.sh\n   sh scripts/CycleNet/Linear-Input-96/traffic.sh\n   ```\n\n4. Finally, run the MLP model with RCF (CycleNet with MLP backbone):\n   ```\n   sh scripts/CycleNet/MLP-Input-96/electricity.sh\n   sh scripts/CycleNet/MLP-Input-96/traffic.sh\n   ```\n\n5. Compare the MSE and MAE metrics from the outputs to determine the improvement in prediction accuracy when using RCF versus not using it. The results will show whether integrating RCF enhances the prediction accuracy of basic backbones (Linear and MLP) across different forecast horizons (96, 192, 336, 720) on both Electricity and Traffic datasets.",
+      "requirements": [
+        "Step 1: Load and preprocess time series data (electricity or traffic dataset) with standardization (/workspace/data_provider/data_loader.py:234-267)",
+        "Step 2: Split data into train, validation, and test sets (/workspace/data_provider/data_loader.py:247-253)",
+        "Step 3: For each data point, extract the input sequence, target sequence, and cycle index (/workspace/data_provider/data_loader.py:289-302)",
+        "Step 4: For baseline models (Linear/RMLP), implement direct forecasting without cycle information (/workspace/models/Linear.py:6-21, /workspace/models/RMLP.py:6-27)",
+        "Step 5: For CycleNet models, implement the RecurrentCycle module to capture cyclical patterns (/workspace/models/CycleNet.py:4-18)",
+        "Step 6: In CycleNet forward pass, subtract cyclical pattern from input, apply backbone model, then add cyclical pattern to output (/workspace/models/CycleNet.py:45-67)",
+        "Step 7: Train models using MSE loss with early stopping based on validation performance (/workspace/exp/exp_main.py:115-244)",
+        "Step 8: Evaluate models on test data using MSE and MAE metrics (/workspace/exp/exp_main.py:246-348)",
+        "Step 9: Compare performance of baseline models vs. CycleNet models across different prediction horizons (/workspace/exp/exp_main.py:335-342)"
+      ],
+      "agent_instructions": "Your task is to implement a time series forecasting experiment that compares the performance of basic forecasting models with and without the Recurrent Cycle Forecasting (RCF) technique. The experiment should:\n\n1. Implement two baseline forecasting models:\n   - A Linear model that directly maps from input sequence to prediction sequence\n   - An MLP model with one hidden layer and ReLU activation\n\n2. Implement the RCF technique (called CycleNet) that:\n   - Captures cyclical patterns in time series data using a learnable parameter for each time step in the cycle\n   - Can be combined with different backbone models (Linear and MLP in this case)\n   - Works by: (1) subtracting the cyclical pattern from input, (2) applying the backbone model to the residual, and (3) adding back the cyclical pattern to the output\n\n3. Set up an experiment to compare four configurations:\n   - Linear model without RCF\n   - Linear model with RCF (CycleNet with Linear backbone)\n   - MLP model without RCF\n   - MLP model with RCF (CycleNet with MLP backbone)\n\n4. Run the experiment on two datasets:\n   - Electricity consumption dataset (321 variables)\n   - Traffic dataset (862 variables)\n\n5. For each configuration and dataset:\n   - Use an input sequence length of 96\n   - Test different prediction horizons: 96, 192, 336, and 720\n   - Train with early stopping based on validation loss\n   - Evaluate using MSE and MAE metrics\n\nThe goal is to determine whether the RCF technique enhances the prediction accuracy of basic forecasting models across different forecast horizons on both datasets.",
+      "masked_source": [
+        "/workspace/scripts/CycleNet/STD/Linear.sh",
+        "/workspace/scripts/CycleNet/Linear-Input-96/electricity.sh",
+        "/workspace/scripts/CycleNet/Linear-Input-96/traffic.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/electricity.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/traffic.sh"
+      ]
+    }
+  ]
+}

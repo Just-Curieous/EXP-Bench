@@ -1,0 +1,37 @@
+[
+  {
+    "mode": "A",
+    "question": "Using AnomalyCLIP, analyze a set of medical and industrial images to detect and visualize anomalies. Compare the anomaly scores across different images and determine which image contains the most significant anomalies.",
+    "method": "The program should use the pre-trained AnomalyCLIP model to detect anomalies in multiple images. It should generate heatmaps highlighting anomalous regions, calculate anomaly scores for each image, and create a comparison visualization showing both the original images and their corresponding anomaly maps.",
+    "expected_outcome": "A comparison visualization showing the original images alongside their anomaly maps, and a bar chart displaying the anomaly scores for each image. The program should also output a ranked list of images sorted by their anomaly scores.",
+    "source": [
+      "/workspace/test_one_example.py",
+      "/workspace/simple_anomaly_detection.py",
+      "/workspace/compare_anomalies.py"
+    ],
+    "usage_instructions": "1. Load the pre-trained AnomalyCLIP model and checkpoint.\n2. Process each input image through the model to generate anomaly maps.\n3. Calculate an anomaly score for each image based on the model's output.\n4. Create visualizations that overlay the anomaly heatmaps on the original images.\n5. Generate a comparison visualization showing all images and their anomaly maps.\n6. Create a bar chart comparing the anomaly scores across all images.\n7. Output a ranked list of images sorted by their anomaly scores."
+  },
+  {
+    "mode": "A",
+    "question": "Implement a zero-shot anomaly detection system using AnomalyCLIP to identify defects in a new, unseen product image without any domain-specific training.",
+    "method": "The program should use the AnomalyCLIP framework to perform zero-shot anomaly detection on a new product image. It should load the pre-trained model, process the image, generate an anomaly map highlighting potential defects, and calculate an anomaly score.",
+    "expected_outcome": "An anomaly map visualization highlighting potential defects in the input image, along with a quantitative anomaly score indicating the likelihood of anomalies being present.",
+    "source": [
+      "/workspace/test_one_example.py",
+      "/workspace/simple_anomaly_detection.py"
+    ],
+    "usage_instructions": "1. Load the pre-trained AnomalyCLIP model with the provided checkpoint.\n2. Load and preprocess the input image according to the model's requirements.\n3. Use the model to generate text features for normal and anomalous conditions.\n4. Extract image features and compute similarity with the text features.\n5. Generate an anomaly map by combining similarities across different feature layers.\n6. Apply Gaussian filtering to smooth the anomaly map.\n7. Calculate an overall anomaly score for the image.\n8. Create a visualization that overlays the anomaly heatmap on the original image.\n9. Save the visualization and return the anomaly score."
+  },
+  {
+    "mode": "A",
+    "question": "Extend AnomalyCLIP to perform batch processing of multiple images from different domains (industrial and medical) and evaluate which domain the model performs better on based on anomaly detection metrics.",
+    "method": "The program should use AnomalyCLIP to process multiple images from both industrial and medical domains, calculate anomaly scores for each image, and then perform a comparative analysis to determine which domain the model performs better on.",
+    "expected_outcome": "A comprehensive analysis showing anomaly maps for all processed images, domain-specific average anomaly scores, and a conclusion about which domain (industrial or medical) the model performs better on based on the anomaly detection results.",
+    "source": [
+      "/workspace/test_one_example.py",
+      "/workspace/simple_anomaly_detection.py",
+      "/workspace/compare_anomalies.py"
+    ],
+    "usage_instructions": "1. Load the pre-trained AnomalyCLIP model with the provided checkpoint.\n2. Create two lists of images: one for industrial domain (e.g., hazelnut, capsule) and one for medical domain (e.g., brain, skin).\n3. Process each image through the model to generate anomaly maps and scores.\n4. Group the results by domain and calculate average anomaly scores for each domain.\n5. Create visualizations showing the anomaly maps for all images, organized by domain.\n6. Generate comparative visualizations (e.g., box plots or bar charts) showing the distribution of anomaly scores across domains.\n7. Perform a statistical analysis to determine if there's a significant difference in performance between domains.\n8. Output a conclusion about which domain the model performs better on, based on the analysis."
+  }
+]

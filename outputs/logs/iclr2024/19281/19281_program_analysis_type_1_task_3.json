@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Initialize the environment by setting up the necessary configurations and loading the pre-trained model (/workspace/MolGen/generate_ds.py:26-56)",
+    "Step 2: Load the input dataset of natural product molecules from the specified CSV file (/workspace/MolGen/generate_ds.py:101-114)",
+    "Step 3: Generate optimized molecules using the pre-trained model with prompt-based generation (/workspace/MolGen/generate_ds.py:193-237)",
+    "Step 4: Save the generated molecules along with their source molecules to a CSV file (/workspace/MolGen/generate_ds.py:238-251)",
+    "Step 5: Calculate QED scores for both input and generated molecules (/workspace/MolGen/generate_ds.py:262-264)",
+    "Step 6: Analyze and report the top QED scores and corresponding molecules (/workspace/MolGen/generate_ds.py:301-315)",
+    "Step 7: Configure the execution parameters including input/output paths, property to optimize (QED), and generation settings (/workspace/MolGen/generate.sh:1-19)"
+  ],
+  "agent_instructions": "Create a system for optimizing QED (Quantitative Estimate of Drug-likeness) scores of natural product molecules while preserving their structural diversity. The system should:\n\n1. Use a pre-trained molecular generation model (available at '/workspace/moldata/checkpoint/molgen.pkl')\n\n2. Load natural product molecules from a test dataset\n\n3. Generate optimized variants of these molecules using a prompt-based generation approach\n\n4. Calculate QED scores for both input and generated molecules\n\n5. Evaluate structural similarity between original and generated molecules using Tanimoto similarity with Morgan fingerprints\n\n6. Save the results to a CSV file, including the original molecules, generated molecules, and their QED scores\n\n7. Identify and report the top molecules with the highest QED scores\n\nThe implementation should use DeepSpeed for efficient model execution and should support both beam search and top-k sampling strategies for molecule generation. The system should be configurable through command-line arguments to specify input/output paths, generation parameters, and optimization targets.",
+  "masked_source": [
+    "/workspace/MolGen/generate_ds.py",
+    "/workspace/MolGen/generate.sh"
+  ]
+}

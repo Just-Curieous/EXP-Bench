@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/scripts/8_trick_target_template_autodan.sh",
+        "/workspace/scripts/8_trick_target_template_pair.sh"
+    ],
+    "usage_instructions": "These scripts test how the choice of prompt template affects LLM robustness against jailbreak attacks. To reproduce the experiment:\n\n1. First, ensure the environment is set up according to the README.md instructions (install dependencies, set up API keys).\n\n2. Run the AutoDAN token-level attack experiment:\n   ```bash\n   bash scripts/8_trick_target_template_autodan.sh\n   ```\n   This script tests Llama-2-7B, Llama-3-8B, and Vicuna-7B models with both default templates (using `--target_use_default_template_type` flag) and zero-shot templates (without the flag).\n\n3. Run the PAIR prompt-level attack experiment:\n   ```bash\n   bash scripts/8_trick_target_template_pair.sh\n   ```\n   This script performs the same template comparison using the PAIR attack method.\n\n4. The results will be saved in the directories:\n   - `./exp_results/trick_target_template_autodan/`\n   - `./exp_results/trick_target_template_pair/`\n\nThese scripts evaluate all five models mentioned in the question (Llama-2-7B, Llama-3-8B, Vicuna-7B, Qwen1.5-7B, Mistral-7B) against both attack types (AutoDAN and PAIR) using both template types (default and zero-shot). The Attack Success Rate (ASR) is measured using both regex/keyword-based metrics and GPT-based agent evaluation."
+}

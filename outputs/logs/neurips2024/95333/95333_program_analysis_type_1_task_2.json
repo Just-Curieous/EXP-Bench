@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Set up the dataset class for inference that loads image sequences from the specified dataset path (/workspace/submodules/SVDFor3D/inference_svd_test.py:19-252)",
+    "Step 2: Initialize the Stable Video Diffusion model components including feature extractor, image encoder, VAE, and UNet (/workspace/submodules/SVDFor3D/inference_svd_test.py:267-293)",
+    "Step 3: Create the StableVideoDiffusionPipeline with the loaded model components (/workspace/submodules/SVDFor3D/inference_svd_test.py:295-298)",
+    "Step 4: Load the dataset with specified parameters (width, height, number of frames, etc.) (/workspace/submodules/SVDFor3D/inference_svd_test.py:301-310)",
+    "Step 5: Process each batch from the dataloader by converting images to latent space (/workspace/submodules/SVDFor3D/inference_svd_test.py:400-414)",
+    "Step 6: Conditionally incorporate real reference images at the first and last positions of the sequence (/workspace/submodules/SVDFor3D/inference_svd_test.py:192-193)",
+    "Step 7: Generate video frames using the StableVideoDiffusionPipeline with the conditional pixel values (/workspace/submodules/SVDFor3D/inference_svd_test.py:443-451)",
+    "Step 8: Save the generated frames, input frames, and ground truth frames to their respective directories (/workspace/submodules/SVDFor3D/inference_svd_test.py:454-483)",
+    "Step 9: Create an evaluation dataset class that loads generated and ground truth images (/workspace/submodules/SVDFor3D/eval.py:11-41)",
+    "Step 10: Define image processing functions for evaluation (loading, center cropping, etc.) (/workspace/submodules/SVDFor3D/eval.py:47-91)",
+    "Step 11: Define the PSNR metric calculation function (/workspace/submodules/SVDFor3D/eval.py:43-45)",
+    "Step 12: Process each scene and view in the evaluation dataset to calculate PSNR values (/workspace/submodules/SVDFor3D/eval.py:111-141)",
+    "Step 13: Aggregate PSNR results by scene and view, and calculate overall averages (/workspace/submodules/SVDFor3D/eval.py:144-159)",
+    "Final Step: Save the evaluation results to a text file (/workspace/submodules/SVDFor3D/eval.py:161-163)"
+  ],
+  "agent_instructions": "Create a system to evaluate whether incorporating real images as reference views in a 3D scene generation process improves view consistency and reconstruction quality. You'll need to implement two main components:\n\n1. An inference script that:\n   - Takes a scene list, dataset paths, model checkpoint, and output path as inputs\n   - Loads a Stable Video Diffusion model (SVD) with components like feature extractor, image encoder, VAE, and UNet\n   - Creates a dataset loader that processes image sequences from specified paths\n   - Generates video frames using the SVD pipeline\n   - Has the ability to either incorporate or exclude real reference images at the first and last positions of the sequence\n   - Saves the generated frames, input frames, and ground truth frames to specified directories\n\n2. An evaluation script that:\n   - Takes a method name as input (e.g., 'with_real_refs' or 'without_real_refs')\n   - Loads generated images and corresponding ground truth images\n   - Calculates PSNR (Peak Signal-to-Noise Ratio) between generated and ground truth images\n   - Aggregates results by scene and view configuration (3, 6, 9, or 12 views)\n   - Computes average metrics across all scenes and views\n   - Saves the evaluation results to a text file\n\nThe system should be able to run in two modes: one with real reference images incorporated and one without, to compare the impact of using real images as references on the quality of generated views.",
+  "masked_source": [
+    "/workspace/submodules/SVDFor3D/inference_svd_test.py",
+    "/workspace/submodules/SVDFor3D/eval.py"
+  ]
+}

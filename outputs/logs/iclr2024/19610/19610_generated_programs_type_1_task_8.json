@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/tools/dist_test.sh",
+        "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+        "/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py"
+    ],
+    "usage_instructions": "To run the experiments comparing YOLOv8 proposals across different backbones:\n\n1. First, download the YOLOv8 detection results from the Google Drive link mentioned in /workspace/docs/setup.md\n\n2. For experiments WITHOUT YOLOv8 proposals (baseline):\n   - For ResNet-50: ./tools/dist_test.sh projects/configs/topomlp_setA_r50_wo_yolov8.py [CHECKPOINT_PATH] [NUM_GPUS] --eval=bbox\n   - For Swin-B: ./tools/dist_test.sh projects/configs/topomlp_setA_swinb_wo_yolov8.py [CHECKPOINT_PATH] [NUM_GPUS] --eval=bbox\n\n3. For experiments WITH YOLOv8 proposals:\n   - For ResNet-50: ./tools/dist_test.sh projects/configs/topomlp_setA_r50_wo_yolov8.py [CHECKPOINT_PATH] [NUM_GPUS] --eval=bbox --cfg-options data.test.yolov8_file=[PATH_TO_YOLOV8_RESULTS] data.val.yolov8_file=[PATH_TO_YOLOV8_RESULTS]\n   - For Swin-B: ./tools/dist_test.sh projects/configs/topomlp_setA_swinb_wo_yolov8.py [CHECKPOINT_PATH] [NUM_GPUS] --eval=bbox --cfg-options data.test.yolov8_file=[PATH_TO_YOLOV8_RESULTS] data.val.yolov8_file=[PATH_TO_YOLOV8_RESULTS]\n\nThe evaluation will output metrics including DET_l, DET_t, TOP_ll, TOP_lt, and OLS, which can be compared between the with-YOLOv8 and without-YOLOv8 settings across both backbones."
+}

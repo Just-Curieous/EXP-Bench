@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including argparse, gc, pprint, numpy, torch, time, and transformers (/workspace/e2e/benchmark.py:1-10)",
+    "Step 2: Define model configurations to benchmark, specifically the meta-llama/Llama-2-7b-hf model (/workspace/e2e/benchmark.py:12-16)",
+    "Step 3: Set up benchmark parameters including data types to compare (int4 and float16), and number of warmup and benchmark steps (/workspace/e2e/benchmark.py:18-20)",
+    "Step 4: Implement a decorator function that repeats a module execution multiple times and collects timing results (/workspace/e2e/benchmark.py:22-30)",
+    "Step 5: Create a cleanup function to collect garbage and empty CUDA cache (/workspace/e2e/benchmark.py:32-34)",
+    "Step 6: Implement a benchmark function that measures execution time and peak memory usage of a module with warmup steps (/workspace/e2e/benchmark.py:36-55)",
+    "Step 7: Define functions to create quantized and non-quantized LLaMa models with appropriate configurations (/workspace/e2e/benchmark.py:58-83)",
+    "Step 8: Implement a function to run the prefill phase benchmark that processes a batch of random input tokens and measures performance (/workspace/e2e/benchmark.py:86-89)",
+    "Step 9: Implement a function to run the decode phase benchmark that processes prefill tokens first, then measures performance of sequential token generation (/workspace/e2e/benchmark.py:92-105)",
+    "Step 10: Implement a function to run the end-to-end benchmark that measures combined prefill and decode performance (/workspace/e2e/benchmark.py:108-117)",
+    "Step 11: Create a function to run all benchmark phases (prefill, decode, end-to-end) for a given model and collect timing and memory metrics (/workspace/e2e/benchmark.py:124-137)",
+    "Step 12: Implement the main benchmark function that creates both quantized (int4) and FP16 models, runs all benchmarks on them, and compares their performance (/workspace/e2e/benchmark.py:139-176)",
+    "Step 13: Set up command-line argument parsing for batch size, prefill sequence length, and decode steps (/workspace/e2e/benchmark.py:178-196)",
+    "Step 14: Execute the benchmark function with the parsed arguments when the script is run directly (/workspace/e2e/benchmark.py:198-200)",
+    "Final Step: Print detailed performance comparison results including prefill time, decode time, end-to-end time, memory usage, and speedup factors between int4 quantized and FP16 models (/workspace/e2e/benchmark.py:153-174)"
+  ],
+  "agent_instructions": "Your task is to analyze how QuaRot's end-to-end 4-bit quantization affects the prefill and decoding performance of LLaMa-2 models. You need to create a benchmarking script that compares standard FP16 LLaMa-2 models against fully 4-bit quantized models with QuaRot.\n\nThe script should:\n1. Support command-line arguments for batch size, prefill sequence length, and number of decoding steps\n2. Load both a standard FP16 LLaMa-2 model and a 4-bit quantized version using QuaRot\n3. Benchmark three phases: prefill (initial processing of input sequence), decode (sequential token generation), and end-to-end (combined prefill and decode)\n4. Measure and report execution time and peak memory usage for each model type\n5. Calculate and display speedup factors and memory savings for the quantized model compared to the FP16 model\n\nRun the script with batch size 1, prefill sequence length 2048, and 32 decode steps, then analyze the results to determine how QuaRot's 4-bit quantization affects performance."
+}

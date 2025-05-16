@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/create_poisoned_set.py",
+        "/workspace/train_on_poisoned_set.py",
+        "/workspace/other_defense.py"
+    ],
+    "usage_instructions": "To test BaDExpert against adaptive attacks with low-opacity triggers and optimized asymmetric triggers as described in Section 4.4 and Table 5: 1) First, create a poisoned dataset with low-opacity triggers using 'create_poisoned_set.py' with the adaptive_blend attack type and a reduced alpha value (e.g., '-poison_type=adaptive_blend -alpha=0.05'). For the BaDExpert-Adap-BadNet attack, use '-poison_type=adaptive_patch'. 2) Train a model on this poisoned dataset using 'train_on_poisoned_set.py' with the same parameters. 3) Apply the BaDExpert defense using 'other_defense.py -defense=BaDExpert' with the same parameters to evaluate its performance against these adaptive attacks. The scripts will output the key metrics including Attack Success Rate (ASR) and Area Under the ROC Curve (AUROC)."
+}

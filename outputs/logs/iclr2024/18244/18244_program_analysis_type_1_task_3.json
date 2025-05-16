@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments to configure the experiment, including model type (PDF/PatchTST), dataset, sequence length, prediction length, and patching parameters (/workspace/run_longExp.py:10-113)",
+    "Step 2: Set random seeds for reproducibility (/workspace/run_longExp.py:119-123)",
+    "Step 3: Configure GPU settings based on availability and user preferences (/workspace/run_longExp.py:125-131)",
+    "Step 4: Create a unique experiment setting identifier based on model configuration parameters (/workspace/run_longExp.py:141-157)",
+    "Step 5: Initialize the experiment with the configured parameters (/workspace/run_longExp.py:159)",
+    "Step 6: Train the model if is_training flag is set (/workspace/run_longExp.py:138-161)",
+    "Step 7: Evaluate the trained model on test data (/workspace/run_longExp.py:163-164)",
+    "Step 8: Optionally make predictions on future data if do_predict flag is set (/workspace/run_longExp.py:166-168)",
+    "Step 9: Clean up GPU memory after experiment completion (/workspace/run_longExp.py:170)",
+    "Final Step: Store results in appropriate directories (checkpoints, test_results, results) for later analysis (/workspace/run_longExp.py:32)"
+  ],
+  "agent_instructions": "Create a script for running time series forecasting experiments comparing different models (PDF and PatchTST) on multiple datasets (ETTh1, Electricity, and Traffic). The script should:\n\n1. Accept command-line arguments for configuring experiments, including:\n   - Model selection (PDF or PatchTST)\n   - Dataset selection (ETTh1 or custom datasets like Electricity and Traffic)\n   - Input sequence length and prediction length\n   - Model-specific parameters (period, patch length, stride)\n\n2. Set up the experiment environment:\n   - Configure random seeds for reproducibility\n   - Set up GPU usage based on availability\n   - Create unique experiment identifiers based on configuration\n\n3. Implement the main experiment workflow:\n   - Initialize the experiment with configured parameters\n   - Train the model when is_training flag is set\n   - Evaluate the model on test data\n   - Optionally make predictions on future data\n   - Clean up resources after completion\n\n4. Support different patching strategies:\n   - For PDF: period-based patching (with parameters like period=24, patch_len=1, stride=1)\n   - For PatchTST: standard patching (patch_len=16, stride=8) and enhanced patching (patch_len=64, stride=14)\n\n5. Save experiment outputs to appropriate directories:\n   - Trained models to './checkpoints/'\n   - Visualization outputs to './test_results/'\n   - Numerical results to './results/'\n\nThe script should be designed to run multiple configurations sequentially to compare model performance across different prediction horizons (96, 192, 336, 720) on the three datasets.",
+  "masked_source": [
+    "/workspace/run_longExp.py"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Ensembling the outputs of the backdoor expert (B) and the auxiliary model M\u2032, using an exact ensembling decision rule, yields significantly higher detection performance (AUROC) compared to using either B or M\u2032 in isolation\u2014especially in scenarios where the reserved clean set is limited. This is based on observations that while each individual model sustains high AUROC (>95%) when ample clean data is available, their performance diverges as clean sample sizes decrease, with the ensemble consistently approximating or exceeding 99% AUROC.",
+      "method": "Design an experiment on CIFAR10 under a specific backdoor attack scenario (e.g., the Blend attack) by testing three configurations: (a) using only the backdoor expert B, (b) using only the fine-tuned auxiliary model M\u2032, and (c) using an ensemble of both B and M\u2032. For each configuration, vary the reserved clean set size with values such as 200, 400, 1000, and 2000 samples. Follow these steps: 1) Implement each configuration with the exact ensembling decision rule as described in the source (refer to Sec B.2), 2) Run multiple trials for statistical significance, 3) Measure and record the AUROC for backdoor input detection in each case, 4) Compare performance against baseline models (as detailed in Table 8) to analyze if and how the ensemble approach mitigates the degradation seen in M\u2032 when clean samples are limited.",
+      "expected_outcome": "It is expected that while both the backdoor expert B and the auxiliary model M\u2032 alone maintain high AUROC (above 95%) under sufficient clean data, the ensemble method will outperform each component individually\u2014especially as the size of the reserved clean set decreases\u2014by nearly achieving perfect detection (AUROC approaching or exceeding 99%). This outcome would validate that the ensemble approach effectively compensates for the limitations of individual models when clean data is scarce, as supported by the paper\u2019s analysis (see Fig. 5 and Table 8).",
+      "subsection_source": "4.1 S ETUP",
+      "source": [
+        "/workspace/create_clean_set.py",
+        "/workspace/other_defense.py"
+      ],
+      "usage_instructions": "To run the experiment comparing the backdoor expert (B), auxiliary model (M'), and their ensemble on CIFAR10 with varying clean set sizes:\n\n1. First, create clean sets of different sizes (200, 400, 1000, 2000):\n   ```\n   python create_clean_set.py -dataset=cifar10 -clean_budget=200\n   python create_clean_set.py -dataset=cifar10 -clean_budget=400\n   python create_clean_set.py -dataset=cifar10 -clean_budget=1000\n   python create_clean_set.py -dataset=cifar10 -clean_budget=2000\n   ```\n\n2. For each clean set size, run the BaDExpert defense with the Blend attack:\n   ```\n   python other_defense.py -defense=BaDExpert -dataset=cifar10 -poison_type=blend -poison_rate=0.003 -cover_rate=0.003\n   ```\n\n3. The BaDExpert implementation already includes the three configurations needed:\n   - Using only the backdoor expert (B): This is the 'unlearned_output_pred' metric\n   - Using only the auxiliary model (M'): This is the 'shadow_output_pred' metric\n   - Using the ensemble of both: This is the 'triangle' metric (default)\n\n   The results will show AUROC values for each configuration, allowing comparison of detection performance across different clean set sizes.",
+      "requirements": [
+        "Step 1: Load and prepare the dataset specified by the user (e.g., CIFAR10) (/workspace/create_clean_set.py:32-48)",
+        "Step 2: Create directory structure for storing clean and test data splits (/workspace/create_clean_set.py:104-127)",
+        "Step 3: Randomly sample a subset of the test set based on the clean_budget parameter (/workspace/create_clean_set.py:132-136)",
+        "Step 4: Save the sampled clean subset images and labels to disk (/workspace/create_clean_set.py:142-155)",
+        "Step 5: Save the remaining test set images and labels for evaluation (/workspace/create_clean_set.py:158-173)",
+        "Step 6: Load the backdoored model to be defended (/workspace/other_defenses_tool_box/bad_expert_utils.py:680-686)",
+        "Step 7: Create the backdoor expert (B) by unlearning the backdoor pattern using the clean dataset (/workspace/other_defenses_tool_box/bad_expert_utils.py:688-744)",
+        "Step 8: Create the auxiliary model (M') by finetuning the original model on the clean dataset (/workspace/other_defenses_tool_box/bad_expert_utils.py:747-793)",
+        "Step 9: Evaluate both models on clean and backdoored test inputs (/workspace/other_defenses_tool_box/bad_expert.py:186-212, 218-252)",
+        "Step 10: Calculate detection metrics using the outputs from both models (/workspace/other_defenses_tool_box/bad_expert_utils.py:275-361)",
+        "Step 11: Compute and report the detection performance (AUROC) for different detection strategies (/workspace/other_defenses_tool_box/bad_expert_utils.py:257-273)"
+      ],
+      "agent_instructions": "Your task is to implement a backdoor detection system called BaDExpert that uses two models to detect backdoored inputs in neural networks. The system should work with the CIFAR10 dataset and be evaluated with different clean dataset sizes.\n\nFirst, create a script to prepare clean datasets of different sizes (200, 400, 1000, 2000) from the CIFAR10 test set. This script should:\n- Load the CIFAR10 test dataset\n- Randomly sample a subset of specified size (clean_budget)\n- Save both the clean subset and the remaining test data separately for later use\n\nThen, implement the BaDExpert defense that:\n1. Takes a potentially backdoored model and the clean dataset as input\n2. Creates two detector models:\n   - A backdoor expert (B) by training the original model to unlearn the backdoor pattern\n   - An auxiliary model (M') by finetuning the original model on clean data\n3. Implements three detection strategies:\n   - Using only the backdoor expert (B)\n   - Using only the auxiliary model (M')\n   - Using an ensemble of both models (default)\n4. Evaluates detection performance using AUROC and other metrics\n\nThe key insight is that these models respond differently to clean vs. backdoored inputs, and this difference can be used for detection. The system should be evaluated with the Blend attack at a poison rate of 0.003.",
+      "masked_source": [
+        "/workspace/create_clean_set.py",
+        "/workspace/other_defense.py"
+      ]
+    }
+  ]
+}

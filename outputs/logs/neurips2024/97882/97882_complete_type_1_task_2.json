@@ -1,0 +1,37 @@
+{
+  "questions": [
+    {
+      "question": "Do all models effectively predict low frequency modes in long-term predictions while exhibiting increased error divergence for high frequency modes?",
+      "method": "Implement an evaluation procedure that bins the prediction error of each model (including CNextU-net, original U-net, and other baselines) according to frequency components derived from the simulated turbulent_radiative_layer_2D data. For each model, compute error metrics separately for low frequency and high frequency bins over long prediction horizons. Use a consistent frequency binning strategy based on the Fourier decomposition of the predicted state fields. Compare error trends across the frequency bins and across models to assess the stability of low frequency predictions versus high frequency predictions.",
+      "expected_outcome": "The expected observation is that while all models maintain robust prediction performance for low frequency modes over longer time horizons, the prediction error for high frequency modes increases more rapidly, reflecting a divergence in performance when predicting finer details.",
+      "subsection_source": "4.1 Evaluation Metrics",
+      "source": [
+        "/workspace/the_well/benchmark/train.py",
+        "/workspace/the_well/benchmark/metrics/spectral.py"
+      ],
+      "usage_instructions": "To evaluate models based on frequency components for the turbulent_radiative_layer_2D dataset, use the following steps:\n\n1. First, ensure you have trained models (CNextU-net, original U-net, and other baselines) or have access to pre-trained checkpoints.\n\n2. Run the validation script using the train.py with validation_mode=True:\n   ```\n   cd /workspace/the_well/benchmark\n   python train.py experiment=unet_classic server=local data=turbulent_radiative_layer_2D validation_mode=True\n   ```\n\n3. Repeat this for each model you want to evaluate by changing the experiment parameter (e.g., experiment=unet_convnext for CNextU-net).\n\n4. The validation process automatically uses the binned_spectral_mse metric from metrics/spectral.py, which bins the prediction error according to frequency components derived from the Fourier decomposition of the predicted state fields.\n\n5. The results will be logged and visualized, showing error metrics separately for low frequency and high frequency bins over long prediction horizons for each model.\n\nThe spectral.py file contains the implementation of the binned_spectral_mse metric that performs the frequency binning and error calculation. By default, it uses three frequency bins (low, medium, and high) based on a logarithmic spacing from 0 to \u03c0.",
+      "requirements": [
+        "Step 1: Import necessary libraries including torch, numpy, and other required dependencies (/workspace/the_well/benchmark/metrics/spectral.py:1-9)",
+        "Step 2: Implement helper functions for computing N-dimensional FFT and inverse FFT of input tensors (/workspace/the_well/benchmark/metrics/spectral.py:11-38)",
+        "Step 3: Implement power_spectrum function to compute the isotropic power spectrum of input tensor, including binning of frequency components (/workspace/the_well/benchmark/metrics/spectral.py:41-116)",
+        "Step 4: Implement binned_spectral_mse metric class that computes MSE after filtering over wavenumber bins in the Fourier domain (/workspace/the_well/benchmark/metrics/spectral.py:119-188)",
+        "Step 5: Set up default frequency binning using logarithmic spacing from 0 to \u03c0, creating low, medium, and high frequency bins (/workspace/the_well/benchmark/metrics/spectral.py:153-159)",
+        "Step 6: Compute residual power spectrum by comparing prediction and ground truth in frequency domain (/workspace/the_well/benchmark/metrics/spectral.py:160-167)",
+        "Step 7: Calculate mean squared error per frequency bin and normalize by true energy per bin (/workspace/the_well/benchmark/metrics/spectral.py:170-174)",
+        "Step 8: Return dictionary of spectral error metrics for each frequency bin (/workspace/the_well/benchmark/metrics/spectral.py:176-188)",
+        "Step 9: Create training script that can run in validation mode to evaluate models (/workspace/the_well/benchmark/train.py:29-121)",
+        "Step 10: Implement validation function that uses the spectral metrics to evaluate model performance (/workspace/the_well/benchmark/trainer/training.py:504-547)",
+        "Step 11: Set up model loading and configuration for evaluation (/workspace/the_well/benchmark/train.py:58-76)",
+        "Step 12: Process validation results and log metrics separately for different frequency bins (/workspace/the_well/benchmark/trainer/training.py:301-371)"
+      ],
+      "agent_instructions": "Your task is to implement a system for evaluating deep learning models based on their performance across different frequency components in the Fourier domain. This is particularly important for fluid dynamics simulations like the turbulent_radiative_layer_2D dataset.\n\nYou need to create:\n\n1. A spectral analysis module that can:\n   - Compute the Fourier transform of prediction and ground truth tensors\n   - Bin frequency components into low, medium, and high frequency ranges using logarithmic spacing\n   - Calculate error metrics (MSE) for each frequency bin\n   - Return these metrics in a structured format\n\n2. A validation system that:\n   - Loads pre-trained models (like U-Net variants)\n   - Runs predictions on validation data\n   - Applies the spectral analysis to compare predictions with ground truth\n   - Reports performance metrics separately for each frequency bin\n\nThe goal is to analyze how different model architectures perform at capturing different frequency components of the solution, with particular attention to how well they handle high-frequency components that are typically more difficult to predict accurately.\n\nThe system should support running in a validation-only mode that evaluates models without training them further.",
+      "masked_source": [
+        "/workspace/the_well/benchmark/train.py",
+        "/workspace/the_well/benchmark/metrics/spectral.py",
+        "/workspace/the_well/benchmark/trainer/training.py",
+        "/workspace/the_well/benchmark/models/unet_classic/__init__.py",
+        "/workspace/the_well/benchmark/models/unet_convnext/__init__.py"
+      ]
+    }
+  ]
+}

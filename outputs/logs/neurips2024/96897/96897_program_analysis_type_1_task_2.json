@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Create an entry point script that imports and calls the run_exp function (/workspace/llama-alpaca/src/train_bash.py:1-14)",
+    "Step 2: Parse command line arguments including model, data, training, finetuning, and generation parameters (/workspace/llama-alpaca/src/llmtuner/tuner/tune.py:19-20)",
+    "Step 3: Based on the 'stage' argument, call the appropriate training function (SFT in this case) (/workspace/llama-alpaca/src/llmtuner/tuner/tune.py:23-34)",
+    "Step 4: Load the dataset and preprocess it for training (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:30-36)",
+    "Step 5: Load the model and tokenizer based on the specified model name (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:34)",
+    "Step 6: Create a trainer with the appropriate optimization method based on finetuning_type (full, lora, or block) (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:51-59)",
+    "Step 7: For block-wise optimization (BAdam), implement a custom optimizer that updates only a subset of parameters at each step (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:60-337)",
+    "Step 8: In the BlockOptimizer, maintain a list of parameter blocks and switch between them based on the specified strategy (random, ascending, descending) (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:251-336)",
+    "Step 9: Implement the optimizer step method to update only the active parameters and switch blocks periodically (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:212-224)",
+    "Step 10: In the trainer, create the appropriate optimizer based on the finetuning_type argument (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:192-247)",
+    "Step 11: Train the model using the selected optimization method and track metrics (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:69-77)",
+    "Final Step: Save the trained model and optionally plot the training loss (/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py:75-77)"
+  ],
+  "agent_instructions": "Your task is to implement a script for fine-tuning large language models (LLMs) with different optimization methods to compare their memory efficiency. The script should support three optimization approaches:\n\n1. Full parameter optimization (Adam): Traditional fine-tuning that updates all model parameters simultaneously, which requires significant GPU memory.\n\n2. Parameter-efficient fine-tuning (LoRA): A method that only updates a small set of additional adapter parameters while keeping the base model frozen.\n\n3. Block-wise optimization (BAdam): A novel approach that divides model parameters into blocks and only updates one block at a time, significantly reducing memory usage while still allowing full model fine-tuning.\n\nThe script should:\n- Accept command-line arguments for model name, dataset, output directory, batch size, learning rate, etc.\n- Support different fine-tuning types (full, lora, block) via a command-line argument\n- For block-wise optimization, implement a mechanism to switch between different parameter blocks during training\n- Support different block switching strategies (random, ascending, descending)\n- Track and report training metrics\n- Save the trained model\n\nThe implementation should be compatible with the Hugging Face Transformers library and should work with LLaMA models. The goal is to demonstrate that block-wise optimization (BAdam) can achieve similar results to full fine-tuning while using significantly less memory.",
+  "masked_source": [
+    "/workspace/llama-alpaca/src/train_bash.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/tune.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py"
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "questions": [
+    {
+      "question": "Does Buffer of Thoughts (BoT) outperform existing prompting methods including standard prompting (GPT-4), Single-Query prompting (e.g., GPT-CoT), and Multi-Query reasoning (e.g., ToT) on math-oriented game tasks such as Game of 24, Geometric Shapes, and Multi-Step Arithmetic Two?",
+      "method": "#### Experiment Components\n\n- **Base Model**:\n  - GPT-4 (used as the unified base model across all methods for consistency and controlled comparison)\n- **Methods Compared**:\n  - **Standard Prompting**: Direct response generation from input query\n  - **Single-Query Prompting**: GPT-4 + Chain-of-Thought (CoT)\n  - **Multi-Query Prompting**: Tree of Thoughts (ToT) with intermediate reasoning path expansion\n  - **Buffer of Thoughts (BoT)**: Thought-augmented reasoning with dynamic template retrieval and instantiation\n- **Task Datasets**:\n  - **Game of 24**: Generate a valid expression using 4 given numbers to evaluate exactly to 24.\n  - **Geometric Shapes**: Deductive reasoning about shape relationships and constraints.\n  - **Multi-Step Arithmetic Two**: BBH subset requiring multi-hop computation and logic.\n- **Evaluation Metrics**:\n  - **Task Success Score (0\u2013100)**: Percentage of correct solutions across sampled problems.\n  - Optional: **Inference Efficiency** (time per instance) and **Success Rate** under variation, following the paper.\n- **Tools & Frameworks**:\n  - Use [BoT GitHub Repository](https://github.com/YangLing0818/buffer-of-thought-llm)\n  - BoT modules:\n    - `Problem Distiller`: Extracts structured task info\n    - `Meta-Buffer`: Contains reusable, high-level templates\n    - `Template Instantiator`: Generates task-specific reasoning structure\n    - `Buffer Manager`: Dynamically updates templates based on new examples\n- **Template Retrieval**:\n  - Ensure meta-buffer includes reusable templates for:\n    - Arithmetic reasoning (e.g., expression generation)\n    - Symbolic reasoning (e.g., geometric constraint logic)\n  - Templates should be selected based on embedding similarity and instantiated per-task.\n\n#### Independent Variables\n\n- **Prompting Strategy**:\n  - Standard GPT-4 (zero-shot)\n  - CoT-enhanced GPT-4 (single-shot)\n  - GPT-4 + Tree-of-Thoughts (multi-query)\n  - GPT-4 + BoT (thought-augmented with meta-buffer)\n\n#### Reproduction Steps\n\n1. **Environment Setup**:\n   - Access GPT-4 API.\n   - Clone the BoT repo and set up necessary Python dependencies.\n   - Download or initialize the `meta-buffer` with arithmetic and symbolic reasoning templates.\n2. **Prompting Baselines**:\n   - Re-implement or reuse existing prompt scripts for:\n     - Standard (zero-shot) prompting\n     - CoT (e.g., \u201cLet\u2019s think step by step\u201d)\n     - ToT (recursive path evaluation and voting)\n3. **BoT-Specific Configuration**:\n   - Load or curate meta-buffer templates.\n   - Run `Problem Distiller` on each task instance to extract high-level structure.\n   - Instantiate reasoning using selected templates and run reasoning step.\n4. **Evaluation Protocol**:\n   - For each method, evaluate on a shared test set:\n     - **100\u2013500 samples per task**\n     - Ensure deterministic settings for repeated runs (e.g., temperature = 0.0)\n   - Compare task-wise average scores.",
+      "expected_outcome": "Result should look similar to the table 1 in the paper\n\n| task                      | Standard GPT4 | GPT4+CoT | GPT4+ToT | BoT  |\n| ------------------------- | ------------- | -------- | -------- | ---- |\n| Game of 24                | 3.0           | 11.0     | 74.0     | 82.4 |\n| Geometric Shapes          | 52.6          | 69.2     | 56.8     | 93.6 |\n| Multi-Step Arithmetic Two | 84.0          | 83.2     | 88.2     | 99.8 |",
+      "design_complexity": {
+        "constant_variables": {
+          "base_model": "GPT-4 used uniformly across all methods",
+          "task_datasets": [
+            "Game of 24",
+            "Geometric Shapes",
+            "Multi-Step Arithmetic Two"
+          ],
+          "evaluation_metrics": [
+            "Task Success Score (0\u2013100)",
+            "Optional: Inference Efficiency (time per instance)"
+          ]
+        },
+        "independent_variables": {
+          "prompting_strategy": [
+            "Standard GPT-4 (zero-shot prompting)",
+            "CoT-enhanced GPT-4 (single-query prompting)",
+            "GPT-4 + Tree-of-Thoughts (multi-query prompting)",
+            "GPT-4 + Buffer of Thoughts (BoT)"
+          ]
+        },
+        "dependent_variables": {
+          "performance_scores": "Measured as task-wise success percentages, comparable to Table 1 results",
+          "inference_time": "Average inference time per instance (in seconds) where applicable"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "meta_buffer_configuration": "How the meta-buffer is initialized, updated, and exactly curated (template selection criteria using embedding similarity) is not explicitly detailed",
+          "template_instantiation_details": "The process of instantiating and adapting high-level reasoning templates to specific tasks is not fully specified",
+          "environmental_settings": "Some settings such as temperature, deterministic conditions, and GPU/compute specifications are implied but not fully enumerated"
+        },
+        "possible_modifications": {
+          "modification_meta_buffer": [
+            "Mask details of meta-buffer retrieval to study its impact on performance",
+            "Propose alternative logging of template updates"
+          ],
+          "modification_template_instantiation": [
+            "Introduce additional variables for different template instantiation strategies",
+            "Imply the need for experimenting with different levels of template granularity"
+          ],
+          "modification_environment": [
+            "Vary settings like temperature or compute environment to observe changes in inference efficiency"
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "GPT-4 as the unified base model",
+          "Multiple prompting methods: Standard (zero-shot), CoT-enhanced (single-query), Tree-of-Thoughts (multi-query), and Buffer of Thoughts (BoT)",
+          "Task datasets: Game of 24, Geometric Shapes, Multi-Step Arithmetic Two",
+          "BoT modules: Problem Distiller, Meta-Buffer, Template Instantiator, Buffer Manager",
+          "Evaluation metrics: Task Success Score and optional inference efficiency (time per instance)",
+          "Tools & frameworks: BoT GitHub repository and required Python dependencies"
+        ],
+        "setup_steps": [
+          "Environment Setup: Access GPT-4 API, clone the BoT repository, install necessary Python dependencies, and initialize/download the meta-buffer with the arithmetic and symbolic reasoning templates",
+          "Implementation of Prompting Baselines: Re-implement or reuse existing scripts for standard prompting, CoT prompting (e.g., 'Let's think step by step'), and ToT (recursive path evaluation and voting)",
+          "BoT-Specific Configuration: Load and curate meta-buffer templates, execute the Problem Distiller to extract structured task info, and instantiate the reasoning process using the Template Instantiator",
+          "Evaluation Protocol: Run each method on a shared test set (100\u2013500 samples per task) under deterministic conditions (e.g., temperature = 0.0) and compare results such as average success scores and inference time"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Dynamic Template Retrieval",
+            "description": "The BoT method involves a complex process of selecting and instantiating high-level reasoning templates based on embedding similarity, which introduces additional computational overhead as shown in Figure 10 (ablation study on buffer-manager)."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Meta-buffer Configuration: The process for initializing, updating, and curating the meta-buffer (including the criteria for template retrieval using embedding similarity) is not thoroughly specified.",
+          "Template Instantiation Details: The method for instantiating high-level templates and adapting them to specific task instances lacks explicit guidelines.",
+          "Environmental Settings: Details like temperature, deterministic conditions, and GPU/compute specifications are implied but not exhaustively enumerated."
+        ],
+        "ambiguous_setup_steps": [
+          "Initialization and update process for the meta-buffer: While it is stated that reusable templates are to be used, the exact selection and updating mechanisms are unclear.",
+          "Adaptation process in template instantiation: The specific steps to dynamically instantiate and adapt templates across different tasks are not fully detailed.",
+          "Configuration of evaluation conditions: Some environmental variables (e.g., temperature settings, exact hardware configurations) are mentioned implicitly, leading to potential ambiguity in reproducing the setup."
+        ],
+        "possible_modifications": {
+          "modification_meta_buffer": [
+            "Mask details on the meta-buffer retrieval mechanism to study its isolated impact on performance.",
+            "Omit the explicit template selection criteria so that users need to infer or experiment with their own methods."
+          ],
+          "modification_template_instantiation": [
+            "Remove detailed instructions on instantiating templates, forcing users to implement a variety of template adaptation strategies.",
+            "Introduce a variable level of template granularity as an experimental parameter."
+          ],
+          "modification_environment": [
+            "Vary environmental settings such as temperature or hardware configuration to assess changes in inference efficiency.",
+            "Simplify or mask deterministic setup details, requiring users to define their own reproducible settings."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Enforce performance parity with a smaller model (e.g., using GPT-4o-mini instead of GPT-4) to reduce resource requirements."
+          ],
+          "time_constraints": [
+            "Limit the maximum inference time per instance by setting an upper bound based on the efficiency observed in Figure 10 (e.g., ensuring that the average inference time remains below the current observed threshold)."
+          ],
+          "money_constraints": [
+            "Constrain budget by reducing API usage or choosing lower-cost compute alternatives, which may necessitate adjustments to experiment setup."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Random token dropping during preprocessing or reasoning steps",
+        "description": "Modifying established methods (such as the known token dropping technique to reduce pre-training costs) by dropping tokens at random instead of based on specific criteria introduces randomness. This can lead to instability during gradient updates and variation in prediction accuracy, affecting the performance measurements of methods (e.g., success scores in Game of 24, Geometric Shapes, and Multi-Step Arithmetic Two).",
+        "impact": "Leads to inconsistent reasoning chains, unstable training dynamics, and variability in task success scores and potentially inference efficiency. Such randomness may obscure the true performance benefits of the Buffer of Thoughts compared to standard prompting approaches.",
+        "possible_modifications": [
+          "Implement controlled random token dropping with adjustable drop rates to analyze its impact on model stability and task outcomes.",
+          "Run multiple experimental replicates with different random seeds or token drop configurations to statistically capture the variability induced by random token omissions."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Systematic dataset modification leading to bias",
+        "description": "Introducing a one-time modification in the dataset\u2014for example, consistently mislabeling or altering problem instances (such as converting all tasks with certain characteristics to have a fixed challenging label)\u2014creates a systematic bias. This corruption consistently skews the performance evaluation across all methods, including BoT and other prompting strategies.",
+        "impact": "Results in consistently biased success scores and inference times, as the evaluation does not reflect the scenario in a clean setting. Bias introduced in datasets could favor or penalize certain methods, thus impacting the perceived robustness of the method under study.",
+        "possible_modifications": [
+          "Introduce a known systematic bias in the dataset (e.g., mislabel tasks based on arbitrary criteria such as task length or specific attribute thresholds) to examine how each prompting approach reacts to biased training data.",
+          "Compare evaluations using both the biased dataset and a clean version to quantify the extent of systematic uncertainty and its effects on overall performance metrics."
+        ]
+      },
+      "source": [
+        "/workspace/run_benchmarks.py",
+        "/workspace/validate_results.py"
+      ],
+      "usage_instructions": "1. Run the BoT method on the Game of 24, Geometric Shapes, and Multi-Step Arithmetic Two tasks using run_benchmarks.py with your OpenAI API key. For example: `python run_benchmarks.py --task_name 'gameof24' --api_key 'your_api_key' --model_id 'gpt-4o'`. 2. Repeat this for each task (gameof24 is already included, but you'll need to run similar commands for the other tasks - note that 'Geometric Shapes' and 'Multi-Step Arithmetic Two' are not directly available in the current repository version but would follow the same pattern). 3. After running the experiments, validate the results using validate_results.py. For example: `python validate_results.py --task_name 'gameof24' --test_path 'test_results/BoT_gameof24_timestamp.jsonl'`. 4. Compare the results with the baseline methods (Standard GPT-4, GPT-4+CoT, GPT-4+ToT) as shown in Table 1 of the paper.",
+      "requirements": [
+        "Step 1: Install the required Python packages: transformers, torch, accelerate, sympy, chess, and openai (run_benchmarks.py:1-2, bot_pipeline.py:1-9)",
+        "Step 2: Ensure you have an OpenAI API key for accessing the GPT models (run_benchmarks.py:9)",
+        "Step 3: Create a directory named 'test_results' to store the experiment outputs if it doesn't exist already (run_benchmarks.py:35-37)",
+        "Step 4: Prepare the benchmark datasets for the tasks: Game of 24, Checkmate in One, and Word Sorting. Each dataset should be in JSONL format with 'input' and 'target' fields (run_benchmarks.py:44-48, validate_results.py:11-15)",
+        "Step 5: Ensure the 'math.txt' file is present, which contains thought templates for the meta buffer (bot_pipeline.py:83-84)",
+        "Step 6: Run the BoT method on the Game of 24 task using the command: python run_benchmarks.py --task_name 'gameof24' --api_key 'your_api_key' --model_id 'gpt-4o' (run_benchmarks.py:28-75)",
+        "Step 7: The script will process each problem in the benchmark dataset, apply the BoT method, and save the results to a JSONL file in the 'test_results' directory with a timestamp (run_benchmarks.py:67-75)",
+        "Step 8: Repeat Step 6 for the other tasks by changing the task_name parameter to 'checkmate' and 'wordsorting' (run_benchmarks.py:8)",
+        "Step 9: After running all experiments, validate the results using the validate_results.py script for each task. For example: python validate_results.py --task_name 'gameof24' --test_path 'test_results/BoT_gameof24_timestamp.jsonl' (validate_results.py:4-45)",
+        "Step 10: The validation script will calculate and display the accuracy of the BoT method on each task (validate_results.py:41-45)",
+        "Final Step: Compare the results with baseline methods (Standard GPT-4, GPT-4+CoT, GPT-4+ToT) as mentioned in Table 1 of the paper to evaluate the performance of the BoT method (usage_instructions)"
+      ],
+      "agent_instructions": "You need to reproduce an experiment from a research paper that evaluates a method called BoT (Buffer of Thoughts) on reasoning tasks. First, examine the provided scripts to understand how the BoT method works and what tasks it's being evaluated on. Then, set up the necessary environment and run the experiments on the specified tasks using the OpenAI API. Finally, validate the results and compare them with baseline methods mentioned in the paper. The main scripts are run_benchmarks.py for running the experiments and validate_results.py for validating the results.",
+      "masked_source": [
+        "/workspace/run_benchmarks.py",
+        "/workspace/validate_results.py"
+      ]
+    }
+  ]
+}

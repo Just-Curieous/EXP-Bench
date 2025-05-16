@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/scripts/3_trick_atk_suffix_length.sh"],
+    "usage_instructions": "1. Execute the script `/workspace/scripts/3_trick_atk_suffix_length.sh` which runs the GCG attack with different suffix lengths (10, 20, 30, 40, 50, 60, 70, 80, 90, 100) against Llama-2-7b-chat-hf model. The script uses the harmful_bench_50.csv dataset and includes agent evaluation to calculate both ASRPrefix and ASRAgent metrics.\n2. After the experiment completes, run `python /workspace/analysis/report_trick.py --exp debug` to analyze the results, which will show the ASR percentages for each suffix length, allowing you to observe the saturation point."
+}

@@ -1,0 +1,27 @@
+{
+  "questions": [
+    {
+      "question": "Does the smooth reliability diagram (implemented via kernel smoothing with an automatic bandwidth selection, as provided by relplot's default settings) effectively capture non-monotonic conditional probability behavior compared to the binned reliability diagram (accessible via relplot.rel_diagram_binned) on synthetic datasets, particularly in terms of representing oscillatory patterns accurately as seen in Figure 2(d)?",
+      "method": "Create a synthetic dataset with 1,000 samples where each prediction fi is uniformly drawn from the interval [0, 1]. Define a deliberately non-monotonic true conditional probability function, for example E[yi | fi] = 0.5 + 0.4 * sin(2\u03c0 * fi), to simulate oscillatory behavior. Then, generate two types of reliability diagrams: (i) a binned reliability diagram using relplot.rel_diagram_binned, with the number of bins chosen via cross-validation optimized for regression test MSE, and (ii) a smooth reliability diagram using relplot.rel_diagram (which applies kernel smoothing with a Gaussian kernel using an automatically selected bandwidth), and compute bootstrapped confidence bands around the estimated conditional probabilities. Quantitatively assess each method by calculating metrics such as bias and mean squared error (MSE) between the estimated conditional probabilities and the true function. Use these metrics to support conclusions regarding each diagram's ability to capture non-monotonic (oscillatory) behavior. The approach aligns with the methodologies demonstrated in the relplot package for generating and evaluating reliability diagrams.",
+      "expected_outcome": "The smooth reliability diagram is expected to trace the underlying non-monotonic (oscillatory) pattern more precisely while providing reliable confidence bands that reflect uncertainty, whereas the binned reliability diagram may oversmooth or misrepresent the oscillatory pattern due to its rigid bin boundaries. Quantitatively, the smooth diagram should exhibit lower bias and MSE compared to the binned diagram in estimating the true conditional probability function.",
+      "subsection_source": "4 EXPERIMENTS",
+      "source": [
+        "/workspace/notebooks/demo.ipynb"
+      ],
+      "usage_instructions": "Execute the demo.ipynb notebook which demonstrates the comparison between smooth and binned reliability diagrams on a synthetic dataset with oscillatory behavior. The notebook creates a synthetic dataset with 10,000 samples where predictions f are uniformly drawn from [0,1], and the true conditional probability function E[y|f] = f + 0.2*sin(2*pi*f) exhibits oscillatory behavior. The notebook then generates both a smooth reliability diagram using relplot.rel_diagram (which uses kernel smoothing with automatic bandwidth selection) and a binned reliability diagram using relplot.rel_diagram_binned. The comparison allows you to visually assess how well each method captures the non-monotonic oscillatory pattern in the data.",
+      "requirements": [
+        "Step 1: Import necessary libraries including matplotlib, numpy, and the relplot package (/workspace/notebooks/demo.ipynb:7-11)",
+        "Step 2: Configure the visualization settings by setting the use_tex_fonts parameter to False (/workspace/notebooks/demo.ipynb:11)",
+        "Step 3: Generate a synthetic dataset with 10,000 samples where predictions f are uniformly drawn from [0,1] (/workspace/notebooks/demo.ipynb:14-15)",
+        "Step 4: Create binary labels y where the true conditional probability function E[y|f] = f + 0.2*sin(2*pi*f) exhibits oscillatory behavior (/workspace/notebooks/demo.ipynb:16)",
+        "Step 5: Calculate and print the calibration error using the smooth calibration error metric (smECE) (/workspace/notebooks/demo.ipynb:19)",
+        "Step 6: Generate and display a smooth reliability diagram using kernel smoothing with automatic bandwidth selection (/workspace/notebooks/demo.ipynb:20)",
+        "Step 7: Generate and display a binned reliability diagram for comparison (/workspace/notebooks/demo.ipynb:21)"
+      ],
+      "agent_instructions": "Create a demonstration that compares smooth and binned reliability diagrams on a synthetic dataset with oscillatory behavior. The demonstration should:\n\n1. Generate a synthetic dataset with 10,000 samples where predictions are uniformly drawn from [0,1], and the true conditional probability function E[y|f] = f + 0.2*sin(2*pi*f) exhibits oscillatory behavior.\n\n2. Calculate and display the calibration error of this synthetic dataset.\n\n3. Create and display two types of reliability diagrams:\n   - A smooth reliability diagram using kernel smoothing with automatic bandwidth selection\n   - A traditional binned reliability diagram\n\n4. The visualization should allow for visual comparison of how well each method captures the non-monotonic oscillatory pattern in the data.\n\nYou'll need to use the relplot package which provides functions for creating both types of reliability diagrams and calculating calibration error metrics.",
+      "masked_source": [
+        "/workspace/notebooks/demo.ipynb"
+      ]
+    }
+  ]
+}

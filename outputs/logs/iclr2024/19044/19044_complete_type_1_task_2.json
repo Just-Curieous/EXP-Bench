@@ -1,0 +1,101 @@
+{
+  "questions": [
+    {
+      "question": "- **Does linearly combining individually trained weights for different shot types enhance the overall composition quality in generated animations?**",
+      "method": "1. **Task Setup:**\n   - **Goal:** Evaluate if linearly combining MotionLoRA weights improves composition quality.\n   - **Key Difference Between Methods:**\n     - **Baseline:** Standard AnimateDiff animation.\n     - **Experimental:** AnimateDiff + linearly combined MotionLoRA weights for shot type control.\n\n2. **Experimental Design:**\n   - Use the **same personalized T2I models** from Civitai.\n   - Configure two setups: one without shot control, one with MotionLoRA-based shot control (via linear combination).\n   - Evaluate animations using **AUR, CLIP**, and qualitative inspection.\n\n3. **Control Parameters:**\n   - Tune the **scaling factor \u03b1** (Eq. 4 in the paper) to control weight blending.",
+      "expected_outcome": "- Composition quality is expected to improve as seen in **Figure 4**, with better shot control and frame layout.",
+      "experiment_design_complexity": {
+        "constant_variables": {
+          "base_framework": "AnimateDiff with Stable Diffusion V1.5 and pre-trained motion module",
+          "input_data": "Same personalized T2I models and prompts"
+        },
+        "independent_variables": {
+          "animation_configuration": [
+            "Standard AnimateDiff",
+            "AnimateDiff + combined MotionLoRA weights"
+          ],
+          "scaling_factor_alpha": "Controls weight influence"
+        },
+        "dependent_variables": {
+          "composition_quality": "Visual inspection, AUR, and CLIP domain similarity",
+          "motion_smoothness": "User study ranking"
+        }
+      },
+      "experiment_design_ambiguity": {
+        "ambiguous_variables": {
+          "diverse_personalized_models": "Selection criteria for T2I models not fully detailed",
+          "scaling_factor_alpha_values": "No fixed \u03b1 range given",
+          "quantitative_metric_thresholds": "Statistical significance thresholds unclear"
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "AnimateDiff + SD V1.5",
+          "MotionLoRA weights",
+          "Scaling factor \u03b1",
+          "CLIP & AUR evaluation tools"
+        ],
+        "setup_steps": [
+          "Integrate AnimateDiff and MotionLoRA",
+          "Select T2I models across domains",
+          "Generate animations with and without weight combination",
+          "Tune \u03b1 for blending control",
+          "Compare results visually and quantitatively"
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Selection protocol for T2I models",
+          "Scaling factor \u03b1 implementation"
+        ],
+        "ambiguous_setup_steps": [
+          "Precise execution of weight combination not fully defined",
+          "Model selection process unspecified"
+        ]
+      },
+      "experiment_uncertainty": {
+        "random_uncertainty": {
+          "source": "Gradient instability when combining weights",
+          "impact": "Inconsistent animation quality across trials",
+          "possible_modifications": [
+            "Fix \u03b1 values",
+            "Use seed control",
+            "Aggregate results across \u03b1 values"
+          ]
+        },
+        "systematic_uncertainty": {
+          "source": "Unclear model selection and parameter specification",
+          "impact": "Biases in animation quality assessment",
+          "possible_modifications": [
+            "Define model sampling protocol",
+            "Fix \u03b1 test range",
+            "Refine metric thresholds"
+          ]
+        }
+      },
+      "source": [
+        "/workspace/scripts/animate.py"
+      ],
+      "usage_instructions": "Execute the animate.py script with a configuration file that specifies multiple MotionLoRA weights with their respective alpha values: python -m scripts.animate --config /path/to/config.yaml. You can create a configuration file similar to the example below:\n\n```yaml\n- inference_config: \"configs/inference/inference-v2.yaml\"\n  motion_module: \"models/Motion_Module/mm_sd_v15_v2.ckpt\"\n\n  motion_module_lora_configs:\n    - path: \"models/MotionLoRA/v2_lora_ZoomIn.ckpt\"\n      alpha: 0.5\n    - path: \"models/MotionLoRA/v2_lora_PanLeft.ckpt\"\n      alpha: 0.5\n\n  dreambooth_path: \"models/DreamBooth_LoRA/realisticVisionV60B1_v51VAE.safetensors\"\n  lora_model_path: \"\"\n\n  seed: 43242532350557906\n  steps: 25\n  guidance_scale: 7.5\n\n  prompt:\n    - \"your prompt here\"\n\n  n_prompt:\n    - \"negative prompt here\"\n```\n\nThe alpha values control the scaling factor for each MotionLoRA weight, allowing you to linearly combine them for better composition quality.",
+      "requirements": [
+        "Step 1: Set up the Python environment with the required dependencies including torch, diffusers, transformers, and other libraries needed for the AnimateDiff project (/workspace/scripts/animate.py:1-29)",
+        "Step 2: Create a configuration YAML file that specifies the inference parameters, including the path to the inference configuration file, motion module checkpoint, and multiple MotionLoRA weights with their respective alpha values (/workspace/scripts/animate.py:40-54)",
+        "Step 3: Load the tokenizer, text encoder, and VAE models from the pretrained model path (/workspace/scripts/animate.py:44-46)",
+        "Step 4: Load the UNet model with the specified inference configuration (/workspace/scripts/animate.py:55)",
+        "Step 5: Load the motion module checkpoint specified in the configuration file (/workspace/scripts/animate.py:127-130)",
+        "Step 6: Load multiple MotionLoRA weights with their respective alpha values as specified in the configuration file (/workspace/scripts/animate.py:172-182)",
+        "Step 7: Load any additional models specified in the configuration, such as DreamBooth models or LoRA models (/workspace/scripts/animate.py:124-158)",
+        "Step 8: Process the text prompts and negative prompts from the configuration file (/workspace/scripts/animate.py:141-142)",
+        "Step 9: Set the random seed for reproducibility if specified in the configuration (/workspace/scripts/animate.py:144-154)",
+        "Step 10: Generate the animation using the AnimationPipeline with the specified parameters such as guidance scale, number of inference steps, width, height, and video length (/workspace/scripts/animate.py:158-169)",
+        "Step 11: Save the generated animation as a GIF file in the samples directory (/workspace/scripts/animate.py:173-174)",
+        "Step 12: Save the combined samples as a grid in a single GIF file (/workspace/scripts/animate.py:178-179)",
+        "Final Step: Save the configuration used for the generation for reproducibility (/workspace/scripts/animate.py:181)"
+      ],
+      "agent_instructions": "Your task is to understand and reproduce an experiment from the AnimateDiff project, which allows for generating animations using text-to-image diffusion models. You need to analyze the animate.py script and create a configuration file that specifies multiple MotionLoRA weights with their respective alpha values. The configuration file should include paths to the inference configuration, motion module checkpoint, MotionLoRA weights, DreamBooth model, and other parameters like seed, steps, guidance scale, and prompts. Then, you need to run the animate.py script with this configuration to generate animations that combine different motion patterns based on the alpha values of the MotionLoRA weights.",
+      "masked_source": [
+        "/workspace/scripts/animate.py"
+      ]
+    }
+  ]
+}

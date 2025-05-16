@@ -1,0 +1,12 @@
+{
+    "source": [
+        "/workspace/run_comparison.sh",
+        "/workspace/scripts/CycleNet/Linear-Input-96/etth1.sh",
+        "/workspace/scripts/CycleNet/Linear-Input-96/etth2.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/etth1.sh",
+        "/workspace/scripts/CycleNet/MLP-Input-96/etth2.sh",
+        "/workspace/scripts/iTransformer/etth1.sh",
+        "/workspace/scripts/iTransformer/etth2.sh"
+    ],
+    "usage_instructions": "1. Make sure you have the ETTh1.csv and ETTh2.csv datasets in the ./dataset/ directory.\n2. Execute the run_comparison.sh script by running 'sh run_comparison.sh' in the terminal.\n3. This script will run CycleNet with both Linear and MLP backbones, as well as iTransformer on ETTh1 and ETTh2 datasets with forecast horizons of 96, 192, 336, and 720.\n4. The results will be saved in the checkpoints directory and printed to the console, showing MSE and MAE metrics for each model and forecast horizon.\n5. Compare the performance metrics to determine if CycleNet with RCF technique outperforms iTransformer on these forecasting tasks."
+}

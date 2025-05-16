@@ -1,0 +1,31 @@
+{
+  "requirements": [
+    "Step 1: Define a prompt learner class that manages text prompts for normal and anomalous states of objects (/workspace/prompt_ensemble.py:85-264)",
+    "Step 2: Initialize the prompt learner with configurable parameters for prompt length and embedding depth (/workspace/prompt_ensemble.py:86-102)",
+    "Step 3: Define templates for normal and anomalous states that can be either object-agnostic or object-aware (/workspace/prompt_ensemble.py:103-109)",
+    "Step 4: Process the templates to create tokenized prompts and embeddings (/workspace/prompt_ensemble.py:110-214)",
+    "Step 5: Implement a forward method that combines prefix, context, and suffix to create complete prompts (/workspace/prompt_ensemble.py:218-264)",
+    "Step 6: Load a pre-trained vision-language model (AnomalyCLIP) for anomaly detection (/workspace/train.py:32-33)",
+    "Step 7: Create a dataset loader for training data (/workspace/train.py:35-36)",
+    "Step 8: Initialize the prompt learner with the model (/workspace/train.py:39-42)",
+    "Step 9: Set up optimization with appropriate loss functions (focal loss and dice loss) (/workspace/train.py:44-48)",
+    "Step 10: Implement the training loop that processes batches of images (/workspace/train.py:54-106)",
+    "Step 11: Extract image features using the vision encoder (/workspace/train.py:73-74)",
+    "Step 12: Generate text features using the prompt learner (/workspace/train.py:77-80)",
+    "Step 13: Compute similarity between image and text features (/workspace/train.py:82-84)",
+    "Step 14: Calculate pixel-level similarity maps for anomaly detection (/workspace/train.py:87-94)",
+    "Step 15: Compute combined losses (image-level and pixel-level) (/workspace/train.py:96-102)",
+    "Step 16: Update model parameters and save checkpoints periodically (/workspace/train.py:103-114)",
+    "Step 17: Load the trained model and prompt learner for testing (/workspace/test.py:66-71)",
+    "Step 18: Generate text features from the prompt learner (/workspace/test.py:73-76)",
+    "Step 19: Process test images and extract features (/workspace/test.py:80-91)",
+    "Step 20: Compute anomaly scores and maps using similarity between image and text features (/workspace/test.py:93-112)",
+    "Step 21: Calculate evaluation metrics (image-level AUROC/AP and pixel-level AUROC/AUPRO) (/workspace/test.py:115-173)"
+  ],
+  "agent_instructions": "Your task is to implement a system for comparing object-agnostic and object-aware prompt learning in AnomalyCLIP for industrial anomaly detection. You need to create three Python scripts:\n\n1. A prompt ensemble module that:\n   - Defines a class for managing text prompts for normal and anomalous states\n   - Allows configuring prompt templates that can be either object-agnostic (generic templates like '{}' and 'damaged {}') or object-aware (templates specific to object types)\n   - Processes these templates to create tokenized prompts and embeddings\n   - Combines prefix, context, and suffix to create complete prompts\n\n2. A training script that:\n   - Loads a pre-trained vision-language model (AnomalyCLIP)\n   - Creates a dataset loader for training data\n   - Initializes the prompt learner with the model\n   - Sets up optimization with appropriate loss functions (focal loss and dice loss)\n   - Implements a training loop that processes batches of images\n   - Extracts image features and generates text features\n   - Computes similarity between image and text features\n   - Calculates pixel-level similarity maps for anomaly detection\n   - Computes combined losses (image-level and pixel-level)\n   - Updates model parameters and saves checkpoints periodically\n\n3. A testing script that:\n   - Loads the trained model and prompt learner\n   - Generates text features from the prompt learner\n   - Processes test images and extracts features\n   - Computes anomaly scores and maps using similarity between image and text features\n   - Calculates evaluation metrics (image-level AUROC/AP and pixel-level AUROC/AUPRO)\n\nThe system should be able to switch between object-agnostic prompts (using generic templates) and object-aware prompts (using object-specific templates) by modifying the prompt templates in the prompt ensemble module. This will allow for direct comparison of their performance on industrial datasets (MVTec AD, VisA, MPDD, BTAD) and medical datasets.",
+  "masked_source": [
+    "/workspace/train.py",
+    "/workspace/test.py",
+    "/workspace/prompt_ensemble.py"
+  ]
+}

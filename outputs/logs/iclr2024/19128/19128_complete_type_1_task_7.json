@@ -1,0 +1,151 @@
+{
+  "questions": [
+    {
+      "question": "Will the optimal number of image patches (M=6) yield better accuracy compared to configurations with fewer (M=4) or more patches (M=8 or M=10)?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Determine the impact of varying the number of image patches (M) on classification accuracy in a CLIPSelf self-distillation setup using a ViT-B/16 model.\n    - **Objective:** \n    Identify the optimal number of patches (M) for achieving better Top1 and Top5 mean accuracy (mAcc) on region boxes, comparing configurations with M=4, M=6, M=8, and M=10.\n\n2. **Evaluation Metrics:**\n    - Primary Metric: Mean Top1 accuracy on COCO val2017.\n    - Optional Additional Metric: Mean Top5 accuracy on COCO val2017.\n\n3. **Comparative Evaluation:**\n    - Patch Split Parameter M:\n    - Configurations with M=4, M=6, M=8, and M=10\n\n4. **Training settings**:\n    - Setup:\n        - Use 8 A100 GPUs with a batch size of 2 per GPU.\n        - Train for 6 epochs.\n    - Optimization Parameters:\n        - Optimizer: AdamW.\n        - Learning Rate: 1e-5.\n        - Weight Decay: 0.1.\n    - Model Configuration:\n        - Employ a frozen CLIP ViT backbone (ViT-B/16 from EV A-CLIP) for the Teacher model with input resolution of 224\u00d7224.\n        - Set the Student model input resolution to 1024\u00d71024 for dense region feature extraction..\n    - Model:\n        - ViT-B/16 from EVA-CLIP\n    - Training images:\n        - train2017 split of COCO dataset\n    - Using image patches for self-distillation",
+      "expected_outcome": "It is expected the highest mean Top1 accuracy at M=6 (72.1), compared to lower performance at M=4 (71.3) and M=8 (71.6), indicating that there is an optimal balance in patch number.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "dataset": "COCO (train2017 for training and val2017 for evaluation with region boxes annotated)",
+            "model": "ViT-B/16 from EV A-CLIP with CLIPSelf self-distillation setup",
+            "training_configurations": "8 A100 GPUs, batch size of 2 per GPU, 6 epochs, AdamW optimizer with learning rate 1e-5 and weight decay 0.1, Teacher input fixed at 224*224"
+          },
+          "independent_variables": {
+            "patch_split_parameter_M": [
+              "4",
+              "6",
+              "8",
+              "10"
+            ],
+            "patch_selection_method": "Images are split into a grid where m and n are randomly sampled from {1, ..., M}"
+          },
+          "dependent_variables": {
+            "classification_accuracy": [
+              "Top1 mAcc",
+              "Top5 mAcc"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Hardware: 8 A100 GPUs with a batch size of 2 per GPU",
+            "Dataset: COCO dataset (train2017 for training and val2017 for evaluation with region boxes annotated)",
+            "Model Architecture: ViT-B/16 from EV A-CLIP with CLIPSelf self-distillation setup",
+            "Patch Split Mechanism: Splitting images into a grid where m and n are randomly sampled from {1, ..., M}",
+            "Optimizer: AdamW with learning rate of 1e-5 and weight decay of 0.1",
+            "Training Configuration: 6 epochs and consistent training parameters (Teacher input fixed at 224*224)",
+            "Evaluation Metrics: Mean accuracy (mAcc) measured by Top1 and Top5 classification scores"
+          ],
+          "setup_steps": [
+            "Prepare the COCO dataset by selecting the train2017 split for training and the val2017 split for evaluation",
+            "Configure the model using the ViT-B/16 variant from EV A-CLIP and integrate the CLIPSelf self-distillation setup",
+            "Implement patch split by randomly choosing m and n from {1, ..., M} for a grid-based split (with experiments at M = 4, 6, 8, and 10)",
+            "Set up the training environment on 8 A100 GPUs with a batch size of 2 per GPU",
+            "Train the model for 6 epochs using the AdamW optimizer with specified hyperparameters",
+            "Keep the Teacher network input fixed at 224*224 while applying the patch split configuration for the Student",
+            "Evaluate the training outcome on COCO val2017 split using mean Top1 and Top5 accuracy for region box classification"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Randomized Patch Selection",
+              "description": "The random sampling of m and n from {1, ..., M} for each image introduces stochasticity that could affect training consistency and reproducibility."
+            },
+            {
+              "source": "Interconnection between Teacher and Student Models",
+              "description": "The model's self-distillation framework relies on stable knowledge transfer between the Teacher and Student, which adds to the overall system complexity."
+            }
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "If resource availability were more limited, one could explore reducing the GPU count (e.g., from 8 A100 GPUs to fewer units) while maintaining the training setup, which may require adjustments such as smaller batch sizes or fewer trainable layers to handle memory and computation constraints."
+            ],
+            "time_constraints": [
+              "One possible modification could be to tighten the training schedule by reducing the total number of epochs (for example, testing with fewer than 6 epochs) to simulate a time-constrained scenario, potentially affecting the convergence and observed optimal patch parameter."
+            ],
+            "money_constraints": [
+              "In a scenario with tighter budget constraints, the experiment could be modified to use less expensive hardware rather than A100 GPUs, or combine with strategies that lower computational costs (such as reduced precision training), which might impact the overall performance and require compensatory adjustments in the setup."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Random patch selection for grid-based split",
+          "description": "Randomly sampling m and n from {1, ..., M} for each image introduces inherent variability in the patch grid configuration across training runs. This randomness can lead to instability during gradient updates and may cause fluctuations in classification accuracy (e.g., variations seen in Top1 mAcc across configurations in Table 1a).",
+          "impact": "Results in inconsistent performance metrics, making it challenging to isolate the true effect of the patch number parameter. The random sampling could lead to non-repeatable behavior and increased variance in the experimental outcomes.",
+          "possible_modifications": [
+            "Introduce a fixed random seed for sampling m and n to reduce variability and improve reproducibility.",
+            "Switch to a fixed grid split where the patch configuration is deterministic, allowing for clearer comparisons between M values."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Ambiguous patch selection method",
+          "description": "The experiment does not explicitly state whether m and n are sampled independently or jointly from {1, ..., M}. This ambiguity can systematically bias the overall model performance if the patch splitting method consistently deviates from an optimal pattern. Such ambiguity, integrated within the self-distillation framework of the Teacher and Student networks, might lead to a consistent performance drop or uplift across all configurations.",
+          "impact": "May result in systematic bias where the evaluated optimal configuration (M=6) appears superior due to the inherent design of the patch splitting method rather than reflecting an intrinsic model capability. The consistent bias can mask other factors that might influence model performance.",
+          "possible_modifications": [
+            "Clearly specify the patch selection procedure, detailing whether m and n are sampled independently or if a fixed grid structure is enforced.",
+            "Perform additional ablation studies comparing fixed grid splits versus random sampling to better isolate and understand the systematic effects introduced by the patch selection method."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh",
+        "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh"
+      ],
+      "usage_instructions": "To compare the impact of different patch configurations (M=4, M=6, M=8, M=10), you need to run the training script with different max-split values and then evaluate each model. First, train models with different max-split values by modifying the training script:\n\n1. For M=4: `torchrun --nproc_per_node 8 -m training.main --batch-size=2 --lr=1e-5 --wd=0.1 --epochs=6 --workers=4 --model EVA02-CLIP-B-16 --pretrained eva --warmup 1000 --zeroshot-frequency 1 --dataset-type grid_distill --max-split 4 --test-type coco_panoptic --train-data data/coco/annotations/instances_train2017.json --val-data data/coco/annotations/panoptic_val2017.json --embed-path metadata/coco_panoptic_clip_hand_craft_EVACLIP_ViTB16.npy --train-image-root data/coco/train2017 --val-image-root data/coco/val2017 --cache-dir checkpoints/EVA02_CLIP_B_psz16_s8B.pt --log-every-n-steps 50 --lock-image --save-frequency 6 --lock-image-unlocked-groups 12 --extract-type=\"v2\" --name clipself_coco_4_save6_test1_eva_vitb16_12layers --downsample-factor 16 --det-image-size 1024 --alpha 0.7`\n\n2. For M=6 (default in the script): Use the original script as is\n\n3. For M=8: `torchrun --nproc_per_node 8 -m training.main --batch-size=2 --lr=1e-5 --wd=0.1 --epochs=6 --workers=4 --model EVA02-CLIP-B-16 --pretrained eva --warmup 1000 --zeroshot-frequency 1 --dataset-type grid_distill --max-split 8 --test-type coco_panoptic --train-data data/coco/annotations/instances_train2017.json --val-data data/coco/annotations/panoptic_val2017.json --embed-path metadata/coco_panoptic_clip_hand_craft_EVACLIP_ViTB16.npy --train-image-root data/coco/train2017 --val-image-root data/coco/val2017 --cache-dir checkpoints/EVA02_CLIP_B_psz16_s8B.pt --log-every-n-steps 50 --lock-image --save-frequency 6 --lock-image-unlocked-groups 12 --extract-type=\"v2\" --name clipself_coco_8_save6_test1_eva_vitb16_12layers --downsample-factor 16 --det-image-size 1024 --alpha 0.7`\n\n4. For M=10: `torchrun --nproc_per_node 8 -m training.main --batch-size=2 --lr=1e-5 --wd=0.1 --epochs=6 --workers=4 --model EVA02-CLIP-B-16 --pretrained eva --warmup 1000 --zeroshot-frequency 1 --dataset-type grid_distill --max-split 10 --test-type coco_panoptic --train-data data/coco/annotations/instances_train2017.json --val-data data/coco/annotations/panoptic_val2017.json --embed-path metadata/coco_panoptic_clip_hand_craft_EVACLIP_ViTB16.npy --train-image-root data/coco/train2017 --val-image-root data/coco/val2017 --cache-dir checkpoints/EVA02_CLIP_B_psz16_s8B.pt --log-every-n-steps 50 --lock-image --save-frequency 6 --lock-image-unlocked-groups 12 --extract-type=\"v2\" --name clipself_coco_10_save6_test1_eva_vitb16_12layers --downsample-factor 16 --det-image-size 1024 --alpha 0.7`\n\n5. After training each model, evaluate them using the test script:\n   `bash scripts/test_eva_vitb16_macc_boxes_masks.sh test_M4 path/to/M4/checkpoint.pt`\n   `bash scripts/test_eva_vitb16_macc_boxes_masks.sh test_M6 path/to/M6/checkpoint.pt`\n   `bash scripts/test_eva_vitb16_macc_boxes_masks.sh test_M8 path/to/M8/checkpoint.pt`\n   `bash scripts/test_eva_vitb16_macc_boxes_masks.sh test_M10 path/to/M10/checkpoint.pt`\n\n6. Compare the Top1 and Top5 mean accuracy (mAcc) results from each evaluation to determine the optimal patch configuration.",
+      "requirements": [
+        "Step 1: Initialize a distributed training environment using PyTorch's distributed data parallel functionality (/workspace/src/training/main.py:67-67)",
+        "Step 2: Set up random seed for reproducibility across all processes (/workspace/src/training/main.py:118-118)",
+        "Step 3: Create the EVA02-CLIP-B-16 model and its associated image transforms for training and validation (/workspace/src/training/main.py:119-137)",
+        "Step 4: Initialize the CLIPSelf method for grid-based distillation (/workspace/src/training/main.py:140-140)",
+        "Step 5: Create a distillation model using the same architecture as the main model (/workspace/src/training/main.py:150-157)",
+        "Step 6: Lock the image tower of the model except for the specified number of unlocked groups to follow the LiT approach (/workspace/src/training/main.py:161-166)",
+        "Step 7: Create an AdamW optimizer with different weight decay settings for different parameter groups (/workspace/src/training/main.py:205-213)",
+        "Step 8: Set up gradient scaler for mixed precision training if specified (/workspace/src/training/main.py:214-214)",
+        "Step 9: Load the dataset based on the specified dataset type (grid_distill) with the provided COCO annotations (/workspace/src/training/main.py:238-238)",
+        "Step 10: Create a learning rate scheduler based on the specified scheduler type (/workspace/src/training/main.py:245-259)",
+        "Step 11: Create a GridDistillDataset that divides images into grid cells based on the max_split parameter (M value) (/workspace/src/training/data.py:135-281)",
+        "Step 12: Initialize grid templates for different M\u00d7N combinations up to the specified max_split value (/workspace/src/training/data.py:200-224)",
+        "Step 13: For each training iteration, load images and create image crops based on the grid cells (/workspace/src/training/data.py:247-281)",
+        "Step 14: Run initial evaluation before training begins (/workspace/src/training/main.py:269-269)",
+        "Step 15: For each epoch, train the model by processing batches of images and their grid-based crops (/workspace/src/training/main.py:273-277)",
+        "Step 16: In each training step, encode both the original image regions and the cropped image patches (/workspace/src/training/clipself.py:39-40)",
+        "Step 17: Calculate the cosine similarity loss between the features extracted from image regions and the features from corresponding image crops (/workspace/src/training/clipself.py:45-47)",
+        "Step 18: Update model parameters using the calculated loss and optimizer (/workspace/src/training/train.py:96-115)",
+        "Step 19: After each epoch, create an ensemble of student and teacher models based on the alpha parameter (/workspace/src/training/main.py:282-296)",
+        "Step 20: Save model checkpoints at specified frequency (/workspace/src/training/main.py:301-317)",
+        "Step 21: Periodically evaluate the model using zero-shot classification on the validation set (/workspace/src/training/main.py:330-341)",
+        "Step 22: For evaluation, load the trained model checkpoint (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:1-7)",
+        "Step 23: Run zero-shot evaluation on the COCO panoptic dataset (/workspace/src/training/zero_shot.py:177-193)",
+        "Step 24: Extract features from image regions using the trained model (/workspace/src/training/zero_shot.py:72-73)",
+        "Step 25: Extract features from image masks using the trained model (/workspace/src/training/zero_shot.py:74-76)",
+        "Step 26: Extract features from image crops using the trained model (/workspace/src/training/zero_shot.py:78-83)",
+        "Step 27: Calculate similarity between extracted features and class embeddings (/workspace/src/training/zero_shot.py:90-92)",
+        "Step 28: Compute Top-1 and Top-5 mean accuracy (mAcc) for both 'thing' and 'stuff' categories (/workspace/src/training/zero_shot.py:189-191)",
+        "Step 29: Compare the evaluation results across models trained with different max-split values (M=4, M=6, M=8, M=10) to determine the optimal patch configuration (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:1-9, /workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:1-8)",
+        "Final Step: Select the optimal patch configuration based on the highest Top-1 and Top-5 mean accuracy metrics (/workspace/src/training/zero_shot.py:189-191)"
+      ],
+      "masked_source": [
+        "/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh",
+        "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh",
+        "/workspace/src/training/main.py",
+        "/workspace/src/training/clipself.py",
+        "/workspace/src/training/train.py",
+        "/workspace/src/training/data.py",
+        "/workspace/src/training/zero_shot.py"
+      ]
+    }
+  ]
+}

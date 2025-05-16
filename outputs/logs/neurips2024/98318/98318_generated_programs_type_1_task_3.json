@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/benchmarl/run.py",
+        "/workspace/benchmarl/eval_results.py",
+        "/workspace/examples/plotting/plot_benchmark.py"
+    ],
+    "usage_instructions": "1. Run a benchmark with multiple MARL algorithms on the Navigation task with at least 3 random seeds: `python benchmarl/run.py -m algorithm=mappo,maddpg,masac,qmix,vdn,iql task=vmas/navigation seed=0,1,2 experiment.max_n_frames=10000000 experiment.evaluation_interval=120000`. This will train each algorithm on the Navigation task with the default configuration and fine-tuned settings from the vmas folder.\n2. After training completes, use the eval_results.py script to process the results and generate plots: `python benchmarl/eval_results.py` (modify the multirun_folder path to point to your results directory).\n3. Alternatively, you can use the examples/plotting/plot_benchmark.py script as a template, modifying it to include all the algorithms you ran and setting the task to 'navigation'. This will generate performance profiles and sample efficiency curves showing the fraction of runs achieving normalized returns above thresholds at different training timesteps."
+}

@@ -1,0 +1,3 @@
+{
+    "no_answer": "After thoroughly exploring the repository, I could not find specific scripts that directly answer the experiment question about comparing JetMoE configurations (core:32, univ:64 vs. core:64, univ:128) on CIFAR-100. While the repository contains code for JetMoE and has configuration files for ImageNet experiments with different expert configurations, there are no ready-made scripts specifically for CIFAR-100 experiments with varying expert numbers. The repository has base configuration files for CIFAR-100 dataset and JetMoE configuration files for ImageNet, but combining these would require creating new configuration files and potentially modifying the code, which goes beyond the scope of finding existing scripts that directly answer the question."
+}

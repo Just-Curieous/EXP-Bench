@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Load the RepoBench Python dataset from HuggingFace (/workspace/run.py:147-147)",
+    "Step 2: Filter the dataset by date range and specified levels (/workspace/run.py:150-153)",
+    "Step 3: Load the first model (GPT-2) and its tokenizer (/workspace/run.py:156-162)",
+    "Step 4: Create a directory to save the model's results (/workspace/run.py:164-165)",
+    "Step 5: For each data point in the dataset, construct a prompt that includes repository context and code snippets (/workspace/data/utils.py:3-59, /workspace/run.py:170-170)",
+    "Step 6: Generate code completions using the model with specified parameters (temperature, top_p, max_new_tokens) (/workspace/run.py:172-173)",
+    "Step 7: Process the generated completions to extract the first non-comment line (/workspace/run.py:175-177)",
+    "Step 8: Save the results (predictions and ground truth) to a file (/workspace/run.py:179-180)",
+    "Step 9: Repeat steps 3-8 with the second model (CodeLlama-7b) (/workspace/run.py:131-180)",
+    "Step 10: Load the generated completions for both models (/workspace/eval.py:23-33)",
+    "Step 11: Calculate Exact Match (EM) scores for both models (/workspace/eval.py:43-43, /workspace/evaluation/metrics.py:4-27)",
+    "Step 12: Calculate Edit Similarity (ES) scores for both models (/workspace/eval.py:44-44, /workspace/evaluation/metrics.py:31-53)",
+    "Step 13: Calculate CodeBLEU (CB) scores for both models (/workspace/eval.py:45-45, /workspace/evaluation/metrics.py:96-129)",
+    "Step 14: Calculate weighted averages of the metrics across all data points (/workspace/eval.py:58-64)",
+    "Final Step: Compare the performance metrics between the two models to determine how model size and specialization affect performance on repository-level code completion tasks (/workspace/eval.py:53-64)"
+  ],
+  "agent_instructions": "Your task is to compare the performance of a small language model (GPT-2) to a larger code-specialized model (CodeLlama-7b) on the RepoBench Python dataset for the 'cross_file_first' setting. Follow these steps:\n\n1. Create a script to run language models on the RepoBench Python dataset:\n   - Load the RepoBench Python dataset from HuggingFace\n   - Filter the dataset by date range and levels (focus on the 'cross_file_first' setting)\n   - For each model (GPT-2 and CodeLlama-7b):\n     - Load the model and its tokenizer\n     - For each data point, construct a prompt that includes repository context and code snippets\n     - Generate code completions using the model with appropriate parameters (temperature, top_p, max tokens)\n     - Process the generated completions to extract meaningful code\n     - Save the results (predictions and ground truth) to files\n\n2. Create an evaluation script to compare the models:\n   - Load the generated completions for both models\n   - Implement and calculate the following metrics:\n     - Exact Match (EM): percentage of predictions that exactly match ground truth\n     - Edit Similarity (ES): measure of string similarity between predictions and ground truth\n     - CodeBLEU (CB): specialized metric for code quality evaluation\n   - Calculate weighted averages of the metrics across all data points\n   - Output a comparison of the performance metrics between the two models\n\n3. Analyze the results to determine how model size and specialization affect performance on repository-level code completion tasks.\n\nThe key components you'll need to implement include:\n- A prompt construction function that handles repository context and code snippets\n- Model inference with appropriate parameters\n- Evaluation metrics implementation (Exact Match, Edit Similarity, and CodeBLEU)\n- Results processing and comparison logic\n\nYou'll need to use libraries like transformers, datasets, and potentially specialized code evaluation libraries."
+}

@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Load a pre-trained EVA02-CLIP-B-16 model that will be fine-tuned (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:1-2)",
+    "Step 2: Configure the training to use grid-based image patches as the distillation dataset type (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:2)",
+    "Step 3: Set up the training data paths to use COCO dataset annotations and images (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:3-6)",
+    "Step 4: Configure the model to lock the image tower except for the last 12 layers (/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh:7)",
+    "Step 5: Train the CLIPSelf model with image patches, where the model learns to align features from the full image with features from cropped patches (/workspace/src/training/clipself.py:6-49)",
+    "Step 6: Load a pre-trained EVA02-CLIP-B-16 model for the region proposals training (/workspace/scripts/train_clipself_coco_region_proposals_eva_vitb16.sh:1-2)",
+    "Step 7: Configure the training to use region proposals as the distillation dataset type (/workspace/scripts/train_clipself_coco_region_proposals_eva_vitb16.sh:2)",
+    "Step 8: Set up the training data paths to use COCO region proposals and images (/workspace/scripts/train_clipself_coco_region_proposals_eva_vitb16.sh:3-6)",
+    "Step 9: Configure the model to lock the image tower except for the last 12 layers (/workspace/scripts/train_clipself_coco_region_proposals_eva_vitb16.sh:7)",
+    "Step 10: Train the CLIPSelf model with region proposals, where the model learns to align features from the full image with features from region proposals (/workspace/src/training/clipself.py:6-49)",
+    "Step 11: Evaluate the trained models by loading the checkpoints and running zero-shot evaluation (/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh:1-8)",
+    "Step 12: Measure and report Top1 and Top5 accuracy for boxes (rois), thing masks, and stuff masks (/workspace/src/training/zero_shot.py:177-193)"
+  ],
+  "agent_instructions": "Your task is to implement a CLIPSelf training and evaluation pipeline for COCO dataset using the EVA02-CLIP-B-16 model. This involves two training approaches and an evaluation script:\n\n1. First, implement a script to train CLIPSelf using image patches:\n   - Use torchrun with 8 GPUs\n   - Load a pre-trained EVA02-CLIP-B-16 model\n   - Configure the training to use grid-based image patches (grid_distill dataset type)\n   - Use COCO dataset annotations and images\n   - Lock the image tower except for the last 12 layers\n   - Train for 6 epochs with learning rate 1e-5 and weight decay 0.1\n   - Save checkpoints after each epoch\n\n2. Next, implement a script to train CLIPSelf using region proposals:\n   - Use torchrun with 8 GPUs\n   - Load a pre-trained EVA02-CLIP-B-16 model\n   - Configure the training to use region proposals (proposals_distill dataset type)\n   - Use COCO region proposals and images\n   - Lock the image tower except for the last 12 layers\n   - Train for 6 epochs with learning rate 1e-5 and weight decay 0.1\n   - Save checkpoints after each epoch\n\n3. Finally, implement an evaluation script that:\n   - Takes two arguments: a name for the test run and the path to the checkpoint\n   - Loads the trained model checkpoint\n   - Runs zero-shot evaluation on the COCO panoptic validation set\n   - Measures and reports Top1 and Top5 accuracy for:\n     - Boxes (rois)\n     - Thing Masks (objects with well-defined boundaries)\n     - Stuff Masks (amorphous background regions)\n\nThe core of the CLIPSelf method is a distillation approach where:\n- A student model processes the full image and extracts region features\n- A teacher model processes cropped regions directly\n- The training objective is to align the student's region features with the teacher's crop features using cosine similarity loss\n\nThe evaluation compares the region features against text embeddings to measure classification accuracy.",
+  "masked_source": [
+    "/workspace/scripts/train_clipself_coco_image_patches_eva_vitb16.sh",
+    "/workspace/scripts/train_clipself_coco_region_proposals_eva_vitb16.sh",
+    "/workspace/scripts/test_eva_vitb16_macc_boxes_masks.sh"
+  ]
+}

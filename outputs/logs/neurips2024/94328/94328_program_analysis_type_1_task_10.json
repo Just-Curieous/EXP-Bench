@@ -1,0 +1,17 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with PyTorch and CUDA support (/workspace/benchmarks/qattention_benchmark.py:1-5)",
+    "Step 2: Import the MultiLayerPagedKVCache4Bit class from the quarot.transformers.kv_cache module (/workspace/benchmarks/qattention_benchmark.py:7)",
+    "Step 3: Define model configurations to benchmark: LLaMA-7B (32×32×128), LLaMA-13B (40×40×128), and LLaMA-70B (80×64×128) (/workspace/benchmarks/qattention_benchmark.py:9-13)",
+    "Step 4: Configure benchmark parameters including data types (INT4, FP16), warmup steps (5), and benchmark steps (100) (/workspace/benchmarks/qattention_benchmark.py:15-17)",
+    "Step 5: Implement a module benchmarking function that measures execution time and memory usage with proper warmup (/workspace/benchmarks/qattention_benchmark.py:19-35)",
+    "Step 6: Implement a function to simulate quantized KV cache decoding with different configurations (/workspace/benchmarks/qattention_benchmark.py:37-65)",
+    "Step 7: Create the main benchmark function that tests each model size with four quantization methods: FP16, INT4, INT4+FP16 Hadamard, and INT4+FP32 Hadamard (/workspace/benchmarks/qattention_benchmark.py:68-126)",
+    "Step 8: Set up command-line argument parsing for batch size and sequence length parameters (/workspace/benchmarks/qattention_benchmark.py:127-142)",
+    "Step 9: Run the benchmark with the specified batch size (16 and 32) (/workspace/benchmarks/qattention_benchmark.py:143)"
+  ],
+  "agent_instructions": "Your task is to analyze and run a benchmark script that evaluates the performance of different attention head configurations with various quantization methods. The script is located at `/workspace/benchmarks/qattention_benchmark.py`. You need to:\n\n1. Understand what the script does by examining its code\n2. Run the benchmark with batch size 16: `python /workspace/benchmarks/qattention_benchmark.py --batch_size 16`\n3. Run the benchmark with batch size 32: `python /workspace/benchmarks/qattention_benchmark.py --batch_size 32`\n4. Analyze and summarize the results, focusing on the performance differences between the different quantization methods (FP16, INT4, INT4+FP32 Hadamard, INT4+FP16 Hadamard) across the three model configurations (32×128, 40×128, 64×128)\n\nThe script will automatically benchmark all configurations and output latency results in milliseconds.",
+  "masked_source": [
+    "/workspace/benchmarks/qattention_benchmark.py"
+  ]
+}

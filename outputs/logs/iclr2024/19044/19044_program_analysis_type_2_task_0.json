@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, numpy, PIL, and matplotlib for creating and manipulating images (motion_module_example.py:1-10)",
+    "Step 2: Define a function to convert a sequence of frames into a GIF animation (motion_module_example.py:12-25)",
+    "Step 3: Create a base function that generates a blank canvas/frame for animations (motion_module_example.py:27-35)",
+    "Step 4: Implement a function that generates circular motion pattern by animating an object moving in a circular path (motion_module_example.py:37-55)",
+    "Step 5: Implement a function that generates zoom effect pattern by animating an expanding/contracting circle (motion_module_example.py:57-75)",
+    "Step 6: Implement a function that generates wave pattern by animating a sine wave moving across the frame (motion_module_example.py:77-95)",
+    "Step 7: Generate separate animations for each motion pattern (circle, zoom, wave) (motion_module_example.py:97-115)",
+    "Step 8: Combine all three motion patterns into a single animation (motion_module_example.py:117-130)",
+    "Step 9: Save all animations (individual patterns and combined) as GIF files (motion_module_example.py:132-145)"
+  ],
+  "agent_instructions": "Create a Python script that demonstrates different motion patterns using animation techniques. The script should:\n\n1. Create three distinct motion pattern animations:\n   - A circular motion pattern where an object moves in a circular path\n   - A zoom effect where a circle expands and contracts\n   - A wave pattern where a sine wave moves across the frame\n\n2. Generate each animation as a sequence of frames, with each frame showing the progression of the motion pattern\n\n3. Save each motion pattern as a separate GIF animation\n\n4. Create a combined animation that showcases all three motion patterns together\n\n5. Save all animations (the three individual patterns and the combined animation) as GIF files\n\nYou'll need to:\n- Use libraries like PIL, numpy, and matplotlib for image creation and manipulation\n- Create functions to generate each type of motion pattern\n- Implement a utility function to convert sequences of frames into GIF animations\n- Ensure the animations clearly demonstrate the distinct characteristics of each motion pattern\n\nThe final output should be four GIF files: one for each individual motion pattern (circle, zoom, wave) and one combined animation."
+}

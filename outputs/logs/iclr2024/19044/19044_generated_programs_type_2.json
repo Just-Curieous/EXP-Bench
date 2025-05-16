@@ -1,0 +1,44 @@
+[
+  {
+    "mode": "B",
+    "question": "How can you create a simple animation with different motion patterns using AnimateDiff's core concepts?",
+    "method": "Create a Python script that generates animations with three different motion patterns: circular motion, zoom effect, and wave pattern.",
+    "expected_outcome": "Three separate GIF animations showing different motion patterns and a combined animation showing all three patterns together.",
+    "source": [
+      "/workspace/motion_module_example.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries (torch, numpy, PIL, etc.)\n2. Define a function to save video frames as GIF animations\n3. Create a function that generates different motion patterns (circle, zoom, wave)\n4. For the circle pattern, animate a circle moving in a circular path\n5. For the zoom pattern, animate an expanding circle\n6. For the wave pattern, animate a sine wave moving across the frame\n7. Generate separate animations for each pattern\n8. Combine all animations into a single output file\n9. Save all animations as GIF files"
+  },
+  {
+    "mode": "B",
+    "question": "How can you implement advanced motion transformations on static images using AnimateDiff's motion concepts?",
+    "method": "Create a Python script that applies different motion transformations (zoom, pan, rotate) to static images to create animations.",
+    "expected_outcome": "Multiple GIF animations showing zoom, pan, and rotation effects applied to different static images, plus a combined animation showing all transformations.",
+    "source": [
+      "/workspace/advanced_motion_example.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries (torch, numpy, PIL, etc.)\n2. Define a function to save video frames as GIF animations\n3. Create a SimpleMotionModel class that can apply different motion patterns\n4. Implement the zoom transformation that creates a zoom-in effect\n5. Implement the pan transformation that creates a panning effect\n6. Implement the rotate transformation that creates a rotation effect\n7. Create sample static images with different patterns (gradient, checkerboard, circles)\n8. Apply each motion transformation to a different static image\n9. Save individual animations and a combined animation as GIF files"
+  },
+  {
+    "mode": "A",
+    "question": "How can you use AnimateDiff to generate animations from text prompts with different motion styles?",
+    "method": "Use AnimateDiff's motion module and MotionLoRA to generate animations from text prompts with different camera movements.",
+    "expected_outcome": "Multiple GIF animations showing different camera movements (zoom in, zoom out, pan left, pan right, etc.) applied to the same text prompt.",
+    "source": [
+      "/workspace/configs/prompts/2_motionlora/2_motionlora_RealisticVision.yaml",
+      "/workspace/scripts/animate.py"
+    ],
+    "usage_instructions": "1. Set up the AnimateDiff environment with required dependencies\n2. Download the necessary model files (motion module, DreamBooth model, MotionLoRA models)\n3. Use the animate.py script with the 2_motionlora_RealisticVision.yaml configuration\n4. The configuration applies different MotionLoRA models (ZoomIn, ZoomOut, PanLeft, PanRight, etc.) to the same text prompt\n5. Each section in the configuration specifies a different motion style\n6. The script will generate multiple animations with the same content but different camera movements\n7. Compare the resulting animations to understand how different MotionLoRA models affect the motion"
+  },
+  {
+    "mode": "A",
+    "question": "How can you use AnimateDiff's SparseCtrl to control animation generation with reference images?",
+    "method": "Use AnimateDiff's SparseCtrl feature to generate animations controlled by reference RGB images.",
+    "expected_outcome": "Animations that follow the visual content of the provided reference images while maintaining temporal consistency.",
+    "source": [
+      "/workspace/configs/prompts/3_sparsectrl/3_1_sparsectrl_i2v.yaml",
+      "/workspace/scripts/animate.py"
+    ],
+    "usage_instructions": "1. Set up the AnimateDiff environment with required dependencies\n2. Download the necessary model files (motion module, adapter, SparseCtrl encoder)\n3. Use the animate.py script with the 3_1_sparsectrl_i2v.yaml configuration\n4. The configuration specifies reference images in the controlnet_images field\n5. The controlnet_image_indexs field determines which frames the reference images control\n6. For animation, a single reference image controls the entire animation\n7. For interpolation, two reference images control the start and end frames\n8. For more complex animations, multiple reference images can control specific frames\n9. Compare the resulting animations to see how the reference images guide the generation process"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments to get the model name, data path, and output path (/tmp/repos/SVDFor3D/eval.py:10-17)",
+    "Step 2: Load the specified model (either with or without STD module) (/tmp/repos/SVDFor3D/eval.py:19-28)",
+    "Step 3: Load test data from the DL3DV dataset (/tmp/repos/SVDFor3D/eval.py:58-80)",
+    "Step 4: For each scene in the test dataset, render novel views using the loaded model (/tmp/repos/SVDFor3D/eval.py:30-39)",
+    "Step 5: Calculate evaluation metrics (PSNR, SSIM, and LPIPS) by comparing rendered views with ground truth views (/tmp/repos/SVDFor3D/eval.py:41-56)",
+    "Step 6: Compute average metrics across all scenes (/tmp/repos/SVDFor3D/eval.py:103-107)",
+    "Step 7: Save the evaluation results to a JSON file (/tmp/repos/SVDFor3D/eval.py:115-122)",
+    "Step 8: Create a shell script that takes a model name as input and runs the evaluation script (/tmp/repos/SVDFor3D/eval.sh:1-39)",
+    "Final Step: Display a summary of the evaluation results (/tmp/repos/SVDFor3D/eval.sh:27-37)"
+  ],
+  "agent_instructions": "Create an evaluation system for comparing two 3D rendering models: a base video diffusion model and an enhanced version with a Spatial-Temporal Decomposition (STD) module for fine-grained texture enhancement.\n\nThe system should:\n\n1. Create a Python evaluation script that:\n   - Takes a model name as input parameter\n   - Loads the specified model (either with or without the STD module)\n   - Loads test data from the DL3DV dataset\n   - Renders 9 novel views for each test scene using the loaded model\n   - Calculates three evaluation metrics: PSNR, SSIM, and LPIPS by comparing rendered views with ground truth views\n   - Computes average metrics across all scenes\n   - Saves the evaluation results to a JSON file\n\n2. Create a shell script that:\n   - Takes a model name as input parameter\n   - Runs the Python evaluation script with the specified model\n   - Displays a summary of the results\n\nThe system should be used to evaluate two models:\n- A base video diffusion model named 'nodropout_camP'\n- An enhanced model with the STD module named 'nodropout_camP_STD'\n\nThe evaluation results will be used to determine the impact of the STD module on fine-grained texture enhancement and novel view rendering quality.",
+  "masked_source": [
+    "/tmp/repos/SVDFor3D/eval.py",
+    "/tmp/repos/SVDFor3D/eval.sh"
+  ]
+}

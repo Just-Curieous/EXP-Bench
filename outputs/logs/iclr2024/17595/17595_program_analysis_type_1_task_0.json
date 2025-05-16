@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Set up environment variables for CUDA and logging configurations (/workspace/examples/test_all_schedules.sh:61-65)",
+    "Step 2: Define an array of scheduling methods to test, including 1f1b (1F1B), offload-grouped-interleaved (1F1B-I), zb (ZB-1p), and zbv (ZB-2p) (/workspace/examples/test_all_schedules.sh:10-20)",
+    "Step 3: Configure pipeline parallelism to use 8 GPUs by setting PIPELINE_SIZE to the number of available GPUs (/workspace/examples/test_all_schedules.sh:78)",
+    "Step 4: Set model parameters for a 1.5B parameter model with appropriate hidden size (4096), FFN hidden size (16384), attention heads (32), and GQA (8) (/workspace/examples/test_all_schedules.sh:83-86)",
+    "Step 5: Configure microbatch size (1) and global batch size (number of microbatches) based on pipeline size (/workspace/examples/test_all_schedules.sh:81-82)",
+    "Step 6: For each scheduling method, set the appropriate environment variables and flags (/workspace/examples/test_all_schedules.sh:71-142)",
+    "Step 7: For 1F1B scheduling, use standard pipeline parallelism without special flags (/workspace/examples/test_all_schedules.sh:124-125)",
+    "Step 8: For 1F1B-I (interleaved) scheduling, set INTERLEAVED_1F1B flag (/workspace/examples/test_all_schedules.sh:129-130)",
+    "Step 9: For ZB-1p scheduling, enable zero bubble optimization with appropriate memory limits (/workspace/examples/test_all_schedules.sh:105-107)",
+    "Step 10: For ZB-2p scheduling, enable zero bubble optimization with v-schedule for improved performance (/workspace/examples/test_all_schedules.sh:108-111)",
+    "Step 11: Download and prepare the sample dataset if not already available (/workspace/examples/pretrain_zero_bubble.sh:17-20)",
+    "Step 12: Configure the training script with the appropriate options based on the scheduling method (/workspace/examples/pretrain_zero_bubble.sh:72-139)",
+    "Step 13: Run the training script with torchrun to utilize distributed training across GPUs (/workspace/examples/pretrain_zero_bubble.sh:151-155)",
+    "Step 14: Collect and log the training throughput results for each scheduling method (/workspace/examples/test_all_schedules.sh:144-173)",
+    "Final Step: Compare throughput across different scheduling methods and microbatch counts (/workspace/examples/test_all_schedules.sh:71-175)"
+  ],
+  "agent_instructions": "Create a script to compare the throughput of different pipeline parallelism scheduling methods for training large language models. The experiment should compare four scheduling methods: 1F1B (standard one-forward-one-backward), 1F1B-I (interleaved version), ZB-1p (Zero Bubble with 1 pipeline), and ZB-2p (Zero Bubble with 2 pipelines).\n\nThe experiment should:\n\n1. Run on 8 GPUs using pipeline parallelism (set PIPELINE_SIZE=8)\n\n2. Use a 1.5B parameter model with these configurations:\n   - Hidden size: 4096\n   - FFN hidden size: 16384\n   - Attention heads: 32\n   - GQA (grouped-query attention): 8\n   - Sequence length: 2048\n\n3. Test with different microbatch settings:\n   - Set MICRO_BATCH_SIZE=1\n   - Test with global batch sizes of 24, 32, and 64 (representing different numbers of microbatches)\n\n4. For each scheduling method, configure the appropriate flags:\n   - For 1F1B: Use standard pipeline parallelism\n   - For 1F1B-I: Enable interleaved scheduling\n   - For ZB-1p: Enable zero bubble optimization\n   - For ZB-2p: Enable zero bubble optimization with v-schedule\n\n5. Download and use a sample dataset for training\n\n6. Log the throughput results for each configuration to a logs directory\n\n7. The script should run each method sequentially and ensure proper cleanup between runs\n\nCreate a bash script that implements this experiment and properly configures all the necessary parameters.",
+  "masked_source": [
+    "/workspace/examples/test_all_schedules.sh",
+    "/workspace/examples/pretrain_zero_bubble.sh",
+    "/workspace/examples/pretrain_offload.sh"
+  ]
+}

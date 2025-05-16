@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment by creating a directory to store benchmark results (/workspace/scripts/infinitebench.sh:3-3)",
+    "Step 2: Load the InfLLM configuration from a YAML file, which specifies parameters like block_size, n_init, n_local, topk, and other memory-based attention settings (/workspace/scripts/infinitebench.sh:1-1, /workspace/config/mistral-inf-llm.yaml:1-17)",
+    "Step 3: Initialize the prediction script with the configuration path, output directory path, and specify the key-value retrieval task from InfiniteBench (/workspace/scripts/infinitebench.sh:5-8)",
+    "Step 4: Parse command-line arguments and load the configuration settings for the model (/workspace/benchmark/pred.py:12-40)",
+    "Step 5: Load the model (Mistral-7B-Instruct) and tokenizer, applying the InfLLM memory-based attention mechanism patch to the model (/workspace/benchmark/pred.py:43-57)",
+    "Step 6: Load prompt formats and maximum generation lengths for each dataset from configuration files (/workspace/benchmark/pred.py:296-297)",
+    "Step 7: Load the key-value retrieval dataset from InfiniteBench, which contains contexts with key-value pairs and queries asking for specific values (/workspace/benchmark/pred.py:304-311)",
+    "Step 8: Format the prompts for the key-value retrieval task, which asks the model to extract values for specified keys from JSON objects (/workspace/benchmark/config/dataset2prompt.json:27-27)",
+    "Step 9: Process each example in the dataset by tokenizing the prompt and preparing it for the model (/workspace/benchmark/pred.py:214-257)",
+    "Step 10: Generate predictions using the InfLLM model with its memory-based attention mechanism that efficiently handles long contexts (/workspace/benchmark/pred.py:260-265)",
+    "Step 11: Post-process the model's output and save the predictions to a JSON file (/workspace/benchmark/pred.py:267-340)",
+    "Step 12: Run the evaluation script on the generated predictions to calculate the model's performance (/workspace/scripts/infinitebench.sh:10-10)",
+    "Step 13: Load the prediction results and extract the predictions, ground truth answers, and context lengths (/workspace/benchmark/eval.py:123-142)",
+    "Step 14: Score the key-value retrieval task by checking if the model's prediction contains the correct value for each key (/workspace/benchmark/eval.py:105-120, /workspace/benchmark/infinitebench_eval.py:140-144)",
+    "Step 15: Calculate the overall score as the percentage of correctly retrieved values and save the results to a JSON file (/workspace/benchmark/eval.py:153-160)"
+  ],
+  "agent_instructions": "Your task is to create a script that evaluates InfLLM on the key-value retrieval task from InfiniteBench. This task tests a model's ability to retrieve specific values associated with keys from a long context.\n\nYou need to:\n1. Set up the benchmark environment\n2. Configure InfLLM to use its memory-based attention mechanism\n3. Load the key-value retrieval dataset from InfiniteBench\n4. Run predictions using InfLLM on this dataset\n5. Evaluate the model's performance\n6. Analyze the results to understand how well InfLLM performs at retrieving key-value pairs from long contexts\n\nThe key-value retrieval task provides the model with a context containing key-value pairs and asks it to retrieve the value for a specific key. Success is measured by whether the model correctly outputs the value.\n\nYou should leverage InfLLM's specialized attention mechanism that divides the context into blocks and uses a combination of local and global attention with memory to efficiently handle long contexts."
+}

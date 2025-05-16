@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Ensure the OpenLane-V2 dataset is properly set up in the data directory (/workspace/tools/dist_test.sh:3-9)",
+    "Step 2: Load the configuration file that defines the TopoMLP model architecture and dataset settings (/workspace/tools/test.py:147-151)",
+    "Step 3: Set up the distributed testing environment with the specified number of GPUs (/workspace/tools/test.py:172-176)",
+    "Step 4: Build the dataset for OpenLane-V2 subset-A validation set (/workspace/tools/test.py:205-206)",
+    "Step 5: Build the TopoMLP model according to the configuration (/workspace/tools/test.py:209-210)",
+    "Step 6: Load the trained model checkpoint (/workspace/tools/test.py:214)",
+    "Step 7: Run the model on the validation dataset in distributed mode (/workspace/tools/test.py:237-242)",
+    "Step 8: Evaluate the model performance using OpenLaneV2 evaluation metrics (/workspace/tools/test.py:255-264)",
+    "Final Step: Output the evaluation results including DET_l (lane detection), TOP_ll (lane-lane topology), DET_t (traffic element detection), TOP_lt (lane-traffic topology), and OLS (overall score) (/workspace/tools/test.py:264)"
+  ],
+  "agent_instructions": "Your task is to evaluate a trained TopoMLP model on the OpenLane-V2 subset-A validation set. The TopoMLP model is designed for autonomous driving perception, specifically for lane detection, traffic element detection, and topology prediction.\n\nFollow these steps:\n\n1. Ensure the OpenLane-V2 dataset is properly set up in the data directory.\n\n2. Use the distributed testing script with the appropriate configuration file for the TopoMLP model on OpenLane-V2 subset-A.\n\n3. Provide the path to a trained TopoMLP model checkpoint.\n\n4. Specify the number of GPUs to use for distributed testing.\n\n5. Include the evaluation parameter to calculate performance metrics.\n\n6. Run the evaluation and observe the output metrics, which should include:\n   - DET_l: Lane detection performance\n   - TOP_ll: Lane-lane topology performance\n   - DET_t: Traffic element detection performance\n   - TOP_lt: Lane-traffic topology performance\n   - OLS: Overall score\n\nThe evaluation will use the OpenLane-V2 evaluation metrics to assess the model's performance on the validation set."
+}

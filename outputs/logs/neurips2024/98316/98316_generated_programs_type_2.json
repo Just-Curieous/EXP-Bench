@@ -1,0 +1,42 @@
+[
+  {
+    "mode": "B",
+    "question": "Can you discover the causal direction between two variables using the Additive Noise Model (ANM)?",
+    "method": "Use the ANM algorithm to determine the causal direction between two variables with a non-linear relationship and additive noise.",
+    "expected_outcome": "The algorithm should correctly identify the causal direction as X->Y with a higher p-value for the forward direction than the backward direction.",
+    "source": ["/workspace/causallearn/search/FCMBased/ANM/ANM.py"],
+    "usage_instructions": "1. Import the ANM class from causallearn.search.FCMBased.ANM.ANM\n2. Generate synthetic data with a clear causal relationship X->Y, where Y is a non-linear function of X plus some noise\n3. Create an instance of the ANM class\n4. Call the cause_or_effect method with the X and Y data\n5. Compare the p-values for the forward and backward directions\n6. Determine the likely causal direction based on which p-value is higher"
+  },
+  {
+    "mode": "B",
+    "question": "How can you identify the causal structure in a linear non-Gaussian system using DirectLiNGAM?",
+    "method": "Apply the DirectLiNGAM algorithm to discover the causal structure in a system where variables follow a linear non-Gaussian acyclic model.",
+    "expected_outcome": "The algorithm should correctly identify the causal order [0,1,2] and produce an adjacency matrix showing the connections 0->1->2 with appropriate edge weights.",
+    "source": ["/workspace/causallearn/search/FCMBased/lingam/DirectLiNGAM.py"],
+    "usage_instructions": "1. Import DirectLiNGAM from causallearn.search.FCMBased.lingam\n2. Generate synthetic data with a clear causal structure (X1->X2->X3) using non-Gaussian distributions\n3. Create an instance of the DirectLiNGAM class\n4. Fit the model to the data using the fit method\n5. Extract and interpret the causal order from the model's causal_order_ attribute\n6. Examine the adjacency matrix from the model's adjacency_matrix_ attribute to understand the causal relationships and their strengths"
+  },
+  {
+    "mode": "A",
+    "question": "How can you discover causal relationships in data with unobserved common causes using the CAMUV algorithm?",
+    "method": "Apply the CAMUV algorithm to identify direct causal relationships and detect variable pairs that have unobserved common causes or unobserved intermediate variables.",
+    "expected_outcome": "The algorithm should identify the direct causal relationships (0->1, 0->3, 2->4) and detect variable pairs with unobserved common causes ({3,4}) or unobserved intermediate variables ({2,5}).",
+    "source": ["/workspace/tests/Example_CAMUV.ipynb"],
+    "usage_instructions": "1. Import the CAMUV module from causallearn.search.FCMBased.lingam\n2. Generate synthetic data with direct causal relationships, unobserved common causes, and unobserved intermediate variables\n3. Apply the CAMUV.execute method to the data with appropriate parameters (significance level and maximum number of explanatory variables)\n4. Interpret the results: P contains the indices of parents for each variable, and U contains the indices of variable pairs having unobserved common causes or unobserved intermediate variables\n5. Visualize or print the discovered causal relationships"
+  },
+  {
+    "mode": "A",
+    "question": "How can you use the PC algorithm to discover causal relationships in observational data?",
+    "method": "Apply the PC algorithm with the Fisher-Z conditional independence test to identify causal relationships in a dataset with a known causal structure.",
+    "expected_outcome": "The algorithm should identify the causal structure, showing directed edges that match the true causal relationships in the data.",
+    "source": ["/workspace/tests/TestPC.py"],
+    "usage_instructions": "1. Import the PC algorithm from causallearn.search.ConstraintBased.PC\n2. Import the Fisher-Z conditional independence test from causallearn.utils.cit\n3. Generate synthetic data with a known causal structure (e.g., 0->1->2->3->4)\n4. Apply the PC algorithm with the Fisher-Z test and an appropriate significance level\n5. Extract the directed edges from the resulting causal graph\n6. Compare the discovered causal structure with the true structure\n7. Optionally, visualize the causal graph using the provided visualization methods"
+  },
+  {
+    "mode": "A",
+    "question": "How can you use the Greedy Equivalence Search (GES) algorithm with BIC score to discover causal relationships?",
+    "method": "Apply the GES algorithm with the BIC score to identify causal relationships in a dataset with a known causal structure.",
+    "expected_outcome": "The algorithm should identify the causal structure, showing directed and undirected edges that match the true causal relationships in the data.",
+    "source": ["/workspace/tests/TestGES.py"],
+    "usage_instructions": "1. Import the GES algorithm from causallearn.search.ScoreBased.GES\n2. Generate synthetic data with a known causal structure\n3. Apply the GES algorithm with the BIC score function\n4. Extract the resulting causal graph from the returned dictionary\n5. Interpret the adjacency matrix where G.graph[j,i]=1 and G.graph[i,j]=-1 indicate i->j, and G.graph[i,j]=G.graph[j,i]=-1 indicate i---j\n6. Compare the discovered causal structure with the true structure\n7. Optionally, visualize the causal graph using the provided visualization methods"
+  }
+]

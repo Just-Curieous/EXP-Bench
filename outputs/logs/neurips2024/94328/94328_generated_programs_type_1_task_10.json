@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/benchmarks/qattention_benchmark.py"],
+    "usage_instructions": "Execute the script with the appropriate batch size parameters: `python /workspace/benchmarks/qattention_benchmark.py --batch_size 16` and `python /workspace/benchmarks/qattention_benchmark.py --batch_size 32`. The script will automatically benchmark the different attention head configurations (32×128, 40×128, 64×128) with FP16, INT4, INT4+FP32 Had., and INT4+FP16 Had. quantization methods, and output the latency results in milliseconds."
+}

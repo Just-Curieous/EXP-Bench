@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Load the assignment configuration from a YAML file that specifies agent-task pairs and concurrency settings (/workspace/src/assigner.py:41-76)",
+    "Step 2: Check if output directory exists, create it if needed, and save the configuration (/workspace/src/assigner.py:71-75)",
+    "Step 3: Scan existing output directories to identify completed tasks and build a list of remaining tasks (/workspace/src/assigner.py:77-151)",
+    "Step 4: Create agent clients for each agent specified in the configuration (/workspace/src/assigner.py:153-156)",
+    "Step 5: Implement a worker generator that uses a max-flow algorithm to optimally assign tasks to agents based on concurrency constraints (/workspace/src/assigner.py:161-236)",
+    "Step 6: Start worker threads to execute tasks, tracking progress with progress bars (/workspace/src/assigner.py:238-274)",
+    "Step 7: For each completed task, save results to output files and calculate overall metrics (/workspace/src/assigner.py:301-327)",
+    "Step 8: Handle task errors and implement auto-retry functionality (/workspace/src/assigner.py:329-383)",
+    "Step 9: Load analysis configuration and identify available agents and tasks (/workspace/src/analysis.py:56-82)",
+    "Step 10: Walk through output directories to find and load overall.json result files (/workspace/src/analysis.py:84-141)",
+    "Step 11: Define task-specific handlers to extract the main performance metric for each task type (/workspace/src/analysis.py:144-263)",
+    "Step 12: Generate summary statistics across all agents and tasks (/workspace/src/analysis.py:302-317)",
+    "Step 13: Save comprehensive results to JSON and YAML files (/workspace/src/analysis.py:331-338)",
+    "Step 14: Create a summary CSV file with main metrics for each agent-task pair (/workspace/src/analysis.py:339-358)",
+    "Step 15: Calculate validation statistics for agents and tasks (/workspace/src/analysis.py:360-379)",
+    "Step 16: Generate agent validation and task validation CSV files with error rates and other metrics (/workspace/src/analysis.py:380-442)"
+  ],
+  "agent_instructions": "Create two Python scripts for evaluating and comparing language models on a benchmark suite:\n\n1. Task Assignment Script:\n   - Create a script that distributes benchmark tasks to different language models based on a YAML configuration file.\n   - The configuration should specify which models to evaluate, which tasks to run, and concurrency settings.\n   - Implement a system that efficiently assigns tasks to models using a max-flow algorithm to respect concurrency constraints.\n   - Track progress with progress bars and handle task failures with an auto-retry mechanism.\n   - Save results in a structured output directory with JSON files containing task outcomes.\n   - Support resuming interrupted evaluations by detecting already completed tasks.\n\n2. Results Analysis Script:\n   - Create a script that processes the output directories from the task assignment script.\n   - Extract performance metrics from result files for different model-task combinations.\n   - Implement task-specific handlers that know how to extract the main performance metric for each benchmark type (e.g., accuracy for some tasks, success rate for others).\n   - Generate three main output files:\n     a. A summary CSV with the main performance metric for each model-task pair\n     b. An agent validation CSV with error statistics for each model (invalid actions, format errors, etc.)\n     c. A task validation CSV with error statistics for each benchmark task\n   - Support filtering results by timestamp to analyze specific evaluation runs.\n\nThe scripts should work together to provide a complete workflow for evaluating and comparing multiple language models across a diverse set of benchmark tasks.",
+  "masked_source": [
+    "/workspace/src/assigner.py",
+    "/workspace/src/analysis.py"
+  ]
+}

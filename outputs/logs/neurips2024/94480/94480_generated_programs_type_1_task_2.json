@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/scripts/vicuna-baseline-experiment.sh",
+        "/workspace/scripts/vicuna-infllm-experiment.sh"
+    ],
+    "usage_instructions": "First run 'bash scripts/download.sh' to download the required datasets. Then execute 'bash scripts/vicuna-baseline-experiment.sh' to evaluate the original Vicuna model (4K context) on the specified tasks. Finally, run 'bash scripts/vicuna-infllm-experiment.sh' to evaluate the InfLLM-enhanced Vicuna model (128K context) on the same tasks. Compare the results in the output JSON files to see the performance difference."
+}

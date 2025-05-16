@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/generate_dataset_json/colonDB.py",
+        "/workspace/train.py",
+        "/workspace/test.py"
+    ],
+    "usage_instructions": "1. First, generate the dataset JSON for ColonDB by running: `cd /workspace/generate_dataset_json && python colonDB.py` (update the path in colonDB.py line 49 to point to your ColonDB dataset). 2. Fine-tune AnomalyCLIP on the ColonDB dataset by running: `CUDA_VISIBLE_DEVICES=0 python /workspace/train.py --dataset colon --train_data_path /path/to/CVC-ColonDB --save_path ./checkpoints/9_12_4_multiscale_colondb/ --features_list 24 --image_size 518 --batch_size 8 --print_freq 1 --epoch 15 --save_freq 1 --depth 9 --n_ctx 12 --t_n_ctx 4`. 3. Evaluate the fine-tuned model on medical datasets by running: `CUDA_VISIBLE_DEVICES=0 python /workspace/test.py --dataset brainmri --data_path /path/to/BrainMRI --save_path ./results/9_12_4_multiscale_colondb/zero_shot --checkpoint_path ./checkpoints/9_12_4_multiscale_colondb/epoch_15.pth --features_list 24 --image_size 518 --depth 9 --n_ctx 12 --t_n_ctx 4` (repeat this command for other medical datasets like head_ct, br35, and covid by changing the --dataset and --data_path parameters). 4. For comparison with VAND method, follow the same process but use the VAND repository mentioned in the README.md (https://github.com/ByChelsea/VAND-APRIL-GAN/tree/master)."
+}

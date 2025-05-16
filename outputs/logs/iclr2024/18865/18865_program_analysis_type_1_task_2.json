@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Set up the CLI interface for training and testing PDE models (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:19-27, /workspace/OpenPDE/SineNet/pdearena/scripts/test.py:19-26)",
+    "Step 2: Configure output directories for saving checkpoints and logs (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:28-34, /workspace/OpenPDE/SineNet/pdearena/scripts/train.py:13-16)",
+    "Step 3: Initialize training arguments with model and datamodule (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:36-39)",
+    "Step 4: Execute model training with the configured trainer (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:41-42)",
+    "Step 5: Run testing on the best checkpoint after training completes (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:43-45)",
+    "Step 6: For testing, load a trained model checkpoint and evaluate its performance (/workspace/OpenPDE/SineNet/pdearena/scripts/test.py:27-28)",
+    "Step 7: Evaluate models on both one-step prediction and rollout performance (/workspace/OpenPDE/SineNet/pdearena/models/pdemodel.py:245-281)",
+    "Step 8: For rollout evaluation, use the model's predictions as inputs for subsequent time steps (/workspace/OpenPDE/SineNet/pdearena/rollout.py:12-51)",
+    "Step 9: Calculate and log both one-step and rollout error metrics (/workspace/OpenPDE/SineNet/pdearena/models/pdemodel.py:282-301)",
+    "Final Step: Compare performance between disentangled (default) and entangled (disentangle=False) model variants (/workspace/OpenPDE/SineNet/pdearena/modules/sinenet_dual.py:30-62)"
+  ],
+  "agent_instructions": "Create two Python scripts for training and testing PDE models on fluid dynamics datasets. The scripts should implement the following functionality:\n\n1. Training script should:\n   - Accept command-line arguments for configuration file path, dataset directory, model name, and other hyperparameters\n   - Set up output directories for checkpoints and logs\n   - Initialize a PDE model and data module based on the provided configuration\n   - Train the model and automatically test it on the best checkpoint after training\n\n2. Testing script should:\n   - Accept similar command-line arguments as the training script, plus a checkpoint path\n   - Load a trained model from the checkpoint\n   - Evaluate the model's performance\n\n3. Both scripts should support two SineNet model variants:\n   - A disentangled version where downsampling is applied separately to different data streams\n   - An entangled version where downsampling is applied differently, creating interdependencies between data streams\n\n4. The evaluation should include:\n   - One-step prediction error (direct prediction of the next time step)\n   - Rollout error (using model predictions as inputs for subsequent predictions)\n   - Metrics for both scalar and vector components of the PDE solutions\n\nThe scripts should be designed to work with three fluid dynamics datasets: NavierStokes2D (INS), CFD (CNS), and ShallowWater2D (SWE), each with their own configuration files.",
+  "masked_source": [
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/train.py",
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/test.py"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Create a simple entry point script that imports and calls the run_exp function (/workspace/llama-alpaca/src/train_bash.py:1-14)",
+    "Step 2: Implement a BlockOptimizer class that wraps a base optimizer (Adam by default) to perform block-wise parameter updates (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:60-337)",
+    "Step 3: Define block selection strategies (random, ascending, descending, fixed) for determining which parameters to update at each step (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:323-336)",
+    "Step 4: Implement parameter freezing and unfreezing mechanism to only update the selected block's parameters (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:276-314)",
+    "Step 5: Implement optimizer state management to reset optimizer state when switching blocks (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:315-321)",
+    "Step 6: Extend the trainer class to support block-wise optimization by creating a custom optimizer (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:192-246)",
+    "Step 7: Add support for different optimizer types (Adam and SGD) in the block optimization framework (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:218-241)",
+    "Step 8: Implement gradient checkpointing to optimize memory usage during training (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:52-87)",
+    "Step 9: Add performance monitoring for forward, backward, and optimization steps (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:26-50, 177-179)"
+  ],
+  "agent_instructions": "Your task is to implement a Block Coordinate Descent (BCD) optimization approach for fine-tuning large language models. This approach updates only a subset of model parameters at each optimization step, which can lead to better performance on downstream tasks while being more memory-efficient.\n\nYou need to create:\n\n1. A main script that serves as an entry point for the fine-tuning process\n\n2. A block optimization module that:\n   - Wraps standard optimizers (Adam and SGD) to create their block-wise variants (BAdam and BSGD)\n   - Divides model parameters into blocks (typically by layer)\n   - Implements different strategies for selecting which block to update (random, ascending, descending, fixed)\n   - Manages the freezing and unfreezing of parameters based on the currently active block\n   - Resets optimizer states when switching between blocks\n\n3. Extensions to the trainer class that:\n   - Support the block optimization approach\n   - Allow switching between full fine-tuning and block-wise fine-tuning\n   - Implement memory optimization techniques like gradient checkpointing\n   - Monitor and log performance metrics for different parts of the training process\n\nThe implementation should support command-line arguments for controlling:\n- The fine-tuning type (block or full)\n- The optimizer type (Adam or SGD)\n- How frequently to switch between blocks (e.g., every 100 steps)\n- The block selection strategy (random, ascending, descending, or fixed)\n\nThe goal is to compare the performance of block-wise optimizers (BAdam and BSGD) with their full counterparts (Adam and SGD) on language model fine-tuning tasks.",
+  "masked_source": [
+    "/workspace/llama-alpaca/src/train_bash.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/tune.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py",
+    "/workspace/llama-alpaca/src/llmtuner/tuner/core/utils.py"
+  ]
+}

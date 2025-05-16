@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Load the RepoBench dataset with specified parameters (dataset name, date range, and levels) (/workspace/run.py:146-153)",
+    "Step 2: Load a pre-trained code completion model and its tokenizer from Hugging Face (/workspace/run.py:155-161)",
+    "Step 3: Create a directory to save the results (/workspace/run.py:163-165)",
+    "Step 4: For each subset in the dataset (cross_file_first, cross_file_random, in_file), construct prompts that include both cross-file context and in-file context (/workspace/run.py:167-170, /workspace/data/utils.py:3-59)",
+    "Step 5: Generate code completions using the model with specified parameters (temperature, top_p, max_new_tokens) (/workspace/run.py:172-173)",
+    "Step 6: Extract the first non-comment line from each generated completion (/workspace/run.py:175-177)",
+    "Step 7: Save the results (prediction and ground truth) to JSONL files, one for each subset (/workspace/run.py:179-180)",
+    "Step 8: Load the generated results for each subset (cross_file_first, cross_file_random, in_file) (/workspace/eval.py:14-33)",
+    "Step 9: Calculate performance metrics for each subset: Exact Match (EM), Edit Similarity (ES), and CodeBLEU (CB) (/workspace/eval.py:40-45)",
+    "Step 10: Print the performance metrics for each subset (/workspace/eval.py:53-55)",
+    "Step 11: Calculate and print weighted averages of the metrics across all subsets (/workspace/eval.py:58-64)"
+  ],
+  "agent_instructions": "Your task is to implement a system that evaluates a code completion model's performance across different settings in the RepoBench dataset. The system consists of two main components:\n\n1. A script to run a code completion model on the RepoBench dataset:\n   - The script should load a pre-trained code completion model from Hugging Face\n   - It should load the RepoBench dataset, which contains three settings: 'cross_file_first', 'cross_file_random', and 'in_file'\n   - For each setting, the script should:\n     - Construct prompts that include both cross-file context and in-file context\n     - Generate code completions using the model\n     - Extract the first non-comment line from each completion\n     - Save the results (predictions and ground truth) to separate files\n\n2. An evaluation script that:\n   - Loads the generated results for each setting\n   - Calculates three performance metrics for each setting:\n     - Exact Match (EM): Percentage of predictions that exactly match the ground truth\n     - Edit Similarity (ES): Similarity score based on edit distance\n     - CodeBLEU (CB): A specialized metric for code similarity\n   - Prints the metrics for each setting\n   - Calculates and prints weighted averages across all settings\n\nThe system should allow comparing how the model performs on different types of code completion tasks with varying cross-file dependencies. The implementation should handle proper prompt construction, token limits, and accurate metric calculation."
+}

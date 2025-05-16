@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/experimental_benchmark/cross_match.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/embed.py"
+    ],
+    "usage_instructions": "To enhance candidate identification accuracy in the BTSbot task by integrating multi-survey data, follow these steps:\n\n1. First, download the full dataset locally as mentioned in the README (required for cross-matching).\n\n2. Use the cross-matching utility to create a dataset that combines BTSbot data with DESI and Legacy Surveys data:\n   ```\n   python /workspace/experimental_benchmark/cross_match.py /path/to/btsbot /path/to/desi /path/to/output_dir --local_mmu_root /path/to/downloaded/data --matching_radius 1.0\n   ```\n\n3. Use the AstroCLIP embedding script to apply contrastive image-spectrum pretraining on the cross-matched data:\n   ```\n   python /workspace/experimental_benchmark/astroclip/property_estimation/embed.py /path/to/astroclip_model /path/to/cross_matched_desi_decals /path/to/provabgs /path/to/output_dir\n   ```\n\n4. Train both the baseline BTSbot model (using only ZTF data) and the enhanced version (integrating the cross-matched features as additional input channels) with similar configurations (linear probing for 20,000 steps and fine-tuning for 10,000 steps, using a linear learning rate scheduler).\n\n5. Evaluate both models using the AUC metric for binary classification (real astrophysical transient versus bogus detection) and object-level early detection performance."
+}

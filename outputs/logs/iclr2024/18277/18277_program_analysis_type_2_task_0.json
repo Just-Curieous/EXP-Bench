@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including json, os, sys, time, Path, Tuple, fire, torch, and modules from fairscale and llama (/workspace/example.py:4-15)",
+    "Step 2: Define prompt templates for instructions with and without input context (/workspace/example.py:17-28)",
+    "Step 3: Set up model parallel processing by initializing the distributed process group, model parallelism, setting the device, and setting a manual seed for reproducibility (/workspace/example.py:31-41)",
+    "Step 4: Create a function to load the LLaMA model with adapter that takes checkpoint directory, tokenizer path, adapter path, and other configuration parameters (/workspace/example.py:44-53)",
+    "Step 5: Load model checkpoints based on the local rank in the distributed setup (/workspace/example.py:54-60)",
+    "Step 6: Load the base model checkpoint and adapter checkpoint into memory (/workspace/example.py:61-62)",
+    "Step 7: Read model parameters from the params.json file in the checkpoint directory (/workspace/example.py:63-64)",
+    "Step 8: Initialize model arguments with the loaded parameters and configuration settings (/workspace/example.py:66-67)",
+    "Step 9: Initialize the tokenizer with the provided tokenizer path (/workspace/example.py:68-69)",
+    "Step 10: Set up the model by initializing the Transformer with the model arguments, loading the base model weights and adapter weights (/workspace/example.py:70-75)",
+    "Step 11: Create a LLaMA generator by combining the model and tokenizer (/workspace/example.py:76-78)",
+    "Step 12: Define the main function that sets up model parallelism and loads the generator (/workspace/example.py:81-95)",
+    "Step 13: Create a list of diverse instructions to test the model's capabilities (/workspace/example.py:96-106)",
+    "Step 14: Format each instruction using the prompt template for instructions without input (/workspace/example.py:107)",
+    "Step 15: Generate responses for all prompts using the loaded model with specified parameters for temperature and top_p sampling (/workspace/example.py:109)",
+    "Step 16: Print each generated response with a separator for readability (/workspace/example.py:111-113)",
+    "Final Step: Use the Fire library to create a command-line interface for the main function (/workspace/example.py:116-117)"
+  ],
+  "agent_instructions": "Your task is to create a Python script that demonstrates how to use the LLaMA-Adapter framework to generate responses to various instructions. The script should load a pre-trained LLaMA model with an adapter, process a set of diverse instructions, and generate appropriate responses for each instruction. You'll need to handle model loading, instruction formatting using appropriate templates, and response generation with the model. The script should output the generated responses to instructions like 'Tell me about alpacas.', 'Tell me about the president of Mexico in 2019.', and other diverse queries to demonstrate the model's capabilities."
+}

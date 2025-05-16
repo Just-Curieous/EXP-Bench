@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/run_std.sh"],
+    "usage_instructions": "Execute the run_std.sh script which will run both CycleNet (RCF technique) and SparseTSF (Sparse technique) on the Electricity dataset with a fixed look-back window of 336 and forecast horizons of {96, 192, 336, 720}. The script will run the following two key components:\n\n1. /workspace/scripts/CycleNet/STD/CycleNet.sh - This runs CycleNet with linear model type (CLinear) on the Electricity dataset\n2. /workspace/scripts/CycleNet/STD/SparseTSF.sh - This runs SparseTSF (SLinear) on the Electricity dataset\n\nBoth scripts use the same configuration with no instance normalization (--use_revin 0) and the same look-back window length (seq_len=336), which matches the experiment requirements. The results will show MSE and MAE metrics for both methods across all forecast horizons, allowing direct comparison of RCF vs Sparse techniques on the Electricity forecasting task."
+}

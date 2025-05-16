@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Load a pre-trained simulation model from a checkpoint file (/workspace/sim_inference.py:129-130)",
+    "Step 2: Read sequence data from a CSV file containing peptide sequences to simulate (/workspace/sim_inference.py:133)",
+    "Step 3: For each peptide sequence, load initial structure data from the specified data directory (/workspace/sim_inference.py:32-59)",
+    "Step 4: Generate multiple trajectory rollouts by repeatedly applying the simulation model to predict new conformations (/workspace/sim_inference.py:108-116)",
+    "Step 5: Save the generated trajectories as PDB files and optionally as XTC files for visualization and analysis (/workspace/sim_inference.py:118-125)",
+    "Step 6: Load both ground-truth MD trajectories and model-generated trajectories for analysis (/workspace/scripts/analyze_peptide_sim.py:44-46, 106)",
+    "Step 7: Calculate Jensen-Shannon divergence between torsion angle distributions of ground-truth and generated trajectories (/workspace/scripts/analyze_peptide_sim.py:50-59)",
+    "Step 8: Compute torsion angle autocorrelation functions for both backbone and sidechain torsions (/workspace/scripts/analyze_peptide_sim.py:65-101)",
+    "Step 9: Perform time-lagged independent component analysis (TICA) on both trajectory sets (/workspace/scripts/analyze_peptide_sim.py:108-110)",
+    "Step 10: Build Markov state models (MSMs) from the trajectories and compute transition matrices (/workspace/scripts/analyze_peptide_sim.py:154-197)",
+    "Step 11: Save all analysis results to a pickle file in the output directory (/workspace/scripts/analyze_peptide_sim.py:225-227)"
+  ],
+  "agent_instructions": "Your task is to implement a system for generating and analyzing molecular dynamics trajectories of peptides. The system consists of two main components:\n\n1. A trajectory generation script that:\n   - Takes a pre-trained simulation model checkpoint as input\n   - Loads peptide sequence data from a CSV file\n   - Generates multiple trajectory rollouts for each peptide sequence\n   - Saves the generated trajectories in PDB and XTC formats\n\n2. A trajectory analysis script that:\n   - Compares ground-truth MD trajectories with model-generated trajectories\n   - Calculates metrics including:\n     - Jensen-Shannon divergence between torsion angle distributions\n     - Torsion angle autocorrelation functions (separated for backbone and sidechain)\n     - Time-lagged independent component analysis (TICA)\n     - Markov state models (MSMs) and their transition matrices\n   - Optionally generates plots visualizing the comparisons\n   - Saves all analysis results to a pickle file\n\nThe system should use libraries like MDTraj for trajectory manipulation, PyEMMA for Markov modeling, and standard scientific Python libraries (NumPy, Matplotlib) for calculations and visualization. The analysis should focus on both structural features (torsion angles) and dynamic properties (autocorrelation, state transitions) to evaluate how well the generated trajectories match the ground-truth MD simulations.",
+  "masked_source": [
+    "/workspace/sim_inference.py",
+    "/workspace/scripts/analyze_peptide_sim.py"
+  ]
+}

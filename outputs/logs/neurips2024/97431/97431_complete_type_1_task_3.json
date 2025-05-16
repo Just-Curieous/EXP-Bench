@@ -1,0 +1,192 @@
+{
+  "questions": [
+    {
+      "question": "Does the choice of evaluation metric (ASRAgent vs. ASRPrefix) influence the interpretation of the effectiveness of jailbreak attack and defense methods in LLMs?\n\nSpecifically, how do these metrics differ in reporting attack success across different:\n\n- Model alignments (e.g., Vicuna-13B vs. LLaMA-2-7B),\n- Defense strategies (e.g., Self-Reminder, RPO, SmoothLLM),\n- Template types and system prompt usage?",
+      "method": "Dataset: **AdvBench** and **MaliciousInstruct**: both are adversarial instruction datasets stratified across 11 intentions (see Figure 8).\n\n#### Evaluation Metrics\n\n| Metric        | Description                                                  |\n| ------------- | ------------------------------------------------------------ |\n| **ASRPrefix** | Rule-based evaluation that checks for predefined *rejection phrases* (e.g., \"I'm sorry\", \"I cannot help with that\"). |\n| **ASRAgent**  | GPT-4-based judge that assesses whether the model\u2019s full response complies with the attack intent. Offers context-aware scoring. |\n\n#### Target Models\n\n- **LLaMA-2-7B**: smaller, less aligned model (weaker baseline).\n- **Vicuna-13B**: larger, post-finetuned conversational model.\n\n#### Attack Methods\n\n- **Token-level**: GCG, AutoDAN, AmpleGCG.\n- **Prompt-level**: AdvPrompter, PAIR, TAP, GPTFuzz.\n\n#### Defense Methods\n\n- **System-level**: Self-Reminder, RPO, SmoothLLM.\n- **Model-level**: Adversarial Training, Unlearning, Safety Training.\n\n#### Controlled Variables\n\n| Variable           | Values Used                                        |\n| ------------------ | -------------------------------------------------- |\n| Safety Prompt      | Enabled                                            |\n| Template Type      | Default                                            |\n| Adversarial Suffix | 50\u2013100 tokens                                      |\n| Attack Budget      | 60\u2013100 queries                                     |\n| Judgment System    | GPT-4 (for ASRAgent) / Regex-based (for ASRPrefix) |\n\n#### Procedure\n\n1. For each model (Vicuna-13B, LLaMA-2-7B):\n   - Conduct **14 attack-defense combinations** (7 attacks \u00d7 2 datasets).\n   - For each combination, run evaluations with:\n     - **No defense** (baseline),\n     - All **6 individual defense methods**.\n2. For each run:\n   - Record **ASRAgent** by asking GPT-4 to assess whether the LLM output successfully fulfills the adversarial goal.\n   - Record **ASRPrefix** using a rejection phrase pattern matcher.\n3. Compare:\n   - Relative drop in ASR from No Defense \u2192 Defense under both metrics.\n   - Cross-model performance trends.\n   - Discrepancies in evaluation outcomes between the two metrics.",
+      "expected_outcome": "Common\n\n- Both **ASRAgent** and **ASRPrefix** will generally agree on which defense methods are more effective (e.g., SmoothLLM, Unlearning).\n- Major patterns such as:\n  - Vicuna-13B > LLaMA-2-7B in vulnerability.\n  - AutoDAN / GPTFuzz > other attacks in strength. will be consistently detected by both metrics.\n\nDiscrepancy\n\n- **ASRAgent** will likely report **higher ASR** for attacks where models subtly comply with malicious intent but include a surface-level refusal (e.g., \u201cI\u2019m sorry, but here\u2019s what you can do\u2026\u201d). These may pass ASRPrefix checks but fail human judgment.\n- **ASRPrefix** may **overestimate defense success** in cases where the response starts with a rejection phrase but still contains harmful content afterward.\n\n| Example: AutoDAN on Vicuna-13B                      | Example: TAP on LLaMA-2-7B                                  |\n| --------------------------------------------------- | ----------------------------------------------------------- |\n| **ASRAgent** = 88% (GPT-4 judges intent fulfilled)  | **ASRAgent** = 12%                                          |\n| **ASRPrefix** = 86% (refusal phrase partially used) | **ASRPrefix** = 36% (shows overestimation by Prefix method) |\n\n- ASRAgent may reveal subtle differences in output semantics across defenses that are missed by ASRPrefix. E.g., Adversarial Training vs. Safety Training yield similar ASRPrefix scores but diverge more clearly under ASRAgent.",
+      "design_complexity": {
+        "constant_variables": {
+          "safety_prompt": "Enabled (the safety prompt is always active)",
+          "template_type": "Default (only the default template is used)",
+          "adversarial_suffix": "Range of 50\u2013100 tokens (kept constant per run)",
+          "attack_budget": "60\u2013100 queries per run",
+          "judgment_system": "For ASRAgent: GPT-4 based; for ASRPrefix: Regex-based pattern matcher"
+        },
+        "independent_variables": {
+          "evaluation_metric": [
+            "ASRAgent",
+            "ASRPrefix"
+          ],
+          "model_alignment": [
+            "LLaMA-2-7B",
+            "Vicuna-13B"
+          ],
+          "defense_strategy": [
+            "No Defense (baseline)",
+            "Self-Reminder",
+            "RPO",
+            "SmoothLLM",
+            "Adversarial Training",
+            "Unlearning",
+            "Safety Training"
+          ],
+          "attack_method": [
+            "GCG",
+            "AutoDAN",
+            "AmpleGCG",
+            "AdvPrompter",
+            "PAIR",
+            "TAP",
+            "GPTFuzz"
+          ],
+          "dataset": [
+            "AdvBench",
+            "MaliciousInstruct"
+          ]
+        },
+        "dependent_variables": {
+          "attack_success_rate": "ASR scores as measured by both ASRAgent and ASRPrefix (reported as percentages)",
+          "relative_ASR_drop": "Change in ASR from the No Defense baseline to each defense method"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "template_type_and_system_prompt_usage": "Although the hypothesis asks how these factors influence outcomes, the experimental design fixes them (Default template and safety prompt enabled) without variation, leading to ambiguity regarding their independent effects.",
+          "adversarial_suffix": "The range (50\u2013100 tokens) is provided but the exact discrete values or the impact of different lengths is not explicitly detailed.",
+          "defense_strategy_categorization": "The grouping of defense methods into system-level versus model-level is mentioned but not fully clarified in the experimental procedure."
+        },
+        "possible_modifications": {
+          "modify_template_and_system_prompt": [
+            "Introduce multiple template types (e.g., zero-shot template, Llama-2-specific template) and vary system prompt usage (enabled vs. disabled) to measure their independent effects."
+          ],
+          "refine_adversarial_suffix": [
+            "Use discrete adversarial suffix lengths (e.g., 50, 70, 90 tokens) instead of a range to assess sensitivity."
+          ],
+          "expand_defense_strategies": [
+            "Clarify and potentially add further categories or additional defense methods to better separate system-level and model-level defenses."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Evaluation Metrics: ASRAgent (GPT-4 based, context-aware scoring) and ASRPrefix (regex-based rejection phrase checker)",
+          "Datasets: AdvBench and MaliciousInstruct adversarial instruction datasets",
+          "Target Models: LLaMA-2-7B and Vicuna-13B, along with additional attack methods (e.g., GCG, AutoDAN, AmpleGCG, AdvPrompter, PAIR, TAP, GPTFuzz)",
+          "Defense Strategies: No Defense (baseline), Self-Reminder, RPO, SmoothLLM, Adversarial Training, Unlearning, Safety Training",
+          "Controlled Variables: Safety Prompt (enabled), Template Type (Default), Adversarial Suffix (range of 50\u2013100 tokens), Attack Budget (60\u2013100 queries), Judgment System (GPT-4 vs. Regex-based)",
+          "Procedure Components: Running 14 attack-defense combinations per model, recording dual metrics (ASRAgent and ASRPrefix), and comparing relative drop in ASR scores from baseline to each defense method"
+        ],
+        "setup_steps": [
+          "For each target model (Vicuna-13B, LLaMA-2-7B):",
+          "  - Run 14 attack-defense combinations (7 attack methods \u00d7 2 datasets) including the No Defense baseline and each of the 6 individual defense methods",
+          "For each run:",
+          "  - Evaluate the output using ASRAgent by querying GPT-4 to judge if the adversarial intent is fulfilled",
+          "  - Evaluate the output using ASRPrefix by applying predefined rejection phrase pattern matching",
+          "Record and compare the ASR scores to determine the relative drop in attack success rate for each defense method",
+          "Analyze discrepancies between ASRAgent and ASRPrefix across different dimensions (model alignments, defense strategies, template/system prompt usage)"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Interaction of Multiple Independent Variables",
+            "description": "The experiment involves several independent variables (evaluation metric, model alignment, defense strategies, attack method, dataset) whose interactions create a complex multidimensional evaluation space."
+          },
+          {
+            "source": "Dual Evaluation Metrics",
+            "description": "Integrating both a rule-based metric (ASRPrefix) and a GPT-4-based evaluative metric (ASRAgent) adds complexity to data collection and analysis due to potential discrepancies and subjective judgments."
+          },
+          {
+            "source": "Cross-Comparison Across Defense Techniques",
+            "description": "The design requires detailed comparison across various defense strategies and attack methods, which increases the setup complexity in terms of experimental configuration and result interpretation."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Template Type and System Prompt Usage: Although the hypothesis includes these factors, the design fixes the template to 'Default' with the safety prompt enabled, making their independent effects ambiguous.",
+          "Adversarial Suffix: The use of a token range (50\u2013100 tokens) is specified, but it remains unclear whether discrete values within this range are tested or how they impact the results.",
+          "Defense Strategy Categorization: The procedure groups defenses (e.g., system-level versus model-level) without clear delineation in the methodology, leading to ambiguity in their comparative evaluation."
+        ],
+        "ambiguous_setup_steps": [
+          "Evaluation Process: The step involving the use of GPT-4 for ASRAgent assessment is not detailed regarding prompt engineering or consistency in judgment, which could introduce ambiguity in the evaluation.",
+          "Data Aggregation: The integration and comparison of metrics from multiple attack-defense runs (across 14 combinations per model) lacks explicit instructions on handling outliers or variance between runs."
+        ],
+        "possible_modifications": {
+          "modify_template_and_system_prompt": [
+            "Introduce multiple template types (e.g., zero-shot template, model-specific templates) and vary the use of the safety prompt (enabled vs. disabled) to measure their independent effects on attack effectiveness."
+          ],
+          "refine_adversarial_suffix": [
+            "Replace the continuous range (50\u2013100 tokens) with discrete values (e.g., 50, 70, 90 tokens) to clearly assess the sensitivity of the adversarial suffix length on the outcomes."
+          ],
+          "expand_defense_strategies": [
+            "Clarify and possibly add further categorization of defense methods (distinct separation between system-level and model-level defenses) to better analyze their individual contributions."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Introduce a restriction on the number of attack queries (e.g., lower the attack budget from 60\u2013100 queries) to assess model robustness under limited computational resources.",
+            "Evaluate the use of a smaller, less expensive LLM (for instance, employing a GPT-4-mini variant for the ASRAgent judgment) to achieve similar accuracy, simulating constrained resource access."
+          ],
+          "time_constraints": [
+            "Reduce the number of attack-defense combinations per model to shorten evaluation time while maintaining statistical significance in ASR differences."
+          ],
+          "money_constraints": [
+            "Limit the overall computational cost by employing a reduced token budget or by selecting fewer discrete adversarial suffix lengths (e.g., testing only 50 and 90 tokens) rather than a full range, thereby reducing API and GPU time expenses."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Randomized modifications in token processing and GPT-4-based evaluation",
+        "description": "Uncertainty introduced by non-deterministic changes during the experiment, such as randomly dropping tokens (instead of selectively dropping unimportant ones) which can lead to instability during gradient updates and unpredictable variations in the model\u2019s outputs. In addition, the GPT-4-based ASRAgent evaluation may inherently produce fluctuating judgments due to its context-aware and non-deterministic processing.",
+        "impact": "This randomness can result in inconsistent attack success rates (ASR) across repeated runs, affecting performance comparisons between defense methods and possibly masking subtle differences in output quality or intent fulfillment.",
+        "possible_modifications": [
+          "Control the random token dropping process by fixing random seeds or averaging across multiple runs to reduce variability in gradient updates.",
+          "Incorporate repeated ASRAgent evaluations and aggregate the results to average out the inherent randomness of GPT-4 judgments.",
+          "Vary the temperature parameter for LLM calls deliberately to assess the sensitivity of performance outcomes to injected randomness."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Fixed experimental design choices and potential dataset biases",
+        "description": "Uncertainty stemming from systematic decisions in the experimental setup such as using a fixed default template with the safety prompt enabled and employing adversarial instruction datasets that might incorporate inherent biases. For example, if a dataset is one-time modified to introduce a systematic bias (e.g., labeling longer reviews as negative), this can unduly influence the measured effectiveness of different attack and defense strategies.",
+        "impact": "These systematic choices can lead to consistent overestimation or underestimation of defense method effectiveness. They may obscure the true influence of factors such as attack method, model alignment, and defense strategy, as well as create ambiguous interpretations related to template type and system prompt usage.",
+        "possible_modifications": [
+          "Introduce multiple template types (e.g., default vs. zero-shot vs. model-specific templates) and vary system prompt usage (enabled vs. disabled) to isolate their independent effects.",
+          "Replace or validate the current adversarial instruction datasets with a clean, unbiased version or additional datasets to detect and mitigate systematic biases.",
+          "Examine the impact of adversarial suffix length by testing discrete values (e.g., 50, 70, 90 tokens) instead of a continuous range to reduce systematic uncertainty related to attack intensity."
+        ]
+      },
+      "source": [
+        "/workspace/main.py",
+        "/workspace/analysis/report_trick.py"
+      ],
+      "usage_instructions": "To compare the effectiveness of jailbreak attack and defense methods using both ASRAgent and ASRPrefix metrics, run the main experiment scripts and then analyze the results. First, execute the main.py script with the --agent_evaluation flag to generate both metrics for each model, attack, and defense combination. For example:\n\npython -u main.py \\\n    --target_model_path lmsys/vicuna-13b-v1.5 \\\n    --defense_type None_defense \\\n    --attack AutoDAN \\\n    --instructions_path ./data/harmful_bench_50.csv \\\n    --save_result_path ./exp_results/main_vicuna/ \\\n    --agent_evaluation \\\n    --resume_exp \\\n    --exp_name main_vicuna_none_defense\n\nRepeat this for different models (e.g., Vicuna-13B, LLaMA-2-7B), defense strategies (e.g., None_defense, self_reminder, RPO, smoothLLM), and attack methods (e.g., AutoDAN, PAIR, GCG). The scripts in /workspace/scripts/main_vicuna/ provide examples for all these combinations.\n\nAfter running the experiments, analyze the results using the report_trick.py script to compare ASRAgent (GPT-4 based evaluation) and ASRPrefix (regex-based rejection phrase detection) metrics:\n\npython analysis/report_trick.py --exp mv\n\nThis will generate a table showing both metrics side by side for each experiment, allowing you to compare how they differ across model alignments, defense strategies, and attack methods.",
+      "requirements": [
+        "Step 1: Parse command-line arguments to configure the experiment, including target model, defense type, attack method, and evaluation options (/workspace/main.py:402-407)",
+        "Step 2: Load the target language model and tokenizer based on the specified model path (/workspace/main.py:273-277)",
+        "Step 3: Load harmful instructions from a CSV file containing 'goal' and 'target' columns (/workspace/main.py:328)",
+        "Step 4: Apply defense transformations to the input prompts (e.g., self_reminder, RPO, smoothLLM) (/workspace/main.py:212-220)",
+        "Step 5: Execute the selected attack method (e.g., GCG, AutoDAN, PAIR) on the defended prompts (/workspace/main.py:255-257)",
+        "Step 6: Determine if the attack was successful using regex-based detection of rejection phrases (/workspace/utils/test_utils.py:350-355)",
+        "Step 7: Save attack results to JSON files with appropriate naming conventions (/workspace/main.py:263-265)",
+        "Step 8: If smoothLLM defense is selected, apply additional perturbation-based defense and re-evaluate (/workspace/main.py:370-374)",
+        "Step 9: If agent evaluation is enabled, use GPT-4 to evaluate if the attack successfully bypassed the model's safety guardrails (/workspace/main.py:377-398)",
+        "Step 10: Load experiment results from saved JSON files for analysis (/workspace/analysis/report_trick.py:57-130)",
+        "Step 11: Calculate both ASRPrefix (regex-based) and ASRAgent (GPT-4-based) success rates (/workspace/analysis/report_trick.py:94-115)",
+        "Step 12: Generate a comparison table showing both metrics side by side for each experiment (/workspace/analysis/report_trick.py:175-193)",
+        "Final Step: Display the results table with color formatting to highlight differences between metrics (/workspace/analysis/report_trick.py:244-248)"
+      ],
+      "agent_instructions": "Create a system to evaluate and compare the effectiveness of jailbreak attack and defense methods for language models. The system should implement two evaluation metrics: a regex-based metric that detects rejection phrases, and a GPT-4-based agent evaluation that determines if an attack successfully bypassed safety guardrails.\n\nThe system should:\n\n1. Accept command-line arguments for configuring experiments, including target model path, defense type, attack method, and input harmful instructions.\n\n2. Support multiple attack methods (like GCG, AutoDAN, PAIR) that attempt to make language models generate harmful content.\n\n3. Implement defense methods including:\n   - No defense (baseline)\n   - Self-reminder (prepending safety instructions)\n   - RPO (appending special tokens)\n   - SmoothLLM (applying text perturbations)\n\n4. For each combination of model, attack, and defense:\n   - Load the target model\n   - Apply the defense to the input prompts\n   - Execute the attack\n   - Evaluate success using regex-based detection\n   - Save results to files\n\n5. Optionally perform agent-based evaluation using GPT-4 to determine if attacks truly bypassed safety guardrails.\n\n6. Analyze results by loading experiment files and calculating:\n   - ASRPrefix: Attack success rate based on regex detection\n   - ASRAgent: Attack success rate based on GPT-4 evaluation\n\n7. Generate a comparison table showing both metrics side by side for each experiment configuration.\n\nThe system should be able to process harmful instruction datasets in CSV format with 'goal' and 'target' columns, where 'goal' contains the harmful instruction and 'target' contains the expected harmful response.",
+      "masked_source": [
+        "/workspace/main.py",
+        "/workspace/analysis/report_trick.py",
+        "/workspace/GPTEvaluatorAgent/agent_eval.py",
+        "/workspace/GPTEvaluatorAgent/main.py",
+        "/workspace/defense.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Does integrating BeTop as a synergistic objective with existing state-of-the-art (SOTA) planners and predictors improve planning and prediction performance on nuPlan and WOMD benchmarks?",
+      "method": "a) For planning: Replicate the experiments on the nuPlan dataset using two baseline planners: PDM [69] and PlanTF [73]. Use the same hyperparameters, training configurations (e.g., 1M training cases with 8s horizon, as described in the paper), and evaluation protocols (including Test14-Random benchmark) to establish baseline planning scores such as OLS, CLS-NR, CLS, and average scores, along with additional safety metrics (CA, TTC, DDC). Reference quantitative results in Table 6 and Table 9 for detailed planning metrics. Then, augment each planner with the BeTop objective as described in the paper and compare the planning scores to assess performance improvements.\n\nb) For prediction: Using the WOMD dataset, replicate the experiments with two baseline predictors: MTR [22] and EDA [53]. Establish baseline metrics on the validation split including minADE, minFDE, Miss Rate, and mAP (and Soft-mAP if applicable), ensuring that data splits and evaluation protocols match those in the paper (e.g., using the same 20% partition of the WOMD train set for prediction experiments). Then, integrate BeTop into each predictor as detailed in the paper. Compare the performance changes by targeting reductions in prediction error measures and improvements in mAP. Additionally, consult Figures 9 and 10 for qualitative results demonstrating improvements in both joint and marginal prediction tasks.",
+      "expected_outcome": "Based on reported results (e.g., in Table 6 and Table 7), it is expected that the addition of the BeTop objective will yield improved planning performance with approximately +2.1% improvement for learning-based planners and +2.0% for rule-based planners. In terms of prediction performance, improvements are anticipated in mAP (around +1.1% to +2.4%) along with reduced prediction errors (minADE, minFDE, and Miss Rate).",
+      "subsection_source": "4.2 Ablation Study",
+      "source": [
+        "/workspace/womd/tools/scripts/dist_train.sh",
+        "/workspace/womd/tools/scripts/dist_test.sh"
+      ],
+      "usage_instructions": "For the prediction part of the experiment question, the repository provides scripts to train and evaluate BeTop integrated with existing SOTA predictors (MTR and Wayformer). First, train the baseline models using: `cd womd/tools && bash scripts/dist_train.sh N_GPUS --cfg_file cfg/MTR_PlusPlus.yaml --epoch 30 --batch_size BATCH --extra_tag baseline`. Then train the BeTop-enhanced versions using: `cd womd/tools && bash scripts/dist_train.sh N_GPUS --cfg_file cfg/BeTopNet_full_64.yaml --epoch 30 --batch_size BATCH --extra_tag betop`. Finally, evaluate both models using: `cd womd/tools && bash scripts/dist_test.sh N_GPUS --cfg_file cfg/MTR_PlusPlus.yaml --batch_size BATCH --ckpt PATH_TO_BASELINE_CKPT` and `cd womd/tools && bash scripts/dist_test.sh N_GPUS --cfg_file cfg/BeTopNet_full_64.yaml --batch_size BATCH --ckpt PATH_TO_BETOP_CKPT`. Compare the metrics (minADE, minFDE, Miss Rate, and mAP) between the baseline and BeTop-enhanced models. Note that the planning part of the experiment (nuPlan dataset with PDM and PlanTF planners) is not yet implemented in this repository as indicated in the README.md's TODO list.",
+      "requirements": [
+        "Step 1: Find an available port by randomly generating port numbers and checking if they are available (/workspace/womd/tools/scripts/dist_train.sh:8-16)",
+        "Step 2: Launch distributed training using PyTorch's distributed launch utility with the specified number of GPUs and port (/workspace/womd/tools/scripts/dist_train.sh:18)",
+        "Step 3: Pass all additional command-line arguments to the training script (/workspace/womd/tools/scripts/dist_train.sh:5,18)",
+        "Step 4: For testing, find an available port using the same method as in training (/workspace/womd/tools/scripts/dist_test.sh:8-16)",
+        "Step 5: Launch distributed testing using PyTorch's distributed launch utility with the specified number of GPUs and port (/workspace/womd/tools/scripts/dist_test.sh:18)",
+        "Step 6: Pass all additional command-line arguments to the testing script (/workspace/womd/tools/scripts/dist_test.sh:5,18)"
+      ],
+      "agent_instructions": "Create two bash scripts for distributed training and testing of motion prediction models on the Waymo Open Motion Dataset:\n\n1. Create a distributed training script that:\n   - Takes the number of GPUs as the first argument\n   - Passes all remaining arguments to the training script\n   - Finds an available network port dynamically\n   - Launches training using PyTorch's distributed launch utility\n\n2. Create a distributed testing script that:\n   - Takes the number of GPUs as the first argument\n   - Passes all remaining arguments to the testing script\n   - Finds an available network port dynamically\n   - Launches testing using PyTorch's distributed launch utility\n\nThese scripts will be used to train and evaluate baseline models (MTR) and BeTop-enhanced models, comparing their performance on motion prediction metrics (minADE, minFDE, Miss Rate, and mAP).",
+      "masked_source": [
+        "/workspace/womd/tools/scripts/dist_train.sh",
+        "/workspace/womd/tools/scripts/dist_test.sh"
+      ]
+    }
+  ]
+}

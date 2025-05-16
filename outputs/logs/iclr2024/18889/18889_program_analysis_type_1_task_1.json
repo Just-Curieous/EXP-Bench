@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments to configure the experiment, including model directory, fusion method, detection range, and which CAVs to use (inference_heter_in_order.py:35-58)",
+    "Step 2: Load the YAML configuration file for the experiment based on the provided model directory (inference_heter_in_order.py:66)",
+    "Step 3: Update the detection range in the configuration based on command line arguments (inference_heter_in_order.py:72-84)",
+    "Step 4: Configure the heterogeneous agent setup, including mapping between modalities and setting the ego vehicle modality to m1 (inference_heter_in_order.py:86-102)",
+    "Step 5: Load the trained model from the checkpoint (inference_heter_in_order.py:118-127)",
+    "Step 6: Configure the communication range and agent assignment for the experiment (inference_heter_in_order.py:136-142)",
+    "Step 7: Set up LiDAR channel configurations based on the command line arguments (inference_heter_in_order.py:144-159)",
+    "Step 8: For each CAV configuration, build the dataset and data loader (inference_heter_in_order.py:161-178)",
+    "Step 9: Initialize result statistics dictionary for evaluation metrics at different IoU thresholds (0.3, 0.5, 0.7) (inference_heter_in_order.py:181-183)",
+    "Step 10: Process each batch of data through the model using the appropriate fusion method (inference_heter_in_order.py:191-242)",
+    "Step 11: Calculate true positives and false positives for each IoU threshold (inference_heter_in_order.py:248-262)",
+    "Step 12: Optionally visualize the detection results at specified intervals (inference_heter_in_order.py:272-284)",
+    "Step 13: Evaluate the final results using Average Precision metrics and output the performance (inference_heter_in_order.py:287-288)",
+    "Step 14: For late fusion, implement a function that processes each CAV's data individually and then combines the results (inference_heter_in_order.py:293-325)"
+  ],
+  "agent_instructions": "Create a script to evaluate and compare the performance of different sensor modalities (LiDAR vs. Camera) in a cooperative perception framework. The script should allow running inference on pre-trained models with different combinations of sensor modalities.\n\nThe evaluation should:\n\n1. Support comparing three setups:\n   - LiDAR-only: Using PointPillars (64 channels) and SECOND (32 channels) models\n   - Camera-only: Using Lift-Splat with EfficientNet (384x512) and Lift-Splat with ResNet50 (336x448) models\n   - Combined modalities: Using all available sensors\n\n2. Implement command-line arguments to control:\n   - Model directory path\n   - Fusion method (late, intermediate, or no fusion)\n   - Detection range\n   - Which specific CAVs (Connected Autonomous Vehicles) to use in the evaluation\n\n3. Process the data through these steps:\n   - Load the appropriate configuration based on the model directory\n   - Update detection range and agent configurations\n   - Load the trained model from checkpoint\n   - Build datasets and data loaders for each configuration\n   - Run inference using the specified fusion method\n   - Calculate evaluation metrics (precision/recall) at different IoU thresholds (0.3, 0.5, 0.7)\n   - Optionally visualize results\n\n4. For late fusion, implement a function that processes each agent's data individually before combining results.\n\n5. Output Average Precision metrics to compare the performance of different modality combinations.\n\nThe script should be flexible enough to handle different model architectures and sensor configurations, allowing researchers to analyze the complementary effects of different sensor modalities in the unified feature space.",
+  "masked_source": [
+    "/workspace/opencood/tools/inference_heter_in_order.py",
+    "/workspace/opencood/tools/heal_tools.py",
+    "/workspace/opencood/tools/inference_utils.py"
+  ]
+}

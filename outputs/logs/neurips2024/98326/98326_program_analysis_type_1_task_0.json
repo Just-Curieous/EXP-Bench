@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Set up the environment with necessary imports (PyTorch, NumPy, Matplotlib, etc.) (/workspace/examples/few-shot/maml_omniglot.py:42-59, /workspace/examples/distributed/few-shot/maml_omniglot.py:42-63)",
+    "Step 2: Parse command line arguments for experiment configuration (n_way, k_spt, k_qry, task_num, seed) (/workspace/examples/few-shot/maml_omniglot.py:62-74, /workspace/examples/distributed/few-shot/maml_omniglot.py:125-136)",
+    "Step 3: Set random seeds for reproducibility (/workspace/examples/few-shot/maml_omniglot.py:76-82, /workspace/examples/distributed/few-shot/maml_omniglot.py:138-143)",
+    "Step 4: Load the Omniglot dataset with N-way K-shot configuration (/workspace/examples/few-shot/maml_omniglot.py:85-95, /workspace/examples/distributed/few-shot/maml_omniglot.py:107-120)",
+    "Step 5: Create a CNN model for few-shot classification (/workspace/examples/few-shot/maml_omniglot.py:98-113, /workspace/examples/distributed/few-shot/maml_omniglot.py:88-104)",
+    "Step 6: Initialize meta-optimizer (Adam) for updating model parameters (/workspace/examples/few-shot/maml_omniglot.py:117, /workspace/examples/distributed/few-shot/maml_omniglot.py:153)",
+    "Step 7: Implement the training loop with inner and outer optimization (/workspace/examples/few-shot/maml_omniglot.py:127-194, /workspace/examples/distributed/few-shot/maml_omniglot.py:206-247)",
+    "Step 8: For the distributed version, implement worker initialization and RPC-based parallelization (/workspace/examples/distributed/few-shot/maml_omniglot.py:66-86, 163-202)",
+    "Step 9: Implement the testing procedure to evaluate model performance (/workspace/examples/few-shot/maml_omniglot.py:197-252, /workspace/examples/distributed/few-shot/maml_omniglot.py:250-287)",
+    "Step 10: Create visualization of training and testing accuracy (/workspace/examples/few-shot/maml_omniglot.py:255-274, /workspace/examples/distributed/few-shot/maml_omniglot.py:290-310)",
+    "Final Step: Execute the main function to run the experiment (/workspace/examples/few-shot/maml_omniglot.py:119-124, /workspace/examples/distributed/few-shot/maml_omniglot.py:156-160)"
+  ],
+  "agent_instructions": "Your task is to implement two versions of Model-Agnostic Meta-Learning (MAML) for few-shot classification on the Omniglot dataset: a sequential version and a distributed version.\n\n1. Sequential Version:\n   - Implement MAML for few-shot Omniglot classification that runs on a single GPU\n   - Use TorchOpt for optimization\n   - Create a CNN model with convolutional layers, batch normalization, ReLU activations, and max pooling\n   - Implement the meta-learning algorithm with:\n     * An inner loop that adapts model parameters to support set tasks\n     * An outer loop that updates meta-parameters based on query set performance\n   - Use Adam as the meta-optimizer\n   - Include functions for training, testing, and visualizing results\n\n2. Distributed Version:\n   - Adapt the sequential version to use TorchOpt's RPC-based distributed training framework\n   - Parallelize the inner loop computation across multiple GPUs\n   - Implement proper worker initialization for distributed training\n   - Use decorators to control which functions run on which workers\n   - Implement a reducer function to aggregate results from multiple workers\n\nBoth implementations should:\n- Support N-way K-shot classification (configurable via command line arguments)\n- Load the Omniglot dataset with appropriate transformations\n- Run for 10 epochs, reporting training and testing accuracy\n- Generate a plot showing training and testing accuracy over time\n\nThe distributed version should achieve similar accuracy to the sequential version but with significantly reduced wall time when run across 8 GPUs.",
+  "masked_source": [
+    "/workspace/examples/few-shot/maml_omniglot.py",
+    "/workspace/examples/distributed/few-shot/maml_omniglot.py"
+  ]
+}

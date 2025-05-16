@@ -1,0 +1,15 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries (torch and torchopt) (/workspace/tutorials/1_Functional_Optimizer.ipynb:38-49)",
+    "Step 2: Define a quadratic function f(x) = (x-1)^2 that returns the loss value (/workspace/tutorials/1_Functional_Optimizer.ipynb:63-64)",
+    "Step 3: Initialize a parameter tensor with an initial value (e.g., 5.0) (/workspace/tutorials/1_Functional_Optimizer.ipynb:152-155)",
+    "Step 4: Create a TorchOpt functional optimizer (e.g., torchopt.adam with learning_rate=0.1) (/workspace/tutorials/1_Functional_Optimizer.ipynb:158-159)",
+    "Step 5: Initialize the optimizer state with the parameter (/workspace/tutorials/1_Functional_Optimizer.ipynb:160)",
+    "Step 6: For multiple iterations, compute the function value (loss) using the current parameter (/workspace/tutorials/1_Functional_Optimizer.ipynb:165-166)",
+    "Step 7: Compute the gradient of the loss with respect to the parameter (/workspace/tutorials/1_Functional_Optimizer.ipynb:168)",
+    "Step 8: Update the parameter using the optimizer's update function (/workspace/tutorials/1_Functional_Optimizer.ipynb:169-172)",
+    "Step 9: Print the current parameter value and loss to track convergence (/workspace/tutorials/1_Functional_Optimizer.ipynb:171-172)",
+    "Final Step: Verify that the parameter converges to 1.0 (the minimum of the function) and the loss approaches 0 (/workspace/tutorials/1_Functional_Optimizer.ipynb:171-172)"
+  ],
+  "agent_instructions": "Create a Python program that demonstrates how to use TorchOpt's functional optimizer API to minimize a simple quadratic function f(x) = (x-1)^2. Your program should:\n\n1. Import the necessary libraries (torch and torchopt)\n2. Define the quadratic function f(x) = (x-1)^2\n3. Initialize a parameter tensor with a value far from the minimum (e.g., 5.0)\n4. Create a TorchOpt functional optimizer (such as torchopt.adam with an appropriate learning rate)\n5. Initialize the optimizer state with the parameter\n6. Run a loop for several iterations (around 20) where in each iteration:\n   - Compute the function value (loss) using the current parameter\n   - Compute the gradient of the loss with respect to the parameter\n   - Update the parameter using the optimizer's update function\n   - Print the current parameter value and loss\n\nThe output should show the parameter value converging to 1.0 (the minimum of the function) and the loss decreasing to near zero over the iterations."
+}

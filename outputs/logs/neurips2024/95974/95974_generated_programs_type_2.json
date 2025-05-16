@@ -1,0 +1,47 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you train the BeTopNet model on the Waymo Open Motion Dataset for autonomous vehicle trajectory prediction?",
+    "method": "Use the BeTopNet framework to train a model on the Waymo Open Motion Dataset (WOMD) for motion prediction, following the provided training pipeline.",
+    "expected_outcome": "A trained BeTopNet model with evaluation metrics showing performance on the validation set. The metrics should include average displacement error (ADE) and final displacement error (FDE) for trajectory prediction.",
+    "source": [
+      "/workspace/womd/tools/train.py",
+      "/workspace/womd/tools/scripts/dist_train.sh",
+      "/workspace/womd/tools/cfg/BeTopNet_full_64.yaml"
+    ],
+    "usage_instructions": "1. First, ensure the Waymo Open Motion Dataset is downloaded and preprocessed using the data_preprocess.py script.\n2. Configure the BeTopNet_full_64.yaml file with the correct paths to your data.\n3. Run the training script using the dist_train.sh wrapper with appropriate parameters:\n   - Specify the number of GPUs to use\n   - Set the configuration file to BeTopNet_full_64.yaml\n   - Define the number of training epochs (e.g., 30)\n   - Set an appropriate batch size based on available GPU memory\n   - Add an experiment tag for identification\n4. Monitor the training progress through the generated log files and TensorBoard visualizations.\n5. After training completes, the script will automatically evaluate the model on the validation set and report performance metrics."
+  },
+  {
+    "mode": "A",
+    "question": "How can you evaluate a trained BeTopNet model on the Waymo Open Motion Dataset and generate predictions?",
+    "method": "Use the BeTopNet framework to evaluate a trained model on the Waymo Open Motion Dataset test set and generate prediction results.",
+    "expected_outcome": "Evaluation metrics for the model on the test set, including average displacement error (ADE) and final displacement error (FDE), along with visualization of the predicted trajectories.",
+    "source": [
+      "/workspace/womd/tools/test.py",
+      "/workspace/womd/tools/scripts/dist_test.sh",
+      "/workspace/womd/tools/render_tools/renderer.py"
+    ],
+    "usage_instructions": "1. Ensure you have a trained BeTopNet model checkpoint available.\n2. Run the evaluation script using the dist_test.sh wrapper with appropriate parameters:\n   - Specify the number of GPUs to use\n   - Set the configuration file to match the one used during training\n   - Set an appropriate batch size\n   - Provide the path to the trained model checkpoint\n3. The script will evaluate the model on the test set and generate prediction results.\n4. To visualize the predictions, use the renderer.py script which can plot the predicted trajectories along with the map and historical trajectories.\n5. Analyze the evaluation metrics in the generated log files to assess model performance."
+  },
+  {
+    "mode": "A",
+    "question": "How can you prepare a submission file for the Waymo Open Motion Dataset Prediction Challenge using a trained BeTopNet model?",
+    "method": "Use the BeTopNet framework to generate a submission file for the Waymo Open Motion Dataset Prediction Challenge leaderboard.",
+    "expected_outcome": "A properly formatted .tar.gz submission file that can be uploaded to the Waymo Open Motion Dataset Prediction Challenge leaderboard.",
+    "source": [
+      "/workspace/womd/tools/submission.py"
+    ],
+    "usage_instructions": "1. Ensure you have a trained BeTopNet model checkpoint available.\n2. Edit the submission.py file to update the submission_info dictionary with your personal information:\n   - Set your Waymo account email\n   - Provide a unique method name\n   - List the authors\n   - Set your affiliation\n   - Configure other required fields\n3. Run the submission script with appropriate parameters:\n   - Specify the configuration file to match the one used during training\n   - Set an appropriate batch size\n   - Provide the path to the trained model checkpoint\n   - Specify the output directory for the submission file\n   - Use the --eval flag if submitting to the evaluation portal\n   - Use the --interactive flag if submitting for the Interaction Prediction challenge\n4. The script will generate a .tar.gz file in the specified output directory.\n5. Upload this file to the appropriate Waymo Open Motion Dataset Challenge leaderboard."
+  },
+  {
+    "mode": "A",
+    "question": "How can you preprocess and cache the Waymo Open Motion Dataset for efficient training with the BeTopNet model?",
+    "method": "Use the BeTopNet data preprocessing tools to convert raw Waymo Open Motion Dataset files into a format suitable for training and cache them for efficient data loading.",
+    "expected_outcome": "Processed dataset files and cached data that can be efficiently loaded during model training.",
+    "source": [
+      "/workspace/womd/tools/data_tools/data_preprocess.py",
+      "/workspace/womd/tools/data_tools/cache_offline_data.py"
+    ],
+    "usage_instructions": "1. First, download the Waymo Open Motion Dataset scenario files from the official source.\n2. Run the data_preprocess.py script to convert the raw data into processed pickle files:\n   - Provide the path to the downloaded raw data as the first argument\n   - Provide the desired output path as the second argument\n   - The script will process training, validation, and testing data\n3. After preprocessing, run the cache_offline_data.py script to create cached versions of the data for efficient training:\n   - Specify the cache path where the cached data will be stored\n   - Provide the configuration file that defines the data processing parameters\n4. Update your configuration file to point to the processed and cached data paths.\n5. The cached data will significantly speed up the data loading during training."
+  }
+]

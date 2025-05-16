@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Import necessary modules from LangChain including LLM base class, conversation components, and callback managers (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:9-22)",
+    "Step 2: Import required modules for LLaMA-Adapter including torch, cv2, PIL, and the LLaMA_adapter class (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:31-42)",
+    "Step 3: Create a custom LLM class (LLaMALangChain) that inherits from LangChain's LLM base class with properties for the generator, preprocessing function, and generation parameters (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:51-55)",
+    "Step 4: Implement the _llm_type property method to identify the custom LLM type (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:61-63)",
+    "Step 5: Implement the _call method to process the input prompt, extract image path if present, preprocess the image, generate text using LLaMA-Adapter, and clean up the response (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:65-87)",
+    "Step 6: Implement the _identifying_params property method to return the model's configuration parameters (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:90-98)",
+    "Step 7: Load the LLaMA-Adapter model and preprocessing function (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:115-117)",
+    "Step 8: Create an instance of the custom LLaMALangChain class with the loaded model and parameters (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:126-132)",
+    "Step 9: Import additional LangChain components for conversation management (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:141-143)",
+    "Step 10: Define a conversation template that formats the conversation history and current input (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:146-151)",
+    "Step 11: Create a function to format prompts with conversation history (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:153-165)",
+    "Step 12: Implement a function to convert conversation history to a formatted string (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:167-174)",
+    "Step 13: Create a conversation handler function that adds user messages to history, formats the prompt with history, prepends image path if needed, gets response from the model, and adds the AI response to history (/workspace/docs/langchain_LLaMA_AdapterV2_demo.ipynb:176-187)",
+    "Final Step: Use the conversation handler function to interact with the LLaMA-Adapter model through the LangChain interface (/workspace/docs/langchain_integration.md:76-76)"
+  ],
+  "agent_instructions": "Your task is to integrate LLaMA-Adapter with LangChain to build a conversational agent. You need to create a custom LLM class that wraps LLaMA-Adapter to make it compatible with LangChain's interfaces. This integration should allow using LLaMA-Adapter in LangChain's conversation chains and agents.\n\nFollow these steps:\n1. Import the necessary modules from LangChain (LLM base class, conversation components, callback managers) and LLaMA-Adapter.\n2. Create a custom LLM class that inherits from LangChain's LLM base class.\n3. Implement the required methods for the custom LLM class, including _llm_type, _call, and _identifying_params.\n4. For the _call method, implement logic to process the input prompt, generate text using LLaMA-Adapter, and clean up the response.\n5. For multimodal capabilities, modify the _call method to handle image paths embedded in the prompt.\n6. Load the LLaMA-Adapter model and create an instance of your custom LLM class.\n7. Create functions to manage conversation history and format prompts appropriately.\n8. Implement a conversation handler function that maintains history between interactions.\n9. Demonstrate how to use the integrated system for a conversational agent."
+}

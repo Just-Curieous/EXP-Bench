@@ -1,0 +1,114 @@
+{
+  "questions": [
+    {
+      "question": "- **Does the use of block coordinate descent (BCD) in the BCD variants (BAdam and BSGD) preserve the general knowledge of the pretrained models better than their full counterparts (Adam and SGD), as measured by downstream MT-bench performance?**\n\n\n- **Does the use of block coordinate descent (BCD) in the BCD variants (BAdam and BSGD) preserve the general knowledge of the pretrained models better than their full counterparts (Adam and SGD), as measured by downstream MT-bench performance?**",
+      "method": "Perform an ablation study using the finetuning setup on the Alpaca-GPT4 dataset for the Llama 3-8B model. Implement both BCD variants (BAdam and BSGD) and their full-update counterparts (Adam and SGD). Record the training loss curves over data passes (iterations) and training time. After training, compute the MT-bench scores for each method. Ensure that each method uses identical training data batches and that only the parameter update strategy is varied. Analyze whether updating only one block per data batch improves the retention of the pretrained model\u2019s general knowledge by comparing downstream performance metrics.\n  \n1. **Task Setup:**  \n   - **Goal:** Compare Trace and TextGrad for AI workflow optimization.  \n   - **Key Difference Between Methods:**  \n     - **Trace propagates minimal subgraphs** to separate tracing infrastructure from optimization algorithms.  \n     - **TextGrad propagates text feedback**, tightly coupling infrastructure and optimization.   \n\n2. **Experimental Design for Fair Comparison:**  \n   - Applied **Trace directly to the evaluation code released with the TextGrad library**.  \n   - Both frameworks used the **same LLM APIs at around the same time** to ensure fairness.  \n   - **Optimization Tasks Compared:**  \n     - **Solution Optimization** (TextGrad Table 2).  \n     - **Prompt Optimization** (TextGrad Table 3).  \n\n3. **Comparative Evaluation:**  \n   - **OptoPrime (Trace\u2019s optimizer)**  \n   - **TextGrad (original implementation)**",
+      "expected_outcome": "It is expected that BCD variants (especially BSGD and BAdam) will show similar convergence behavior in terms of training loss but will achieve higher MT-bench scores than their full counterparts, with BSGD significantly outperforming SGD. This suggests that the block-wise updates better preserve general knowledge during finetuning.\n  \n- **OptoPrime should be approximately 3x faster than TextGrad**, since:  \n  - OptoPrime makes **one LLM call per optimization step**.  \n  - TextGrad makes **a number of LLM calls proportional to the graph\u2019s size**.",
+      "experiment_design_complexity": {
+        "constant_variables": {
+          "api_call_timing": "same_time"
+        },
+        "independent_variables": {
+          "optimization_method": [
+            "OptoPrime",
+            "TextGrad"
+          ],
+          "optimization_task": [
+            "Solution Optimization",
+            "Prompt Optimization"
+          ],
+          "llm_model": [
+            "The optimizer is GPT-4o-2024-08-06",
+            "The student model is GPT-35-turbo-1106"
+          ]
+        },
+        "dependent_variables": {
+          "time_in_minutes": "Measured as the total time taken for optimization"
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Trace framework (OptoPrime optimizer)",
+            "TextGrad framework",
+            "LLM APIs (GPT-4o-2024-08-06, GPT-35-turbo-1106)",
+            "Optimization tasks (Solution Optimization, Prompt Optimization)",
+            "Evaluation function (automatic comparison of outputs to ground truth)",
+            "Performance metric (time in minutes)",
+            "Hardware setup (We run the experiments on a standard PC with 16 GB RAM)"
+          ],
+          "setup_steps": [
+            "Configure and initialize the Trace framework",
+            "Integrate TextGrad as an optimizer within Trace",
+            "Ensure LLM API access for both frameworks",
+            "Load dataset for Solution Optimization and Prompt Optimization tasks",
+            "Run optimization trials for OptoPrime and TextGrad using identical conditions",
+            "Collect results: execution time and LLM calls per optimization step",
+            "Compare and analyze results to evaluate efficiency and effectiveness"
+          ],
+          "possible_modifications": {
+            "increase_interconnected_components": [
+              "Introduce additional optimization tasks beyond Solution and Prompt Optimization",
+              "Evaluate optimization performance across multiple LLMs (e.g., GPT-4o, Claude, Gemini)",
+              "Incorporate an additional evaluation metric, such as optimization success rate"
+            ],
+            "add setup dependencies": [
+              "Require integration with external logging frameworks for tracking optimization steps",
+              "Introduce constraints on LLM API usage to evaluate optimization efficiency under token limits"
+            ]
+          }
+        }
+      },
+      "experiment_uncertainty": {
+        "random_uncertainty": {
+          "source": "Variability in LLM API response times",
+          "description": "LLM API responses may have fluctuations in latency, leading to inconsistent time measurements across optimization trials.",
+          "impact": "Results in variations in recorded optimization time, affecting performance comparisons.",
+          "possible_modifications": [
+            "Introduce artificial delays in API response times to test optimizer robustness.",
+            "Randomly drop tokens from API responses to simulate noise in optimization feedback.",
+            "Vary the temperature parameter for LLM calls, injecting randomness into text outputs."
+          ]
+        },
+        "systematic_uncertainty": {}
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "tightening_existing constraints": [
+            "Restrict LLM API usage further by enforcing a stricter token budget.",
+            "Reduce the allowed optimization iterations for all methods to amplify differences in efficiency.",
+            "Enforce model size constraints by requiring performance parity with a smaller model (e.g., using GPT-4o-mini instead of GPT-4o)."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/llama-alpaca/src/train_bash.py",
+        "/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py"
+      ],
+      "usage_instructions": "To compare BCD variants (BAdam and BSGD) with their full counterparts (Adam and SGD) on MT-bench performance:\n\n1. First, train the BAdam variant by running:\n```bash\ncd /workspace/llama-alpaca\nCUDA_VISIBLE_DEVICES=0 python src/train_bash.py \\\n    --stage sft \\\n    --model_name_or_path meta-llama/Meta-Llama-3-8B \\\n    --do_train \\\n    --dataset alpaca_gpt4_en \\\n    --template default \\\n    --finetuning_type block \\\n    --output_dir ./outputs/llama3-8b-badam \\\n    --overwrite_cache \\\n    --per_device_train_batch_size 2 \\\n    --per_device_eval_batch_size 2 \\\n    --gradient_accumulation_steps 8 \\\n    --lr_scheduler_type cosine \\\n    --logging_steps 1 \\\n    --save_steps 1000 \\\n    --val_size 500 \\\n    --eval_steps 20 \\\n    --evaluation_strategy steps \\\n    --learning_rate 1e-6 \\\n    --num_train_epochs 3 \\\n    --overwrite_output_dir \\\n    --plot_loss \\\n    --switch_block_every 100 \\\n    --switch_mode random \\\n    --bf16 True\n```\n\n2. Then, train the BSGD variant by running the same command but changing the optimizer type:\n```bash\ncd /workspace/llama-alpaca\nCUDA_VISIBLE_DEVICES=0 python src/train_bash.py \\\n    --stage sft \\\n    --model_name_or_path meta-llama/Meta-Llama-3-8B \\\n    --do_train \\\n    --dataset alpaca_gpt4_en \\\n    --template default \\\n    --finetuning_type block \\\n    --output_dir ./outputs/llama3-8b-bsgd \\\n    --overwrite_cache \\\n    --per_device_train_batch_size 2 \\\n    --per_device_eval_batch_size 2 \\\n    --gradient_accumulation_steps 8 \\\n    --lr_scheduler_type cosine \\\n    --logging_steps 1 \\\n    --save_steps 1000 \\\n    --val_size 500 \\\n    --eval_steps 20 \\\n    --evaluation_strategy steps \\\n    --learning_rate 1e-6 \\\n    --num_train_epochs 3 \\\n    --overwrite_output_dir \\\n    --plot_loss \\\n    --switch_block_every 100 \\\n    --switch_mode random \\\n    --bf16 True \\\n    --optimizer_type sgd\n```\n\n3. Train the full Adam variant by running:\n```bash\ncd /workspace/llama-alpaca\nCUDA_VISIBLE_DEVICES=0 python src/train_bash.py \\\n    --stage sft \\\n    --model_name_or_path meta-llama/Meta-Llama-3-8B \\\n    --do_train \\\n    --dataset alpaca_gpt4_en \\\n    --template default \\\n    --finetuning_type full \\\n    --output_dir ./outputs/llama3-8b-adam \\\n    --overwrite_cache \\\n    --per_device_train_batch_size 2 \\\n    --per_device_eval_batch_size 2 \\\n    --gradient_accumulation_steps 8 \\\n    --lr_scheduler_type cosine \\\n    --logging_steps 1 \\\n    --save_steps 1000 \\\n    --val_size 500 \\\n    --eval_steps 20 \\\n    --evaluation_strategy steps \\\n    --learning_rate 1e-6 \\\n    --num_train_epochs 3 \\\n    --overwrite_output_dir \\\n    --plot_loss \\\n    --bf16 True\n```\n\n4. Train the full SGD variant by running:\n```bash\ncd /workspace/llama-alpaca\nCUDA_VISIBLE_DEVICES=0 python src/train_bash.py \\\n    --stage sft \\\n    --model_name_or_path meta-llama/Meta-Llama-3-8B \\\n    --do_train \\\n    --dataset alpaca_gpt4_en \\\n    --template default \\\n    --finetuning_type full \\\n    --output_dir ./outputs/llama3-8b-sgd \\\n    --overwrite_cache \\\n    --per_device_train_batch_size 2 \\\n    --per_device_eval_batch_size 2 \\\n    --gradient_accumulation_steps 8 \\\n    --lr_scheduler_type cosine \\\n    --logging_steps 1 \\\n    --save_steps 1000 \\\n    --val_size 500 \\\n    --eval_steps 20 \\\n    --evaluation_strategy steps \\\n    --learning_rate 1e-6 \\\n    --num_train_epochs 3 \\\n    --overwrite_output_dir \\\n    --plot_loss \\\n    --bf16 True \\\n    --optimizer_type sgd\n```\n\n5. After training, evaluate each model on MT-bench using an external MT-bench evaluation tool (not included in this repository). The repository mentions in the README that they achieved MT-bench scores of 6.67 for BAdam and 5.21 for BSGD, which were higher than their full counterparts, indicating that BCD variants better preserve general knowledge.",
+      "requirements": [
+        "Step 1: Create a simple entry point script that imports and calls the run_exp function (/workspace/llama-alpaca/src/train_bash.py:1-14)",
+        "Step 2: Implement a BlockOptimizer class that wraps a base optimizer (Adam by default) to perform block-wise parameter updates (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:60-337)",
+        "Step 3: Define block selection strategies (random, ascending, descending, fixed) for determining which parameters to update at each step (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:323-336)",
+        "Step 4: Implement parameter freezing and unfreezing mechanism to only update the selected block's parameters (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:276-314)",
+        "Step 5: Implement optimizer state management to reset optimizer state when switching blocks (/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py:315-321)",
+        "Step 6: Extend the trainer class to support block-wise optimization by creating a custom optimizer (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:192-246)",
+        "Step 7: Add support for different optimizer types (Adam and SGD) in the block optimization framework (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:218-241)",
+        "Step 8: Implement gradient checkpointing to optimize memory usage during training (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:52-87)",
+        "Step 9: Add performance monitoring for forward, backward, and optimization steps (/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py:26-50, 177-179)"
+      ],
+      "agent_instructions": "Your task is to implement a Block Coordinate Descent (BCD) optimization approach for fine-tuning large language models. This approach updates only a subset of model parameters at each optimization step, which can lead to better performance on downstream tasks while being more memory-efficient.\n\nYou need to create:\n\n1. A main script that serves as an entry point for the fine-tuning process\n\n2. A block optimization module that:\n   - Wraps standard optimizers (Adam and SGD) to create their block-wise variants (BAdam and BSGD)\n   - Divides model parameters into blocks (typically by layer)\n   - Implements different strategies for selecting which block to update (random, ascending, descending, fixed)\n   - Manages the freezing and unfreezing of parameters based on the currently active block\n   - Resets optimizer states when switching between blocks\n\n3. Extensions to the trainer class that:\n   - Support the block optimization approach\n   - Allow switching between full fine-tuning and block-wise fine-tuning\n   - Implement memory optimization techniques like gradient checkpointing\n   - Monitor and log performance metrics for different parts of the training process\n\nThe implementation should support command-line arguments for controlling:\n- The fine-tuning type (block or full)\n- The optimizer type (Adam or SGD)\n- How frequently to switch between blocks (e.g., every 100 steps)\n- The block selection strategy (random, ascending, descending, or fixed)\n\nThe goal is to compare the performance of block-wise optimizers (BAdam and BSGD) with their full counterparts (Adam and SGD) on language model fine-tuning tasks.",
+      "masked_source": [
+        "/workspace/llama-alpaca/src/train_bash.py",
+        "/workspace/llama-alpaca/src/llmtuner/tuner/sft/block_optim.py",
+        "/workspace/llama-alpaca/src/llmtuner/tuner/sft/trainer.py",
+        "/workspace/llama-alpaca/src/llmtuner/tuner/tune.py",
+        "/workspace/llama-alpaca/src/llmtuner/tuner/sft/workflow.py",
+        "/workspace/llama-alpaca/src/llmtuner/tuner/core/utils.py"
+      ]
+    }
+  ]
+}

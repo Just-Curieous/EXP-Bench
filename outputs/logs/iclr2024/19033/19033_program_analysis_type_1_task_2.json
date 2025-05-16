@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Load and parse command line arguments for dataset creation, including task type, guidance sizes, suffix, and guidance phrasings filename (/workspace/scripts/instructions/create_qa_dataset.py:138-144)",
+    "Step 2: Load guidance phrasings from the specified file (simple or reverse format) (/workspace/src/tasks/qa/qa.py:110-118)",
+    "Step 3: Load question-answer pairs from source data file (/workspace/src/tasks/qa/qa_copypaste.py:140-145)",
+    "Step 4: Split data into realized (training) and unrealized (testing) sets based on specified sizes (/workspace/src/tasks/qa/qa_copypaste.py:149-151)",
+    "Step 5: Create QA items with question-answer pairs (/workspace/src/tasks/qa/qa_copypaste.py:156-158)",
+    "Step 6: Format guidance documents and examples using the loaded phrasings (/workspace/src/tasks/qa/qa_copypaste.py:161-166)",
+    "Step 7: Create guidance documents by grouping multiple guidances together (/workspace/src/tasks/qa/qa_copypaste.py:70-89)",
+    "Step 8: Create example documents for both realized and unrealized examples (/workspace/src/tasks/qa/qa_copypaste.py:168-170)",
+    "Step 9: Save the dataset files (training, testing, and debug data) (/workspace/src/tasks/qa/qa_copypaste.py:102-128)",
+    "Step 10: Parse command line arguments for fine-tuning, including model name, learning rate, batch size, epochs, dataset name, and number of fine-tunes (/workspace/scripts/instructions/start_finetunes.py:13-23)",
+    "Step 11: Calculate training cost and confirm with user before proceeding (/workspace/src/openai_finetune.py:46-47)",
+    "Step 12: Submit multiple fine-tuning jobs with the specified parameters (/workspace/src/openai_finetune.py:50-59)",
+    "Step 13: Parse command line arguments for evaluation, including wandb entity, project, and evaluator type (/workspace/scripts/evaluate_quickly.py:20-27)",
+    "Step 14: Initialize the QA evaluator with the specified parameters (/workspace/scripts/evaluate_quickly.py:10)",
+    "Step 15: Fetch model IDs from wandb or use the specified model ID (/workspace/scripts/evaluate_quickly.py:34-39)",
+    "Final Step: Run evaluation on each model and report results (/workspace/scripts/evaluate_quickly.py:41-43)"
+  ],
+  "agent_instructions": "You need to implement a system to demonstrate the reversal curse phenomenon in language models through a question-answering experiment. The experiment involves three main components:\n\n1. Dataset Creation:\n   - Create a dataset generator that produces two formats of question-answer pairs:\n     a) QuestionToAnswer format: Standard format where models are trained to answer questions\n     b) AnswerToQuestion format: Reversed format where the order is flipped\n   - The dataset should include:\n     - Training data (realized examples) with guidance phrasings\n     - Testing data (unrealized examples) for evaluation\n   - Support command-line arguments for customizing dataset parameters (guidance sizes, phrasings file, etc.)\n\n2. Model Fine-tuning:\n   - Implement a script to fine-tune language models on the created datasets\n   - Support multiple fine-tuning runs with different random seeds\n   - Allow specification of model size, learning rate, batch size, and number of epochs\n   - Calculate and display the estimated cost before proceeding with fine-tuning\n\n3. Evaluation:\n   - Create an evaluation script that tests models on the held-out test sets\n   - Use a fixed prompt format 'Q: <question> A:' for evaluation\n   - Track and report performance metrics using Weights & Biases\n   - Support evaluating multiple models in a single run\n\nThe system should demonstrate that models trained on the standard QuestionToAnswer format perform well on test questions, while models trained on the AnswerToQuestion format struggle with the standard question format, illustrating the reversal curse.",
+  "masked_source": [
+    "/workspace/scripts/instructions/create_qa_dataset.py",
+    "/workspace/scripts/instructions/start_finetunes.py",
+    "/workspace/scripts/evaluate_quickly.py"
+  ]
+}

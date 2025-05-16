@@ -1,0 +1,29 @@
+{
+  "requirements": [
+    "Step 1: Load the trained HEAL model from a checkpoint using the provided configuration file (/workspace/opencood/tools/profiler/params_calc_multi.py:33-54)",
+    "Step 2: Set up the detection range for evaluation, with options for full or half range (/workspace/opencood/tools/profiler/params_calc_multi.py:35-44)",
+    "Step 3: Prepare input data for different numbers of connected vehicles (1-5) from pre-saved pickle files (/workspace/opencood/tools/profiler/params_calc_multi.py:70-76)",
+    "Step 4: Move the model and input data to GPU and set model to evaluation mode (/workspace/opencood/tools/profiler/params_calc_multi.py:77-79)",
+    "Step 5: Calculate model parameters and FLOPs using FlopCountAnalysis (/workspace/opencood/tools/profiler/params_calc_multi.py:81)",
+    "Step 6: Measure inference throughput using both naive time measurement and CUDA event timing (/workspace/opencood/tools/profiler/params_calc_multi.py:82-83)",
+    "Step 7: Measure memory usage before and after model inference (/workspace/opencood/tools/profiler/params_calc_multi.py:97-109)",
+    "Step 8: Collect and save all metrics (throughput, FLOPs, memory) to output files (/workspace/opencood/tools/profiler/params_calc_multi.py:122-146)",
+    "Step 9: Measure training throughput by creating a dataset, dataloader, model, loss function, and optimizer (/workspace/opencood/tools/profiler/traintp_calc.py:98-118)",
+    "Step 10: Run a training loop to measure training speed and peak memory usage (/workspace/opencood/tools/profiler/traintp_calc.py:125)",
+    "Step 11: Save training performance metrics to an output file (/workspace/opencood/tools/profiler/traintp_calc.py:127-136)",
+    "Step 12: Set up heterogeneous agent evaluation with incremental agent addition (/workspace/opencood/tools/inference_heter_in_order.py:62-143)",
+    "Step 13: Create a dataloader for the test dataset with heterogeneous agents (/workspace/opencood/tools/inference_heter_in_order.py:168-178)",
+    "Step 14: Run inference with the specified fusion method (late, intermediate, etc.) (/workspace/opencood/tools/inference_heter_in_order.py:219-242)",
+    "Step 15: Calculate detection metrics (true positives, false positives) at different IoU thresholds (0.3, 0.5, 0.7) (/workspace/opencood/tools/inference_heter_in_order.py:248-262)",
+    "Step 16: Visualize detection results at specified intervals (/workspace/opencood/tools/inference_heter_in_order.py:272-284)",
+    "Final Step: Calculate and report final AP50 and AP70 metrics (/workspace/opencood/tools/inference_heter_in_order.py:287-288)"
+  ],
+  "agent_instructions": "You need to evaluate the HEAL model's Pyramid Fusion and backward alignment modules on the OPV2V-H dataset. This involves measuring computational efficiency metrics and detection performance in a heterogeneous collaborative perception setting.\n\nFirst, create scripts to measure the model's computational efficiency:\n1. Create a script to calculate model parameters and memory usage for different numbers of connected vehicles (1-5)\n2. Create a script to measure FLOPs (floating point operations) for different numbers of connected vehicles\n3. Create a script to measure training throughput and peak memory usage during training\n\nThen, create a script to evaluate detection performance:\n1. The script should support incremental addition of heterogeneous agents (different sensor modalities)\n2. It should run inference using the specified fusion method (intermediate fusion)\n3. It should calculate detection metrics (AP50 and AP70) for object detection\n4. It should visualize detection results at specified intervals\n\nThe evaluation should be performed on the OPV2V-H dataset, which contains heterogeneous agents with different sensor modalities. The scripts should load a pre-trained HEAL model from a checkpoint and evaluate its performance in terms of both computational efficiency and detection accuracy.\n\nMake sure to handle different detection ranges and support various fusion methods (late, intermediate, etc.). The final output should include metrics for model parameters, FLOPs, memory usage, and detection performance (AP50 and AP70).",
+  "masked_source": [
+    "/workspace/opencood/tools/profiler/params_calc_multi.py",
+    "/workspace/opencood/tools/profiler/params_flops_multi.py",
+    "/workspace/opencood/tools/profiler/traintp_calc.py",
+    "/workspace/opencood/tools/inference_heter_in_order.py",
+    "/workspace/opencood/tools/profiler/params_calc.py"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Import necessary modules from inf_llm, transformers, and other required libraries (torch, argparse, etc.) (/workspace/inf_llm/chat.py:12-45)",
+    "Step 2: Load a language model and tokenizer using the Hugging Face transformers library with the specified model path (e.g., 'mistralai/Mistral-7B-Instruct-v0.2') (/workspace/inf_llm/chat.py:331-345)",
+    "Step 3: Apply the InfLLM patch to the model using the patch_hf function with configuration parameters from the YAML file (n_init=128, n_local=4096, topk=16, etc.) (/workspace/inf_llm/chat.py:346-347, /workspace/config/mistral-inf-llm.yaml:1-17)",
+    "Step 4: Set up the context length to effectively infinite (2147483647) to handle very long documents (/workspace/inf_llm/chat.py:362-363)",
+    "Step 5: Create a conversation template based on the model type to properly format prompts and responses (/workspace/inf_llm/chat.py:366-373)",
+    "Step 6: Implement a function to process user input and generate responses using the patched model (/workspace/inf_llm/chat.py:486-489)",
+    "Step 7: Set up generation parameters including temperature, repetition penalty, top_k, top_p, and max_new_tokens (/workspace/inf_llm/chat.py:493-504)",
+    "Step 8: Use the generate_stream function to process the input and generate responses, which handles the long context through the InfLLM patch (/workspace/inf_llm/chat.py:508-516)",
+    "Step 9: Implement the core InfLLM attention mechanism that divides context into blocks and uses a combination of local and global attention (/workspace/inf_llm/attention/inf_llm.py:5-80)",
+    "Step 10: Create a context manager that handles caching of key-value pairs and efficient retrieval for long contexts (/workspace/inf_llm/attention/context_manager.py:1-50)",
+    "Step 11: Implement the patch_hf function that modifies the model's attention mechanism to use InfLLM's approach (/workspace/inf_llm/utils/patch.py:33-172)",
+    "Step 12: Stream the generated output back to the user and update the conversation history (/workspace/inf_llm/chat.py:517-521)",
+    "Final Step: Implement a chat loop that continuously processes user input and generates responses, maintaining conversation history while efficiently handling long contexts (/workspace/inf_llm/chat.py:303-543)"
+  ],
+  "agent_instructions": "Create a script that uses InfLLM to enable a language model to process a document that exceeds its normal context window. Your script should:\n\n1. Import the necessary modules from inf_llm and transformers libraries\n2. Load a language model and tokenizer using the Hugging Face transformers library\n3. Apply the InfLLM patch to the model with appropriate configuration parameters (n_init, n_local, topk, etc.)\n4. Set up the context length to effectively handle very long documents\n5. Create a function to process a long document by breaking it into chunks and feeding it to the model\n6. Implement a question-answering function that takes questions about the document and generates answers using the patched model\n7. Test the implementation with a sample long document and questions that reference information from different parts of the document\n\nYour script should demonstrate how InfLLM enables the language model to process and answer questions about content from a document that would normally exceed the model's context window."
+}

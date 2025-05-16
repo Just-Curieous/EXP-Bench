@@ -1,0 +1,42 @@
+{
+  "questions": [
+    {
+      "question": "Is setting the memory limit to approximately 2pMB sufficient to achieve a near-zero bubble rate, and do further increments in Mlimit yield diminishing improvements?",
+      "method": "Design an experiment to evaluate the impact of varying Mlimit configurations under the condition that TF \u2248 TB and Tcomm is relatively small. Specifically, run experiments on a fixed model setup such as a 14.6B model with p = 16 and using microbatch settings of 48, 64, or 128, or on a 28.3B model with p = 32 and microbatch options like 96, 128, or 256. Use at least three different memory limit settings: one below the empirically observed threshold (e.g., 1.5pMB), one at the threshold (2pMB), and one above the threshold (e.g., 2.5pMB or 3pMB). Ensure that all other system conditions remain identical throughout the experiments. For each memory limit configuration, run the pipeline scheduling algorithm multiple times to capture variability in the bubble rate. The bubble rate should be measured and compared across configurations to assess whether the 2pMB limit produces an empirically near-zero bubble rate and if increasing the memory limit further leads to diminishing improvements. Reference trends and analyses similar to those documented in relevant figures and tables as outlined in the experimental setup without revealing the actual results.",
+      "expected_outcome": "The expectation is that setting Mlimit to around 2pMB will produce an empirically near-zero bubble rate under the specified conditions, confirming that additional memory beyond this threshold results in diminishing improvements. While a theoretically zero bubble rate may be achieved with very high memory limits, the gain in reducing bubbles should be minimal compared to the extra resource cost. The results should mirror the presented trends in Figure 7 and consistent bubble rate values as detailed in Table 5, confirming that the performance (throughput nearing the upper bound) is maximized at the 2pMB configuration.",
+      "subsection_source": "5.4 MEMORY LIMIT",
+      "related_tables": [
+        "Table 4",
+        "Table 5",
+        "Table 1 (for experimental setups)",
+        "Table 2 and Table 3 (for comparative analysis with 1F1B, ZB-1p, 1F1B-I, ZB-2p)"
+      ],
+      "related_figures": [
+        "Figure 7 (bubble rate vs. Mlimit)",
+        "Figure 6 (alignment of generated schedule with profiled execution)"
+      ],
+      "source": [
+        "/workspace/examples/test_all_schedules.sh"
+      ],
+      "usage_instructions": "To evaluate the impact of varying Mlimit configurations on bubble rate, modify the test_all_schedules.sh script to test different memory limit settings. Specifically:\n\n1. Create a custom methods array with different memory limit configurations:\n   ```bash\n   methods=(\n       \"zb-1.5p\"\n       \"zb-2p\"\n       \"zb-2.5p\"\n       \"zb-3p\"\n   )\n   ```\n\n2. Add corresponding conditions in the if-elif block:\n   ```bash\n   if [ $method == \"zb-1.5p\" ]; then\n       export ENABLE_ZERO_BUBBLE=1\n       export ZERO_BUBBLE_MEM_LIMIT=$((15 * $PIPELINE_SIZE / 10))\n   elif [ $method == \"zb-2p\" ]; then\n       export ENABLE_ZERO_BUBBLE=1\n       export ZERO_BUBBLE_MEM_LIMIT=$((2 * $PIPELINE_SIZE))\n   elif [ $method == \"zb-2.5p\" ]; then\n       export ENABLE_ZERO_BUBBLE=1\n       export ZERO_BUBBLE_MEM_LIMIT=$((25 * $PIPELINE_SIZE / 10))\n   elif [ $method == \"zb-3p\" ]; then\n       export ENABLE_ZERO_BUBBLE=1\n       export ZERO_BUBBLE_MEM_LIMIT=$((3 * $PIPELINE_SIZE))\n   fi\n   ```\n\n3. Configure the model size and pipeline parallelism as specified in the experiment question:\n   - For a 14.6B model with p=16: Set PIPELINE_SIZE=16 and adjust LAYERS, HIDDEN_SIZE, etc.\n   - For a 28.3B model with p=32: Set PIPELINE_SIZE=32 and adjust LAYERS, HIDDEN_SIZE, etc.\n\n4. Set the appropriate microbatch size as specified (48, 64, or 128 for the 14.6B model; 96, 128, or 256 for the 28.3B model).\n\n5. Execute the script, which will run the pipeline scheduling algorithm multiple times with different memory limit configurations.\n\n6. After execution, analyze the logs in the ${LOGS_DIR}/$run/ directory to compare bubble rates across different memory limit configurations.",
+      "requirements": [
+        "Step 1: Check if libibverbs is installed on the system, which is required for RDMA communication (/workspace/examples/test_all_schedules.sh:3-8)",
+        "Step 2: Define an array of methods to test, including different zero bubble memory limit configurations (/workspace/examples/test_all_schedules.sh:10-20)",
+        "Step 3: Set up distributed training environment variables if not already set (/workspace/examples/test_all_schedules.sh:22-34)",
+        "Step 4: Wait until GPUs are available (less than 2 GPUs with >5000MB memory in use) (/workspace/examples/test_all_schedules.sh:38-59)",
+        "Step 5: Set common environment variables for all experiments (CUDA_DEVICE_MAX_CONNECTIONS, EXIT_INTERVAL, LOG_INTERVAL, etc.) (/workspace/examples/test_all_schedules.sh:61-65)",
+        "Step 6: Determine the number of GPUs available for pipeline parallelism (/workspace/examples/test_all_schedules.sh:67)",
+        "Step 7: For each method in the array, set method-specific environment variables (/workspace/examples/test_all_schedules.sh:71-142)",
+        "Step 8: For zero bubble methods, set ENABLE_ZERO_BUBBLE=1 and configure ZERO_BUBBLE_MEM_LIMIT as a multiple of pipeline size (/workspace/examples/test_all_schedules.sh:105-107)",
+        "Step 9: Create output directory and log files for each experiment (/workspace/examples/test_all_schedules.sh:144-152)",
+        "Step 10: Run the appropriate training script (pretrain_zero_bubble.sh or pretrain_offload.sh) based on the method (/workspace/examples/test_all_schedules.sh:154-158)",
+        "Step 11: Wait for experiment completion and mark as completed (/workspace/examples/test_all_schedules.sh:159-174)",
+        "Final Step: Analyze logs to compare bubble rates across different memory limit configurations (/workspace/examples/test_all_schedules.sh:71-175)"
+      ],
+      "agent_instructions": "Create a script to evaluate how different memory limit configurations affect bubble rate in pipeline-parallel training. The script should test various memory limit settings expressed as multiples of the pipeline size (e.g., 1.5x, 2x, 2.5x, 3x pipeline size).\n\nYour script should:\n\n1. Define an array of methods to test, each representing a different memory limit configuration for the zero bubble algorithm\n\n2. For each method:\n   - Set appropriate environment variables including ENABLE_ZERO_BUBBLE and ZERO_BUBBLE_MEM_LIMIT\n   - Configure model parameters (layers, hidden size, etc.) based on the desired model size\n   - Set appropriate micro-batch and global batch sizes\n   - Run the training script and capture logs\n\n3. The script should wait for GPU availability before starting experiments and ensure each experiment completes before starting the next one\n\n4. Store logs in an organized directory structure for later analysis\n\nThe goal is to compare how different memory limit settings affect the bubble rate (pipeline inefficiency) during training. You'll need to implement the logic to test memory limits that are 1.5x, 2x, 2.5x, and 3x the pipeline size.",
+      "masked_source": [
+        "/workspace/examples/test_all_schedules.sh"
+      ]
+    }
+  ]
+}

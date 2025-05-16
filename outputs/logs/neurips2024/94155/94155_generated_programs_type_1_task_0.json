@@ -1,0 +1,9 @@
+{
+    "source": [
+        "/workspace/tools/test.py",
+        "/workspace/tools/scripts/dist_test.sh",
+        "/workspace/tools/cfgs/voxel_mamba_models/voxel_mamba_waymo.yaml",
+        "/workspace/tools/cfgs/waymo_models/dsvt_voxel.yaml"
+    ],
+    "usage_instructions": "To compare the performance of Voxel Mamba and DSVT-based backbones on the Waymo Open Dataset, follow these steps:\n\n1. First, ensure you have the Waymo Open Dataset processed according to the instructions in GETTING_STARTED.md.\n\n2. Generate the Hilbert template files required for Voxel Mamba by running:\n   ```\n   cd data\n   mkdir hilbert\n   python ./tools/hilbert_curves/create_hilbert_curve_template.py\n   ```\n   (Alternatively, download them from the provided Google Drive or BaiduYun links in the README.md)\n\n3. To evaluate the Voxel Mamba model, run:\n   ```\n   cd tools\n   bash scripts/dist_test.sh 8 --cfg_file ./cfgs/voxel_mamba_models/voxel_mamba_waymo.yaml --ckpt <PATH_TO_VOXEL_MAMBA_CHECKPOINT>\n   ```\n\n4. To evaluate the DSVT-based model, run:\n   ```\n   cd tools\n   bash scripts/dist_test.sh 8 --cfg_file ./cfgs/waymo_models/dsvt_voxel.yaml --ckpt <PATH_TO_DSVT_CHECKPOINT>\n   ```\n\n5. Compare the Level 1 (L1) and Level 2 (L2) mAPH metrics from both evaluation results. According to the repository's README.md, Voxel Mamba should show approximately +1.4 improvement in Level 1 mAPH and +1.5 improvement in Level 2 mAPH compared to the DSVT backbone.\n\nNote: You'll need to obtain or train the model checkpoints for both models. The repository doesn't include pre-trained checkpoints, but you can train them using the same configuration files with the train.py script."
+}

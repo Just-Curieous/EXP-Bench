@@ -1,0 +1,171 @@
+{
+  "questions": [
+    {
+      "question": "What is the effect of asymmetric quantization precision for key (K) and value (V) caches on the perplexity of LLAMA-2 models? Are 3- or 4-bit KV caches sufficient to retain accuracy close to FP16? Which component\u2014key or value\u2014is more sensitive to quantization?",
+      "method": "#### Models\n\n- **LLAMA2-7B**\n- **LLAMA2-13B**\n- **LLAMA2-70B**\n\n#### Quantization Scope\n\n- **Quantize only**:\n  - KV key (K) and value (V) caches\n- **Keep full precision (FP16)** for:\n  - All weights\n  - Activations\n  - Other parts of the model (including attention, FFN, layer norm)\n\n#### Quantization Details\n\n- **Group-wise asymmetric quantization**\n- **Group size**: 128 (matching head dimension)\n- **Precision**:\n  - Evaluate **K and V** combinations across:\n    - 4-bit, 3-bit, and 2-bit for both\n- Use asymmetric quantization with fixed clipping ratio (e.g., 0.95)\n\n#### Evaluation Setup\n\n- **Dataset**: WikiText-2\n- **Sequence length**: 2048 tokens\n- **Metric**: Perplexity (PPL)\n- **Batch size**: 1\u20138 (to fit longer sequences in memory)\n\n#### Experiment Steps\n\n1. **Setup Environment**\n\n   - Install PyTorch with CUDA\n   - Clone and build QuaRot with support for KV cache quantization\n   - Load pretrained LLAMA2 models (7B, 13B, 70B)\n\n2. **Quantization Functions**\n\n   - Use asymmetric quantization per group:\n\n     ```python\n     def quantize_asymmetric(x, n_bits, group_size=128, clip_ratio=0.95):\n         x = x.reshape(-1, group_size)\n         max_val = clip_ratio * x.abs().max(dim=1, keepdim=True)[0]\n         min_val = -max_val\n         scale = (max_val - min_val) / (2**n_bits - 1)\n         zp = -min_val / scale\n         x_q = torch.clamp(torch.round(x / scale + zp), 0, 2**n_bits - 1)\n         return (x_q - zp) * scale\n     ```\n   \n3. **Apply KV Cache Quantization**\n\n   - During inference, quantize:\n     - K and V separately based on bit width combinations\n     - Example configs: (K=4, V=3), (K=3, V=2), etc.\n   - Inject quantized KV into attention mechanism\n   - Ensure rest of model is untouched (still FP16)\n\n4. **Evaluate Perplexity**\n\n   - Run WikiText-2 with 2048-token sequences\n\n   - Use:\n\n     ```python\n     from evaluate import load\n     perplexity = load(\"perplexity\")\n     result = perplexity.compute(model=model_with_quantized_kv, dataset=wikitext2)\n     ```",
+      "expected_outcome": "Result should look similar to table 6 in the paper ablation study.\n\n| K bits | V bits | LLAMA2-7B | LLAMA2-13B | LLAMA2-70B |\n| ------ | ------ | --------- | ---------- | ---------- |\n| 16     | 16     | 5.47      | 4.88       | 3.32       |\n| 4      | 4      | 5.51      | 4.91       | 3.33       |\n| 4      | 3      | 5.54      | 4.93       | 3.35       |\n| 4      | 2      | 5.75      | 5.09       | 3.43       |\n| 3      | 4      | 5.65      | 5.01       | 3.38       |\n| 3      | 3      | 5.68      | 5.02       | 3.39       |\n| 3      | 2      | 5.93      | 5.21       | 3.48       |\n| 2      | 4      | 8.06      | 6.42       | 3.89       |\n| 2      | 3      | 8.18      | 6.50       | 3.92       |\n| 2      | 2      | 9.23      | 7.07       | 4.13       |\n\n- Using **3-bit KV cache** gives negligible PPL loss (\u22640.21) on all models\n- **Keys are more sensitive** than values:\n  - (K=4, V=3) is better than (K=3, V=4)\n- 2-bit quantization **degrades performance significantly**, especially for 7B and 13B\n- This validates the asymmetric quantization design and prior findings on KV cache behavior",
+      "design_complexity": {
+        "constant_variables": {
+          "quantization_scope": "Only quantize KV caches (keys and values) while keeping weights, activations, and other model components at FP16",
+          "dataset": "WikiText-2",
+          "sequence_length": "2048 tokens",
+          "group_size": "128 (fixed, matching head dimension)",
+          "clipping_ratio": "0.95 for asymmetric quantization"
+        },
+        "independent_variables": {
+          "llm_model": [
+            "LLAMA2-7B",
+            "LLAMA2-13B",
+            "LLAMA2-70B"
+          ],
+          "kv_key_precision": [
+            "16",
+            "4",
+            "3",
+            "2"
+          ],
+          "kv_value_precision": [
+            "16",
+            "4",
+            "3",
+            "2"
+          ],
+          "quantization_method": "Group-wise asymmetric quantization using fixed parameters (e.g., RTN, Hadamard transformation in some ablations)"
+        },
+        "dependent_variables": {
+          "perplexity": "Measured on WikiText-2",
+          "zero_shot_accuracy": "Optional metric (as in some tables) for further evaluation"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "batch_size": "The range of batch sizes (1\u20138) is given to fit longer sequences but the exact value used in experiments is not fixed.",
+          "quantization_function_parameters": "Details such as scale computation and zero-point derivation in the quantization function could vary, and their precise implementation is not fully detailed.",
+          "quantization_method_details": "The exact implementation nuances of group-wise asymmetric quantization (e.g., handling of outliers or edge cases) are not explicitly elaborated."
+        },
+        "possible_modifications": {
+          "mask_or_extend_quantization_levels": [
+            "Introduce additional bit-width values (e.g., 5-bit or 1-bit) to study a broader range of precision trade-offs",
+            "Mask some existing precision values to explore partial information scenarios"
+          ],
+          "vary_clipping_ratio": [
+            "Investigate the effect of different clipping ratios (e.g., 0.9 or 0.85) on quantization performance"
+          ],
+          "extend_quantization_scope": [
+            "Consider quantizing other parts of the model such as weights or activations for extended studies"
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "PyTorch with CUDA",
+          "QuaRot library with support for KV cache quantization",
+          "Pretrained LLAMA2 models (7B, 13B, 70B)",
+          "WikiText-2 dataset",
+          "Asymmetric quantization function (quantize_asymmetric)"
+        ],
+        "setup_steps": [
+          "Install PyTorch with CUDA",
+          "Clone and build QuaRot with KV cache quantization support",
+          "Load the pretrained LLAMA2 models (7B, 13B, 70B)",
+          "Define and implement the group-wise asymmetric quantization function with fixed clipping ratio (0.95) and group size (128)",
+          "Apply KV cache quantization during inference by quantizing keys and values separately based on specified bit-width combinations",
+          "Inject the quantized KV caches into the attention mechanism while keeping all other components in FP16",
+          "Evaluate model performance on WikiText-2 using 2048-token sequences and compute perplexity via the evaluate library"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Quantization Configuration",
+            "description": "Managing multiple bit-width combinations for both keys and values (e.g., 16, 4, 3, 2) increases the experimentation complexity."
+          },
+          {
+            "source": "Resource Management",
+            "description": "Handling models of various sizes (7B, 13B, 70B) and ensuring proper batch size scaling (range 1\u20138) for long sequence processing."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Batch size selection: The range (1\u20138) is provided but the exact batch size used in the experiments is not fixed.",
+          "Quantization function parameters: Details on the precise computation of scale and zero-point are provided as example code, leaving room for implementation variations.",
+          "Group-wise asymmetric quantization nuances: Handling of outliers, edge cases, and minor implementation details are not fully elaborated."
+        ],
+        "ambiguous_setup_steps": [
+          "Injection of quantized KV caches into the attention mechanism: The process is described briefly, and the specifics of integration may vary.",
+          "Environment setup: While installation and cloning instructions are provided, some dependency versions or configuration details might be unclear."
+        ],
+        "possible_modifications": {
+          "mask_or_extend_quantization_levels": [
+            "Introduce additional bit-width values (e.g., 5-bit or 1-bit) to study a broader range of precision trade-offs",
+            "Mask some existing precision values to explore partial information scenarios"
+          ],
+          "vary_clipping_ratio": [
+            "Investigate the effect of different clipping ratios (e.g., 0.9 or 0.85) on quantization performance"
+          ],
+          "extend_quantization_scope": [
+            "Consider quantizing additional components such as model weights or activations for extended studies"
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "The experiments are conducted with very large models (LLAMA2-7B/13B/70B), which demand significant GPU memory and computational power. An extended task could enforce a stricter resource cap by, for example, requiring the same accuracy on a smaller model variant (e.g., LLAMA2-mini).",
+            "Limiting the batch size or sequence length further due to GPU memory constraints could be an added modification."
+          ],
+          "time_constraints": [
+            "Due to the long inference times associated with processing 2048-token sequences on large models, the experiment avoids repeated runs. An extended task could impose a maximum allowed inference time, further restricting the evaluation procedure."
+          ],
+          "money_constraints": [
+            "Running inference on models as large as LLAMA2-70B is costly. An extended task modification could require achieving similar accuracy using a setup that consumes less costly computational resources (e.g., using cheaper cloud GPUs or reducing the number of experiment repetitions)."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Variability in quantization function implementation and batch size selection",
+        "description": "Small numerical differences may arise from floating-point rounding in the group-wise asymmetric quantization function and variability in the selected batch size (ranging from 1 to 8). These factors can lead to slight run-to-run fluctuations in the computed perplexity values even when using the same bit-width configuration.",
+        "impact": "Such random variations can obscure fine-grained differences between configurations (like 3- versus 4-bit precision), making it harder to decisively conclude the sensitivity of keys versus values. The lack of repeated trials further compounds this uncertainty.",
+        "possible_modifications": [
+          "Repeat the experiments with fixed random seeds and multiple batches to compute standard error or standard deviation error bars.",
+          "Inject controlled random perturbations (e.g., randomly dropping non-critical tokens during inference) to explicitly measure the impact of random noise on perplexity."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Fixed experimental setup and dataset bias",
+        "description": "The experiment confines quantization testing to WikiText-2 with a fixed clipping ratio (0.95) and group size (128) for KV caches while keeping the rest of the model in FP16. This setup might cause systematic bias because it does not account for variations encountered in other datasets or with alternative quantization parameters.",
+        "impact": "The results may systematically favor certain bit-width configurations over others and might not generalize to real-world scenarios or different model components. This bias could, for instance, underestimate potential perplexity degradation when applied across varied texts or tasks.",
+        "possible_modifications": [
+          "Evaluate the quantization method on a more diverse set of datasets to assess the generality of the findings.",
+          "Vary the clipping ratio and group size to investigate how robust the quantization performance is under different systematic settings.",
+          "Introduce a one-time systematic bias in the dataset (e.g., altering text lengths or token distributions) to determine the method's sensitivity to dataset-induced bias."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "Execute the main.py script with different combinations of key and value cache bit widths. For example, to evaluate LLAMA2-7B with 4-bit K and 3-bit V cache:\n\npython /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --k_bits 4 --v_bits 3 --k_asym --v_asym --k_groupsize 128 --v_groupsize 128 --k_clip_ratio 0.95 --v_clip_ratio 0.95 --eval_dataset wikitext2\n\nRepeat with different models (Llama-2-7b-hf, Llama-2-13b-hf, Llama-2-70b-hf) and different K/V bit combinations (16/16, 4/4, 4/3, 4/2, 3/4, 3/3, 3/2, 2/4, 2/3, 2/2) to reproduce the full table.",
+      "requirements": [
+        "Step 1: Set up the environment with necessary dependencies including PyTorch, transformers, datasets, and other required libraries (/workspace/fake_quant/main.py:1-10)",
+        "Step 2: Obtain a Hugging Face authentication token to access the Llama-2 models, which require gated access (/workspace/fake_quant/utils.py:80)",
+        "Step 3: Select a Llama-2 model to evaluate from the supported options: Llama-2-7b-hf, Llama-2-13b-hf, or Llama-2-70b-hf (/workspace/fake_quant/utils.py:14-21)",
+        "Step 4: Choose the evaluation dataset from the supported options: wikitext2, ptb, or c4 (/workspace/fake_quant/utils.py:22)",
+        "Step 5: Configure the key cache (K) quantization parameters: number of bits (k_bits), whether to use asymmetric quantization (k_asym), group size (k_groupsize), and clip ratio (k_clip_ratio) (/workspace/fake_quant/utils.py:144-153)",
+        "Step 6: Configure the value cache (V) quantization parameters: number of bits (v_bits), whether to use asymmetric quantization (v_asym), group size (v_groupsize), and clip ratio (v_clip_ratio) (/workspace/fake_quant/utils.py:135-142)",
+        "Step 7: Run the main script with the configured parameters to load the model, apply the specified quantization to the K/V cache, and evaluate the model's performance (/workspace/fake_quant/main.py:12-172)",
+        "Step 8: The script loads the specified model using the Hugging Face transformers library (/workspace/fake_quant/model_utils.py:40-72)",
+        "Step 9: The script applies the specified quantization to the key cache by adding a quantization wrapper after the RoPE function call in the model's attention layers (/workspace/fake_quant/main.py:111-124)",
+        "Step 10: The script applies the specified quantization to the value cache by configuring the output quantizer of the v_proj layers (/workspace/fake_quant/main.py:91-95)",
+        "Step 11: The script evaluates the model on the specified dataset by calculating perplexity (/workspace/fake_quant/main.py:127-139)",
+        "Step 12: Repeat the experiment with different combinations of models and K/V bit widths to reproduce the full table of results (/workspace/fake_quant/main.py:171-172)",
+        "Final Step: Compare the perplexity results across different quantization configurations to analyze the impact of K/V cache quantization on model performance (/workspace/fake_quant/eval_utils.py:147-150)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment from a research paper that evaluates the impact of quantizing the key-value (KV) cache in large language models. You need to run the provided script with different combinations of models and quantization parameters.\n\nSpecifically, you should:\n1. Understand the main.py script and its parameters related to KV cache quantization\n2. Run the script with the Llama-2-7b model using different combinations of key and value cache bit widths\n3. The command format should follow this example for 4-bit K and 3-bit V cache:\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --k_bits 4 --v_bits 3 --k_asym --v_asym --k_groupsize 128 --v_groupsize 128 --k_clip_ratio 0.95 --v_clip_ratio 0.95 --eval_dataset wikitext2\n4. You'll need to run this with different models (Llama-2-7b-hf, Llama-2-13b-hf, Llama-2-70b-hf) and different K/V bit combinations (16/16, 4/4, 4/3, 4/2, 3/4, 3/3, 3/2, 2/4, 2/3, 2/2)\n5. Note that you'll need a Hugging Face token to access these models\n\nYour goal is to reproduce the experiment and observe how different quantization settings affect model performance as measured by perplexity.",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

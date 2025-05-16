@@ -1,0 +1,19 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, torch.nn, torch.nn.functional, and open_clip (/workspace/example_fvit.py:1-7)",
+    "Step 2: Create a model class that inherits from nn.Module and initializes with a pre-trained CLIP model as the backbone (/workspace/example_fvit.py:9-16)",
+    "Step 3: Freeze the CLIP backbone parameters to use it as a fixed feature extractor (/workspace/example_fvit.py:18-20)",
+    "Step 4: Implement a simple FPN-like neck with convolutional layers to process features from the backbone (/workspace/example_fvit.py:22-24)",
+    "Step 5: Create detection head for bounding box prediction with convolutional layers (/workspace/example_fvit.py:26-30)",
+    "Step 6: Create classification head with convolutional layers that outputs features compatible with CLIP text embeddings (/workspace/example_fvit.py:32-36)",
+    "Step 7: Implement feature extraction method that processes images through the CLIP vision encoder and reshapes features for further processing (/workspace/example_fvit.py:38-45)",
+    "Step 8: Implement neck processing function that applies the FPN-like layers to extracted features (/workspace/example_fvit.py:47-52)",
+    "Step 9: Implement forward method that combines feature extraction, neck processing, and applies detection and classification heads (/workspace/example_fvit.py:54-63)",
+    "Step 10: Create method to generate text embeddings from class names using CLIP's text encoder (/workspace/example_fvit.py:65-72)",
+    "Step 11: Implement zero-shot inference method that processes an image, calculates similarity between image features and text embeddings, and filters predictions based on confidence (/workspace/example_fvit.py:74-107)",
+    "Step 12: Create a main function that initializes the model, defines a set of object classes, generates text embeddings, and performs inference on a test image (/workspace/example_fvit.py:109-146)",
+    "Step 13: Visualize and report classification results, including printing top predictions and plotting classification scores (/workspace/example_fvit.py:134-143)",
+    "Final Step: Execute the main function when the script is run directly (/workspace/example_fvit.py:148-149)"
+  ],
+  "agent_instructions": "Create a program that demonstrates how to use CLIP embeddings for zero-shot object detection in a simplified F-ViT (Feature Vision Transformer) architecture. The program should:\n\n1. Use a pre-trained CLIP model as the backbone for feature extraction\n2. Implement a simplified detection architecture with:\n   - A feature extraction component that leverages the CLIP vision encoder\n   - A simple FPN-like neck to process features\n   - Detection head for bounding box prediction\n   - Classification head that produces features compatible with CLIP text embeddings\n\n3. Implement zero-shot classification by:\n   - Generating text embeddings for a set of object categories (like COCO classes)\n   - Computing similarity between image features and text embeddings\n   - Associating bounding box predictions with class predictions based on similarity scores\n\n4. Include a demonstration that:\n   - Initializes the model\n   - Generates text embeddings for common object categories\n   - Performs inference on a sample image\n   - Visualizes and reports the detection results, including bounding boxes and classification scores\n\nThe program should be able to detect objects in images without being explicitly trained on those object categories, leveraging the zero-shot capabilities of CLIP embeddings. Make sure to handle the preprocessing of images and post-processing of predictions appropriately."
+}

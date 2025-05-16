@@ -1,0 +1,18 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including trace-opt, llfbench, and other required packages (/workspace/docs/examples/robotics/metaworld.ipynb:31-48)",
+    "Step 2: Set up a mechanism to configure the OpenAI API key for LLM-based optimization (/workspace/docs/examples/robotics/metaworld.ipynb:57-101)",
+    "Step 3: Create a function to parse observations from the environment into a dictionary of float lists (/workspace/docs/examples/robotics/metaworld.ipynb:119-127)",
+    "Step 4: Implement a TracedEnv class that wraps the environment and handles resets and steps with proper tracing (/workspace/docs/examples/robotics/metaworld.ipynb:129-178)",
+    "Step 5: Implement a rollout function that executes a controller in the environment for a specified horizon (/workspace/docs/examples/robotics/metaworld.ipynb:196-223)",
+    "Step 6: Create a trainable controller function that computes actions based on observations (/workspace/docs/examples/robotics/metaworld.ipynb:252-262)",
+    "Step 7: Implement the optimize_policy function that uses the Trace package to optimize the controller (/workspace/docs/examples/robotics/metaworld.ipynb:241-316)",
+    "Step 8: Configure the optimizer to use different settings (memory_size=5 for Trace, memory_size=0 for Trace NoMem, or OPRO) (/workspace/docs/examples/robotics/metaworld.ipynb:266)",
+    "Step 9: Run the optimization process with different environment tasks (reach, pick-place, push) (/workspace/docs/examples/robotics/metaworld.ipynb:1465-1474)",
+    "Step 10: Track and compare success rates and returns across different optimizers and tasks (/workspace/docs/examples/robotics/metaworld.ipynb:270-315)"
+  ],
+  "agent_instructions": "Your task is to implement a notebook that uses the trace-opt package to optimize policies for robotic manipulation tasks in Meta-World environments. The notebook should demonstrate how different optimization approaches affect performance across various tasks.\n\nFirst, set up the environment by importing necessary libraries (trace-opt, llfbench) and configuring the OpenAI API key. Then, create a wrapper for the Meta-World environment that integrates with the trace package for optimization.\n\nImplement a rollout function to evaluate controllers and an optimize_policy function that uses language models to improve a controller's performance. The controller should be a trainable function that maps observations to actions for the robot.\n\nThe core of your implementation should compare three different optimizers:\n1. Trace (OptoPrime with memory_size=5)\n2. Trace NoMem (OptoPrime with memory_size=0)\n3. OPRO\n\nRun experiments with each optimizer on three Meta-World tasks:\n1. Reach task (\"llf-metaworld-reach-v2\")\n2. Pick-place task (\"llf-metaworld-pick-place-v2\")\n3. Push task (\"llf-metaworld-push-v2\")\n\nTrack and compare the success rates and returns across different optimizers and tasks. Your implementation should handle observation parsing, environment interactions, and proper tracing of the optimization process.",
+  "masked_source": [
+    "/workspace/docs/examples/robotics/metaworld.ipynb"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/MolGen/generate_ds.py",
+        "/workspace/MolGen/generate.sh"
+    ],
+    "usage_instructions": "To perform the ablation study comparing MOLGEN with and without chemical feedback:\n\n1. First, generate molecules WITHOUT chemical feedback by modifying generate.sh to use the pre-trained model:\n   - Change the checkpoint_path to '../moldata/checkpoint/molgen.pkl'\n   - Set property to either 'plogp' or 'qed'\n   - Set a descriptive output path like '../moldata/generate/without_feedback_plogp.csv'\n   - Run: bash generate.sh\n\n2. Then, generate molecules WITH chemical feedback by modifying generate.sh to use the fine-tuned model:\n   - Change the checkpoint_path to '../moldata/checkpoint/syn_plogp_model.pkl' (for p-logP) or '../moldata/checkpoint/syn_qed_model.pkl' (for QED)\n   - Keep the same property setting as step 1\n   - Set a different output path like '../moldata/generate/with_feedback_plogp.csv'\n   - Run: bash generate.sh\n\n3. The script will automatically compute and compare property scores (p-logP or QED) for both configurations and output statistics in the logs.\n\nNote: Use a mixed batch of molecules from both natural products and synthetic compound domains by setting appropriate input_path values in generate.sh."
+}

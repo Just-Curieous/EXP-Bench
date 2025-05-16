@@ -1,0 +1,23 @@
+{
+  "requirements": [
+    "Step 1: Parse command-line arguments including configuration file path, batch size, checkpoint path, and other evaluation parameters (/workspace/tools/test.py:21-55)",
+    "Step 2: Load the model configuration from the specified YAML file (/workspace/tools/test.py:46-53)",
+    "Step 3: Set up the distributed testing environment if using multiple GPUs (/workspace/tools/test.py:144-154)",
+    "Step 4: Configure batch size based on available GPUs (/workspace/tools/test.py:156-160)",
+    "Step 5: Create output directories for evaluation results (/workspace/tools/test.py:162-177)",
+    "Step 6: Set up logging for the evaluation process (/workspace/tools/test.py:178-190)",
+    "Step 7: Build the dataloader for the Waymo validation dataset (/workspace/tools/test.py:194-199)",
+    "Step 8: Build the Voxel Mamba network model according to the configuration (/workspace/tools/test.py:201)",
+    "Step 9: Load the pre-trained model weights from the checkpoint file (/workspace/tools/test.py:58-62)",
+    "Step 10: Set the model to evaluation mode (/workspace/tools/test.py:53)",
+    "Step 11: Process each batch from the validation dataset (/workspace/tools/test.py:58-83)",
+    "Step 12: Generate predictions for each batch using the model (/workspace/tools/test.py:65)",
+    "Step 13: Collect detection results and statistics (/workspace/tools/test.py:75-80)",
+    "Step 14: Merge results from multiple GPUs if using distributed testing (/workspace/tools/test.py:88-92)",
+    "Step 15: Calculate and log recall metrics (/workspace/tools/test.py:107-114)",
+    "Step 16: Save detection results to file (/workspace/tools/test.py:122-123)",
+    "Step 17: Evaluate detection performance using Waymo metrics (/workspace/tools/test.py:125-129)",
+    "Step 18: Log and return final evaluation results including mAPH_L1 and mAPH_L2 metrics (/workspace/tools/test.py:131-136)"
+  ],
+  "agent_instructions": "Your task is to create a script that evaluates a pre-trained Voxel Mamba model on the Waymo validation dataset. The script should perform the following operations:\n\n1. Accept command-line arguments for:\n   - Configuration file path\n   - Batch size for testing\n   - Path to a pre-trained model checkpoint\n   - Optional distributed testing parameters\n\n2. Load the model configuration from a YAML file that defines:\n   - Model architecture (Voxel Mamba)\n   - Dataset configuration for Waymo\n   - Class names (Vehicle, Pedestrian, Cyclist)\n   - Post-processing parameters\n\n3. Set up the testing environment:\n   - Support for single or multi-GPU evaluation\n   - Configure appropriate batch size\n   - Create output directories for results\n   - Set up logging\n\n4. Prepare the Waymo validation dataset:\n   - Build a dataloader with the specified batch size\n   - Configure the dataset according to the configuration file\n\n5. Build and initialize the Voxel Mamba model:\n   - Construct the model according to the configuration\n   - Load pre-trained weights from the checkpoint file\n   - Move the model to GPU(s)\n\n6. Perform evaluation:\n   - Process each batch from the validation dataset\n   - Generate predictions for each batch\n   - Collect detection results and statistics\n   - Support distributed evaluation if multiple GPUs are used\n\n7. Calculate and report performance metrics:\n   - Compute recall metrics\n   - Evaluate detection performance using Waymo metrics (mAPH_L1, mAPH_L2)\n   - Report results for each class (Vehicle, Pedestrian, Cyclist)\n   - Save detection results to file\n   - Log final evaluation results\n\nThe script should be compatible with a distributed testing wrapper script that allows running the evaluation on multiple GPUs in parallel.\n\nBefore running the evaluation, ensure that:\n1. The Waymo dataset is properly prepared\n2. Hilbert curve template files are generated or downloaded\n3. A pre-trained Voxel Mamba checkpoint is available"
+}

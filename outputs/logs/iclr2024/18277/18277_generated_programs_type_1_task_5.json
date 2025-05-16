@@ -1,0 +1,3 @@
+{
+    "no_answer": "After a thorough search of the repository, I couldn't find any scripts or notebooks that specifically address the experiment question about comparing Zero-initialized attention to full fine-tuning, Adapter, Sidetune, and VPT methods for vision model fine-tuning with ViT on the VTAB-1K benchmark. The repository is focused on LLaMA-Adapter, which is a method for efficient fine-tuning of language models (particularly LLaMA), not vision models. While the repository does implement Zero-initialized attention, it's applied to language models rather than vision models on the VTAB-1K benchmark as specified in the question."
+}

@@ -1,0 +1,9 @@
+{
+    "source": [
+        "/workspace/pose_estimation/train.py",
+        "/workspace/pose_estimation/test.py",
+        "/workspace/video_prediction/tools/non_dist_train.py",
+        "/workspace/video_prediction/tools/non_dist_test.py"
+    ],
+    "usage_instructions": "For 2D human pose estimation on COCO: First, install MMPose dependencies with 'pip install openmim && mim install mmcv-full && pip install mmpose'. Then, download the COCO2017 dataset and prepare it according to MMPose guidelines. Train MogaNet-S and MogaNet-B models using 'bash dist_train.sh /workspace/pose_estimation/configs/body/2d_kpt_sview_rgb_img/topdown_heatmap/coco/moganet_s_coco_256x192.py 8' and 'bash dist_train.sh /workspace/pose_estimation/configs/body/2d_kpt_sview_rgb_img/topdown_heatmap/coco/moganet_b_coco_384x288.py 8' respectively. Evaluate with 'bash dist_test.sh /path/to/config /path/to/checkpoint 8 --out results.pkl --eval mAP'. For video prediction on MMNIST: Install SimVPv2 with 'python setup.py develop' in the video_prediction directory. Download MMNIST dataset using the provided script at 'tools/prepare_data/download_mmnist.sh'. Train the MogaNet model with 'python tools/non_dist_train.py -d mmnist -m SimVP --model_type moga -c configs/mmnist/simvp/SimVP_MogaNet.py --lr 1e-3 --ex_name mmnist_simvp_moga'. Test with 'python tools/non_dist_test.py -d mmnist -m SimVP --model_type moga -c configs/mmnist/simvp/SimVP_MogaNet.py --ex_name /path/to/exp_name'. Note that the 3D face and hand surface reconstruction using ExPose framework mentioned in the experiment question is not implemented in this repository."
+}

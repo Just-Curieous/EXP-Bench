@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Set up argument parsing for training configuration including model type, data paths, optimization parameters, and learning rate schedules (/workspace/train.py:17-183)",
+    "Step 2: Create the MogaNet model (small, base, or large variant) with appropriate parameters including drop path rate (/workspace/train.py:380-393)",
+    "Step 3: Set up the optimizer (AdamW) with specified learning rate and weight decay (/workspace/train.py:443)",
+    "Step 4: Configure the learning rate scheduler (cosine) with warmup and minimum learning rate (/workspace/train.py:497-508)",
+    "Step 5: Create training and validation datasets from ImageNet-1K (/workspace/train.py:511-521)",
+    "Step 6: Set up data augmentation including mixup and cutmix (/workspace/train.py:523-536)",
+    "Step 7: Create data loaders with appropriate batch size and augmentation parameters (/workspace/train.py:551-594)",
+    "Step 8: Configure loss function with label smoothing (/workspace/train.py:596-614)",
+    "Step 9: Set up model EMA (Exponential Moving Average) tracking (/workspace/train.py:475-481)",
+    "Step 10: Train the model for specified number of epochs, updating the model parameters, EMA, and learning rate (/workspace/train.py:639-686)",
+    "Step 11: During each epoch, perform forward pass, calculate loss, and update model parameters (/workspace/train.py:714-752)",
+    "Step 12: Periodically validate the model on the validation set to track performance (/workspace/train.py:659)",
+    "Step 13: Save checkpoints of the best performing model based on validation accuracy (/workspace/train.py:677-680)",
+    "Step 14: For evaluation, load a trained model checkpoint (/workspace/validate.py:171-172)",
+    "Step 15: Create validation data loader with appropriate preprocessing (/workspace/validate.py:214-226)",
+    "Step 16: Evaluate the model on the validation set, calculating top-1 and top-5 accuracy (/workspace/validate.py:233-264)",
+    "Final Step: Report the final validation metrics including top-1 accuracy, top-5 accuracy, and parameter count (/workspace/validate.py:285-294)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for training and evaluating MogaNet models on ImageNet-1K to reproduce the experiment from the paper. The experiment compares the performance of scaled-up MogaNet models (MogaNet-S, MogaNet-B, MogaNet-L) against state-of-the-art architectures under similar computational budgets.\n\nYou need to create two main scripts:\n\n1. A training script that:\n   - Accepts command-line arguments for model type (moganet_small, moganet_base, moganet_large), data paths, and training hyperparameters\n   - Creates the specified MogaNet model variant with appropriate configuration\n   - Sets up data loading for ImageNet-1K with standard augmentations (random resizing, cropping, flipping)\n   - Implements advanced augmentation techniques like mixup and cutmix\n   - Configures the AdamW optimizer with learning rate 1e-3 and weight decay 0.05\n   - Uses a cosine learning rate scheduler with warmup and minimum learning rate\n   - Implements model EMA (Exponential Moving Average) tracking\n   - Trains the model for 300 epochs with distributed data parallel support\n   - Validates the model periodically and saves checkpoints of the best model\n\n2. An evaluation script that:\n   - Loads a trained model checkpoint\n   - Evaluates the model on the ImageNet validation set\n   - Reports top-1 and top-5 accuracy metrics\n   - Supports model EMA evaluation\n\nThe training should follow the standard 300-epoch regimen for ImageNet, and the models should be configured with appropriate drop path rates (0.1 for MogaNet-S, 0.2 for MogaNet-B, 0.3 for MogaNet-L). The evaluation should use a center crop of 90% of the image size.",
+  "masked_source": [
+    "/workspace/train.py",
+    "/workspace/validate.py"
+  ]
+}

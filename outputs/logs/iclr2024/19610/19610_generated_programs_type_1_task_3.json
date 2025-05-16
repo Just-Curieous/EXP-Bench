@@ -1,0 +1,9 @@
+{
+    "source": [
+        "/workspace/tools/dist_train.sh",
+        "/workspace/tools/dist_test.sh",
+        "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py",
+        "/workspace/projects/configs/topomlp_setB_r50_wo_yolov8.py"
+    ],
+    "usage_instructions": "For Experiment 1 (OpenLane-V2 subset A): First train the model using `./tools/dist_train.sh projects/configs/topomlp_setA_r50_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setA_r50_wo_yolov8` (adjust the number of GPUs as needed). After training completes, evaluate the model using `./tools/dist_test.sh projects/configs/topomlp_setA_r50_wo_yolov8.py ./work_dirs/topomlp_setA_r50_wo_yolov8/latest.pth 8 --eval=bbox`. For Experiment 2 (OpenLane-V2 subset B): Follow the same procedure but use the subset B configuration files: `./tools/dist_train.sh projects/configs/topomlp_setB_r50_wo_yolov8.py 8 --work-dir=./work_dirs/topomlp_setB_r50_wo_yolov8` for training and `./tools/dist_test.sh projects/configs/topomlp_setB_r50_wo_yolov8.py ./work_dirs/topomlp_setB_r50_wo_yolov8/latest.pth 8 --eval=bbox` for evaluation. The configuration files already use ResNet-50 backbone and follow the documented training protocol with 24 epochs. The evaluation will compute the required metrics (OLS, TOP_ll, TOP_lt, DET_l, and DET_t) which can be compared with the state-of-the-art methods as shown in the training_inference.md documentation."
+}

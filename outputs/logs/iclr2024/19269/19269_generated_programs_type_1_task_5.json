@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/models/musc.py", "/workspace/examples/musc_main.py", "/workspace/scripts/musc_mvtec_ad.sh", "/workspace/scripts/musc_visa.sh"],
+    "usage_instructions": "To test the effect of different minimum value interval percentages in the MSM module, modify line 211 in /workspace/models/musc.py to change the topmin_max parameter. For example, change 'anomaly_maps_msm = MSM(Z=Z, device=self.device, topmin_min=0, topmin_max=0.3)' to use different values like 0.1, 0.3, 0.5, 0.7, 0.9, and 1.0. Then run the scripts /workspace/scripts/musc_mvtec_ad.sh and /workspace/scripts/musc_visa.sh for each value to collect performance metrics on both datasets. The scripts will output image-level AUROC for classification (AC) and pixel-level AUROC for segmentation (AS) for each setting, which can be used to create plots similar to Fig. 7 in the paper."
+}

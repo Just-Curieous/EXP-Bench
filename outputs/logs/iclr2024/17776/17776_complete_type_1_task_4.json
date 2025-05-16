@@ -1,0 +1,32 @@
+{
+  "questions": [
+    {
+      "hypothesis": "Does incorporating cross-file context into the code completion pipeline improve performance over using only in-file context?",
+      "method": "Set up a controlled experiment on the RepoBench-P task using the Codex (code-davinci-002) model with two configurations. In the Baseline configuration, reserve 1,600 tokens for the in-file context by cropping the 60 preceding lines, filling the remaining tokens with in-file content only up to a total prompt size of 6,400 tokens. In the Cross-file configuration, maintain the 1,600-token reservation for the in-file context (with the same 60-line crop) and append additional randomly selected cross-file code snippets until the total prompt reaches 6,400 tokens. The cross-file snippets can be selected following strategies similar to the 'gold-filled' approach where the gold snippet is included along with other random snippets. Run experiments on Python and Java test sets. Evaluate both configurations using Exact Match (EM), Edit Similarity (ES), and CodeBLEU metrics. Where appropriate, refer to the figures (e.g., Figure 1\u20133) and table entries reported in the ICLR 2024 publication to compare metric scores and provide visual insights into the performance differences.",
+      "expected_outcome": "Based on the reported results in the paper, the inclusion of cross-file context is expected to enhance performance metrics compared to using only in-file context. The experimental configuration that integrates cross-file snippets should achieve higher Exact Match, Edit Similarity, and CodeBLEU scores, thereby demonstrating that even randomly selected cross-file snippets can contribute to a better contextual understanding and improved code completion accuracy.",
+      "subsection_source": "4.3 REPOBENCH-P",
+      "source": [
+        "/workspace/inference_repobench_p.py",
+        "/workspace/evaluate_completion.py"
+      ],
+      "usage_instructions": "To compare the performance of code completion with and without cross-file context on the RepoBench-P task using Codex (code-davinci-002), run the following commands:\n\n1. First, run the baseline configuration (in-file context only):\n   ```\n   python inference_repobench_p.py --language python --mode baseline --model_name codex\n   ```\n   This will use only in-file context with up to 6400 tokens, cropping to the last 60 lines for the in-file context.\n\n2. Then, run the cross-file configuration with random snippets (similar to gold-filled approach):\n   ```\n   python inference_repobench_p.py --language python --mode random --model_name codex\n   ```\n   This will use 1600 tokens for in-file context (cropped to 60 lines) and fill the remaining tokens with randomly selected cross-file snippets up to a total of 6400 tokens.\n\n3. Evaluate the results for both configurations:\n   ```\n   python evaluate_completion.py --path results_new/pipeline/codex/baseline/python\n   python evaluate_completion.py --path results_new/pipeline/codex/random/python\n   ```\n\n4. Repeat steps 1-3 for Java by changing the language parameter to 'java'.\n\nThe evaluation will output Exact Match (EM), Edit Similarity (ES), and CodeBLEU metrics for both configurations, allowing you to compare the performance with and without cross-file context.",
+      "requirements": [
+        "Step 1: Load necessary libraries and set up the environment for code completion tasks (/workspace/inference_repobench_p.py:1-41)",
+        "Step 2: Initialize the tokenizer based on the selected model (codex or starcoder) (/workspace/inference_repobench_p.py:43-74)",
+        "Step 3: Load the RepoBench-P dataset with different context settings (cross-file and in-file) (/workspace/inference_repobench_p.py:76-84)",
+        "Step 4: For baseline mode: Process each data point by taking only in-file context (up to 60 lines) with a maximum of 6400 tokens (/workspace/inference_repobench_p.py:925-957)",
+        "Step 5: For random mode: Process each data point by taking in-file context (up to 60 lines, max 1600 tokens) and filling remaining context with randomly selected cross-file snippets up to a total of 6400 tokens (/workspace/inference_repobench_p.py:464-526)",
+        "Step 6: Generate code completions by querying the selected model with the prepared context (/workspace/inference_repobench_p.py:552-569)",
+        "Step 7: Save the generated completions along with ground truth labels to output files (/workspace/inference_repobench_p.py:571-583)",
+        "Step 8: Evaluate the generated completions using exact match and edit similarity metrics (/workspace/evaluate_completion.py:35-54)",
+        "Step 9: Calculate and report the average performance across different context settings (/workspace/evaluate_completion.py:57-62)",
+        "Final Step: Output the evaluation results in a formatted manner for comparison (/workspace/evaluate_completion.py:62)"
+      ],
+      "agent_instructions": "Create a system to compare code completion performance with and without cross-file context on the RepoBench-P dataset. The system should:\n\n1. Implement a script that generates code completions using a language model (like Codex) with two different context configurations:\n   - Baseline configuration: Using only in-file context (up to 60 lines) with a maximum of 6400 tokens\n   - Cross-file configuration: Using in-file context (up to 60 lines, max 1600 tokens) and filling the remaining context with randomly selected cross-file snippets up to a total of 6400 tokens\n\n2. The script should:\n   - Accept parameters for language (python/java), mode (baseline/random), and model name\n   - Load the RepoBench-P dataset with appropriate context settings\n   - Process each data point by preparing the context according to the selected mode\n   - Query the language model to generate the next line of code\n   - Save the results (ground truth and generated completions) to output files\n\n3. Implement an evaluation script that:\n   - Loads the generated completions and ground truth from the output files\n   - Calculates metrics including Exact Match (EM) and Edit Similarity (ES)\n   - Reports the performance for each context setting and the overall average\n\nThe system should support both Python and Java code completion and be able to compare the effectiveness of using cross-file context versus in-file-only context.",
+      "masked_source": [
+        "/workspace/inference_repobench_p.py",
+        "/workspace/evaluate_completion.py"
+      ]
+    }
+  ]
+}

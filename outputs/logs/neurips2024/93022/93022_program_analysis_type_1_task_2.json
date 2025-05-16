@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Load the pre-trained MDGEN forward simulation model from checkpoint (/workspace/sim_inference.py:129-130)",
+    "Step 2: Load test peptide data from a CSV file containing peptide names and sequences (/workspace/sim_inference.py:133)",
+    "Step 3: For each peptide in the test set, load its initial structure from the data directory (/workspace/sim_inference.py:33-59)",
+    "Step 4: Prepare the batch data for simulation by expanding the initial structure to the required number of frames (/workspace/sim_inference.py:62-79)",
+    "Step 5: Run multiple simulation rollouts using the MDGEN model, measuring wall-clock time (/workspace/sim_inference.py:108-115)",
+    "Step 6: Combine all rollout trajectories and save them as PDB and optionally XTC files (/workspace/sim_inference.py:116-125)",
+    "Step 7: Load both the MDGEN-generated trajectories and reference MD trajectories for analysis (/workspace/scripts/analyze_peptide_sim.py:44-46)",
+    "Step 8: Calculate Jensen-Shannon Divergence (JSD) between torsion angle distributions from MDGEN and reference MD (/workspace/scripts/analyze_peptide_sim.py:50-59)",
+    "Step 9: Compute torsion angle decorrelation times for both MDGEN and reference MD trajectories (/workspace/scripts/analyze_peptide_sim.py:64-101)",
+    "Step 10: Perform TICA (time-lagged independent component analysis) on both trajectories to extract slow collective variables (/workspace/scripts/analyze_peptide_sim.py:104-110)",
+    "Step 11: Compare free energy surfaces in TICA space using JSD (/workspace/scripts/analyze_peptide_sim.py:118-124)",
+    "Step 12: Optionally build Markov state models (MSMs) to compare metastable state distributions (/workspace/scripts/analyze_peptide_sim.py:153-197)",
+    "Step 13: Save analysis results to a pickle file for further processing (/workspace/scripts/analyze_peptide_sim.py:225-227)"
+  ],
+  "agent_instructions": "Your task is to implement a system for evaluating the speed and accuracy of MDGEN, a machine learning model for molecular dynamics simulations, compared to conventional MD simulations. You need to create two Python scripts:\n\n1. A script for running MDGEN forward simulations on test peptides:\n   - The script should load a pre-trained MDGEN model from a checkpoint file\n   - It should read test peptide data from a CSV file containing peptide names and sequences\n   - For each peptide, it should load the initial structure and run multiple simulation rollouts\n   - The script should measure and report the wall-clock time for the simulations\n   - It should save the simulation trajectories as PDB and XTC files\n   - Command-line arguments should allow specifying the checkpoint file, data directory, output directory, number of rollouts, and number of frames\n\n2. An analysis script that evaluates the accuracy of MDGEN simulations by comparing them to reference MD simulations:\n   - The script should load both MDGEN-generated trajectories and reference MD trajectories\n   - It should calculate Jensen-Shannon Divergence (JSD) between torsion angle distributions\n   - It should compute torsion angle decorrelation times for both trajectory types\n   - It should perform time-lagged independent component analysis (TICA) to extract slow collective variables\n   - It should compare free energy surfaces in TICA space\n   - Optionally, it should build Markov state models (MSMs) to compare metastable state distributions\n   - The script should generate plots visualizing these comparisons and save analysis results\n   - Command-line arguments should control analysis options and output formats\n\nThe goal is to demonstrate that MDGEN can generate trajectories 10-1000x faster than conventional MD while maintaining accuracy in terms of conformational sampling and dynamics.",
+  "masked_source": [
+    "/workspace/sim_inference.py",
+    "/workspace/scripts/analyze_peptide_sim.py"
+  ]
+}

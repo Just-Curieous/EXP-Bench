@@ -1,0 +1,168 @@
+{
+  "questions": [
+    {
+      "question": "Can InfLLM maintain high retrieval accuracy across extremely long sequences (up to 1024K tokens), whereas sliding window-based baselines (e.g., InfiniteLM) suffer from performance collapse?",
+      "method": "#### Experiment Components\n\n- **Base Model**:\n  - **Mistral-7B-Instruct-v0.2** for both InfLLM and LM-Infinite\n- **InfLLM Configuration**:\n  - **Local Window Size**: 4K\n  - **Memory Unit Size**: 128 tokens\n  - **# Representative Tokens**: 4\n  - **# Selected Memory Units**: 96\n  - **Encoding Chunk Size**: 512\n  - **Initial Tokens**: 128\n  - **CPU offloading** and **GPU cache** enabled\n- **Baseline**:\n  - **LM-Infinite**: uses **sliding local window** (e.g., 32K), no external memory\n  - Same chunking and input formatting as InfLLM, but no memory lookup\n- **Task**:\n  - **Retrieve.PassKey** from \u221e-Bench\n  - Each input contains a **5-digit key** embedded randomly in a **distractor context** of length L (32K\u20131024K)\n  - LLM must retrieve and reproduce the correct key from the sequence\n- **Input Sequence Lengths**:\n  - {32K, 64K, 128K, 256K, 512K, 768K, 1024K}\n- **Evaluation Setup**:\n  - For each sequence length:\n    - Generate **50 instances** with a single embedded key\n    - Maintain same key format and noise pattern\n  - **Accuracy (%)** is measured as exact match of the retrieved key\n- **Environment**:\n  - NVIDIA A100/A800 GPUs with fp16\n  - Max token limit bypassed via efficient chunked processing in InfLLM\n\n#### Reproduction Steps\n\n1. **Generate Synthetic Data**:\n   - Use scripts to generate sequences of lengths in the set {32K \u2026 1024K}\n   - Embed a 5-digit key at a random position in each sequence\n   - Fill the rest of the sequence with structured noise or distractor text\n2. **Configure Models**:\n   - For **LM-Infinite**: use 32K sliding window, no memory\n   - For **InfLLM**: enable context memory and follow default configs above\n3. **Run Inference**:\n   - Evaluate each of the 50 instances per length with both models\n   - Record whether the model retrieves the correct key\n   - Calculate **accuracy (%)** per length setting\n4. **Visualize Results**:\n   - Plot accuracy vs. input length (X-axis in thousands of tokens)",
+      "expected_outcome": "InfLLM is expected to maintain **100% accuracy** across all tested lengths, including at 1024K tokens. In contrast, LM-Infinite will sharply decline in accuracy past 32K due to its inability to access tokens outside its attention window.\n\n| Length (K tokens) | InfLLM Accuracy (%) | LM-Infinite Accuracy (%) |\n| ----------------- | ------------------- | ------------------------ |\n| 32                | 100.0               | 28.0                     |\n| 64                | 100.0               | 15.0                     |\n| 128               | 100.0               | 0.0                      |\n| 256               | 100.0               | 0.0                      |\n| 512               | 100.0               | 0.0                      |\n| 768               | 100.0               | 0.0                      |\n| 1024              | 100.0               | 0.0                      |\n\n- InfLLM scales gracefully to multi-million-token sequences with perfect retrieval\n- LM-Infinite collapses after its window is exceeded, proving the necessity of dynamic context memory\n- The result demonstrates InfLLM\u2019s robustness in real-world, large-scale reasoning scenarios",
+      "design_complexity": {
+        "constant_variables": {
+          "base_model": "Mistral-7B-Instruct-v0.2 is used for both InfLLM and LM-Infinite, and the inference environment (NVIDIA A100/A800 with fp16) is fixed.",
+          "InfLLM_configuration": "Fixed settings including local window size of 4K, memory unit size of 128 tokens, number of representative tokens = 4, number of selected memory units = 96, encoding chunk size = 512, initial tokens = 128, with CPU offloading and GPU cache enabled.",
+          "baseline_configuration": "LM-Infinite uses a sliding window of 32K with the same chunking and input formatting as InfLLM, but without external memory lookup."
+        },
+        "independent_variables": {
+          "input_sequence_length": [
+            "32K",
+            "64K",
+            "128K",
+            "256K",
+            "512K",
+            "768K",
+            "1024K"
+          ],
+          "model_method": [
+            "InfLLM",
+            "LM-Infinite"
+          ]
+        },
+        "dependent_variables": {
+          "retrieval_accuracy": "Measured as the exact match accuracy (%) of the retrieved 5-digit key from each input sequence"
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "distractor_noise_pattern": "The exact nature and structure of the 'distractor context' or 'structured noise' used to fill sequences is not explicitly detailed.",
+          "key_embedding_position": "While the key is stated to be embedded randomly, the distribution details or constraints on its placement are not fully specified.",
+          "parameter_rationale": "The choice of specific configuration values (e.g., memory unit size, number of representative tokens) is provided but without detailed justification or discussion of alternatives.",
+          "CPU_offloading_details": "The mechanism and potential variability in CPU offloading and GPU cache management are not fully elaborated."
+        },
+        "possible_modifications": {
+          "noise_pattern": [
+            "Introduce predefined variations in the distractor noise (e.g., structured versus random noise) to assess robustness against different types of textual interference."
+          ],
+          "key_embedding_strategy": [
+            "Vary the embedding position strategy (e.g., biased positions rather than purely random) or key lengths to evaluate the impact on retrieval accuracy."
+          ],
+          "configuration_parameters": [
+            "Explore alternative settings for the InfLLM configuration parameters (e.g., different values for memory unit size or number of representative tokens) to test their influence on performance."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "Base Model: Mistral-7B-Instruct-v0.2 used for both InfLLM and LM-Infinite",
+          "InfLLM with its dedicated context memory configurations (local window size of 4K, memory unit size of 128 tokens, 4 representative tokens, 96 selected memory units, encoding chunk size of 512, initial tokens of 128, CPU offloading and GPU cache enabled)",
+          "Baseline: LM-Infinite using a 32K sliding window without external memory",
+          "Synthetic Data Generation Scripts for producing sequences with embedded 5-digit keys and distractor text",
+          "Evaluation Task: Exact match retrieval of embedded key from sequences of varying lengths (32K to 1024K tokens)",
+          "Hardware Environment: NVIDIA A100/A800 GPUs with fp16 precision"
+        ],
+        "setup_steps": [
+          "Generate synthetic data for sequences of specified lengths (32K, 64K, 128K, 256K, 512K, 768K, 1024K) with a 5-digit key embedded at a random position in a distractor text",
+          "Configure InfLLM with fixed hyperparameters including context memory settings and enable CPU offloading and GPU cache",
+          "Configure LM-Infinite baseline with a sliding window of 32K tokens and matching chunking/input formatting",
+          "Run inference for each of the 50 generated instances per sequence length for both models",
+          "Record the retrieval accuracy (exact match of the key) for each experimental condition",
+          "Visualize the results by plotting accuracy versus input sequence length"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Complex Configuration Parameters",
+            "description": "Multiple hyperparameters for InfLLM (e.g., local window size, memory unit size, number of representative tokens) add complexity to setup and may require careful tuning despite being fixed in the experiment."
+          },
+          {
+            "source": "Hardware and Precision Requirements",
+            "description": "The requirement of specialized hardware (NVIDIA A100/A800 GPUs) and using fp16 precision introduces an additional layer of complexity in reproducing the experiments."
+          },
+          {
+            "source": "Inference and Data Generation Integration",
+            "description": "Coordinating synthetic data generation, key embedding, model configuration, and inference steps across different sequence lengths involves several interdependent components."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Distractor noise pattern: The exact structure or characteristics of the 'structured noise' or distractor context used to fill sequences is not explicitly detailed.",
+          "Key embedding position: While the key is said to be embedded randomly, details regarding the distribution or constraints on its placement are insufficient.",
+          "Parameter rationale: The specific values for configuration parameters (e.g., memory unit size, number of representative tokens) are provided without detailed justification or discussion of potential alternatives.",
+          "CPU offloading details: The mechanism and management of CPU offloading and GPU cache usage are mentioned but not elaborated upon in depth."
+        ],
+        "ambiguous_setup_steps": [
+          "Synthetic data generation: The instructions for generating 'structured noise' and embedding the key are provided at a high level without clarifying exact implementation details.",
+          "Model configuration: While the settings for InfLLM and LM-Infinite are listed, the process of enabling and verifying CPU offloading and GPU cache management is vague."
+        ],
+        "possible_modifications": {
+          "noise_pattern": [
+            "Introduce predefined variations in the distractor noise (e.g., structured vs. random noise) to assess robustness against different types of textual interference."
+          ],
+          "key_embedding_strategy": [
+            "Vary the embedding position strategy (e.g., biased positions versus purely random) or adjust key lengths to evaluate the impact on retrieval accuracy."
+          ],
+          "configuration_parameters": [
+            "Explore alternative settings for InfLLM configuration (e.g., different values for memory unit size, number of representative tokens) to test their sensitivity on performance results."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "resource_constraints": [
+            "Evaluate InfLLM\u2019s performance on less powerful GPUs (e.g., using a lower-tier NVIDIA model) to assess its robustness under constrained compute resources.",
+            "Reduce the GPU cache size or disable CPU offloading to simulate an environment with limited memory and resource availability."
+          ],
+          "time_constraints": [
+            "Impose a stricter inference time limit for processing long sequences to understand the trade-off between speed and retrieval accuracy."
+          ],
+          "money_constraints": [
+            "Restrict the compute budget by limiting the total GPU hours available, thereby evaluating the model's efficiency under cost constraints."
+          ]
+        }
+      },
+      "random_uncertainty": {
+        "source": "Randomized key embedding and distractor noise generation",
+        "description": "In this experiment, the 5-digit key is embedded at a random position within a distractor context that is generated with variable, structured noise. This introduces inherent randomness in the input samples, which may lead to minor variations in retrieval accuracy when aggregating results over 50 instances per sequence length.",
+        "impact": "Variability in the synthetic data due to random key positioning and noise pattern may affect the model's retrieval performance measurements across different runs, even if the aggregate accuracy is high. This randomness could also simulate instability analogous to gradient updates in training scenarios or introduce slight fluctuations in inference results.",
+        "possible_modifications": [
+          "Control the random seed for key embedding to assess how deterministic placement affects the outcomes.",
+          "Introduce alternative random noise patterns, such as random token dropout, to further stress test the model under varied conditions.",
+          "Vary the level of randomness in the distractor noise generation to study its impact on retrieval accuracy."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Bias in structured distractor noise and key embedding strategy",
+        "description": "Systematic uncertainty may arise from how the distractor context (structured noise) is generated and how the key is consistently embedded within these sequences. If the noise or key placement strategy contains inherent biases, it may consistently favor or penalize retrieval performance, thereby skewing the results.",
+        "impact": "A systematic bias in the dataset can lead to consistently misleading evidence about the model performance. For example, if the distractor noise is structured in a way that either makes the key easier or harder to retrieve, the evaluation may not accurately reflect the ability of InfLLM or the baseline across varying sequence lengths.",
+        "possible_modifications": [
+          "Implement predefined variations in the distractor noise (structured vs. random noise) to assess robustness across different types of interference.",
+          "Modify the key embedding strategy (e.g., using biased positions instead of purely random placement) to evaluate the impact of systematic placement on retrieval accuracy.",
+          "Explore alternative configurations for InfLLM (e.g., different memory unit sizes or numbers of representative tokens) to test the sensitivity of results to inherent biases."
+        ]
+      },
+      "source": [
+        "/workspace/scripts/infinitebench.sh",
+        "/workspace/config/mistral-inf-llm.yaml",
+        "/workspace/config/mistral-infinite-lm.yaml"
+      ],
+      "usage_instructions": "1. First download the InfiniteBench datasets by running 'bash scripts/download.sh'. 2. Run the InfLLM evaluation by executing 'bash scripts/infinitebench.sh' with the default config (config/mistral-inf-llm.yaml). 3. Run the LM-Infinite baseline evaluation by modifying the infinitebench.sh script to use the LM-Infinite config (config=config/mistral-infinite-lm.yaml) and execute it. 4. Compare the results in the benchmark/infinite-bench-result directory, focusing on the passkey task accuracy across different sequence lengths.",
+      "requirements": [
+        "Step 1: Create necessary directories for benchmark data and results (/workspace/scripts/infinitebench.sh:3-3)",
+        "Step 2: Download the InfiniteBench datasets by running the download script, which creates data directories and downloads dataset files from HuggingFace (/workspace/scripts/download.sh:1-12)",
+        "Step 3: Run the InfLLM evaluation using the Mistral-7B-Instruct-v0.2 model with the configuration specified in mistral-inf-llm.yaml, which includes parameters like block_size=128, n_init=128, n_local=4096, topk=16 (/workspace/scripts/infinitebench.sh:1-8, /workspace/config/mistral-inf-llm.yaml:1-17)",
+        "Step 4: Evaluate the model on multiple InfiniteBench tasks including kv_retrieval, passkey, number_string, code_debug, math_find, and longbook_choice_eng (/workspace/scripts/infinitebench.sh:5-8)",
+        "Step 5: Generate predictions for each task by processing the input prompts through the model and saving the results to the benchmark/infinite-bench-result directory (/workspace/benchmark/pred.py:282-341)",
+        "Step 6: Run the evaluation script to compute accuracy scores for each task based on the model's predictions (/workspace/scripts/infinitebench.sh:10-10, /workspace/benchmark/eval.py:123-160)",
+        "Step 7: Modify the infinitebench.sh script to use the LM-Infinite configuration (mistral-infinite-lm.yaml) instead of the default InfLLM configuration (/workspace/scripts/infinitebench.sh:1-1, /workspace/config/mistral-infinite-lm.yaml:1-12)",
+        "Step 8: Run the modified script to evaluate the LM-Infinite approach using the same model and benchmark tasks (/workspace/scripts/infinitebench.sh:5-10)",
+        "Step 9: Compare the results between InfLLM and LM-Infinite approaches in the benchmark/infinite-bench-result directory, focusing on the passkey task accuracy across different sequence lengths (/workspace/benchmark/eval.py:87-103)"
+      ],
+      "agent_instructions": "Your task is to evaluate two different long-context language model approaches (InfLLM and LM-Infinite) on the InfiniteBench benchmark using the Mistral-7B-Instruct-v0.2 model. First, download the InfiniteBench datasets. Then run the InfLLM evaluation using the default configuration in mistral-inf-llm.yaml. Next, modify the script to use the LM-Infinite configuration in mistral-infinite-lm.yaml and run it again. Finally, compare the results between the two approaches, focusing on the passkey task accuracy across different sequence lengths. The evaluation scripts and configuration files are provided in the repository.",
+      "masked_source": [
+        "/workspace/scripts/infinitebench.sh",
+        "/workspace/config/mistral-inf-llm.yaml",
+        "/workspace/config/mistral-infinite-lm.yaml"
+      ]
+    }
+  ]
+}

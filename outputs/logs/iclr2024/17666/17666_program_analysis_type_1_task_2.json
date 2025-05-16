@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Load and prepare the dataset specified by the user (e.g., CIFAR10) (/workspace/create_clean_set.py:32-48)",
+    "Step 2: Create directory structure for storing clean and test data splits (/workspace/create_clean_set.py:104-127)",
+    "Step 3: Randomly sample a subset of the test set based on the clean_budget parameter (/workspace/create_clean_set.py:132-136)",
+    "Step 4: Save the sampled clean subset images and labels to disk (/workspace/create_clean_set.py:142-155)",
+    "Step 5: Save the remaining test set images and labels for evaluation (/workspace/create_clean_set.py:158-173)",
+    "Step 6: Load the backdoored model to be defended (/workspace/other_defenses_tool_box/bad_expert_utils.py:680-686)",
+    "Step 7: Create the backdoor expert (B) by unlearning the backdoor pattern using the clean dataset (/workspace/other_defenses_tool_box/bad_expert_utils.py:688-744)",
+    "Step 8: Create the auxiliary model (M') by finetuning the original model on the clean dataset (/workspace/other_defenses_tool_box/bad_expert_utils.py:747-793)",
+    "Step 9: Evaluate both models on clean and backdoored test inputs (/workspace/other_defenses_tool_box/bad_expert.py:186-212, 218-252)",
+    "Step 10: Calculate detection metrics using the outputs from both models (/workspace/other_defenses_tool_box/bad_expert_utils.py:275-361)",
+    "Step 11: Compute and report the detection performance (AUROC) for different detection strategies (/workspace/other_defenses_tool_box/bad_expert_utils.py:257-273)"
+  ],
+  "agent_instructions": "Your task is to implement a backdoor detection system called BaDExpert that uses two models to detect backdoored inputs in neural networks. The system should work with the CIFAR10 dataset and be evaluated with different clean dataset sizes.\n\nFirst, create a script to prepare clean datasets of different sizes (200, 400, 1000, 2000) from the CIFAR10 test set. This script should:\n- Load the CIFAR10 test dataset\n- Randomly sample a subset of specified size (clean_budget)\n- Save both the clean subset and the remaining test data separately for later use\n\nThen, implement the BaDExpert defense that:\n1. Takes a potentially backdoored model and the clean dataset as input\n2. Creates two detector models:\n   - A backdoor expert (B) by training the original model to unlearn the backdoor pattern\n   - An auxiliary model (M') by finetuning the original model on clean data\n3. Implements three detection strategies:\n   - Using only the backdoor expert (B)\n   - Using only the auxiliary model (M')\n   - Using an ensemble of both models (default)\n4. Evaluates detection performance using AUROC and other metrics\n\nThe key insight is that these models respond differently to clean vs. backdoored inputs, and this difference can be used for detection. The system should be evaluated with the Blend attack at a poison rate of 0.003.",
+  "masked_source": [
+    "/workspace/create_clean_set.py",
+    "/workspace/other_defense.py"
+  ]
+}

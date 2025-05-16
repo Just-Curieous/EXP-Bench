@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Set up a Hydra-based experiment runner that loads configuration from command line arguments and configuration files (/workspace/benchmarl/run.py:7-13)",
+    "Step 2: Create a main function decorated with hydra.main that parses configuration and prints information about the experiment (/workspace/benchmarl/run.py:14-36)",
+    "Step 3: Load the experiment configuration and run the experiment (/workspace/benchmarl/run.py:37-38)",
+    "Step 4: Create utility functions to find and load JSON result files from experiment runs (/workspace/benchmarl/eval_results.py:30-96)",
+    "Step 5: Implement a Plotting class with static methods for data processing and visualization (/workspace/benchmarl/eval_results.py:99-207)",
+    "Step 6: Process raw experiment data by normalizing metrics (/workspace/benchmarl/eval_results.py:131-145)",
+    "Step 7: Create comparison matrices for visualization (/workspace/benchmarl/eval_results.py:148-153)",
+    "Step 8: Implement environment-level plotting functions for performance profiles, aggregate scores, probability of improvement, and sample efficiency curves (/workspace/benchmarl/eval_results.py:159-193)",
+    "Step 9: Implement task-level plotting functions for sample efficiency curves (/workspace/benchmarl/eval_results.py:199-207)",
+    "Step 10: Create a benchmark runner function that configures and executes experiments with specified algorithms, tasks, and seeds (/workspace/examples/plotting/plot_benchmark.py:16-56)",
+    "Step 11: Process experiment results by loading JSON files, creating matrices, and generating visualizations (/workspace/examples/plotting/plot_benchmark.py:63-90)"
+  ],
+  "agent_instructions": "Your task is to recreate a set of scripts for running multi-agent reinforcement learning (MARL) benchmarks and analyzing their results. You need to implement:\n\n1. A main script that uses Hydra for configuration management to run MARL experiments. This script should:\n   - Accept command-line arguments to specify algorithms, tasks, and seeds\n   - Load configurations from Hydra\n   - Run the specified experiment\n\n2. A results evaluation script that processes experiment outputs. This script should:\n   - Find and load JSON result files from experiment runs\n   - Provide functions to merge multiple JSON files\n   - Include a Plotting class with methods for:\n     - Data processing and normalization\n     - Creating comparison matrices\n     - Generating performance profiles\n     - Creating sample efficiency curves\n     - Calculating aggregate scores\n     - Plotting task-specific metrics\n\n3. A benchmark plotting example script that demonstrates:\n   - How to configure and run a benchmark with multiple algorithms (like MAPPO and QMIX) on a specific task (Navigation)\n   - How to process the results and generate various visualizations\n   - How to compare algorithm performance using different metrics\n\nThe scripts should work together to allow users to:\n1. Run benchmarks with multiple MARL algorithms (MAPPO, MADDPG, MASAC, QMIX, VDN, IQL) on tasks like Navigation\n2. Support multiple random seeds for statistical significance\n3. Process the results to generate performance profiles and sample efficiency curves\n4. Visualize the fraction of runs achieving normalized returns above thresholds at different training timesteps",
+  "masked_source": [
+    "/workspace/benchmarl/run.py",
+    "/workspace/benchmarl/eval_results.py",
+    "/workspace/examples/plotting/plot_benchmark.py"
+  ]
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you run a self-play episode of the Adversarial Taboo game between two language models on a given target word?",
+    "method": "Use the play_llm_game.py script to simulate a game of Adversarial Taboo between two language models (attacker and defender) on a specific target word.",
+    "expected_outcome": "A JSON file containing the game history with alternating turns between attacker and defender, showing their conversation and the final game outcome.",
+    "source": [
+      "/workspace/tools/play_llm_game.py"
+    ],
+    "usage_instructions": "1. Create a file with a target word (e.g., 'conversation') in the data directory.\n2. Run the play_llm_game.py script with appropriate arguments:\n   - Specify the attacker and defender model paths (can be the same model)\n   - Set the maximum number of turns\n   - Provide the path to the target word file\n   - Set the output directory for results\n   - Choose between 'testing' (deterministic) or 'sampling' (stochastic) mode\n3. The script will simulate the game by having the models take turns generating responses.\n4. The attacker tries to make the defender say the target word without saying it themselves.\n5. The defender tries to guess the target word.\n6. The game continues until someone wins, the maximum turns are reached, or a player breaks the rules.\n7. The output will be a JSON file with the complete game history.",
+    "requirements": [
+      "Step 1: Load target words from a specified file path (/workspace/tools/play_llm_game.py:28-31)",
+      "Step 2: Load language models for both attacker and defender roles, with option to use the same model for both roles (/workspace/tools/play_llm_game.py:54-82, 93-99)",
+      "Step 3: Initialize game state for each target word with empty history and maximum turns (/workspace/tools/play_llm_game.py:115-118)",
+      "Step 4: Implement turn-based gameplay loop that alternates between attacker and defender (/workspace/tools/play_llm_game.py:120-187)",
+      "Step 5: For each turn, construct a prompt containing game rules, history, and role-specific instructions (/workspace/tools/play_llm_game.py:145-152, /workspace/utils.py:114-132)",
+      "Step 6: Configure model generation parameters based on task type (testing or sampling) (/workspace/tools/play_llm_game.py:124-142)",
+      "Step 7: Generate model responses using the constructed prompts (/workspace/tools/play_llm_game.py:162-168)",
+      "Step 8: Process model outputs to extract the actual response text (/workspace/tools/play_llm_game.py:170-177)",
+      "Step 9: Check for game ending conditions (defender guessing the word) (/workspace/tools/play_llm_game.py:179-183)",
+      "Step 10: Save complete game histories to JSON output files (/workspace/tools/play_llm_game.py:194-216)"
+    ],
+    "agent_instructions": "Your task is to create a script that simulates the Adversarial Taboo game between two language models. In this game, an attacker tries to make a defender say a target word without saying it themselves, while the defender tries to guess the word.\n\nThe script should:\n\n1. Accept command-line arguments for:\n   - Paths to attacker and defender language models (can be the same model)\n   - Maximum number of turns for the game\n   - Path to a file containing target words\n   - Output directory for results\n   - Mode of operation ('testing' for deterministic or 'sampling' for stochastic generation)\n\n2. Load the specified language models using the Hugging Face Transformers library\n\n3. For each target word, simulate a game where:\n   - Players alternate turns (attacker goes first)\n   - Each turn includes constructing a prompt with:\n     * Game rules explaining Adversarial Taboo\n     * Current game history\n     * Role-specific instructions (attacker knows the target word, defender doesn't)\n   - Generate responses from the appropriate model\n   - Track the conversation history\n   - Check for win conditions:\n     * Defender wins if they correctly guess the target word\n     * Attacker wins if they trick the defender into saying the target word\n     * Game ends in a tie if maximum turns are reached\n\n4. Save the complete game histories to JSON files in the specified output directory\n\nThe output JSON should contain the full conversation history with alternating turns between attacker and defender, along with the target word and game outcome."
+  },
+  {
+    "mode": "A",
+    "question": "How can you evaluate the outcomes of Adversarial Taboo game episodes and assign rewards to player actions for reinforcement learning?",
+    "method": "Use the assign_rewards.py script to analyze game episodes, determine winners based on game rules, and assign appropriate rewards to player actions for reinforcement learning.",
+    "expected_outcome": "A JSON file containing the game episodes with assigned rewards for each player action, weighted to ensure balanced learning between attacker and defender roles.",
+    "source": [
+      "/workspace/tools/assign_rewards.py"
+    ],
+    "usage_instructions": "1. Start with a JSON file containing game episodes (output from play_llm_game.py).\n2. Run the assign_rewards.py script with appropriate arguments:\n   - Specify the input data path (game episodes JSON)\n   - Set the output data path for the processed data\n   - Optionally provide a path to SFT data for additional training\n   - Set the decay weight for reward calculation (default is 0.8)\n3. The script will:\n   - Analyze each game to determine the outcome (attacker wins, defender wins, or tie)\n   - Extract winning player actions and assign rewards\n   - Apply temporal discounting to rewards (earlier actions get higher rewards)\n   - Balance the dataset by weighting samples to ensure equal learning for both roles\n4. The output will be a JSON file with processed game episodes ready for reinforcement learning.",
+    "requirements": [
+      "Step 1: Load game episodes from an input JSON file (/workspace/tools/assign_rewards.py:152-153)",
+      "Step 2: Define functions to detect target word usage and predictions in player messages (/workspace/tools/assign_rewards.py:13-42)",
+      "Step 3: Implement game outcome determination logic based on Adversarial Taboo rules (/workspace/tools/assign_rewards.py:45-68)",
+      "Step 4: Process each game episode to determine winners and calculate rewards for winning player actions (/workspace/tools/assign_rewards.py:72-123)",
+      "Step 5: Apply temporal discounting to rewards (earlier actions get higher rewards) (/workspace/tools/assign_rewards.py:90-113)",
+      "Step 6: Balance the dataset by calculating weights for attacker and defender samples (/workspace/tools/assign_rewards.py:125-138)",
+      "Step 7: Optionally incorporate supervised fine-tuning data if provided (/workspace/tools/assign_rewards.py:157-165)",
+      "Step 8: Save the processed data with rewards and weights to an output JSON file (/workspace/tools/assign_rewards.py:167-168)"
+    ],
+    "agent_instructions": "Create a script that processes game episodes from the Adversarial Taboo game and assigns rewards for reinforcement learning. The Adversarial Taboo game involves two players: an attacker who tries to make a defender say a target word without saying it themselves, and a defender who tries to guess the target word.\n\nYour script should:\n\n1. Take input arguments for:\n   - Input data path (JSON file with game episodes)\n   - Output data path (where to save processed data)\n   - Optional path for supervised fine-tuning data\n   - Decay weight for temporal discounting (default: 0.8)\n\n2. Implement game outcome determination logic:\n   - Defender wins if they correctly predict the target word\n   - Attacker wins if defender says the target word or makes an incorrect prediction\n   - Game is tied if no one wins within the maximum number of turns\n\n3. Process each game episode to:\n   - Determine the winner based on game rules\n   - Extract winning player actions and assign rewards\n   - Apply temporal discounting (earlier actions get higher rewards)\n\n4. Balance the dataset by calculating weights for attacker and defender samples to ensure equal learning for both roles\n\n5. Optionally incorporate supervised fine-tuning data if provided\n\n6. Save the processed data with rewards and weights to an output JSON file\n\nThe script should handle fuzzy matching of target words (including plurals, verb forms, etc.) and properly format the game history for training."
+  }
+]

@@ -1,0 +1,177 @@
+{
+  "questions": [
+    {
+      "question": "What is the impact of the type of orthogonal matrix (Hadamard vs. random orthogonal) fused into LLAMA-2 weight matrices on model perplexity under 4-bit QuaRot quantization? Does Hadamard outperform other orthogonal transformations in preserving accuracy?",
+      "method": "#### Models\n\n- LLAMA2-7B\n- LLAMA2-13B\n- LLAMA2-70B\n\n#### Configuration\n\n- **Quantization**:\n\n  - All weights are quantized using **QuaRot-GPTQ** at 4-bit precision\n  - Inputs and KV caches are **not quantized** (i.e., remain FP16)\n\n- **Transformation Fused into Weights**:\n\n  1. **Hadamard** matrix (default QuaRot)\n\n  2. **Random Orthogonal** matrix\n\n     - Sample a matrix `Q` from QR decomposition:\n\n       ```python\n       Q, _ = torch.linalg.qr(torch.randn(dim, dim))\n       ```\n       \n     - Fuse `Q` into weights before quantization\n\n#### Dataset\n\n- **WikiText-2**\n- **Sequence Length**: 2048 tokens\n- **Metric**: Perplexity (PPL)\n\n#### Experiment Steps\n\n1. **Set Up QuaRot with Fusion Support**\n\n   - Use the QuaRot repo or implement logic to fuse orthogonal matrix into the down-projection and out-projection weights:\n\n     ```python\n     W_proj = W_proj @ H      # Hadamard\n     W_proj = W_proj @ Q      # Random orthogonal\n     ```\n   \n2. **Prepare Random Orthogonal Matrix**\n\n   - Generate a uniform matrix and apply QR:\n\n     ```python\n     def random_orthogonal(dim):\n         A = torch.randn(dim, dim)\n         Q, _ = torch.linalg.qr(A)\n         return Q\n     ```\n   \n3. **Apply GPTQ Quantization on Transformed Weights**\n\n   - Quantize the matrix after fusing either `H` or `Q`\n   - Store quantized weights and load into transformer\n\n4. **Evaluate Perplexity**\n\n   - Run WikiText-2 inference on each model\n\n   - Keep all other components in FP16\n\n   - Measure perplexity:\n\n     ```python\n     perplexity.compute(model=quantized_model, dataset=wikitext2, max_length=2048)\n     ```",
+      "expected_outcome": "Result should look similar to table 8 in the paper ablation study.\n\n| Method            | LLAMA2-7B | LLAMA2-13B | LLAMA2-70B |\n| ----------------- | --------- | ---------- | ---------- |\n| Baseline (FP16)   | 5.47      | 4.88       | 3.32       |\n| QuaRot (Random)   | 7.45      | 5.84       | 4.07       |\n| QuaRot (Hadamard) | 6.10      | 5.40       | 3.79       |",
+      "design_complexity": {
+        "constant_variables": {
+          "dataset": [
+            "WikiText-2"
+          ],
+          "sequence_length": [
+            "2048 tokens"
+          ],
+          "quantization_method": [
+            "QuaRot-GPTQ at 4-bit"
+          ],
+          "non_quantized_components": [
+            "inputs and KV caches remain in FP16"
+          ]
+        },
+        "independent_variables": {
+          "orthogonal_matrix_type": [
+            "Hadamard",
+            "Random Orthogonal"
+          ],
+          "llama_model": [
+            "LLAMA2-7B",
+            "LLAMA2-13B",
+            "LLAMA2-70B"
+          ]
+        },
+        "dependent_variables": {
+          "perplexity": [
+            "Model perplexity as measured on WikiText-2"
+          ]
+        }
+      },
+      "design_ambiguity": {
+        "ambiguous_variables": {
+          "orthogonal_matrix_generation": "The method for generating the Random Orthogonal matrix (e.g., random seed, reproducibility details) is not fully detailed beyond the QR decomposition code snippet.",
+          "fusion_details": "While the experiment specifies fusing the orthogonal transformation into the down-projection and out-projection weights, it is ambiguous whether there are any scaling adjustments or layer-specific differences in the fusion process.",
+          "baseline_quantization_parameters": "It is not explicitly mentioned if any hyperparameters (beyond the 4-bit precision and FP16 components) are tuned or fixed between experiments, which could affect the reported perplexities."
+        },
+        "possible_modifications": {
+          "modification_orthogonal_methods": [
+            "Introduce additional orthogonal matrix types (e.g., Householder, Butterfly) to further compare their impact on quantization performance."
+          ],
+          "modification_quantization_settings": [
+            "Experiment with varying quantization bit-widths (e.g., 6-bit or 8-bit) to assess if the fusion effects change under different precision constraints."
+          ],
+          "modification_model_sizes": [
+            "Include additional model sizes or architecture variants to generalize the impact of the transformation."
+          ]
+        }
+      },
+      "experiment_setup_complexity": {
+        "components": [
+          "LLAMA2-7B model",
+          "LLAMA2-13B model",
+          "LLAMA2-70B model",
+          "QuaRot repository (and implementation logic for fusion)",
+          "GPTQ quantization module (4-bit QuaRot-GPTQ)",
+          "Hadamard transformation module",
+          "Random Orthogonal matrix generation code (QR decomposition from torch)",
+          "WikiText-2 dataset",
+          "Perplexity measurement tool"
+        ],
+        "setup_steps": [
+          "Set up QuaRot with fusion support by integrating the matrix fusion logic into the down-projection and out-projection layers",
+          "Prepare and generate the Random Orthogonal matrix using QR decomposition",
+          "Fuse the chosen orthogonal transformation (Hadamard or Random) into the weight matrices",
+          "Apply 4-bit GPTQ quantization on the transformed weights while keeping inputs and KV caches in FP16",
+          "Load the quantized model into the transformer architecture",
+          "Run inference on WikiText-2 with a sequence length of 2048 tokens",
+          "Measure model perplexity as the evaluation metric"
+        ],
+        "optional_other_sources_of_complexity": [
+          {
+            "source": "Integration of Transformation Fusion",
+            "description": "Fusing the orthogonal matrix into the weights may require careful handling (e.g., potential scaling adjustments, layer-specific differences, or computational cost adjustments) that increases overall implementation complexity."
+          },
+          {
+            "source": "Consistency Across Models",
+            "description": "Using three different model scales (7B, 13B, and 70B) might require customized handling or adjustments to the fusion and quantization processes across models."
+          },
+          {
+            "source": "Reproducibility and Randomness Control",
+            "description": "The generation of Random Orthogonal matrices introduces randomness that must be managed (e.g., by controlling the random seed) to ensure reproducibility, increasing setup complexity."
+          }
+        ]
+      },
+      "experiment_setup_ambiguity": {
+        "ambiguous_components": [
+          "Random Orthogonal matrix generation: The provided code snippet does not specify details such as the random seed or how reproducibility is ensured.",
+          "Fusion Process: It is ambiguous whether any scaling adjustments or layer-specific variations should be applied when fusing the transformation into the weights."
+        ],
+        "ambiguous_setup_steps": [
+          "Baseline quantization parameters: Beyond the use of 4-bit precision and keeping inputs/KV caches in FP16, it is unclear if other hyperparameters are tuned or fixed.",
+          "Transformation Fusion Details: The exact process on how the fused matrix (either Hadamard or Random Orthogonal) integrates with pre-existing weights is not fully detailed."
+        ],
+        "possible_modifications": {
+          "modification_orthogonal_methods": [
+            "Introduce additional orthogonal matrix types (e.g., Householder, Butterfly) to further compare their impact on quantization performance."
+          ],
+          "modification_quantization_settings": [
+            "Experiment with varying quantization bit-widths (e.g., 6-bit or 8-bit) to assess if fused matrix effects change under different precision constraints."
+          ],
+          "modification_model_sizes": [
+            "Include additional model sizes or architecture variants to generalize the impact of the fusion method."
+          ],
+          "mask_existing_instructions": [
+            "Omit explicit details on the random seed setting for Random Orthogonal generation, requiring users to determine reproducibility measures.",
+            "Mask details on potential scaling adjustments in the fusion process to increase ambiguity for extended tasks."
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "resource_constraints": {},
+        "time_constraints": {},
+        "money_constraints": {},
+        "possible_modifications": {
+          "constraint_type": {
+            "modifications": [
+              "For extended tasks, enforce that the Hadamard-fused quantization must outperform the Random Orthogonal fusion by a specified margin (e.g., at least 0.5 lower perplexity) across all LLaMA-2 model sizes.",
+              "Require strict reproducibility by fixing random seeds for the generation of the Random Orthogonal matrices, ensuring that any stochastic effects are minimized.",
+              "Tighten the quantization configuration by disallowing additional hyperparameter tuning beyond the 4-bit QuaRot-GPTQ setup, to better isolate the impact of the fused orthogonal matrix type."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "source": "Random Orthogonal Matrix Generation",
+        "description": "The generation of the Random Orthogonal matrix using QR decomposition on a randomly initialized matrix introduces inherent randomness. This randomness can lead to run-to-run fluctuations in the fused weight matrices and in the subsequent quantization outcome, thereby impacting the measured perplexity.",
+        "impact": "Variability in the random seed or lack of proper reproducibility measures can result in inconsistent perplexity values across different experiment runs. This makes it harder to attribute differences solely to the type of orthogonal transformation applied.",
+        "possible_modifications": [
+          "Fix the random seed during the generation of the Random Orthogonal matrix to ensure reproducibility across experiments.",
+          "Run multiple trials and average the predictions to statistically quantify the variance introduced by the randomness.",
+          "Include additional logging or metrics to track the variability introduced by the random matrix before fusion."
+        ]
+      },
+      "systematic_uncertainty": {
+        "source": "Ambiguities in Fusion Process and Baseline Quantization Settings",
+        "description": "There is systematic uncertainty in how the fused orthogonal transformation (whether Hadamard or Random Orthogonal) interacts with the weight matrices, such as potential scaling adjustments and layer-specific variations that are not fully detailed. These uncertainties can bias the quantization process and impact the final perplexity measurements in a consistent manner.",
+        "impact": "The systematic bias can lead to a consistent offset in model perplexity; for example, the Hadamard matrix might consistently outperform the Random Orthogonal approach due to a better-preserved weight distribution, as reflected in the experimental tables. The lack of clarity in hyperparameter settings and transformation details may skew the model evaluation.",
+        "possible_modifications": [
+          "Explicitly define and document any scaling adjustments or layer-specific fusion details to reduce systematic bias.",
+          "Compare additional orthogonal transformation methods (such as Householder or Butterfly transforms) to further assess the systematic impact of the fused transformation.",
+          "Maintain constant baseline quantization parameters and avoid additional hyperparameter tuning beyond the 4-bit QuaRot-GPTQ setup."
+        ]
+      },
+      "source": [
+        "/workspace/fake_quant/main.py"
+      ],
+      "usage_instructions": "To compare the impact of Hadamard vs. random orthogonal matrices on LLAMA-2 models under 4-bit QuaRot quantization, run the following commands:\n\n1. For LLAMA2-7B with Hadamard matrix (default):\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --rotate_mode hadamard --w_bits 4 --eval_dataset wikitext2\n   ```\n\n2. For LLAMA2-7B with random orthogonal matrix:\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --rotate --rotate_mode random --w_bits 4 --eval_dataset wikitext2\n   ```\n\n3. Repeat the above commands for LLAMA2-13B and LLAMA2-70B by changing the model parameter:\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --rotate --rotate_mode hadamard --w_bits 4 --eval_dataset wikitext2\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --rotate --rotate_mode random --w_bits 4 --eval_dataset wikitext2\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --rotate --rotate_mode hadamard --w_bits 4 --eval_dataset wikitext2\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --rotate --rotate_mode random --w_bits 4 --eval_dataset wikitext2\n   ```\n\n4. For baseline (FP16) results, run without quantization:\n   ```\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --eval_dataset wikitext2\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-13b-hf --eval_dataset wikitext2\n   python /workspace/fake_quant/main.py --model meta-llama/Llama-2-70b-hf --eval_dataset wikitext2\n   ```\n\nThe script will output perplexity values for each configuration, which can be compiled into a table similar to Table 8 in the paper's ablation study.",
+      "requirements": [
+        "Step 1: Install necessary Python packages including transformers, torch, datasets, and other dependencies (/workspace/fake_quant/main.py:1-10)",
+        "Step 2: Set up the environment by disabling TensorFloat-32 tensor cores to avoid numerical issues (/workspace/fake_quant/utils.py:24-27)",
+        "Step 3: Load a LLAMA-2 model (7B, 13B, or 70B) from Hugging Face using the transformers library (/workspace/fake_quant/main.py:20, /workspace/fake_quant/model_utils.py:40-49)",
+        "Step 4: If rotation is enabled, fuse layer normalization operations into adjacent linear blocks to prepare for rotation (/workspace/fake_quant/main.py:26, /workspace/fake_quant/rotation_utils.py:45-85)",
+        "Step 5: Apply rotation to the model weights using either Hadamard matrix (default) or random orthogonal matrix based on the specified mode (/workspace/fake_quant/main.py:27, /workspace/fake_quant/rotation_utils.py:230-251)",
+        "Step 6: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30-47)",
+        "Step 7: Configure Hadamard transformation for specific layers (down_proj and o_proj) if rotation is enabled (/workspace/fake_quant/main.py:32-45)",
+        "Step 8: If weight quantization is enabled (w_bits < 16), apply either GPTQ or RTN quantization to the model weights (/workspace/fake_quant/main.py:50-75)",
+        "Step 9: Configure input quantization parameters if activation bits or value bits are less than 16 (/workspace/fake_quant/main.py:79-109)",
+        "Step 10: Load the evaluation dataset (wikitext2) for perplexity measurement (/workspace/fake_quant/main.py:127-134, /workspace/fake_quant/data_utils.py:5-16)",
+        "Step 11: Evaluate the model's perplexity on the dataset and print the results (/workspace/fake_quant/main.py:137-139, /workspace/fake_quant/eval_utils.py:10-150)",
+        "Step 12: Optionally perform additional evaluation using the lm_eval harness if specified (/workspace/fake_quant/main.py:141-168)",
+        "Final Step: Compare the perplexity results between different configurations (Hadamard vs. random orthogonal matrices) to assess their impact on model quality under 4-bit quantization (/workspace/fake_quant/main.py:137-139)"
+      ],
+      "agent_instructions": "Your task is to reproduce an experiment that compares the impact of Hadamard vs. random orthogonal matrices on LLAMA-2 models under 4-bit quantization. You need to run the provided script with different configurations and analyze the results.\n\nSpecifically, you should:\n1. Run the script for LLAMA-2 models (7B, 13B, and 70B) using both Hadamard and random orthogonal matrices with 4-bit weight quantization\n2. Run the script for the same models without quantization to establish baselines\n3. Compare the perplexity values across all configurations\n\nThe experiment evaluates model performance on the wikitext2 dataset. The script handles loading the models, applying rotation matrices, quantizing weights, and measuring perplexity.",
+      "masked_source": [
+        "/workspace/fake_quant/main.py"
+      ]
+    }
+  ]
+}

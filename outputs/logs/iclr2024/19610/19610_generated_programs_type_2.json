@@ -1,0 +1,35 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you train the TopoMLP model with ResNet-50 backbone on the OpenLane-V2 subset-A dataset?",
+    "method": "Use the provided training script to train the TopoMLP model with the ResNet-50 backbone configuration on the OpenLane-V2 subset-A dataset.",
+    "expected_outcome": "A trained model checkpoint saved in the specified work directory with training logs showing metrics like loss values for lane detection, traffic element detection, and topology prediction.",
+    "source": [
+      "/workspace/tools/dist_train.sh",
+      "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py"
+    ],
+    "usage_instructions": "1. Ensure the OpenLane-V2 dataset is properly set up in the data directory.\n2. Use the dist_train.sh script with the topomlp_setA_r50_wo_yolov8.py configuration file.\n3. Specify the number of GPUs to use for distributed training.\n4. Optionally specify a work directory to save the model checkpoints and logs.\n5. The script will train the TopoMLP model for 24 epochs as specified in the configuration."
+  },
+  {
+    "mode": "A",
+    "question": "How can you evaluate the performance of a trained TopoMLP model on the OpenLane-V2 subset-A validation set?",
+    "method": "Use the provided testing script to evaluate a trained TopoMLP model checkpoint on the OpenLane-V2 subset-A validation set.",
+    "expected_outcome": "Evaluation metrics including DET_l (lane detection), TOP_ll (lane-lane topology), DET_t (traffic element detection), TOP_lt (lane-traffic topology), and OLS (overall score) printed to the console.",
+    "source": [
+      "/workspace/tools/dist_test.sh",
+      "/workspace/projects/configs/topomlp_setA_r50_wo_yolov8.py"
+    ],
+    "usage_instructions": "1. Ensure the OpenLane-V2 dataset is properly set up in the data directory.\n2. Use the dist_test.sh script with the topomlp_setA_r50_wo_yolov8.py configuration file.\n3. Provide the path to a trained model checkpoint.\n4. Specify the number of GPUs to use for distributed testing.\n5. Add the --eval=bbox parameter to evaluate the model performance.\n6. The script will output evaluation metrics for lane detection, traffic element detection, and topology prediction."
+  },
+  {
+    "mode": "A",
+    "question": "How can you switch the backbone of the TopoMLP model from ResNet-50 to Swin-B for improved performance?",
+    "method": "Use the provided configuration file for the Swin-B backbone to train the TopoMLP model with enhanced feature extraction capabilities.",
+    "expected_outcome": "A trained TopoMLP model with Swin-B backbone that achieves higher performance metrics compared to the ResNet-50 backbone, as indicated in the README (42.4 OLS vs 38.3 OLS).",
+    "source": [
+      "/workspace/tools/dist_train.sh",
+      "/workspace/projects/configs/topomlp_setA_swinb_wo_yolov8.py"
+    ],
+    "usage_instructions": "1. Ensure the OpenLane-V2 dataset is properly set up in the data directory.\n2. Use the dist_train.sh script with the topomlp_setA_swinb_wo_yolov8.py configuration file instead of the ResNet-50 configuration.\n3. Specify the number of GPUs to use for distributed training.\n4. Optionally specify a work directory to save the model checkpoints and logs.\n5. The script will train the TopoMLP model with Swin-B backbone for 24 epochs as specified in the configuration."
+  }
+]

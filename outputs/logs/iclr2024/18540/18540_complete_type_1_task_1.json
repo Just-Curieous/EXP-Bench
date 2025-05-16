@@ -1,0 +1,41 @@
+{
+  "questions": [
+    {
+      "question": "Does the integration of a dynamically adjusted mix of prompt types\u2014including safety-unrelated, resolved safety-related, unresolved safety-related, and red-teaming prompts\u2014within the Safe RLHF pipeline (as implemented in the PKU-Alignment safe-rlhf framework) enhance the model\u2019s ability to generate diverse, high-quality responses and improve safety evaluation outcomes across 14 predefined safety categories?",
+      "method": "Employ the Safe RLHF pipeline with an evolving prompt mix over three iterative cycles. In the first cycle, source safety-related prompts from open-source datasets (e.g., the PKU-SafeRLHF dataset) are used, then introduce red-teaming prompts in subsequent cycles to cover vulnerabilities not present initially. For each prompt, generate between 3 to 6 unique responses and form preference pairs (using the k(k-1)/2 formula) based on crowd-worker annotations focusing on clarity, relevance, and safety across 14 categories. Train unified Reward and Cost Models on these annotated pairs according to the detailed implementation and hyper-parameter settings provided in the pipeline\u2019s documentation and scripts. Finally, evaluate the system on an independently constructed dataset that integrates both standard and red-teaming prompts, with additional analysis on adversarial cases to verify enhanced diversity, quality, and safety robustness.",
+      "expected_outcome": "The dynamic adjustment of the prompt mix is expected to yield a more comprehensive evaluation dataset that effectively captures both the helpfulness and safety dimensions of the model's responses. This should result in enhanced response diversity and quality, along with improved robustness in handling harmful or unsafe outputs. Quantitatively, the unified Cost Model should achieve high safety classification accuracy (within the reported range of approximately 85\u201396%), and improved ranking accuracies for both Reward and Cost Models are anticipated, confirming that an evolving prompt mix incorporating diverse and challenging inputs enhances model performance.",
+      "subsection_source": "5.1 EXPERIMENTAL DETAILS",
+      "source": [
+        "/workspace/scripts/reward-model.sh",
+        "/workspace/scripts/cost-model.sh",
+        "/workspace/scripts/ppo-lag.sh"
+      ],
+      "usage_instructions": "The experiment can be conducted using the Safe RLHF pipeline through three iterative cycles with a dynamically adjusted prompt mix. First, train the Reward Model using `scripts/reward-model.sh --model_name_or_path <your-model-name-or-path> --output_dir output/rm` to model helpfulness preferences. Then, train the Cost Model using `scripts/cost-model.sh --model_name_or_path <your-model-name-or-path> --output_dir output/cm` to model safety preferences across the 14 safety categories. Finally, run the Safe RLHF training using `scripts/ppo-lag.sh --actor_model_name_or_path <your-model-name-or-path> --reward_model_name_or_path output/rm --cost_model_name_or_path output/cm --output_dir output/ppo-lag`. The scripts use the PKU-SafeRLHF dataset which contains the dynamically adjusted mix of prompt types (safety-unrelated, resolved safety-related, unresolved safety-related, and red-teaming prompts) as described in the paper section 5.1. The pipeline automatically handles the balancing between helpfulness and safety through the Lagrangian method implemented in the PPO-LAG algorithm.",
+      "requirements": [
+        "Step 1: Set up environment variables and parse command-line arguments for the reward model training script (/workspace/scripts/reward-model.sh:18-79)",
+        "Step 2: Configure output directory and logging for the reward model (/workspace/scripts/reward-model.sh:81-91)",
+        "Step 3: Set up DeepSpeed configuration for distributed training of the reward model (/workspace/scripts/reward-model.sh:93-106)",
+        "Step 4: Launch the reward model training using DeepSpeed with the PKU-SafeRLHF dataset, sequence-wise loss, and appropriate hyperparameters (/workspace/scripts/reward-model.sh:110-140)",
+        "Step 5: Set up environment variables and parse command-line arguments for the cost model training script (/workspace/scripts/cost-model.sh:18-79)",
+        "Step 6: Configure output directory and logging for the cost model (/workspace/scripts/cost-model.sh:81-91)",
+        "Step 7: Set up DeepSpeed configuration for distributed training of the cost model (/workspace/scripts/cost-model.sh:93-106)",
+        "Step 8: Launch the cost model training using DeepSpeed with the PKU-SafeRLHF dataset, sequence-wise loss, and appropriate hyperparameters (/workspace/scripts/cost-model.sh:110-140)",
+        "Step 9: Set up environment variables and parse command-line arguments for the PPO-Lagrangian training script (/workspace/scripts/ppo-lag.sh:18-110)",
+        "Step 10: Configure default critic models if not specified (/workspace/scripts/ppo-lag.sh:112-117)",
+        "Step 11: Configure output directory and logging for the PPO-Lagrangian training (/workspace/scripts/ppo-lag.sh:119-129)",
+        "Step 12: Set up DeepSpeed configuration for distributed training of the PPO-Lagrangian algorithm (/workspace/scripts/ppo-lag.sh:131-144)",
+        "Step 13: Launch the PPO-Lagrangian training using DeepSpeed with the actor model, reward model, cost model, and appropriate hyperparameters (/workspace/scripts/ppo-lag.sh:148-198)",
+        "Final Step: Execute the three scripts in sequence to train a language model that balances helpfulness and safety using the Safe RLHF pipeline (/workspace/scripts/reward-model.sh, /workspace/scripts/cost-model.sh, /workspace/scripts/ppo-lag.sh)"
+      ],
+      "agent_instructions": "Your task is to implement a Safe RLHF (Reinforcement Learning from Human Feedback) pipeline that trains a language model to be both helpful and safe. The pipeline consists of three main components that need to be executed sequentially:\n\n1. First, implement a script to train a Reward Model that learns to predict helpfulness preferences from human feedback. The model should be trained on the PKU-SafeRLHF dataset using sequence-wise loss.\n\n2. Next, implement a script to train a Cost Model that learns to predict safety violations across 14 safety categories. This model should also be trained on the PKU-SafeRLHF dataset using sequence-wise loss.\n\n3. Finally, implement a script for the PPO-Lagrangian algorithm that uses both the Reward Model and Cost Model to train a language model. The PPO-Lagrangian algorithm should balance maximizing helpfulness (reward) while keeping safety violations (cost) below a threshold.\n\nAll three scripts should support distributed training using DeepSpeed, with appropriate configuration for ZeRO optimization stages and mixed precision training. The scripts should accept command-line arguments for model paths, output directories, and training hyperparameters.\n\nThe PKU-SafeRLHF dataset contains a dynamically adjusted mix of prompt types: safety-unrelated, resolved safety-related, unresolved safety-related, and red-teaming prompts. Your implementation should handle this dataset appropriately.\n\nThe final PPO-Lagrangian script should implement a Lagrangian method that automatically balances the trade-off between helpfulness and safety during training.",
+      "masked_source": [
+        "/workspace/scripts/reward-model.sh",
+        "/workspace/scripts/cost-model.sh",
+        "/workspace/scripts/ppo-lag.sh",
+        "/workspace/safe_rlhf/values/reward/main.py",
+        "/workspace/safe_rlhf/values/cost/main.py",
+        "/workspace/safe_rlhf/algorithms/ppo_lag/main.py"
+      ]
+    }
+  ]
+}

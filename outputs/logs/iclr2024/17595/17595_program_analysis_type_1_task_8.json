@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Check if libibverbs is installed on the system, which is required for RDMA communication (/workspace/examples/test_all_schedules.sh:3-8)",
+    "Step 2: Define an array of methods to test, including different zero bubble memory limit configurations (/workspace/examples/test_all_schedules.sh:10-20)",
+    "Step 3: Set up distributed training environment variables if not already set (/workspace/examples/test_all_schedules.sh:22-34)",
+    "Step 4: Wait until GPUs are available (less than 2 GPUs with >5000MB memory in use) (/workspace/examples/test_all_schedules.sh:38-59)",
+    "Step 5: Set common environment variables for all experiments (CUDA_DEVICE_MAX_CONNECTIONS, EXIT_INTERVAL, LOG_INTERVAL, etc.) (/workspace/examples/test_all_schedules.sh:61-65)",
+    "Step 6: Determine the number of GPUs available for pipeline parallelism (/workspace/examples/test_all_schedules.sh:67)",
+    "Step 7: For each method in the array, set method-specific environment variables (/workspace/examples/test_all_schedules.sh:71-142)",
+    "Step 8: For zero bubble methods, set ENABLE_ZERO_BUBBLE=1 and configure ZERO_BUBBLE_MEM_LIMIT as a multiple of pipeline size (/workspace/examples/test_all_schedules.sh:105-107)",
+    "Step 9: Create output directory and log files for each experiment (/workspace/examples/test_all_schedules.sh:144-152)",
+    "Step 10: Run the appropriate training script (pretrain_zero_bubble.sh or pretrain_offload.sh) based on the method (/workspace/examples/test_all_schedules.sh:154-158)",
+    "Step 11: Wait for experiment completion and mark as completed (/workspace/examples/test_all_schedules.sh:159-174)",
+    "Final Step: Analyze logs to compare bubble rates across different memory limit configurations (/workspace/examples/test_all_schedules.sh:71-175)"
+  ],
+  "agent_instructions": "Create a script to evaluate how different memory limit configurations affect bubble rate in pipeline-parallel training. The script should test various memory limit settings expressed as multiples of the pipeline size (e.g., 1.5x, 2x, 2.5x, 3x pipeline size).\n\nYour script should:\n\n1. Define an array of methods to test, each representing a different memory limit configuration for the zero bubble algorithm\n\n2. For each method:\n   - Set appropriate environment variables including ENABLE_ZERO_BUBBLE and ZERO_BUBBLE_MEM_LIMIT\n   - Configure model parameters (layers, hidden size, etc.) based on the desired model size\n   - Set appropriate micro-batch and global batch sizes\n   - Run the training script and capture logs\n\n3. The script should wait for GPU availability before starting experiments and ensure each experiment completes before starting the next one\n\n4. Store logs in an organized directory structure for later analysis\n\nThe goal is to compare how different memory limit settings affect the bubble rate (pipeline inefficiency) during training. You'll need to implement the logic to test memory limits that are 1.5x, 2x, 2.5x, and 3x the pipeline size.",
+  "masked_source": [
+    "/workspace/examples/test_all_schedules.sh"
+  ]
+}

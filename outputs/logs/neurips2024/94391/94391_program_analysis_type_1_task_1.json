@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Set up the experiment by configuring the CycleNet (RCF) model with a fixed look-back window of 336 and forecast horizons of 96, 192, 336, and 720 on the ETTh1 dataset (/workspace/run_std.sh:3)",
+    "Step 2: Set up the experiment by configuring the LDLinear (LD) model with the same parameters on the ETTh1 dataset (/workspace/run_std.sh:4)",
+    "Step 3: Disable normalization for both models by setting use_revin=0 to isolate the effect of the STD method (/workspace/scripts/CycleNet/STD/CycleNet.sh:28, /workspace/scripts/CycleNet/STD/LDLinear.sh:25)",
+    "Step 4: For CycleNet, implement the RecurrentCycle module that learns cyclic patterns in the data (/workspace/models/CycleNet.py:4-18)",
+    "Step 5: For CycleNet, implement the forward pass that removes cyclic patterns from input data, applies a linear/MLP model, and adds back the cyclic patterns to the output (/workspace/models/CycleNet.py:45-67)",
+    "Step 6: For LDLinear, implement the Learnable Decomposition (LD) module that decomposes time series into trend and seasonal components (/workspace/models/LDLinear.py:12-41)",
+    "Step 7: For LDLinear, implement the forward pass that applies the LD module to decompose the input, processes trend and seasonal components separately with linear layers, and combines them for the final prediction (/workspace/models/LDLinear.py:61-72)",
+    "Step 8: Train both models using MSE loss and Adam optimizer with early stopping based on validation performance (/workspace/exp/exp_main.py:115-244)",
+    "Step 9: Evaluate both models on the test set using metrics like MSE and MAE to compare their performance (/workspace/exp/exp_main.py:246-348)",
+    "Final Step: Compare the results to show that RCF (CycleNet) significantly outperforms LD (LDLinear) on the ETTh1 forecasting task (/workspace/exp/exp_main.py:335-342)"
+  ],
+  "agent_instructions": "Create a script to compare two time series forecasting models (CycleNet/RCF and LDLinear/LD) on the ETTh1 dataset. The experiment should:\n\n1. Set up both models with a fixed look-back window of 336 and test them on multiple forecast horizons (96, 192, 336, and 720).\n\n2. Disable normalization for both models to isolate the effect of the STD (Seasonal-Trend Decomposition) method.\n\n3. Implement CycleNet with the following key components:\n   - A RecurrentCycle module that learns cyclic patterns in time series data\n   - A mechanism to remove these cyclic patterns before forecasting and add them back afterward\n   - Support for either linear or MLP-based forecasting on the cycle-removed data\n\n4. Implement LDLinear with the following key components:\n   - A Learnable Decomposition (LD) module that separates time series into trend and seasonal components\n   - Separate linear layers to process trend and seasonal components\n   - A mechanism to combine these components for the final prediction\n\n5. Train both models using MSE loss and Adam optimizer with early stopping based on validation performance.\n\n6. Evaluate and compare the models using metrics like MSE and MAE on the test set.\n\nThe experiment should demonstrate that CycleNet significantly outperforms LDLinear on the ETTh1 forecasting task.",
+  "masked_source": [
+    "/workspace/run_std.sh",
+    "/workspace/scripts/CycleNet/STD/CycleNet.sh",
+    "/workspace/scripts/CycleNet/STD/LDLinear.sh",
+    "/workspace/models/CycleNet.py",
+    "/workspace/models/LDLinear.py"
+  ]
+}

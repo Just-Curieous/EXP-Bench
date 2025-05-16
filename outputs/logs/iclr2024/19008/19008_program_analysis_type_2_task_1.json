@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Create API client functions for a custom LLM that can handle both chat-style and completion-style requests (example_generator.py:13-59)",
+    "Step 2: Ensure the custom API functions include retry logic for handling potential API failures (example_generator.py:13-13, 35-35)",
+    "Step 3: Implement proper response parsing to extract text content from the custom LLM API responses (example_generator.py:30-33, 54-59)",
+    "Step 4: Modify the example_generator function to initialize the custom LLM API client with appropriate credentials (example_generator.py:78-78)",
+    "Step 5: Update the model selection logic in example_generator to support the custom LLM API (example_generator.py:114-127)",
+    "Step 6: Maintain the existing input formatting for different model types to ensure compatibility with the questionnaire format (example_generator.py:115-125)",
+    "Step 7: Preserve the result processing and storage functionality to maintain compatibility with the PsychoBench framework (example_generator.py:129-155)",
+    "Step 8: Ensure the convert_results function can properly parse responses from the custom LLM (example_generator.py:62-70)"
+  ],
+  "agent_instructions": "Your task is to modify the PsychoBench framework to use a custom LLM API instead of OpenAI's API. The framework is used to evaluate LLMs on psychological questionnaires.\n\nYou need to:\n\n1. Create a new generator function that follows the same interface as the existing example_generator function, which takes a questionnaire and args parameters.\n\n2. Implement API client functions for your custom LLM that can handle both chat-style interactions (similar to GPT models) and completion-style requests. These functions should include retry logic to handle potential API failures.\n\n3. The generator function should:\n   - Initialize your custom LLM API client with appropriate credentials\n   - Process questionnaires by formatting them according to your LLM's requirements\n   - Send requests to your LLM API\n   - Parse the responses\n   - Save prompts and responses to files\n   - Update the testing CSV file with the results\n\n4. Ensure your implementation maintains compatibility with the PsychoBench framework by:\n   - Preserving the expected input/output format\n   - Handling the questionnaire format correctly\n   - Processing and storing results in the same format\n\n5. Test your custom generator with the PsychoBench framework by passing it to the run_psychobench function.\n\nThe goal is to create a working custom generator that can be used with the PsychoBench framework to evaluate a different LLM on psychological questionnaires while maintaining all the functionality of the original implementation."
+}

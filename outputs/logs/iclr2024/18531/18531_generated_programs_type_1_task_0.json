@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/examples/run.py",
+        "/workspace/examples/parse_tb.py"
+    ],
+    "usage_instructions": "To compare tensor-based RL model performance on minitasks with immediate rewards versus sparse/delayed rewards, follow these steps:\n\n1. First, identify the minitasks that provide immediate rewards (e.g., development_citytile_wonder) and those with sparse/delayed rewards (e.g., battle_* minitasks).\n\n2. Run the experiment using the run.py script with the appropriate minitask configurations:\n   ```bash\n   cd /workspace/examples\n   python run.py --webdir /path/to/freeciv-web\n   ```\n   This will automatically run all minitasks defined in the run_configs directory with 3 random seeds for each, training for 40,000 steps as specified in the default configuration.\n\n3. After training is complete, use parse_tb.py to analyze and visualize the results:\n   ```bash\n   cd /workspace/examples\n   python parse_tb.py\n   ```\n   This will generate plots showing success rates and other metrics for each minitask type, allowing you to compare performance between immediate reward tasks and delayed reward tasks.\n\n4. The plots will be saved in the ./minitask directory, where you can examine the 'success rate' metric specifically to compare performance between the two groups of minitasks.\n\n5. For statistical analysis, you can modify the parse_tb.py script to perform t-tests or ANOVA on the success rates between the two groups of minitasks."
+}

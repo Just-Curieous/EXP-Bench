@@ -1,0 +1,73 @@
+{
+  "questions": [
+    {
+      "question": "Does reproducing baseline online RL algorithms (A2C, PPO, DDPG, TD3, SAC) on MuJoCo and Atari environments using TorchRL yield results consistent with the original papers?",
+      "method": "Set up experiments using TorchRL with the provided scripts, ensuring that each algorithm is implemented with the same network architectures, hyperparameters, and number of training steps as described in its original implementation. For MuJoCo environments, train each algorithm for 1 million steps, and for Atari environments, use 10 million steps for A2C and PPO and 200 million frames for IMPALA. Run each training session 5 times with different random seeds. Record the mean final reward and standard deviation for each algorithm and directly compare these metrics with the reported values (for example, SAC on HalfCheetah achieving approximately 11077 \u00b1323) to verify reproducibility.",
+      "expected_outcome": "It is expected that running the experiments under these controlled conditions in TorchRL will reproduce the baseline results, with mean rewards and variances matching those reported in the literature. This confirms the library\u2019s ability to reliably replicate established benchmarks.",
+      "subsection_source": "4 R ESULTS",
+      "source": [
+        "/workspace/sota-check/run_a2c_mujoco.sh",
+        "/workspace/sota-check/run_a2c_atari.sh",
+        "/workspace/sota-check/run_ppo_mujoco.sh",
+        "/workspace/sota-check/run_ppo_atari.sh",
+        "/workspace/sota-check/run_ddpg.sh",
+        "/workspace/sota-check/run_td3.sh",
+        "/workspace/sota-check/run_sac.sh",
+        "/workspace/sota-check/run_impala_single_node.sh"
+      ],
+      "usage_instructions": "To reproduce baseline online RL algorithms on MuJoCo and Atari environments using TorchRL, execute the following scripts:\n\n1. For MuJoCo environments (1 million steps):\n   - Run A2C: `bash /workspace/sota-check/run_a2c_mujoco.sh`\n   - Run PPO: `bash /workspace/sota-check/run_ppo_mujoco.sh`\n   - Run DDPG: `bash /workspace/sota-check/run_ddpg.sh`\n   - Run TD3: `bash /workspace/sota-check/run_td3.sh`\n   - Run SAC: `bash /workspace/sota-check/run_sac.sh`\n\n2. For Atari environments:\n   - Run A2C (10 million steps): `bash /workspace/sota-check/run_a2c_atari.sh`\n   - Run PPO (10 million steps): `bash /workspace/sota-check/run_ppo_atari.sh`\n   - Run IMPALA (200 million frames): `bash /workspace/sota-check/run_impala_single_node.sh`\n\nTo run each algorithm with 5 different random seeds as required, modify the seed parameter in the corresponding configuration files before running each script. For example, for SAC, edit `/workspace/sota-implementations/sac/config.yaml` and change the `env.seed` value for each run. The scripts will log results to WandB, allowing you to calculate mean rewards and standard deviations across the 5 runs for comparison with the reported values in the original papers.",
+      "requirements": [
+        "Step 1: Set up the environment with necessary dependencies including PyTorch, TorchRL, Gymnasium with MuJoCo and Atari environments, WandB for logging, and other required packages (/workspace/sota-check/README.md:23-35)",
+        "Step 2: Create shell scripts that execute Python training scripts with appropriate parameters, including setting up WandB logging with project name and group name (/workspace/sota-check/run_a2c_mujoco.sh:10-17)",
+        "Step 3: Implement A2C algorithm for MuJoCo environments with 1 million frames, including actor-critic networks, GAE advantage estimation, and appropriate hyperparameters (/workspace/sota-implementations/a2c/a2c_mujoco.py:15-275)",
+        "Step 4: Implement A2C algorithm for Atari environments with 10 million frames, including convolutional networks for pixel observations (/workspace/sota-implementations/a2c/a2c_atari.py:15-293)",
+        "Step 5: Implement PPO algorithm for MuJoCo environments with 1 million frames, including clipped surrogate objective and multiple optimization epochs per batch (/workspace/sota-implementations/ppo/ppo_mujoco.py:18-297)",
+        "Step 6: Implement PPO algorithm for Atari environments with 10 million frames, adapting the architecture for pixel-based observations (/workspace/sota-implementations/ppo/ppo_atari.py:1-290)",
+        "Step 7: Implement DDPG algorithm for MuJoCo environments with 1 million frames, including actor-critic architecture with target networks and exploration noise (/workspace/sota-implementations/ddpg/ddpg.py:1-240)",
+        "Step 8: Implement TD3 algorithm for MuJoCo environments with 1 million frames, including delayed policy updates and target policy smoothing (/workspace/sota-implementations/td3/td3.py:1-240)",
+        "Step 9: Implement SAC algorithm for MuJoCo environments with 1 million frames, including automatic entropy tuning and soft Q-functions (/workspace/sota-implementations/sac/sac.py:42-241)",
+        "Step 10: Implement IMPALA algorithm for Atari environments with 200 million frames, including V-trace correction for off-policy learning (/workspace/sota-implementations/impala/impala_single_node.py:1-290)",
+        "Step 11: Create utility functions for each algorithm to handle environment creation, model architecture, evaluation, and logging (/workspace/sota-implementations/sac/utils.py:1-200)",
+        "Step 12: Configure each algorithm with appropriate hyperparameters through YAML configuration files (/workspace/sota-implementations/a2c/config_mujoco.yaml:1-40)",
+        "Step 13: Implement evaluation procedures to periodically test agent performance during training (/workspace/sota-implementations/a2c/a2c_mujoco.py:246-261)",
+        "Step 14: Set up logging to track training metrics and evaluation results to WandB (/workspace/sota-implementations/a2c/a2c_mujoco.py:98-111)",
+        "Final Step: Capture and report exit status of each training run to track successful completion (/workspace/sota-check/run_a2c_mujoco.sh:19-26)"
+      ],
+      "agent_instructions": "Your task is to implement a set of scripts to reproduce baseline online reinforcement learning algorithms on MuJoCo and Atari environments using TorchRL. You need to create shell scripts that execute Python training scripts for the following algorithms:\n\n1. For MuJoCo environments (1 million steps):\n   - A2C (Advantage Actor-Critic)\n   - PPO (Proximal Policy Optimization)\n   - DDPG (Deep Deterministic Policy Gradient)\n   - TD3 (Twin Delayed DDPG)\n   - SAC (Soft Actor-Critic)\n\n2. For Atari environments:\n   - A2C (10 million steps)\n   - PPO (10 million steps)\n   - IMPALA (200 million frames)\n\nEach shell script should:\n- Set up appropriate SLURM parameters for job execution\n- Capture the current git commit for versioning\n- Configure WandB logging with project and group names\n- Execute the corresponding Python implementation script\n- Track and log the exit status of the training run\n\nFor each algorithm implementation, you need to:\n1. Use hydra for configuration management with YAML files\n2. Set up appropriate neural network architectures for each environment type\n3. Implement the core algorithm logic including loss functions and update rules\n4. Create data collection mechanisms using TorchRL collectors\n5. Set up replay buffers where needed (for off-policy algorithms)\n6. Implement periodic evaluation during training\n7. Configure WandB logging for metrics tracking\n8. Support both CPU and GPU training with appropriate device management\n9. Implement utility functions for environment creation, model setup, and evaluation\n\nThe implementations should follow the original algorithm papers and be configured to reproduce the reported performance. Each algorithm should be runnable with different random seeds to calculate mean rewards and standard deviations across multiple runs.",
+      "masked_source": [
+        "/workspace/sota-check/run_a2c_mujoco.sh",
+        "/workspace/sota-check/run_a2c_atari.sh",
+        "/workspace/sota-check/run_ppo_mujoco.sh",
+        "/workspace/sota-check/run_ppo_atari.sh",
+        "/workspace/sota-check/run_ddpg.sh",
+        "/workspace/sota-check/run_td3.sh",
+        "/workspace/sota-check/run_sac.sh",
+        "/workspace/sota-check/run_impala_single_node.sh",
+        "/workspace/sota-implementations/a2c/a2c_mujoco.py",
+        "/workspace/sota-implementations/a2c/a2c_atari.py",
+        "/workspace/sota-implementations/a2c/utils_mujoco.py",
+        "/workspace/sota-implementations/a2c/utils_atari.py",
+        "/workspace/sota-implementations/a2c/config_mujoco.yaml",
+        "/workspace/sota-implementations/a2c/config_atari.yaml",
+        "/workspace/sota-implementations/ppo/ppo_mujoco.py",
+        "/workspace/sota-implementations/ppo/ppo_atari.py",
+        "/workspace/sota-implementations/ppo/utils_mujoco.py",
+        "/workspace/sota-implementations/ppo/utils_atari.py",
+        "/workspace/sota-implementations/ppo/config_mujoco.yaml",
+        "/workspace/sota-implementations/ppo/config_atari.yaml",
+        "/workspace/sota-implementations/ddpg/ddpg.py",
+        "/workspace/sota-implementations/ddpg/utils.py",
+        "/workspace/sota-implementations/ddpg/config.yaml",
+        "/workspace/sota-implementations/td3/td3.py",
+        "/workspace/sota-implementations/td3/utils.py",
+        "/workspace/sota-implementations/td3/config.yaml",
+        "/workspace/sota-implementations/sac/sac.py",
+        "/workspace/sota-implementations/sac/utils.py",
+        "/workspace/sota-implementations/sac/config.yaml",
+        "/workspace/sota-implementations/impala/impala_single_node.py",
+        "/workspace/sota-implementations/impala/utils.py",
+        "/workspace/sota-implementations/impala/config.yaml"
+      ]
+    }
+  ]
+}

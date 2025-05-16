@@ -1,0 +1,38 @@
+[
+  {
+    "mode": "A",
+    "question": "How does the choice of prompt type (text, box, or point) affect the segmentation accuracy of SegVol on abdominal CT scans?",
+    "method": "Use the SegVol model to segment abdominal organs in a CT scan using different prompt types (text, box, and point) and compare the Dice scores for each approach.",
+    "expected_outcome": "A comparison of Dice scores for different prompt types (text, box, point) across multiple abdominal organs (liver, kidney, spleen, pancreas), showing which prompt type yields the highest segmentation accuracy.",
+    "source": [
+      "/workspace/inference_demo.py",
+      "/workspace/script/inference_demo.sh",
+      "/workspace/config/config_demo.json"
+    ],
+    "usage_instructions": "1. Configure the config_demo.json file with paths to a CT scan and its ground truth segmentation.\n2. Set up the inference_demo.sh script with the path to the SegVol checkpoint and output directory.\n3. Modify the inference_demo.py script to run three separate experiments with different prompt configurations:\n   - First run: Set use_text_prompt=True, use_box_prompt=False, use_point_prompt=False\n   - Second run: Set use_text_prompt=False, use_box_prompt=True, use_point_prompt=False\n   - Third run: Set use_text_prompt=False, use_box_prompt=False, use_point_prompt=True\n4. For each run, collect the Dice scores for each organ from the logits_labels_record dictionary.\n5. Compare the Dice scores across different prompt types to determine which prompt type is most effective for each organ."
+  },
+  {
+    "mode": "A",
+    "question": "How does the zoom-in-zoom-out mechanism in SegVol improve segmentation accuracy compared to single-pass inference?",
+    "method": "Compare the segmentation performance of SegVol with and without the zoom-in-zoom-out mechanism on a medical CT scan.",
+    "expected_outcome": "A comparison of Dice scores before and after applying the zoom-in-zoom-out mechanism, showing the improvement in segmentation accuracy for each organ.",
+    "source": [
+      "/workspace/inference_demo.py",
+      "/workspace/script/inference_demo.sh",
+      "/workspace/config/config_demo.json"
+    ],
+    "usage_instructions": "1. Configure the config_demo.json file with paths to a CT scan and its ground truth segmentation.\n2. Set up the inference_demo.sh script with the path to the SegVol checkpoint and output directory.\n3. Modify the inference_demo.py script to run two experiments:\n   - First run: Set use_zoom_in=False to disable the zoom-in-zoom-out mechanism\n   - Second run: Set use_zoom_in=True to enable the zoom-in-zoom-out mechanism\n4. For each run, collect the zoom-out Dice scores and zoom-in Dice scores from the logits_labels_record dictionary.\n5. Compare the Dice scores between the two approaches to quantify the improvement provided by the zoom-in-zoom-out mechanism.\n6. Analyze the visual results to understand how the zoom-in-zoom-out mechanism refines the segmentation boundaries."
+  },
+  {
+    "mode": "A",
+    "question": "How effective is SegVol at segmenting different abdominal organs using text prompts alone?",
+    "method": "Use SegVol to segment multiple abdominal organs (liver, kidney, spleen, pancreas) using only text prompts and evaluate the segmentation accuracy for each organ.",
+    "expected_outcome": "A report of Dice scores for each abdominal organ when segmented using only text prompts, along with visualizations of the segmentation results.",
+    "source": [
+      "/workspace/inference_demo.py",
+      "/workspace/script/inference_demo.sh",
+      "/workspace/config/config_demo.json"
+    ],
+    "usage_instructions": "1. Configure the config_demo.json file with paths to a CT scan and its ground truth segmentation.\n2. Set up the inference_demo.sh script with the path to the SegVol checkpoint and output directory.\n3. Modify the inference_demo.py script to use only text prompts by setting:\n   - use_text_prompt=True\n   - use_box_prompt=False\n   - use_point_prompt=False\n4. Run the inference for each organ in the categories list (liver, kidney, spleen, pancreas).\n5. Collect the Dice scores for each organ from the logits_labels_record dictionary.\n6. Generate visualizations of the segmentation results using the draw_result function.\n7. Analyze which organs are segmented more accurately with text prompts alone and which ones require additional spatial guidance."
+  }
+]

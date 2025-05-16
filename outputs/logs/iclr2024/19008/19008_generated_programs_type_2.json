@@ -1,0 +1,35 @@
+[
+  {
+    "mode": "A",
+    "question": "How does GPT-3.5-turbo score on the Empathy questionnaire compared to human responses?",
+    "method": "Use the PsychoBench framework to run the Empathy questionnaire with GPT-3.5-turbo and analyze the results to compare with human baseline data.",
+    "expected_outcome": "A comparison of GPT-3.5-turbo's empathy scores against human baseline data, showing whether the model scores higher, lower, or similar to humans on empathy measures.",
+    "source": [
+      "/workspace/run_psychobench.py",
+      "/workspace/example_generator.py"
+    ],
+    "usage_instructions": "1. Run the PsychoBench framework with the Empathy questionnaire and GPT-3.5-turbo model.\n2. Set appropriate parameters for shuffle-count and test-count to ensure statistical significance.\n3. Provide an OpenAI API key for accessing the GPT-3.5-turbo model.\n4. Execute the generation, testing, and analysis phases of the framework.\n5. Interpret the results by comparing the model's empathy scores with the human baseline data provided in the questionnaires.json file."
+  },
+  {
+    "mode": "A",
+    "question": "Can you customize PsychoBench to use a different LLM by modifying the example generator?",
+    "method": "Modify the example_generator.py file to support a custom LLM API instead of OpenAI's API, while maintaining compatibility with the PsychoBench framework.",
+    "expected_outcome": "A working custom generator function that can be used with the PsychoBench framework to evaluate a different LLM on psychological questionnaires.",
+    "source": [
+      "/workspace/example_generator.py",
+      "/workspace/run_psychobench.py"
+    ],
+    "usage_instructions": "1. Study the existing example_generator.py file to understand how it interfaces with the PsychoBench framework.\n2. Identify the key components that need to be modified to support a different LLM API.\n3. Create a new generator function that follows the same interface as the example_generator function.\n4. Implement the API calls to the custom LLM within this function.\n5. Ensure the function properly formats questions from the questionnaire and parses responses from the LLM.\n6. Test the custom generator with the PsychoBench framework by passing it to the run_psychobench function."
+  },
+  {
+    "mode": "A",
+    "question": "How do different LLMs compare on the Big Five Inventory (BFI) personality assessment?",
+    "method": "Use the PsychoBench framework to evaluate multiple LLMs on the BFI questionnaire and compare their personality profiles.",
+    "expected_outcome": "A comparative analysis of different LLMs' personality profiles based on the Big Five traits (Extraversion, Agreeableness, Conscientiousness, Neuroticism, and Openness), showing similarities and differences between models.",
+    "source": [
+      "/workspace/run_psychobench.py",
+      "/workspace/example_generator.py"
+    ],
+    "usage_instructions": "1. Run the PsychoBench framework multiple times, once for each LLM you want to evaluate.\n2. Use the BFI questionnaire for all runs to ensure comparable results.\n3. Set consistent parameters (shuffle-count and test-count) across all runs.\n4. Collect the results from each run, which will be saved in the results directory.\n5. Compare the scores for each personality trait (Extraversion, Agreeableness, Conscientiousness, Neuroticism, and Openness) across the different LLMs.\n6. Analyze whether certain LLMs exhibit specific personality tendencies compared to others and to human baseline data."
+  }
+]

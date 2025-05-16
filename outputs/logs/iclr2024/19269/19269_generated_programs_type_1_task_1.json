@@ -1,0 +1,9 @@
+{
+    "source": [
+        "/workspace/scripts/run_msm_ablation_study.sh",
+        "/workspace/examples/musc_ablation_main.py",
+        "/workspace/models/musc_ablation.py",
+        "/workspace/models/modules/_MSM_ablation.py"
+    ],
+    "usage_instructions": "To run the ablation study on the MSM module with different sample strategies, execute the script '/workspace/scripts/run_msm_ablation_study.sh'. This script will run all six strategies (min, max, mean, 30%+min, 30%+max, 30%+mean) on both MVTec AD and VisA datasets. The results will be saved in Excel files in the output directory, allowing for easy comparison between different strategies. For more details, refer to the '/workspace/MSM_ABLATION_README.md' file."
+}

@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/experimental_benchmark/cross_match.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/embed.py",
+        "/workspace/experimental_benchmark/astroclip/property_estimation/property_estimation.ipynb"
+    ],
+    "usage_instructions": "1. First, use cross_match.py to create a cross-matched dataset between Legacy Surveys DR10 images and DESI spectra: `python /workspace/experimental_benchmark/cross_match.py /path/to/legacysurvey /path/to/desi /path/to/output_dir --matching_radius 1.0`. This will create a dataset with paired image and spectral data.\n2. Next, use embed.py to generate embeddings from both modalities using an AstroCLIP model: `python /workspace/experimental_benchmark/astroclip/property_estimation/embed.py /path/to/astroclip_model /path/to/cross_matched_dataset /path/to/provabgs /path/to/output_dir`. This will create train and test embeddings for both image and spectral data.\n3. Finally, run the property_estimation.ipynb notebook which demonstrates how to use k-Nearest Neighbors (k=16) on the embeddings to perform classification tasks. The notebook shows how to evaluate performance using only image embeddings, only spectral embeddings, and can be extended to use both modalities together. The paper results show that multimodal data yields higher classification accuracy compared to using a single modality."
+}

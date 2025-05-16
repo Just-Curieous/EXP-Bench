@@ -1,0 +1,16 @@
+{
+  "requirements": [
+    "Step 1: Set up the training environment by creating necessary directories for checkpoints and logs (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:13-16, 32-34)",
+    "Step 2: Initialize the CLI with PDEModel and PDEDataModule, setting up configuration for training (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:19-31)",
+    "Step 3: Prepare training arguments, including model and datamodule configuration (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:36-39)",
+    "Step 4: Train the model using the trainer.fit method with the prepared arguments (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:41-42)",
+    "Step 5: Test the trained model using the best checkpoint (/workspace/OpenPDE/SineNet/pdearena/scripts/train.py:43-45)",
+    "Step 6: For manual testing, initialize the CLI with model and datamodule configuration (/workspace/OpenPDE/SineNet/pdearena/scripts/test.py:19-26)",
+    "Step 7: Execute the test process to evaluate model performance on test data (/workspace/OpenPDE/SineNet/pdearena/scripts/test.py:27-28)"
+  ],
+  "agent_instructions": "Your task is to implement scripts for training and testing PDE-solving neural networks, specifically comparing SineNet-8 models with different padding methods (zero vs. circular) on the ShallowWater2D dataset.\n\nThe training script should:\n1. Set up a training environment with directories for checkpoints and logs\n2. Initialize a model and data module using a command-line interface that accepts configuration parameters\n3. Train the model using PyTorch Lightning's trainer\n4. Automatically test the trained model using the best checkpoint\n\nThe testing script should:\n1. Load a trained model from a checkpoint\n2. Evaluate the model on test data\n3. Report metrics for both one-step prediction errors and rollout errors\n\nThe scripts should support command-line arguments to specify:\n- Configuration file path\n- Data directory\n- Model name (to select between zero padding 'sinenet8-dual' and circular padding 'sinenet8-dual-circ')\n- Learning rate\n- Batch size\n- Number of workers\n- Checkpoint path (for testing)\n\nThe evaluation should measure both one-step prediction accuracy and multi-step rollout performance to compare how different padding methods affect the modeling of advection across boundaries.",
+  "masked_source": [
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/train.py",
+    "/workspace/OpenPDE/SineNet/pdearena/scripts/test.py"
+  ]
+}

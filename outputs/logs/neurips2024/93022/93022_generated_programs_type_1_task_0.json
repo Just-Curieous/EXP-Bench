@@ -1,0 +1,7 @@
+{
+    "source": [
+        "/workspace/sim_inference.py",
+        "/workspace/scripts/analyze_peptide_sim.py"
+    ],
+    "usage_instructions": "1. First, generate trajectories using the forward simulation model with the command: `python sim_inference.py --sim_ckpt forward_sim.ckpt --data_dir data/4AA_sims --split splits/4AA_test.csv --num_rollouts 10 --num_frames 1000 --xtc --out_dir [OUTPUT_DIRECTORY]`. This will generate 10 trajectory segments of 1000 frames each, conditioned on the first frame.\n\n2. Then, analyze the distributional similarity between the generated trajectories and ground-truth MD trajectories with: `python -m scripts.analyze_peptide_sim --mddir data/4AA_sims --pdbdir [OUTPUT_DIRECTORY] --plot --save --num_workers 1`. This will compute Jensen-Shannon Divergence (JSD) over backbone torsions, sidechain torsions, and the top TICA component, which directly answers the experiment question about distributional similarity."
+}

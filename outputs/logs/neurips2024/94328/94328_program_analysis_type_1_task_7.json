@@ -1,0 +1,24 @@
+{
+  "requirements": [
+    "Step 1: Install necessary dependencies including PyTorch, transformers, datasets, and other required libraries (/workspace/fake_quant/main.py:1-10)",
+    "Step 2: Set up environment variables and configurations, including disabling TensorFloat-32 to avoid numerical issues (/workspace/fake_quant/utils.py:24-27)",
+    "Step 3: Obtain access to the Hugging Face API token to download the LLAMA-3 models (/workspace/fake_quant/utils.py:80)",
+    "Step 4: Load the specified LLAMA-3 model (either 8B or 70B variant) from Hugging Face (/workspace/fake_quant/main.py:20)",
+    "Step 5: If using rotation (QuaRot), fuse layer normalization layers into adjacent linear blocks (/workspace/fake_quant/main.py:26)",
+    "Step 6: If using rotation (QuaRot), apply Hadamard rotation to the model weights (/workspace/fake_quant/main.py:27)",
+    "Step 7: Add activation quantization wrappers to the model's linear layers (/workspace/fake_quant/main.py:30-47)",
+    "Step 8: If using weight quantization (w_bits < 16), load calibration data from the specified dataset (/workspace/fake_quant/main.py:62-66)",
+    "Step 9: If using weight quantization with GPTQ, apply GPTQ quantization to the model weights using the calibration data (/workspace/fake_quant/main.py:67)",
+    "Step 10: If using weight quantization with RTN, apply RTN quantization to the model weights (/workspace/fake_quant/main.py:70)",
+    "Step 11: If using activation quantization (a_bits < 16), configure the activation quantizers with the specified bit-width and groupsize (/workspace/fake_quant/main.py:79-109)",
+    "Step 12: If using K-cache quantization (k_bits < 16), add quantization wrappers to the key vectors after RoPE (/workspace/fake_quant/main.py:111-124)",
+    "Step 13: Load the evaluation dataset (wikitext2) (/workspace/fake_quant/main.py:127-134)",
+    "Step 14: Evaluate the model on the dataset to calculate perplexity (/workspace/fake_quant/main.py:137-139)",
+    "Step 15: If specified, distribute the model across multiple GPUs for larger models (/workspace/fake_quant/main.py:152-155)",
+    "Step 16: If specified, perform additional evaluation using the LM evaluation harness (/workspace/fake_quant/main.py:141-168)"
+  ],
+  "agent_instructions": "Your task is to reproduce an experiment comparing QuaRot and QuaRot-128G quantization techniques on LLAMA-3 models. You need to run the main.py script with different configurations to evaluate the performance of these quantization methods.\n\nYou should:\n1. Understand how to use the main.py script with the appropriate arguments for each experiment configuration\n2. Run the baseline (FP16) experiments for both LLAMA-3-8B and LLAMA-3-70B models\n3. Run the QuaRot (standard GPTQ) experiments with 4-bit weight quantization for both models\n4. Run the QuaRot-128G (GPTQ with group size 128) experiments for both models\n5. Compare the results across all configurations\n\nNote that for larger models like LLAMA-3-70B, you might need to adjust the batch size or use the --distribute flag to distribute the model across multiple GPUs.",
+  "masked_source": [
+    "/workspace/fake_quant/main.py"
+  ]
+}

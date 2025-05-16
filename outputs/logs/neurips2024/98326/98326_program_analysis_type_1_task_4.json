@@ -1,0 +1,13 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch, torch.nn, torch.nn.functional, torchviz, and torchopt (/workspace/examples/visualize.py:16-21)",
+    "Step 2: Define a simple neural network class with a linear layer and forward method that accepts input and a meta parameter (/workspace/examples/visualize.py:24-30)",
+    "Step 3: Define a function to create and visualize a computational graph using TorchViz: initialize the network, create a non-accelerated Adam optimizer, perform forward pass, calculate loss, apply optimizer step, and generate visualization (/workspace/examples/visualize.py:33-47)",
+    "Step 4: Define a function to create and visualize a computational graph using TorchOpt with fused operations: initialize the network, create an accelerated Adam optimizer, perform forward pass, calculate loss, extract network state with visual tracking enabled, apply optimizer step, extract updated network state, and generate visualization (/workspace/examples/visualize.py:50-71)",
+    "Step 5: In the main execution block, set dimension and batch size parameters, then call both visualization functions to generate the comparison graphs (/workspace/examples/visualize.py:74-78)"
+  ],
+  "agent_instructions": "Create a script that compares the computational graph visualization between standard PyTorch (TorchViz) and TorchOpt with fused Adam operations. The script should:\n\n1. Create a simple neural network with a linear layer that takes an input tensor and a meta parameter\n\n2. Implement two visualization functions:\n   - One using standard TorchViz to visualize the computational graph with a regular Adam optimizer\n   - One using TorchOpt to visualize the computational graph with fused Adam operations\n\n3. For each visualization function:\n   - Initialize the network and move it to CUDA\n   - Set up the appropriate optimizer (standard vs. accelerated)\n   - Perform a forward pass with dummy data\n   - Calculate a loss (MSE)\n   - Apply an optimizer step\n   - Generate a visualization of the computational graph\n\n4. For the TorchOpt visualization specifically:\n   - Extract the network state with visual tracking enabled before and after the optimizer step\n   - Use these states when generating the visualization\n\n5. When executed, the script should generate two SVG files:\n   - 'torchviz_graph.svg' showing the standard PyTorch computational graph\n   - 'torchopt_graph.svg' showing the TorchOpt computational graph with fused operations\n\nThe goal is to demonstrate how TorchOpt's visualization provides a clearer representation of the computational graph compared to standard TorchViz.",
+  "masked_source": [
+    "/workspace/examples/visualize.py"
+  ]
+}

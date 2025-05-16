@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Initialize the distributed processing environment for model parallelism to enable efficient computation across multiple GPUs (/workspace/llama_adapter_v2_chat65b/chat_demo.py:74-77)",
+    "Step 2: Parse command line arguments to configure the model parameters, including model name, paths to model weights, conversation template, and generation parameters (/workspace/llama_adapter_v2_chat65b/chat_demo.py:130-140)",
+    "Step 3: Load the LLaMA model by initializing the transformer architecture with the specified parameters and loading pre-trained weights from the provided checkpoint path (/workspace/llama_adapter_v2_chat65b/chat_demo.py:15-45)",
+    "Step 4: Create a generator object that combines the model with a tokenizer to handle text generation (/workspace/llama_adapter_v2_chat65b/chat_demo.py:40-44)",
+    "Step 5: Set up a conversation template based on the specified template name to format and maintain the chat history (/workspace/llama_adapter_v2_chat65b/chat_demo.py:83)",
+    "Step 6: Start an infinite loop to enable continuous conversation with the model (/workspace/llama_adapter_v2_chat65b/chat_demo.py:84)",
+    "Step 7: Display a prompt for user input and read the input from the command line (/workspace/llama_adapter_v2_chat65b/chat_demo.py:85-89)",
+    "Step 8: Broadcast the user input to all processes in a distributed setting to ensure consistency (/workspace/llama_adapter_v2_chat65b/chat_demo.py:92-96)",
+    "Step 9: Check if the input is empty, and if so, exit the conversation loop (/workspace/llama_adapter_v2_chat65b/chat_demo.py:98-100)",
+    "Step 10: Append the user's message to the conversation history (/workspace/llama_adapter_v2_chat65b/chat_demo.py:102)",
+    "Step 11: Add a placeholder for the assistant's response in the conversation history (/workspace/llama_adapter_v2_chat65b/chat_demo.py:103)",
+    "Step 12: Generate the complete conversation prompt by formatting the conversation history according to the template (/workspace/llama_adapter_v2_chat65b/chat_demo.py:104)",
+    "Step 13: Set up generation parameters including temperature, top_p sampling, and maximum token length (/workspace/llama_adapter_v2_chat65b/chat_demo.py:106-113)",
+    "Step 14: Display the assistant's role indicator before generating the response (/workspace/llama_adapter_v2_chat65b/chat_demo.py:115-117)",
+    "Step 15: Generate the model's response using the formatted prompt and generation parameters (/workspace/llama_adapter_v2_chat65b/chat_demo.py:118)",
+    "Step 16: Process the generated output by removing any trailing whitespace (/workspace/llama_adapter_v2_chat65b/chat_demo.py:119)",
+    "Step 17: Display the model's response to the user (/workspace/llama_adapter_v2_chat65b/chat_demo.py:120-122)",
+    "Step 18: Update the conversation history with the generated response (/workspace/llama_adapter_v2_chat65b/chat_demo.py:124)",
+    "Step 19: Optionally display debugging information if the debug flag is set (/workspace/llama_adapter_v2_chat65b/chat_demo.py:126-127)",
+    "Final Step: Return to the beginning of the loop to continue the conversation until the user exits (/workspace/llama_adapter_v2_chat65b/chat_demo.py:84)"
+  ],
+  "agent_instructions": "Create an interactive chat interface using the LLaMA-Adapter V2 framework that maintains conversation history across multiple turns. Your implementation should:\n\n1. Set up the necessary environment for distributed processing if needed\n2. Create a command-line interface that accepts arguments for model configuration\n3. Load the LLaMA model with adapter weights from specified checkpoint paths\n4. Initialize a tokenizer for processing text input and output\n5. Set up a conversation template to properly format the chat history\n6. Create an interactive loop that:\n   - Prompts the user for input\n   - Processes the input and adds it to the conversation history\n   - Formats the entire conversation history into a prompt for the model\n   - Generates a response using the model with appropriate parameters (temperature, top_p, max tokens)\n   - Displays the response to the user\n   - Updates the conversation history with the model's response\n   - Continues until the user exits\n\nThe interface should maintain context across conversation turns by properly formatting the conversation history in each iteration."
+}

@@ -1,0 +1,14 @@
+{
+  "requirements": [
+    "Step 1: Import necessary libraries including torch and torch.nn.functional (/workspace/opencls/open_clip/loss.py:7-9)",
+    "Step 2: Define a ClsLoss class that inherits from nn.Module (/workspace/opencls/open_clip/loss.py:424-430)",
+    "Step 3: Initialize the class with parameters for world_size and pad_id (/workspace/opencls/open_clip/loss.py:425-434)",
+    "Step 4: Implement a loss method that normalizes targets and calculates loss using log_softmax and element-wise multiplication (/workspace/opencls/open_clip/loss.py:436-439)",
+    "Step 5: Implement a reweight_targets method that adjusts target weights based on frequency distribution (/workspace/opencls/open_clip/loss.py:441-448)",
+    "Step 6: Implement the forward method that converts tokenized text labels to one-hot encoded targets (/workspace/opencls/open_clip/loss.py:450-456)",
+    "Step 7: Apply target reweighting to the one-hot encoded targets (/workspace/opencls/open_clip/loss.py:457)",
+    "Step 8: Calculate the classification loss using the reweighted targets (/workspace/opencls/open_clip/loss.py:458)",
+    "Final Step: Return the loss as a scalar or in a dictionary based on the output_dict parameter (/workspace/opencls/open_clip/loss.py:460-463)"
+  ],
+  "agent_instructions": "Create a simplified version of the ClsLoss class from SuperClass that demonstrates how it handles tokenized text as classification labels. The class should:\n\n1. Import necessary PyTorch libraries (torch and torch.nn.functional)\n2. Define a ClsLoss class that inherits from nn.Module\n3. Initialize with parameters for distributed training (world_size) and token padding (pad_id)\n4. Implement a method to calculate loss using log_softmax and element-wise multiplication with normalized targets\n5. Implement a method to reweight targets based on their frequency distribution\n6. In the forward method:\n   - Convert tokenized text labels into one-hot encoded targets using scatter_\n   - Apply frequency-based reweighting to the targets\n   - Calculate the classification loss using the reweighted targets\n   - Return the loss as a scalar or in a dictionary based on an output_dict parameter\n7. Include example usage that demonstrates how the class processes tokenized text into classification targets and calculates the loss\n\nThe implementation should focus on the core functionality of converting tokenized text to classification targets and calculating the weighted loss, while maintaining the essential behavior of the original SuperClass implementation."
+}

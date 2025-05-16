@@ -1,0 +1,35 @@
+[
+  {
+    "mode": "A",
+    "question": "How can you detect label errors in a tabular dataset using Docta?",
+    "method": "Use Docta's label error detection functionality to identify potentially mislabeled instances in a tabular dataset.",
+    "expected_outcome": "A report showing the number of detected label errors and their indices in the dataset. For the provided tabular dataset, approximately 43 corrupted instances should be found from 150 total instances.",
+    "source": [
+      "/workspace/tools/diagnose_tabular.py",
+      "/workspace/config/label_error_tabular.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries including torch, argparse, and Docta modules.\n2. Parse command-line arguments to specify the configuration file path.\n3. Load the configuration from the specified file using Config.fromfile().\n4. Set the device to use (CPU or CUDA if available).\n5. Load the tabular dataset using TabularDataset class with the specified root path.\n6. Set the number of classes based on the unique labels in the dataset.\n7. Initialize a Report object to store diagnosis results.\n8. Create a DetectLabel object with the configuration, dataset, and report.\n9. Call the detect() method to identify label errors in the dataset.\n10. Save the diagnosis report to a file in the specified save path.\n11. Print a message confirming that the report has been saved."
+  },
+  {
+    "mode": "A",
+    "question": "How can you identify rare patterns in a tabular dataset using Docta?",
+    "method": "Use Docta's rare pattern detection functionality to calculate long-tail scores for instances in a tabular dataset, which helps identify data points with uncommon feature patterns.",
+    "expected_outcome": "A CSV file containing long-tail scores for each instance in the dataset, where higher scores indicate rarer patterns. The file should be saved at the path specified in the configuration.",
+    "source": [
+      "/workspace/tools/docta_tabular_rare_pattern.py",
+      "/workspace/config/lt_tabular.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries including torch, pandas, and Docta modules.\n2. Parse command-line arguments to specify the feature type and dataset suffix.\n3. Load the configuration from the appropriate file using Config.fromfile().\n4. Set the device to use (CPU or CUDA if available).\n5. Set the feature type based on the command-line argument.\n6. Load the tabular dataset using TabularDataset class with the specified root path.\n7. Initialize a Preprocess object with the configuration and dataset.\n8. Extract features from the dataset (for tabular data, use the raw features).\n9. Calculate long-tail scores using the lt_score function with the extracted features.\n10. Create a pandas DataFrame with the instance indices and their corresponding long-tail scores.\n11. Create the output directory if it doesn't exist.\n12. Save the DataFrame to a CSV file at the specified path.\n13. Print a message confirming that the long-tail scores have been saved."
+  },
+  {
+    "mode": "A",
+    "question": "How can you detect label errors in RLHF (Reinforcement Learning from Human Feedback) data using Docta?",
+    "method": "Use Docta's label error detection functionality to identify potentially incorrect human annotations in RLHF datasets, which are used for training language models.",
+    "expected_outcome": "A report showing detected label errors in the RLHF dataset. For the harmless-base dataset, approximately 28% of instances may have annotation errors.",
+    "source": [
+      "/workspace/tools/diagnose_rlhf.py",
+      "/workspace/config/hh_rlhf_harmless-base.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries including torch, argparse, and Docta modules.\n2. Parse command-line arguments to specify the configuration file path.\n3. Load the configuration from the specified file using Config.fromfile().\n4. Set the device to use (CPU or CUDA if available).\n5. Load the RLHF dataset using HH_RLHF class with the specified configuration.\n6. If working with 'red_team_attempts' data, convert labels to integers.\n7. Initialize a Preprocess object with the configuration and dataset.\n8. Call encode_feature() to extract embeddings from the text data.\n9. Load the embedded features from the saved checkpoint.\n10. Initialize a Report object to store diagnosis results.\n11. Create a DetectLabel object with the configuration, dataset, and report.\n12. Call the detect() method to identify label errors in the dataset.\n13. Save the diagnosis report to a file in the specified save path.\n14. Print a message confirming that the report has been saved."
+  }
+]

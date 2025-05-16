@@ -1,0 +1,25 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments including demo configuration path, model checkpoint path, and working directory (/workspace/inference_demo.py:13-26)",
+    "Step 2: Define a function to calculate Dice score between predictions and ground truth labels (/workspace/inference_demo.py:28-45)",
+    "Step 3: Load the pre-trained SegVol model which combines a vision transformer encoder with a mask decoder (/workspace/inference_demo.py:175-197)",
+    "Step 4: Load the demo configuration file containing dataset information, anatomical categories, and CT/ground truth paths (/workspace/inference_demo.py:199-202)",
+    "Step 5: Process the CT and ground truth data, including normalization and spatial transformations (/workspace/inference_demo.py:205, /workspace/data_process/demo_data_process.py:49-106)",
+    "Step 6: Configure the prompt settings (text, box, point) based on the experiment requirements (/workspace/inference_demo.py:208-212)",
+    "Step 7: For each anatomical category, generate appropriate prompts based on the configuration (/workspace/inference_demo.py:52-72)",
+    "Step 8: Perform zoom-out inference using the selected prompts (/workspace/inference_demo.py:74-105)",
+    "Step 9: If zoom-in is enabled, identify region of interest from zoom-out results (/workspace/inference_demo.py:111-115)",
+    "Step 10: Perform zoom-in inference on the identified region using sliding window approach (/workspace/inference_demo.py:136-145)",
+    "Step 11: Calculate Dice scores for the segmentation results (/workspace/inference_demo.py:146-154)",
+    "Step 12: Visualize the results by creating images showing the original CT, ground truth, and predictions (/workspace/inference_demo.py:168-173, /workspace/utils/visualize.py:8-73)"
+  ],
+  "agent_instructions": "Your task is to implement a medical image segmentation system that compares the performance of different prompt types for 3D CT scan segmentation. The system should:\n\n1. Load a pre-trained volumetric segmentation model based on the Segment Anything Model (SAM) architecture\n2. Process 3D CT scans and their corresponding ground truth segmentation masks\n3. Implement three different prompting strategies:\n   - Semantic prompting: Using text descriptions of anatomical structures\n   - Spatial prompting: Using bounding boxes around regions of interest\n   - Combined prompting: Using both text and bounding box information together\n\n4. For each prompting strategy, the system should:\n   - Generate appropriate prompts based on the ground truth data\n   - Perform a two-stage inference process:\n     a) Zoom-out: Initial whole-volume inference\n     b) Zoom-in: Refined inference on detected regions of interest\n   - Calculate Dice similarity scores between predictions and ground truth\n   - Visualize results with overlays showing the original image, ground truth, and predictions\n\n5. The system should be configurable through a JSON file that specifies:\n   - Dataset name\n   - List of anatomical categories to segment (e.g., liver, kidney, spleen, pancreas)\n   - Paths to CT scans and ground truth segmentations\n\n6. The implementation should support command-line arguments for:\n   - Model checkpoint path\n   - Output directory for results\n   - Configuration file path\n\nThe goal is to demonstrate how combining different prompt types (semantic and spatial) improves segmentation accuracy compared to using either prompt type alone.",
+  "masked_source": [
+    "/workspace/inference_demo.py",
+    "/workspace/script/inference_demo.sh",
+    "/workspace/data_process/demo_data_process.py",
+    "/workspace/utils/monai_inferers_utils.py",
+    "/workspace/utils/visualize.py",
+    "/workspace/network/model.py"
+  ]
+}

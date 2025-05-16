@@ -1,0 +1,20 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments and configuration from YAML file, with a priority system where CLI args override kwargs, which override config file values, which override defaults (/workspace/src/hest/bench/benchmark.py:392-427)",
+    "Step 2: Set up the environment by downloading necessary benchmark data and model weights from HuggingFace (/workspace/src/hest/bench/benchmark.py:431-435)",
+    "Step 3: Determine which datasets to use for benchmarking, either from configuration or by listing all available datasets (/workspace/src/hest/bench/benchmark.py:438-446)",
+    "Step 4: Create a directory structure for saving results (/workspace/src/hest/bench/benchmark.py:448-455)",
+    "Step 5: For each dataset and encoder combination, extract embeddings from H&E image tiles using the specified encoder (/workspace/src/hest/bench/benchmark.py:120-147, 245-273)",
+    "Step 6: Load gene expression data from spatial transcriptomics files, matching barcodes with the image embeddings (/workspace/src/hest/bench/benchmark.py:280-304)",
+    "Step 7: Optionally perform dimensionality reduction (PCA) on the embeddings (/workspace/src/hest/bench/benchmark.py:310-315)",
+    "Step 8: Train a regression model (Ridge, XGBoost, or RandomForest) to predict gene expression from image embeddings (/workspace/src/hest/bench/trainer.py:7-57)",
+    "Step 9: Evaluate the model using Pearson correlation between predicted and actual gene expression values (/workspace/src/hest/bench/trainer.py:61-84)",
+    "Step 10: Calculate and aggregate performance metrics across genes and splits (/workspace/src/hest/bench/trainer.py:87-102, /workspace/src/hest/bench/benchmark.py:331-352)",
+    "Step 11: Save results to JSON and CSV files for analysis (/workspace/src/hest/bench/benchmark.py:139-172, 323-327)"
+  ],
+  "agent_instructions": "Create a benchmarking system to compare different regression models (Ridge, XGBoost, RandomForest) for predicting gene expression from histology images. The system should:\n\n1. Accept configuration via command line arguments or a YAML file, with parameters for datasets, encoders, regression method, and other settings.\n\n2. Download necessary benchmark data and model weights automatically.\n\n3. For each dataset and encoder combination:\n   - Extract embeddings from H&E image tiles using the specified encoder\n   - Load gene expression data from spatial transcriptomics files\n   - Match the spatial transcriptomics data with the image embeddings using barcodes\n   - Optionally perform dimensionality reduction (PCA) on the embeddings\n   - Train a regression model to predict gene expression from image embeddings\n   - Evaluate using Pearson correlation between predicted and actual gene expression\n\n4. Support k-fold cross-validation by running predictions on multiple train/test splits.\n\n5. Aggregate results across genes and splits, calculating mean and standard deviation of Pearson correlations.\n\n6. Save comprehensive results to JSON and CSV files for analysis.\n\nThe system should support comparing multimodal approaches (using both H&E imagery and spatial transcriptomics) with single-modality approaches (using only H&E features).",
+  "masked_source": [
+    "/workspace/src/hest/bench/benchmark.py",
+    "/workspace/src/hest/bench/trainer.py"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+    "source": [
+        "/workspace/topomlp_setA_r50_baseline.py",
+        "/workspace/topomlp_setA_r50_w_otransform.py",
+        "/workspace/topomlp_setA_r50_wonly_box.py",
+        "/workspace/run_ablation_study.sh"
+    ],
+    "usage_instructions": "To run the ablation study experiments for lane-traffic topology reasoning as described in Section 4.4 of the paper, follow these steps:\n\n1. First, ensure you have a trained checkpoint of the TopoMLP model.\n\n2. Edit the `/workspace/run_ablation_study.sh` script to specify the correct path to your checkpoint file and the number of GPUs to use.\n\n3. Run the script using: `bash /workspace/run_ablation_study.sh`\n\nThis will execute three experiments:\n- Baseline: Using full lane and traffic features with `add_pos=False` to disable the view transformation matrix\n- w_otransform: Integrating a view transformation matrix into the lane features by setting `add_pos=True`\n- wonly_box: Using the view transformation matrix while simplifying traffic element features to only use bounding boxes\n\nThe script will output evaluation metrics including TOPlt, DETl, DETt, and TOPll for each configuration, allowing you to compare the performance and analyze the trade-offs between detailed traffic representation and computational simplicity."
+}

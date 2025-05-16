@@ -1,0 +1,125 @@
+{
+  "questions": [
+    {
+      "question": "Does the group-free design of Voxel Mamba lead to a significant improvement in 3D detection performance, as measured by Level 1 and Level 2 mAPH, compared to the DSVT-based backbone on the Waymo Open Dataset?",
+      "method": "1. **Problem Setup:** \n    - **Task:** \n    Compare the performance of Voxel Mamba and DSVT-based 3D backbones in object detection on the Waymo Open Dataset.\n    - **Objective:** \n    Determine whether the group-free serialization strategy of Voxel Mamba enhances 3D detection accuracy, as measured by Level 1 (L1) and Level 2 (L2) mAPH metrics.\n\n2. **Testing Dataset:** \n    Waymo Open Dataset(single frame setting)\n        - Training set: 160k samples\n        - Validation set: 40k samples\n        - Testing set: 30k samples\n3. **Comparative Evaluation:**  \n    - Models:\n        - DSVT-based backbone (Baseline model)\n        - Voxel Mamba backbone (Proposed model)\n    \n\n4. **Training Detail:**\n    - The voxel sizes are defined as (0.32m,0.32m,0.1875m) for Waymo and voxel features consist of 128channels.\n\n5. **Architecture detail:**\n    - stack six DSB blocks, divided into three stages, for the Voxel Mamba backbone network. The downsampling rates for DSBs\u2019 backward branches in each stage are {1,2,4}.Specifically, we employ SpConv and its counterpart SpInverseConv as downsampling and upsampling operators in the DSB backward branch. \n    - using Adam optimizer with weight decay 0.05,one-cycle learning rate policy,max learning rate 0.0025, and batch size 24 for 24 epochs\n\n6. **Detection Head & Loss Function:**\n    - Both models share the same BEV backbone from CenterPoint-Pillar\n\n7. **Evaluation Metrics:**\n    - Level 1 (L1) and Level 2 (L2) mAPH",
+      "expected_outcome": "It is expected that Voxel Mamba will outperform the DSVT backbone with improvements of approximately +1.4 in Level 1 mAPH and +1.5 in Level 2 mAPH on the validation split. These results should confirm that the group-free backbone design more effectively captures voxel features.",
+      "design_complexity": {
+        "design_complexity": {
+          "constant_variables": {
+            "dataset_and_training_config": "Waymo Open Dataset splits (160k training, 40k validation, 30k testing), voxel sizes (0.32m, 0.32m, 0.1875m), batch size (32), maximum learning rate (0.004), training duration (20 epochs on 8 RTX A6000 GPUs), DSB block arrangement (6 blocks in 3 stages with downsampling rates {1, 2, 4}) using SpConv and SpInverseConv operators, and detection head & loss setup from Centerpoint-Pillar"
+          },
+          "independent_variables": {
+            "3D_backbone_design": [
+              "DSVT-based backbone",
+              "Voxel Mamba backbone"
+            ]
+          },
+          "dependent_variables": {
+            "performance_metrics": [
+              "Level 1 mAPH",
+              "Level 2 mAPH"
+            ]
+          }
+        }
+      },
+      "experiment_setup_complexity": {
+        "experiment_setup_complexity": {
+          "components": [
+            "Waymo Open Dataset splits (160k training, 40k validation, 30k testing samples)",
+            "Two 3D detection models differing only in backbone design (DSVT-based vs. Voxel Mamba)",
+            "Voxel configuration settings (voxel sizes: 0.32m, 0.32m, 0.1875m)",
+            "Training hyperparameters (batch size of 32, maximum learning rate of 0.004, training duration of 20 epochs)",
+            "Hardware setup (8 RTX A6000 GPUs)",
+            "DSB block arrangement with 6 blocks in 3 stages (downsampling rates: {1, 2, 4})",
+            "Operators for spatial computations (SpConv and SpInverseConv)",
+            "Detection head and loss configuration from Centerpoint-Pillar",
+            "Evaluation metrics (Level 1 mAPH, Level 2 mAPH)"
+          ],
+          "setup_steps": [
+            "Prepare and split the Waymo Open Dataset into training, validation, and testing sets",
+            "Configure both models with identical training conditions as detailed in setup",
+            "Incorporate the specific voxel sizes, batch size, learning rate, and epoch settings into the training pipeline",
+            "Set up the architecture components including the 6 DSB blocks, SpConv/SpInverseConv operators, and BEV backbone",
+            "Ensure that only the 3D backbone differs between the two models (DSVT-based vs. Voxel Mamba)",
+            "Train both models simultaneously or in controlled conditions on 8 RTX A6000 GPUs",
+            "Evaluate the models on the validation split using Level 1 and Level 2 mAPH metrics",
+            "Analyze the performance differences, focusing on the reported improvements"
+          ],
+          "optional_other_sources_of_complexity": [
+            {
+              "source": "Architectural Details",
+              "description": "The exact implementation of the DSB blocks and the integration of SpConv/SpInverseConv operators add to the complexity due to their specialized operations."
+            }
+          ]
+        }
+      },
+      "experiment_constraints": {
+        "experiment_constraints": {
+          "resource_constraints": {},
+          "time_constraints": {},
+          "money_constraints": {},
+          "possible_modifications": {
+            "resource_constraints": [
+              "Potential modification: Reduce the number of GPUs (e.g., use 4 RTX A6000 GPUs instead of 8) to test if the performance gains of Voxel Mamba still hold under more limited hardware resources."
+            ],
+            "time_constraints": [
+              "Potential modification: Shorten the training duration (e.g., fewer epochs) to evaluate whether the performance improvements can be achieved under a stricter time budget."
+            ],
+            "money_constraints": [
+              "Potential modification: Budget limitations might require the use of less expensive GPU models, which could be enforced to verify if the Voxel Mamba backbone maintains its advantages under lower-cost hardware conditions."
+            ]
+          }
+        }
+      },
+      "random_uncertainty": {
+        "random_uncertainty": {
+          "source": "Stochastic elements in training and data processing",
+          "description": "Even under controlled conditions, factors such as random weight initialization, random sampling in mini-batch construction, and potential randomness in GPU computation order (due to parallelism) can introduce variability in model performance metrics. Additionally, modifications like masking specific hyperparameter details (e.g., exact voxel sizes or learning rate settings) may force the backbone comparison to work under slightly varying conditions, further adding randomness in the outcome.",
+          "impact": "These fluctuations can cause slight variations in the reported mAPH values, GPU memory usage measurements, and detection speed comparisons; making it harder to determine whether observed performance differences are due solely to the backbone design or the result of random variability.",
+          "possible_modifications": [
+            "Randomly perturb training hyperparameters (e.g., introduce random variations in learning rate schedules or batch compositions) to simulate variability in model training.",
+            "Omit or mask exact voxel configuration details to test if the backbone performance holds under varied but randomly determined settings.",
+            "Incorporate a stochastic data augmentation process that randomly modifies input samples during training."
+          ]
+        }
+      },
+      "systematic_uncertainty": {
+        "systematic_uncertainty": {
+          "source": "Ambiguities in experimental setup and controlled condition definitions",
+          "description": "One-time modifications such as altering dataset properties or measurement protocols could systematically skew the performance evaluations in favor of one design.",
+          "impact": "A systematic bias may cause consistent over- or underestimation of the performance metrics (mAPH scores), potentially correlating the reported improvements with setup choices rather than genuine backbone differences.",
+          "possible_modifications": [
+            "Introduce a one-time modification to the dataset (e.g., labeling strategy bias) to test if the systematic integrity of the evaluation holds.",
+            "Vary the environmental conditions (e.g., data augmentation methods or training schedules) in a controlled way to identify and mitigate the systematic bias in performance comparisons."
+          ]
+        }
+      },
+      "source": [
+        "/workspace/tools/test.py",
+        "/workspace/tools/scripts/dist_test.sh",
+        "/workspace/tools/cfgs/voxel_mamba_models/voxel_mamba_waymo.yaml",
+        "/workspace/tools/cfgs/waymo_models/dsvt_voxel.yaml"
+      ],
+      "usage_instructions": "To compare the performance of Voxel Mamba and DSVT-based backbones on the Waymo Open Dataset, follow these steps:\n\n1. First, ensure you have the Waymo Open Dataset processed according to the instructions in GETTING_STARTED.md.\n\n2. Generate the Hilbert template files required for Voxel Mamba by running:\n   ```\n   cd data\n   mkdir hilbert\n   python ./tools/hilbert_curves/create_hilbert_curve_template.py\n   ```\n   (Alternatively, download them from the provided Google Drive or BaiduYun links in the README.md)\n\n3. To evaluate the Voxel Mamba model, run:\n   ```\n   cd tools\n   bash scripts/dist_test.sh 8 --cfg_file ./cfgs/voxel_mamba_models/voxel_mamba_waymo.yaml --ckpt <PATH_TO_VOXEL_MAMBA_CHECKPOINT>\n   ```\n\n4. To evaluate the DSVT-based model, run:\n   ```\n   cd tools\n   bash scripts/dist_test.sh 8 --cfg_file ./cfgs/waymo_models/dsvt_voxel.yaml --ckpt <PATH_TO_DSVT_CHECKPOINT>\n   ```\n\n5. Compare the Level 1 (L1) and Level 2 (L2) mAPH metrics from both evaluation results. According to the repository's README.md, Voxel Mamba should show approximately +1.4 improvement in Level 1 mAPH and +1.5 improvement in Level 2 mAPH compared to the DSVT backbone.\n\nNote: You'll need to obtain or train the model checkpoints for both models. The repository doesn't include pre-trained checkpoints, but you can train them using the same configuration files with the train.py script.",
+      "requirements": [
+        "Step 1: Generate Hilbert curve templates required for the Voxel Mamba model with three different bit sizes (9, 8, 7) and corresponding z-max values (41, 17, 9) (/workspace/tools/hilbert_curves/create_hilbert_curve_template.py:144-219)",
+        "Step 2: Load configuration from YAML file for either Voxel Mamba or DSVT model (/workspace/tools/test.py:21-55)",
+        "Step 3: Build the test dataloader with the Waymo dataset configuration (/workspace/tools/test.py:194-199)",
+        "Step 4: Build the 3D object detection network (either Voxel Mamba or DSVT) based on the loaded configuration (/workspace/tools/test.py:201)",
+        "Step 5: Load the model checkpoint specified by the user (/workspace/tools/test.py:58-62)",
+        "Step 6: Run evaluation on the test dataset using the loaded model (/workspace/tools/test.py:64-68)",
+        "Step 7: Calculate and report Level 1 (L1) and Level 2 (L2) mAPH metrics for the evaluated model (/workspace/tools/test.py:123-126)",
+        "Final Step: Compare the evaluation metrics between Voxel Mamba and DSVT models to verify the performance improvement claimed in the paper (/workspace/tools/test.py:123-135)"
+      ],
+      "agent_instructions": "Your task is to implement scripts for comparing the performance of Voxel Mamba and DSVT-based backbones on the Waymo Open Dataset for 3D object detection. The experiment involves the following steps:\n\n1. Create a script to generate Hilbert curve templates that are required for the Voxel Mamba model. These templates should be generated for three different resolutions (bit sizes 9, 8, and 7) with corresponding z-max values (41, 17, 9). The templates should be saved as PyTorch files in a 'hilbert' directory.\n\n2. Implement a testing script that can evaluate 3D object detection models on the Waymo dataset. The script should:\n   - Accept command-line arguments for configuration file path and model checkpoint path\n   - Support distributed testing across multiple GPUs\n   - Load model configurations from YAML files\n   - Build the appropriate model architecture (either Voxel Mamba or DSVT) based on the configuration\n   - Load the specified model checkpoint\n   - Evaluate the model on the Waymo validation set\n   - Calculate and report Level 1 (L1) and Level 2 (L2) mAPH metrics\n\n3. Create configuration files for both models:\n   - Voxel Mamba configuration should specify a 3D backbone that uses Hilbert curve-based sequence modeling\n   - DSVT configuration should specify a Dynamic Sparse Voxel Transformer backbone\n   - Both configurations should use the same detection head (CenterPoint) and be set up for the Waymo dataset with the same point cloud range and voxel size\n\n4. Create a shell script that wraps the testing script to enable distributed evaluation across multiple GPUs\n\nThe goal is to verify that the Voxel Mamba model achieves approximately +1.4 improvement in Level 1 mAPH and +1.5 improvement in Level 2 mAPH compared to the DSVT backbone on the Waymo Open Dataset.",
+      "masked_source": [
+        "/workspace/tools/test.py",
+        "/workspace/tools/scripts/dist_test.sh",
+        "/workspace/tools/cfgs/voxel_mamba_models/voxel_mamba_waymo.yaml",
+        "/workspace/tools/cfgs/waymo_models/dsvt_voxel.yaml",
+        "/workspace/tools/hilbert_curves/create_hilbert_curve_template.py"
+      ]
+    }
+  ]
+}

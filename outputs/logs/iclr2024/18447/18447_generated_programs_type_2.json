@@ -1,0 +1,42 @@
+[
+  {
+    "mode": "A",
+    "question": "How accurately can MogaNet classify images of cats compared to other animals?",
+    "method": "Use the MogaNet image classification model to classify an image of a cat and analyze the top predictions to determine how well it distinguishes between different cat breeds.",
+    "expected_outcome": "The model should correctly identify the image as a cat, with top predictions being different cat breeds (tabby cat, tiger cat, etc.) with high confidence scores (>10%).",
+    "source": ["/workspace/demo.ipynb"],
+    "usage_instructions": "1. Import the necessary libraries including the MogaNet models module.\n2. Load a pre-trained MogaNet-Tiny model using the models.moganet_tiny(pretrained=True) function.\n3. Set the model to evaluation mode with model.eval().\n4. Create an image transformation pipeline using timm.data.create_transform with the model's default crop percentage.\n5. Load an image of a cat using PIL.Image.open().\n6. Apply the transformation to the image and add a batch dimension with unsqueeze(0).\n7. Run inference on the image using the model.\n8. Apply softmax to convert the logits to probabilities.\n9. Extract the top 5 predictions and their corresponding class indices.\n10. Map the class indices to human-readable class names using the ImageNet class mapping.\n11. Display the results showing the top predictions and their confidence scores."
+  },
+  {
+    "mode": "A",
+    "question": "How can MogaNet be used for object detection on images containing multiple objects?",
+    "method": "Use the MogaNet-based Mask R-CNN model to detect and segment objects in an image, visualizing the bounding boxes and segmentation masks.",
+    "expected_outcome": "The model should detect multiple objects in the image, draw bounding boxes around them, and generate segmentation masks with appropriate class labels and confidence scores.",
+    "source": ["/workspace/detection/demo/image_demo.py"],
+    "usage_instructions": "1. Import the necessary libraries including mmdet.apis for detection functionality.\n2. Register the MogaNet model by importing the models module.\n3. Initialize the detector model using init_detector() with the appropriate config file and checkpoint.\n4. Run inference on an input image using inference_detector().\n5. Visualize the results using show_result_pyplot() which will draw bounding boxes and segmentation masks on the image.\n6. Set appropriate confidence threshold to filter out low-confidence detections.\n7. Display the annotated image with detected objects, their class labels, and confidence scores."
+  },
+  {
+    "mode": "A",
+    "question": "How effective is MogaNet for semantic segmentation of complex scenes?",
+    "method": "Use the MogaNet-based semantic segmentation model to segment an image into different semantic regions, visualizing the segmentation map overlaid on the original image.",
+    "expected_outcome": "The model should generate a segmentation map where different regions of the image are colored according to their semantic class (e.g., person, car, building, etc.) with clear boundaries between different objects.",
+    "source": ["/workspace/segmentation/demo/image_demo.py"],
+    "usage_instructions": "1. Import the necessary libraries including mmseg.apis for segmentation functionality.\n2. Register the MogaNet model by importing the models module.\n3. Initialize the segmentation model using init_segmentor() with the appropriate config file and checkpoint.\n4. Run inference on an input image using inference_segmentor().\n5. Visualize the results using show_result_pyplot() which will overlay the segmentation map on the original image.\n6. Set an appropriate opacity value to control the transparency of the segmentation overlay.\n7. Use a color palette (e.g., ADE20K) to assign different colors to different semantic classes.\n8. Display the segmented image showing different regions colored according to their semantic class."
+  },
+  {
+    "mode": "A",
+    "question": "How can MogaNet be applied to human pose estimation for detecting body keypoints?",
+    "method": "Use the MogaNet-based pose estimation model to detect human body keypoints in an image and visualize the skeleton connections between joints.",
+    "expected_outcome": "The model should detect human figures in the image, identify key body joints (shoulders, elbows, wrists, hips, knees, ankles, etc.), and draw skeleton connections between these joints with appropriate confidence scores.",
+    "source": ["/workspace/pose_estimation/demo/top_down_img_demo.py"],
+    "usage_instructions": "1. Import the necessary libraries including mmpose.apis for pose estimation functionality.\n2. Register the MogaNet model by importing the models module.\n3. Load the COCO dataset annotations to get bounding boxes for people in the image.\n4. Initialize the pose estimation model using init_pose_model() with the appropriate config file and checkpoint.\n5. Create person results from the bounding box annotations.\n6. Run inference using inference_top_down_pose_model() to detect keypoints within each person bounding box.\n7. Visualize the results using vis_pose_result() which will draw the skeleton connections between detected keypoints.\n8. Set appropriate keypoint score threshold to filter out low-confidence detections.\n9. Configure visualization parameters like radius for keypoints and thickness for skeleton lines.\n10. Display the annotated image showing the detected human poses with skeleton connections."
+  },
+  {
+    "mode": "A",
+    "question": "How well can MogaNet predict future frames in a video sequence of moving digits?",
+    "method": "Use the MogaNet-based SimVP model to predict future frames in a Moving MNIST video sequence based on observed frames.",
+    "expected_outcome": "The model should generate predicted future frames that show the continued movement of digits in a way that is consistent with their trajectory in the observed frames, maintaining digit appearance and motion patterns.",
+    "source": ["/workspace/video_prediction/tools/non_dist_train.py", "/workspace/video_prediction/configs/mmnist/simvp/SimVP_MogaNet.py"],
+    "usage_instructions": "1. Set up the SimVP model with MogaNet as the backbone by specifying the model_type as 'moga'.\n2. Configure the model parameters including hidden dimensions, number of layers, and learning rate.\n3. Load the Moving MNIST dataset which contains sequences of moving digits.\n4. Split each video sequence into input frames (observed sequence) and target frames (future sequence to predict).\n5. Train the model to predict future frames based on observed frames using the non_dist_train.py script.\n6. Evaluate the model by comparing predicted future frames with ground truth frames using metrics like MSE.\n7. Visualize the results by displaying the input sequence, predicted future frames, and ground truth future frames side by side."
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "mode": "B",
+    "question": "How does SuperClass perform vision-language pre-training using tokenized raw text as classification labels?",
+    "method": "Create a simple example that demonstrates the SuperClass approach by loading a pre-trained model, processing an image, tokenizing text, and performing a forward pass to get classification logits.",
+    "expected_outcome": "A working script that loads a SuperClass model, processes an image, and outputs classification logits that map image features to text token space.",
+    "source": [
+      "/workspace/opencls/open_clip/factory.py",
+      "/workspace/opencls/open_clip/cls_model.py",
+      "/workspace/opencls/open_clip/loss.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries including torch and components from opencls.open_clip.\n2. Create a SuperClass model using create_model_and_transforms with 'CLS-ViT-B-16' architecture.\n3. Get the tokenizer for the model using get_tokenizer.\n4. Load and preprocess an image using the preprocess_val function.\n5. Tokenize a text sample using the tokenizer.\n6. Perform a forward pass through the model with the processed image and tokenized text.\n7. Extract and print the logits from the model output.\n8. Demonstrate how the model maps image features to text token space by showing the shape and values of the logits."
+  },
+  {
+    "mode": "A",
+    "question": "How can you train a SuperClass model on a custom dataset of image-text pairs?",
+    "method": "Use the provided training scripts to set up a SuperClass training pipeline on a custom dataset, configuring the model architecture, batch size, learning rate, and other hyperparameters.",
+    "expected_outcome": "A command that runs the SuperClass training script with appropriate configuration parameters, which would train a model if executed with proper data paths.",
+    "source": [
+      "/workspace/train.sh",
+      "/workspace/opencls/configs/cls_schedule/cls_vit_b16_s1.28B_bs16k.yaml"
+    ],
+    "usage_instructions": "1. Examine the training script (train.sh) to understand its parameters and usage.\n2. Review the configuration file (cls_vit_b16_s1.28B_bs16k.yaml) to understand the available hyperparameters.\n3. Modify the DATA_PATH and VAL_DATA_PATH variables in the training script to point to your dataset.\n4. Set appropriate values for model architecture, batch size, learning rate, and other training parameters.\n5. Construct the final command that would execute the training script with the selected configuration.\n6. Explain how the script uses webdataset format for efficient training on large datasets."
+  },
+  {
+    "mode": "B",
+    "question": "How does the ClsLoss function in SuperClass handle tokenized text as classification labels?",
+    "method": "Implement a simplified version of the ClsLoss function that demonstrates how SuperClass converts tokenized text into classification targets and calculates the loss.",
+    "expected_outcome": "A function that takes model outputs (logits and tokenized text) and calculates a classification loss similar to the one used in SuperClass.",
+    "source": [
+      "/workspace/opencls/open_clip/loss.py"
+    ],
+    "usage_instructions": "1. Import necessary libraries including torch and torch.nn.functional.\n2. Create a simplified version of the ClsLoss class that focuses on the core functionality.\n3. Implement the forward method that takes logits and tokenized text as input.\n4. Convert the tokenized text into one-hot encoded classification targets.\n5. Apply any reweighting or normalization as done in the original implementation.\n6. Calculate and return the classification loss using log_softmax and element-wise multiplication.\n7. Demonstrate the loss calculation with example inputs to show how it works."
+  }
+]

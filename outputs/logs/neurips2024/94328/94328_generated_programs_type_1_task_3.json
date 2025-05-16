@@ -1,0 +1,4 @@
+{
+    "source": ["/workspace/fake_quant/main.py"],
+    "usage_instructions": "Execute the main.py script with different combinations of key and value cache bit widths. For example, to evaluate LLAMA2-7B with 4-bit K and 3-bit V cache:\n\npython /workspace/fake_quant/main.py --model meta-llama/Llama-2-7b-hf --k_bits 4 --v_bits 3 --k_asym --v_asym --k_groupsize 128 --v_groupsize 128 --k_clip_ratio 0.95 --v_clip_ratio 0.95 --eval_dataset wikitext2\n\nRepeat with different models (Llama-2-7b-hf, Llama-2-13b-hf, Llama-2-70b-hf) and different K/V bit combinations (16/16, 4/4, 4/3, 4/2, 3/4, 3/3, 3/2, 2/4, 2/3, 2/2) to reproduce the full table."
+}

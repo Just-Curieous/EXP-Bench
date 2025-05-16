@@ -1,0 +1,21 @@
+{
+  "requirements": [
+    "Step 1: Load and preprocess time series data (electricity or traffic dataset) with standardization (/workspace/data_provider/data_loader.py:234-267)",
+    "Step 2: Split data into train, validation, and test sets (/workspace/data_provider/data_loader.py:247-253)",
+    "Step 3: For each data point, extract the input sequence, target sequence, and cycle index (/workspace/data_provider/data_loader.py:289-302)",
+    "Step 4: For baseline models (Linear/RMLP), implement direct forecasting without cycle information (/workspace/models/Linear.py:6-21, /workspace/models/RMLP.py:6-27)",
+    "Step 5: For CycleNet models, implement the RecurrentCycle module to capture cyclical patterns (/workspace/models/CycleNet.py:4-18)",
+    "Step 6: In CycleNet forward pass, subtract cyclical pattern from input, apply backbone model, then add cyclical pattern to output (/workspace/models/CycleNet.py:45-67)",
+    "Step 7: Train models using MSE loss with early stopping based on validation performance (/workspace/exp/exp_main.py:115-244)",
+    "Step 8: Evaluate models on test data using MSE and MAE metrics (/workspace/exp/exp_main.py:246-348)",
+    "Step 9: Compare performance of baseline models vs. CycleNet models across different prediction horizons (/workspace/exp/exp_main.py:335-342)"
+  ],
+  "agent_instructions": "Your task is to implement a time series forecasting experiment that compares the performance of basic forecasting models with and without the Recurrent Cycle Forecasting (RCF) technique. The experiment should:\n\n1. Implement two baseline forecasting models:\n   - A Linear model that directly maps from input sequence to prediction sequence\n   - An MLP model with one hidden layer and ReLU activation\n\n2. Implement the RCF technique (called CycleNet) that:\n   - Captures cyclical patterns in time series data using a learnable parameter for each time step in the cycle\n   - Can be combined with different backbone models (Linear and MLP in this case)\n   - Works by: (1) subtracting the cyclical pattern from input, (2) applying the backbone model to the residual, and (3) adding back the cyclical pattern to the output\n\n3. Set up an experiment to compare four configurations:\n   - Linear model without RCF\n   - Linear model with RCF (CycleNet with Linear backbone)\n   - MLP model without RCF\n   - MLP model with RCF (CycleNet with MLP backbone)\n\n4. Run the experiment on two datasets:\n   - Electricity consumption dataset (321 variables)\n   - Traffic dataset (862 variables)\n\n5. For each configuration and dataset:\n   - Use an input sequence length of 96\n   - Test different prediction horizons: 96, 192, 336, and 720\n   - Train with early stopping based on validation loss\n   - Evaluate using MSE and MAE metrics\n\nThe goal is to determine whether the RCF technique enhances the prediction accuracy of basic forecasting models across different forecast horizons on both datasets.",
+  "masked_source": [
+    "/workspace/scripts/CycleNet/STD/Linear.sh",
+    "/workspace/scripts/CycleNet/Linear-Input-96/electricity.sh",
+    "/workspace/scripts/CycleNet/Linear-Input-96/traffic.sh",
+    "/workspace/scripts/CycleNet/MLP-Input-96/electricity.sh",
+    "/workspace/scripts/CycleNet/MLP-Input-96/traffic.sh"
+  ]
+}

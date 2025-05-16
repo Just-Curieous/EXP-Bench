@@ -1,0 +1,22 @@
+{
+  "requirements": [
+    "Step 1: Parse command line arguments and load configuration from YAML file, with priority given to CLI args, then kwargs, then config file (/workspace/src/hest/bench/benchmark.py:392-427)",
+    "Step 2: Set random seed for reproducibility (/workspace/src/hest/bench/benchmark.py:429)",
+    "Step 3: Download foundation model weights and benchmark datasets from HuggingFace Hub (/workspace/src/hest/bench/benchmark.py:431-435)",
+    "Step 4: Set up device (CUDA if available, otherwise CPU) (/workspace/src/hest/bench/benchmark.py:441)",
+    "Step 5: Create directory structure for saving results (/workspace/src/hest/bench/benchmark.py:448-455)",
+    "Step 6: For each dataset and encoder combination, extract embeddings from tissue patches (/workspace/src/hest/bench/benchmark.py:467, /workspace/src/hest/bench/benchmark.py:244-273)",
+    "Step 7: Load gene expression data and match with extracted embeddings (/workspace/src/hest/bench/benchmark.py:279-304)",
+    "Step 8: Optionally perform dimensionality reduction (PCA) on embeddings (/workspace/src/hest/bench/benchmark.py:310-315)",
+    "Step 9: Train regression model (Ridge by default) to predict gene expression from embeddings (/workspace/src/hest/bench/trainer.py:7-22)",
+    "Step 10: Evaluate model performance using Pearson correlation between predicted and actual gene expression (/workspace/src/hest/bench/trainer.py:61-84)",
+    "Step 11: Perform k-fold cross-validation by repeating steps 6-10 for each fold (/workspace/src/hest/bench/benchmark.py:355-375)",
+    "Step 12: Aggregate results across folds, calculating mean and standard deviation of Pearson correlations (/workspace/src/hest/bench/benchmark.py:331-352)",
+    "Step 13: Save results to JSON and CSV files (/workspace/src/hest/bench/benchmark.py:164-172)"
+  ],
+  "agent_instructions": "Create a benchmarking system for evaluating foundation models on spatial transcriptomics data. The system should:\n\n1. Accept a configuration file that specifies which foundation models to evaluate and which datasets to use\n\n2. For each model and dataset combination:\n   - Extract embeddings from histology image patches using the specified foundation model\n   - Load corresponding gene expression data\n   - Optionally perform dimensionality reduction on embeddings (PCA)\n   - Train a regression model (Ridge regression by default) to predict gene expression from embeddings\n   - Evaluate performance using Pearson correlation between predicted and actual gene expression\n\n3. Implement patient-stratified k-fold cross-validation:\n   - Split data by patient to ensure no data leakage\n   - Train on k-1 folds and test on the remaining fold\n   - Repeat for all k folds\n   - Calculate mean and standard deviation of performance metrics across folds\n\n4. Save results in a structured format:\n   - Per-gene Pearson correlations\n   - Mean and standard deviation across genes and folds\n   - Organized by dataset and model\n\nThe system should support multiple regression methods (Ridge, Random Forest, XGBoost) and handle downloading of model weights and datasets from HuggingFace Hub.",
+  "masked_source": [
+    "/workspace/src/hest/bench/benchmark.py",
+    "/workspace/bench_config/bench_config.yaml"
+  ]
+}

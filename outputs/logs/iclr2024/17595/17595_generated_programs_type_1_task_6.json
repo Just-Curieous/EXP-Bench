@@ -1,0 +1,8 @@
+{
+    "source": [
+        "/workspace/examples/pretrain_zero_bubble.sh",
+        "/workspace/tools/load_nsys_events.py",
+        "/workspace/tools/viz_nsys_events.py"
+    ],
+    "usage_instructions": "1. First, set up the ZB-2p schedule by running the pretrain_zero_bubble.sh script with the following environment variables: ENABLE_ZERO_BUBBLE=1, PIPELINE_SIZE=16, LAYERS=46, HIDDEN_SIZE=5120, ATTENTION_HEADS=40, MICRO_BATCH_SIZE=1, GLOBAL_BATCH_SIZE=64, ZERO_BUBBLE_MEM_LIMIT=32 (which is 2x the pipeline stages). This will execute the model with the ZB-2p schedule and profile the execution.\n2. After the run completes, use the Nsight Systems profiling data to analyze the execution timeline: First run 'nsys export --type sqlite --output <sqlite file> <nsys-rep file>' to convert the profiling data to SQLite format.\n3. Then use load_nsys_events.py to extract the NVTX events: 'python tools/load_nsys_events.py -c -d \"${SQLITE_DIR}\" -o nvtx.json'\n4. Finally, visualize the timeline using viz_nsys_events.py: 'python tools/viz_nsys_events.py -i \"${SQLITE_DIR}/nvtx.json\" -o zb2p.svg -n ${ITERATION_TO_PLOT} -w ${GRAPH_WIDTH}'\n5. The resulting visualization will show the stage execution timeline that can be compared with the theoretical calculation to identify any bubbles in each stage."
+}

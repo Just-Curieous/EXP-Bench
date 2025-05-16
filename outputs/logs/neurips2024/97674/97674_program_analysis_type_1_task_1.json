@@ -1,0 +1,26 @@
+{
+  "requirements": [
+    "Step 1: Create a shell script that defines model paths (e.g., 'OpenGVLab/InternVL-Chat-V1-5') and tasks (retrieval, counting, reasoning for both text and image needles, for both validation and test sets) (/workspace/shells/eval_internvl.sh:12-29)",
+    "Step 2: Set up output directories for results and logs (/workspace/shells/eval_internvl.sh:9-11)",
+    "Step 3: For each model and task combination, execute a Python evaluation script with appropriate parameters (model path, task name, outputs directory) (/workspace/shells/eval_internvl.sh:33-53)",
+    "Step 4: Combine the output files from distributed evaluation into a single JSONL file per model/task (/workspace/shells/eval_internvl.sh:55)",
+    "Step 5: Load and process the evaluation data from JSONL files, extracting context length, placed depth, and correctness information (/workspace/calculate_scores.py:91-134)",
+    "Step 6: Calculate accuracy scores by dividing correct answers by total answers for each context length and depth combination (/workspace/calculate_scores.py:136)",
+    "Step 7: Generate heatmaps visualizing performance across different context lengths and depths (/workspace/calculate_scores.py:139-160)",
+    "Step 8: Calculate average scores for each task and save the results in JSON format (/workspace/calculate_scores.py:162-181)",
+    "Step 9: In the evaluation script, load the model and tokenizer with appropriate configurations (/workspace/eval_internvl.py:105-156)",
+    "Step 10: Process input data by loading images and formatting questions with context (/workspace/eval_internvl.py:276-281)",
+    "Step 11: Generate model responses for each input and calculate correctness (/workspace/eval_internvl.py:294-306)",
+    "Step 12: Save results including question ID, question, answer, response, context length, and placed depth (/workspace/eval_internvl.py:316-324)",
+    "Step 13: Implement utility functions for evaluating correctness of answers, including text normalization and comparison (/workspace/utils/tools.py:246-272)",
+    "Step 14: Implement conversation templates for formatting model inputs (/workspace/utils/conversation.py:62-263)"
+  ],
+  "agent_instructions": "Your task is to implement a system for evaluating multimodal models on their ability to handle text and image needles in various tasks. The system should consist of two main components:\n\n1. An evaluation script that:\n   - Takes a model path, task name, and output directory as input\n   - Evaluates the model on the specified task (retrieval, counting, or reasoning) with either text or image needles\n   - Processes inputs by loading images and formatting questions with context\n   - Generates model responses and saves results in JSONL format\n\n2. A score calculation script that:\n   - Processes the JSONL files from the evaluation\n   - Calculates accuracy scores for different context lengths and depths\n   - Generates visualizations (heatmaps) showing performance patterns\n   - Computes average scores for each task type\n   - Saves results in a structured format\n\nYou'll need to implement utility functions for:\n- Evaluating answer correctness (comparing model responses to ground truth)\n- Formatting conversation inputs for the model\n- Processing and normalizing text\n\nThe system should support both validation and test sets, and should be able to handle multiple models. The goal is to compare performance between text needle tasks and image needle tasks, showing that models consistently perform worse on image needle tasks relative to text needle tasks.",
+  "masked_source": [
+    "/workspace/shells/eval_internvl.sh",
+    "/workspace/calculate_scores.py",
+    "/workspace/eval_internvl.py",
+    "/workspace/utils/tools.py",
+    "/workspace/utils/conversation.py"
+  ]
+}
