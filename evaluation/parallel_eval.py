@@ -46,7 +46,6 @@ def setup_parallel_logging(log_filename: str):
     global bench_logger 
     bench_logger = init_logger(log_filename)
 
-# python evaluation/parallel_eval.py --task_config evaluation/configs/parallel_eval_gen_config_inspect.json
 def parse_args():
     parser = argparse.ArgumentParser(description="Process input arguments for the script.")
     
