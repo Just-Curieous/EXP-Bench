@@ -9,6 +9,8 @@ LLMs: OpenAI models, Claude Sonnet 3.7, Claude Haiku 3.5, DeepSeek R1, Amazon No
 
 All commands should be executed from this directory. To run the evaluation and judging pipelines, simply build the Docker image and execute the corresponding scripts provided below.
 
+Details of our dataset are available in the `dataset/` directory.
+
 ## Setup Docker image
 Note: There may be a few python packages missing that need to be installed manually. Also make sure Python 3.12.4 is installed (conda is best, which we show below).
 ```bash
